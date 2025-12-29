@@ -136,24 +136,15 @@ tab1, tab2 = st.tabs(["📝 Configure & Generate", "📄 Results"])
 with tab1:
     st.markdown('<div class="section-header">General Information</div>', unsafe_allow_html=True)
     
-    col1, col2 = st.columns(2)
-    
-    with col1:
-        curriculum = st.selectbox(
-            "Curriculum",
-            ["NCERT", "CBSE", "ICSE", "State Board"],
-            help="Select the curriculum"
-        )
-    
-    with col2:
-        grade = st.selectbox(
-            "Grade",
-            [f"Grade {i}" for i in range(1, 13)],
-            help="Select the grade level"
-        )
-    
-    # Subject is hardcoded to Mathematics
+    # Curriculum and Subject are hardcoded
+    curriculum = "NCERT"
     subject = "Mathematics"
+    
+    grade = st.selectbox(
+        "Grade",
+        [f"Grade {i}" for i in range(1, 13)],
+        help="Select the grade level"
+    )
     
     chapter = st.text_input(
         "Chapter/Unit Name",

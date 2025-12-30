@@ -279,6 +279,7 @@ with tab1:
                 st.markdown("<br>", unsafe_allow_html=True)
                 if st.button("📊 Max", key=f"max_btn_{qtype}", help=f"Set to maximum ({max_questions})"):
                     st.session_state[widget_key] = max_questions
+                    st.session_state.question_types_config[qtype]['count'] = max_questions
                     st.rerun()
             
             with col_input:

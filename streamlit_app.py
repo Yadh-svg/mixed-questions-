@@ -258,13 +258,37 @@ with tab1:
         
         with st.expander(f"⚙️ {qtype} Configuration", expanded=True):
             # Number of questions for this type
-            num_questions = st.number_input(
-                f"Number of {qtype} Questions",
-                min_value=1,
-                max_value=20,
-                value=st.session_state.question_types_config[qtype].get('count', 1),
-                key=f"count_{qtype}"
-            )
+            # Set max_value based on question type
+            if qtype == "MCQ":
+                max_questions = 34
+            elif qtype in ["Fill in the Blanks", "Multi-Part"]:
+                max_questions = 32
+            else:
+                max_questions = 20
+            
+            # Create columns for number input and max button
+            col_input, col_button = st.columns([4, 1])
+            
+            # Initialize widget key if Max button was clicked
+            widget_key = f"count_{qtype}"
+            if widget_key not in st.session_state:
+                st.session_state[widget_key] = st.session_state.question_types_config[qtype].get('count', 1)
+            
+            with col_button:
+                # Add some spacing to align with the input
+                st.markdown("<br>", unsafe_allow_html=True)
+                if st.button("📊 Max", key=f"max_btn_{qtype}", help=f"Set to maximum ({max_questions})"):
+                    st.session_state[widget_key] = max_questions
+                    st.rerun()
+            
+            with col_input:
+                num_questions = st.number_input(
+                    f"Number of {qtype} Questions",
+                    min_value=1,
+                    max_value=max_questions,
+                    key=widget_key
+                )
+            
             st.session_state.question_types_config[qtype]['count'] = num_questions
             
             # Initialize questions list if needed

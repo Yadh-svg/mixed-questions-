@@ -7,12 +7,18 @@ import asyncio
 from typing import List, Dict, Any
 from collections import defaultdict
 import logging
+from datetime import datetime
+from pathlib import Path
 
 from llm_engine import run_gemini_async
 from prompt_builder import build_prompt_for_batch
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+
+
+
 
 
 def group_questions_by_type_and_topic(questions_config: List[Dict[str, Any]]) -> Dict[str, List[Dict[str, Any]]]:
@@ -60,26 +66,27 @@ async def process_single_batch(
         prompt_data = build_prompt_for_batch(batch_key, questions, general_config, type_config)
         
         prompt_text = prompt_data['prompt']
-        pdf_files = prompt_data.get('pdf_files', [])
-        pdf_metadata = prompt_data.get('pdf_metadata', {})
+        files = prompt_data.get('files', [])
+        file_metadata = prompt_data.get('file_metadata', {})
         api_key = general_config['api_key']
         
-        # Call Gemini API with PDF files and metadata
+        
+        # Call Gemini API with files and metadata
         result = await run_gemini_async(
             prompt=prompt_text,
             api_key=api_key,
-            pdf_files=pdf_files,
+            files=files,
             thinking_budget=5000,
-            pdf_metadata=pdf_metadata
+            file_metadata=file_metadata
         )
         
         # Add metadata
         result['question_count'] = len(questions)
-        result['used_pdf'] = len(pdf_files) > 0
+        result['used_file'] = len(files) > 0
         result['batch_key'] = batch_key
-        result['pdf_source'] = pdf_metadata.get('source_type', 'N/A')
+        result['file_source'] = file_metadata.get('source_type', 'N/A')
         
-        logger.info(f"Batch {batch_key} completed | Source: {result['pdf_source']} | Time: {result.get('elapsed', 0):.2f}s")
+        logger.info(f"Batch {batch_key} completed | Source: {result['file_source']} | Time: {result.get('elapsed', 0):.2f}s")
         
         return result
         

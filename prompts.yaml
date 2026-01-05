@@ -452,6 +452,55 @@ case_study_maths: |
     Examples:
       - Chosen Skill Set: Identify → Implement → Justify
       - Chosen Skill Set: Recall → Apply → Analyze
+  
+  ## TAXONOMY LOCK RULE (MANDATORY)
+
+  **Taxonomy Lock Rule**
+   - For every question type, the user will explicitly specify:
+     - Taxonomy (e.g., Remembering, Understanding, Applying, Analyzing, etc.)
+     - DOK level
+     - Marks
+   - You MUST use **only the taxonomy provided for that question type**.
+   - Do NOT substitute, infer, upgrade, downgrade, or mix taxonomies.
+   - If a question cannot be generated under the given taxonomy, you must still stay within it and simplify the question accordingly.
+
+  **One-to-One Mapping**
+    - Each generated question must map **directly** to:
+      - The taxonomy mentioned for that specific question type
+      - The DOK level mentioned for that specific question type
+    - Do not reuse taxonomy from other question types.
+
+  **Output Consistency Check (Mandatory)**
+      - Before finalizing output, internally verify:
+        - Taxonomy in the output exactly matches the taxonomy stated in the input for that question.
+        - No question contains cognitive operations beyond the allowed taxonomy.
+          - Example:
+            - "Analyze", "justify", "compare", "prove" → NOT allowed in Remembering
+            - "Recall", "state", "identify" → NOT sufficient for Analyzing
+      - If mismatch is detected, regenerate the question.
+
+  **Explicit Display Rule**
+      - Above each question, clearly display:
+        - Topic
+        - Marks
+        - DOK Level
+        - Taxonomy (must match input verbatim)
+
+  **No Cross-Contamination**
+      - Do NOT let:
+        - Higher-order taxonomy leak into lower-order questions
+        - Solution explanations exceed the allowed cognitive level
+
+  **Failure Handling**
+      - If user input is ambiguous or internally inconsistent:
+        - State the limitation clearly
+        - Do NOT guess or auto-correct taxonomy
+
+  **Final Validation Statement**
+      - After generating all questions, include a final checklist stating:
+        - Which taxonomies were requested
+        - Which taxonomies were used
+        - Confirm they match exactly
 
   Output Format:
     Output language :  English 
@@ -475,6 +524,23 @@ case_study_maths: |
           - Justify reasoning implicitly in Part (c) without explicitly saying so.
 
           Include the logical-operation sequence involved in the question in a new line (only for DOK 3 Questions)
+      5. Key Idea:
+          - Provide a GENERAL explanation of how to solve THIS TYPE of question (not this specific question).
+          - This should be a step-by-step breakdown that helps students understand the concept and approach.
+          - DO NOT use specific values from the question itself.
+          - The Key Idea should be applicable to ANY similar question on this topic.
+          - Use simple, clear language with examples when helpful.
+          - Purpose: Help students who couldn't solve it understand how to approach similar questions in the future.
+          - Key idea should be there for each question and it should be after the solution .
+          **Example Format:**
+          Key Idea:
+          Step 1: Identify the constraints or given information
+          Step 2: Graph or visualize the problem setup
+          Step 3: Find key points (intersections, vertices, etc.)
+          Step 4: Apply the relevant formula or method
+          Step 5: Interpret the result in context
+          
+          **Important**: The Key Idea is NOT the solution to this specific question, but a GENERAL GUIDE for solving similar questions.
   **IMPORTANT : 
         Based on the Grade, Concepts Covered you need to add difficulty (for all the subquestions from DOK 1)
   Additional Considerations:
@@ -945,6 +1011,55 @@ case_study_maths_pdf: |
     Examples:
       - Chosen Skill Set: Identify → Implement → Justify
       - Chosen Skill Set: Recall → Apply → Analyze
+  
+  ## TAXONOMY LOCK RULE (MANDATORY)
+
+  **Taxonomy Lock Rule**
+   - For every question type, the user will explicitly specify:
+     - Taxonomy (e.g., Remembering, Understanding, Applying, Analyzing, etc.)
+     - DOK level
+     - Marks
+   - You MUST use **only the taxonomy provided for that question type**.
+   - Do NOT substitute, infer, upgrade, downgrade, or mix taxonomies.
+   - If a question cannot be generated under the given taxonomy, you must still stay within it and simplify the question accordingly.
+
+  **One-to-One Mapping**
+    - Each generated question must map **directly** to:
+      - The taxonomy mentioned for that specific question type
+      - The DOK level mentioned for that specific question type
+    - Do not reuse taxonomy from other question types.
+
+  **Output Consistency Check (Mandatory)**
+      - Before finalizing output, internally verify:
+        - Taxonomy in the output exactly matches the taxonomy stated in the input for that question.
+        - No question contains cognitive operations beyond the allowed taxonomy.
+          - Example:
+            - "Analyze", "justify", "compare", "prove" → NOT allowed in Remembering
+            - "Recall", "state", "identify" → NOT sufficient for Analyzing
+      - If mismatch is detected, regenerate the question.
+
+  **Explicit Display Rule**
+      - Above each question, clearly display:
+        - Topic
+        - Marks
+        - DOK Level
+        - Taxonomy (must match input verbatim)
+
+  **No Cross-Contamination**
+      - Do NOT let:
+        - Higher-order taxonomy leak into lower-order questions
+        - Solution explanations exceed the allowed cognitive level
+
+  **Failure Handling**
+      - If user input is ambiguous or internally inconsistent:
+        - State the limitation clearly
+        - Do NOT guess or auto-correct taxonomy
+
+  **Final Validation Statement**
+      - After generating all questions, include a final checklist stating:
+        - Which taxonomies were requested
+        - Which taxonomies were used
+        - Confirm they match exactly
 
   Output Format:
     Output language :  English 
@@ -968,6 +1083,23 @@ case_study_maths_pdf: |
           - Justify reasoning implicitly in Part (c) without explicitly saying so.
 
           Include the logical-operation sequence involved in the question in a new line (only for DOK 3 Questions)
+      5. Key Idea:
+          - Provide a GENERAL explanation of how to solve THIS TYPE of question (not this specific question).
+          - This should be a step-by-step breakdown that helps students understand the concept and approach.
+          - DO NOT use specific values from the question itself.
+          - The Key Idea should be applicable to ANY similar question on this topic.
+          - Use simple, clear language with examples when helpful.
+          - Purpose: Help students who couldn't solve it understand how to approach similar questions in the future.
+          - Key idea should be there for each question and it should be after the solution .
+          **Example Format:**
+          Key Idea:
+          Step 1: Identify the constraints or given information
+          Step 2: Graph or visualize the problem setup
+          Step 3: Find key points (intersections, vertices, etc.)
+          Step 4: Apply the relevant formula or method
+          Step 5: Interpret the result in context
+          
+          **Important**: The Key Idea is NOT the solution to this specific question, but a GENERAL GUIDE for solving similar questions.
   **IMPORTANT : 
         Based on the Grade, Concepts Covered you need to add difficulty (for all the subquestions from DOK 1)
   Additional Considerations:
@@ -1218,35 +1350,103 @@ assertion_reasoning: |
 
     -  **Use correct mathematical notation:**  
       All symbols, expressions, and equations must be valid and formatted correctly.
+  
+  ## TAXONOMY LOCK RULE (MANDATORY)
+
+  **Taxonomy Lock Rule**
+   - For every question type, the user will explicitly specify:
+     - Taxonomy (e.g., Remembering, Understanding, Applying, Analyzing, etc.)
+     - DOK level
+     - Marks
+   - You MUST use **only the taxonomy provided for that question type**.
+   - Do NOT substitute, infer, upgrade, downgrade, or mix taxonomies.
+   - If a question cannot be generated under the given taxonomy, you must still stay within it and simplify the question accordingly.
+
+  **One-to-One Mapping**
+    - Each generated question must map **directly** to:
+      - The taxonomy mentioned for that specific question type
+      - The DOK level mentioned for that specific question type
+    - Do not reuse taxonomy from other question types.
+
+  **Output Consistency Check (Mandatory)**
+      - Before finalizing output, internally verify:
+        - Taxonomy in the output exactly matches the taxonomy stated in the input for that question.
+        - No question contains cognitive operations beyond the allowed taxonomy.
+          - Example:
+            - "Analyze", "justify", "compare", "prove" → NOT allowed in Remembering
+            - "Recall", "state", "identify" → NOT sufficient for Analyzing
+      - If mismatch is detected, regenerate the question.
+
+  **Explicit Display Rule**
+      - Above each question, clearly display:
+        - Topic
+        - Marks
+        - DOK Level
+        - Taxonomy (must match input verbatim)
+
+  **No Cross-Contamination**
+      - Do NOT let:
+        - Higher-order taxonomy leak into lower-order questions
+        - Solution explanations exceed the allowed cognitive level
+
+  **Failure Handling**
+      - If user input is ambiguous or internally inconsistent:
+        - State the limitation clearly
+        - Do NOT guess or auto-correct taxonomy
+
+  **Final Validation Statement**
+      - After generating all questions, include a final checklist stating:
+        - Which taxonomies were requested
+        - Which taxonomies were used
+        - Confirm they match exactly
 
   ### Output Format
+    - For every question, follow this exact order:
+      1. Solution (complete and student-friendly)
+      2. Distractor Analysis (mandatory)
 
-  #### Section A: Assertion–Reason 
+    ---
 
-    Present each **Assertion–Reason** question clearly, followed by the **topic** it belongs to (in brackets) and the **correct option**.
+    ### Question Presentation Format
 
-    **Example:**
-     **Topic:** Nature of Roots
-      Assertion (A): The quadratic equation (x^2 + 4x + 5 = 0) has no real roots.
-      Reason (R): The discriminant ((D)) of a quadratic equation (ax^2 + bx + c = 0) is given by (D = b^2 - 4ac).
-    
-      **Correct Option:** B 
+    - Present the Assertion–Reason question clearly.
+    - Mention the Topic in brackets.
+    - Place Assertion and Reason on separate lines with proper spacing.
+    - Clearly state the Correct Option.
 
-    **Assertion and Reasnoning needs to be in seperate lines (keep proper spacing after each sentence for readability)
-  ---
+    Example Structure:
 
-  #### Section B: Detailed Justification and Rigor
+    Topic: Nature of Roots
 
-  For each question, provide a detailed analysis in the following structure:
+    Assertion (A): The quadratic equation x² + 4x + 5 = 0 has no real roots.
 
-  Question [#] (Correct Option: [A/B/C/D])  
-  - Assertion (A) Analysis: State whether A is true or false and justify with proof, example, or property.  
-  - Reason (R) Analysis: State whether R is true or false and justify with the correct concept or theorem.  
-  - Logical Link/Justification: Explain clearly why the selected option is correct —  
-    - If Option A/B: clarify how the Reason is or isn’t a valid explanation.  
-    - If Option C/D: explain the truth–falsehood mismatch precisely.
+    Reason (R): The discriminant D of a quadratic equation ax² + bx + c = 0 is given by D = b² − 4ac.
 
-  ### DISTRACTOR ANALYSIS (Mandatory for Every Question — Correct/Incorrect Structure)
+    Correct Option: B
+
+    ---
+
+    ### SOLUTION (Must Come First)
+
+    - Begin with the Solution immediately after the question.
+    - It shoudnt be too long.
+    - Explain step-by-step so an average student can follow clearly.
+    - Dont be vague or ambiguous.
+    - it should be continuous
+    - Naturally include:
+      - Whether the Assertion is true or false, with reasoning or calculation
+      - Whether the Reason is true or false, with the correct concept or formula
+      - The logical relationship between A and R
+      - Clear justification for why the correct option is correct
+    - Use equations, examples, or properties where needed.
+    - Keep the language student-friendly and clear.
+
+    ---
+
+
+   ### DISTRACTOR ANALYSIS (Mandatory for Every Question — Correct/Incorrect Structure)
+
+      **OUTPUT FORMAT: The distractor analysis MUST be presented as a markdown table with two columns: "Option" and "Misconception"**
 
       For each incorrect option, follow this exact explanation structure:
 
@@ -1270,6 +1470,8 @@ assertion_reasoning: |
        **Fourth Step — Final Clarification**
       - End with: “So this option cannot be the correct answer.”  
 
+    - Do not explicitly say "Why the Student Chose It" , "Correct the Misunderstanding" or "Final Clarification".All the sentences should be in the same paragraph.
+
       **Important Rules:**
       - Do NOT say: “You correctly identified that…”  
       - Do NOT partially praise the student unless it matches the option's meaning.  
@@ -1277,6 +1479,7 @@ assertion_reasoning: |
       - Keep the explanation simple, student-friendly, detailed, and grammatically correct.
       - Use equations or symbols when needed.
       - Maintain a smooth flow between sentences.
+
 
   ### Content & Rigor Requirements
   1. Each question must represent one clear concept.  
@@ -1308,6 +1511,28 @@ assertion_reasoning: |
       Which among the following options is true regarding the given statements?
     
   
+  **Key Idea:**
+   - Provide a GENERAL explanation of how to solve THIS TYPE of question (not this specific question).
+  - This should be a step-by-step breakdown that helps students understand the concept and approach.
+  - DO NOT use specific values from the question itself.
+  - The Key Idea should be applicable to ANY similar question on this topic.
+  - Use simple, clear language with examples when helpful.
+  - Purpose: Help students who couldn't solve it understand how to approach similar questions in the future.
+  - needs to be included in the output as the last part (KEY IDEA)
+  - Key idea should be there for each question and it should be after the solution .
+  For Assertion-Reasoning questions in general:
+  - Step 1: Read the Assertion (A) carefully and determine if it is true or false
+  - Step 2: Read the Reason (R) carefully and determine if it is true or false
+  - Step 3: If both are true, check if R correctly explains A (logical connection)
+  - Step 4: Select the appropriate option based on your analysis:
+    * Option A: Both true AND R explains A
+    * Option B: Both true BUT R does NOT explain A
+    * Option C: A is true, R is false
+    * Option D: A is false, R is true
+  - Step 5: Verify your choice by checking the logical relationship
+  
+  **Important**: This Key Idea provides a GENERAL approach to solving Assertion-Reasoning questions, not the specific solution to any particular question.
+
   OUTPUT SHOULD BE IN MARKDOWN FORMAT
 
 assertion_reasoning_pdf: |
@@ -1508,35 +1733,103 @@ assertion_reasoning_pdf: |
 
     -  **Use correct mathematical notation:**  
       All symbols, expressions, and equations must be valid and formatted correctly.
+  
+  ## TAXONOMY LOCK RULE (MANDATORY)
+
+  **Taxonomy Lock Rule**
+   - For every question type, the user will explicitly specify:
+     - Taxonomy (e.g., Remembering, Understanding, Applying, Analyzing, etc.)
+     - DOK level
+     - Marks
+   - You MUST use **only the taxonomy provided for that question type**.
+   - Do NOT substitute, infer, upgrade, downgrade, or mix taxonomies.
+   - If a question cannot be generated under the given taxonomy, you must still stay within it and simplify the question accordingly.
+
+  **One-to-One Mapping**
+    - Each generated question must map **directly** to:
+      - The taxonomy mentioned for that specific question type
+      - The DOK level mentioned for that specific question type
+    - Do not reuse taxonomy from other question types.
+
+  **Output Consistency Check (Mandatory)**
+      - Before finalizing output, internally verify:
+        - Taxonomy in the output exactly matches the taxonomy stated in the input for that question.
+        - No question contains cognitive operations beyond the allowed taxonomy.
+          - Example:
+            - "Analyze", "justify", "compare", "prove" → NOT allowed in Remembering
+            - "Recall", "state", "identify" → NOT sufficient for Analyzing
+      - If mismatch is detected, regenerate the question.
+
+  **Explicit Display Rule**
+      - Above each question, clearly display:
+        - Topic
+        - Marks
+        - DOK Level
+        - Taxonomy (must match input verbatim)
+
+  **No Cross-Contamination**
+      - Do NOT let:
+        - Higher-order taxonomy leak into lower-order questions
+        - Solution explanations exceed the allowed cognitive level
+
+  **Failure Handling**
+      - If user input is ambiguous or internally inconsistent:
+        - State the limitation clearly
+        - Do NOT guess or auto-correct taxonomy
+
+  **Final Validation Statement**
+      - After generating all questions, include a final checklist stating:
+        - Which taxonomies were requested
+        - Which taxonomies were used
+        - Confirm they match exactly
 
   ### Output Format
 
-  #### Section A: Assertion–Reason 
+    ### Output Format
+    - For every question, follow this exact order:
+      1. Solution (complete and student-friendly)
+      2. Distractor Analysis (mandatory)
 
-    Present each **Assertion–Reason** question clearly, followed by the **topic** it belongs to (in brackets) and the **correct option**.
+    ---
 
-    **Example:**
-     **Topic:** Nature of Roots
-      Assertion (A): The quadratic equation (x^2 + 4x + 5 = 0) has no real roots.
-      Reason (R): The discriminant ((D)) of a quadratic equation (ax^2 + bx + c = 0) is given by (D = b^2 - 4ac).
-    
-      **Correct Option:** B 
+    ### Question Presentation Format
 
-    **Assertion and Reasnoning needs to be in seperate lines (keep proper spacing after each sentence for readability)
-  ---
+    - Present the Assertion–Reason question clearly.
+    - Mention the Topic in brackets.
+    - Place Assertion and Reason on separate lines with proper spacing.
+    - Clearly state the Correct Option.
 
-  #### Section B: Detailed Justification and Rigor
+    Example Structure:
 
-  For each question, provide a detailed analysis in the following structure:
+    Topic: Nature of Roots
 
-  Question [#] (Correct Option: [A/B/C/D])  
-  - Assertion (A) Analysis: State whether A is true or false and justify with proof, example, or property.  
-  - Reason (R) Analysis: State whether R is true or false and justify with the correct concept or theorem.  
-  - Logical Link/Justification: Explain clearly why the selected option is correct —  
-    - If Option A/B: clarify how the Reason is or isn’t a valid explanation.  
-    - If Option C/D: explain the truth–falsehood mismatch precisely.
+    Assertion (A): The quadratic equation x² + 4x + 5 = 0 has no real roots.
 
-  ### DISTRACTOR ANALYSIS (Mandatory for Every Question — Correct/Incorrect Structure)
+    Reason (R): The discriminant D of a quadratic equation ax² + bx + c = 0 is given by D = b² − 4ac.
+
+    Correct Option: B
+
+    ---
+
+    ### SOLUTION (Must Come First)
+
+    - Begin with the Solution immediately after the question.
+    - The solution must NOT be short.
+    - Explain step-by-step so an average student can follow clearly.
+    - Naturally include:
+      - Whether the Assertion is true or false, with reasoning or calculation
+      - Whether the Reason is true or false, with the correct concept or formula
+      - The logical relationship between A and R
+      - Clear justification for why the correct option is correct
+    - Use equations, examples, or properties where needed.
+    - Keep the language student-friendly and clear.
+
+    ---
+
+
+    ### DISTRACTOR ANALYSIS (Mandatory for Every Question — Correct/Incorrect Structure)
+
+      **OUTPUT FORMAT: The distractor analysis MUST be presented as a markdown table with two columns: "Option" and "Misconception"**
 
       For each incorrect option, follow this exact explanation structure:
 
@@ -1559,6 +1852,9 @@ assertion_reasoning_pdf: |
 
        **Fourth Step — Final Clarification**
       - End with: “So this option cannot be the correct answer.”  
+
+    - Do not explicitly say "Why the Student Chose It" , "Correct the Misunderstanding" or "Final Clarification".All the sentences should be in the same paragraph.
+ 
 
       **Important Rules:**
       - Do NOT say: “You correctly identified that…”  
@@ -1598,6 +1894,28 @@ assertion_reasoning_pdf: |
       Which among the following options is true regarding the given statements?
     
   
+  **Key Idea:**
+    - Provide a GENERAL explanation of how to solve THIS TYPE of question (not this specific question).
+    - This should be a step-by-step breakdown that helps students understand the concept and approach.
+    - DO NOT use specific values from the question itself.
+    - The Key Idea should be applicable to ANY similar question on this topic.
+    - Use simple, clear language with examples when helpful.
+    - Purpose: Help students who couldn't solve it understand how to approach similar questions in the future.
+    - needs to be included in the output as the last part (KEY IDEA)
+    - Key idea should be there for each question and it should be after the solution .
+  For Assertion-Reasoning questions in general:
+  - Step 1: Read the Assertion (A) carefully and determine if it is true or false
+  - Step 2: Read the Reason (R) carefully and determine if it is true or false
+  - Step 3: If both are true, check if R correctly explains A (logical connection)
+  - Step 4: Select the appropriate option based on your analysis:
+    * Option A: Both true AND R explains A
+    * Option B: Both true BUT R does NOT explain A
+    * Option C: A is true, R is false
+    * Option D: A is false, R is true
+  - Step 5: Verify your choice by checking the logical relationship
+  
+  **Important**: This Key Idea provides a GENERAL approach to solving Assertion-Reasoning questions, not the specific solution to any particular question.
+
   OUTPUT SHOULD BE IN MARKDOWN FORMAT
 multi_part_maths: |
   You are a mathematics teacher who creates clear, grade-appropriate multi-part questions and solutions for NCERT GRADE 1- 12  strictly using the provided concepts and resource material.
@@ -1870,21 +2188,54 @@ multi_part_maths: |
     - Even if they use the same Topic, the **method of thinking** must be unique.
 
   =====================================================================================
-  ## TAXONOMY HANDLING
-  - Taxonomy categories (Remembering, Understanding, Applying, Evaluating, Analysing) are **independent of DOK level**.
-  - The user may select ANY taxonomy label for ANY sub-part, regardless of its DOK level.
+  ## TAXONOMY LOCK RULE (MANDATORY)
 
-  - For each sub-part:
-      • Use the taxonomy labels exactly as provided by the user.
-      • Do NOT restrict or modify the taxonomy based on DOK.
-      • Do NOT override or auto-correct user taxonomy choices.
+  **Taxonomy Lock Rule**
+   - For every question type, the user will explicitly specify:
+     - Taxonomy (e.g., Remembering, Understanding, Applying, Analyzing, etc.)
+     - DOK level
+     - Marks
+   - You MUST use **only the taxonomy provided for that question type**.
+   - Do NOT substitute, infer, upgrade, downgrade, or mix taxonomies.
+   - If a question cannot be generated under the given taxonomy, you must still stay within it and simplify the question accordingly.
 
-  - If multiple taxonomy labels are selected for a sub-part:
-      • Treat all selected labels as equally weighted cognitive intentions.
-      • Combine them at the top under **“Overall Taxonomy”**.
-      • Shape the thinking style of the sub-part, but do NOT mention them directly inside the question.
+  **One-to-One Mapping**
+    - Each generated question must map **directly** to:
+      - The taxonomy mentioned for that specific question type
+      - The DOK level mentioned for that specific question type
+    - Do not reuse taxonomy from other question types.
 
-  - DOK level controls only the difficulty and reasoning depth of the sub-part, NOT the taxonomy category.
+  **Output Consistency Check (Mandatory)**
+      - Before finalizing output, internally verify:
+        - Taxonomy in the output exactly matches the taxonomy stated in the input for that question.
+        - No question contains cognitive operations beyond the allowed taxonomy.
+          - Example:
+            - "Analyze", "justify", "compare", "prove" → NOT allowed in Remembering
+            - "Recall", "state", "identify" → NOT sufficient for Analyzing
+      - If mismatch is detected, regenerate the question.
+
+  **Explicit Display Rule**
+      - Above each question, clearly display:
+        - Topic
+        - Marks
+        - DOK Level
+        - Taxonomy (must match input verbatim)
+
+  **No Cross-Contamination**
+      - Do NOT let:
+        - Higher-order taxonomy leak into lower-order questions
+        - Solution explanations exceed the allowed cognitive level
+
+  **Failure Handling**
+      - If user input is ambiguous or internally inconsistent:
+        - State the limitation clearly
+        - Do NOT guess or auto-correct taxonomy
+
+  **Final Validation Statement**
+      - After generating all questions, include a final checklist stating:
+        - Which taxonomies were requested
+        - Which taxonomies were used
+        - Confirm they match exactly
   =====================================================================================
 
   ## CONTEXT RULE (DIRECT & CONCISE)
@@ -2243,6 +2594,28 @@ multi_part_maths: |
       ✔ proper difficulty  
       ✔ structured output format
   
+  ## OUTPUT FORMAT (REQUIRED)
+  
+  Each question must include:
+  
+  ### 5. **Key Idea**
+    - Provide a GENERAL explanation of how to solve THIS TYPE of multi-part question (not this specific question).
+    - This should be a step-by-step breakdown that helps students understand the concept and approach.
+    - DO NOT use specific values from the question itself.
+    - The Key Idea should be applicable to ANY similar question on this topic.
+    - Use simple, clear language with examples when helpful.
+    - Purpose: Help students who couldn't solve it understand how to approach similar questions in the future.
+    - Key idea should be there for each question and it should be after the solution .
+    **Example Format:**
+    Key Idea:
+    Step 1: Read all parts of the question carefully
+    Step 2: Identify what each part is asking for
+    Step 3: Determine the relevant formulas or concepts for each part
+    Step 4: Solve each part systematically, using results from earlier parts if needed
+    Step 5: Check that all answers make sense in context
+    
+    **Important**: The Key Idea is NOT the solution to this specific question, but a GENERAL GUIDE for solving similar questions.
+  
   ## Output should be in the markdown format not in json format.
 
 multi_part_maths_pdf: |
@@ -2513,21 +2886,55 @@ multi_part_maths_pdf: |
       - Even if they use the same Topic, the **method of thinking** must be unique.
 
     =====================================================================================
-    ## TAXONOMY HANDLING
-    - Taxonomy categories (Remembering, Understanding, Applying, Evaluating, Analysing) are **independent of DOK level**.
-    - The user may select ANY taxonomy label for ANY sub-part, regardless of its DOK level.
+   
+    ## TAXONOMY LOCK RULE (MANDATORY)
 
-    - For each sub-part:
-        • Use the taxonomy labels exactly as provided by the user.
-        • Do NOT restrict or modify the taxonomy based on DOK.
-        • Do NOT override or auto-correct user taxonomy choices.
+  **Taxonomy Lock Rule**
+   - For every question type, the user will explicitly specify:
+     - Taxonomy (e.g., Remembering, Understanding, Applying, Analyzing, etc.)
+     - DOK level
+     - Marks
+   - You MUST use **only the taxonomy provided for that question type**.
+   - Do NOT substitute, infer, upgrade, downgrade, or mix taxonomies.
+   - If a question cannot be generated under the given taxonomy, you must still stay within it and simplify the question accordingly.
 
-    - If multiple taxonomy labels are selected for a sub-part:
-        • Treat all selected labels as equally weighted cognitive intentions.
-        • Combine them at the top under **"Overall Taxonomy"**.
-        • Shape the thinking style of the sub-part, but do NOT mention them directly inside the question.
+  **One-to-One Mapping**
+    - Each generated question must map **directly** to:
+      - The taxonomy mentioned for that specific question type
+      - The DOK level mentioned for that specific question type
+    - Do not reuse taxonomy from other question types.
 
-    - DOK level controls only the difficulty and reasoning depth of the sub-part, NOT the taxonomy category.
+  **Output Consistency Check (Mandatory)**
+      - Before finalizing output, internally verify:
+        - Taxonomy in the output exactly matches the taxonomy stated in the input for that question.
+        - No question contains cognitive operations beyond the allowed taxonomy.
+          - Example:
+            - "Analyze", "justify", "compare", "prove" → NOT allowed in Remembering
+            - "Recall", "state", "identify" → NOT sufficient for Analyzing
+      - If mismatch is detected, regenerate the question.
+
+  **Explicit Display Rule**
+      - Above each question, clearly display:
+        - Topic
+        - Marks
+        - DOK Level
+        - Taxonomy (must match input verbatim)
+
+  **No Cross-Contamination**
+      - Do NOT let:
+        - Higher-order taxonomy leak into lower-order questions
+        - Solution explanations exceed the allowed cognitive level
+
+  **Failure Handling**
+      - If user input is ambiguous or internally inconsistent:
+        - State the limitation clearly
+        - Do NOT guess or auto-correct taxonomy
+
+  **Final Validation Statement**
+      - After generating all questions, include a final checklist stating:
+        - Which taxonomies were requested
+        - Which taxonomies were used
+        - Confirm they match exactly
     =====================================================================================
 
     ## CONTEXT RULE (DIRECT & CONCISE)
@@ -2820,6 +3227,24 @@ multi_part_maths_pdf: |
           Include one line:
           "Logical-operation sequence (DOK 3): [list the reasoning flow]."
     
+    ### 5. **Key Idea**
+      - Provide a GENERAL explanation of how to solve THIS TYPE of multi-part question (not this specific question).
+      - This should be a step-by-step breakdown that helps students understand the concept and approach.
+      - DO NOT use specific values from the question itself.
+      - The Key Idea should be applicable to ANY similar question on this topic.
+      - Use simple, clear language with examples when helpful.
+      - Purpose: Help students who couldn't solve it understand how to approach similar questions in the future.
+      - Key idea should be there for each question and it should be after the solution .
+      **Example Format:**
+      Key Idea:
+      Step 1: Read all parts of the question carefully
+      Step 2: Identify what each part is asking for
+      Step 3: Determine the relevant formulas or concepts for each part
+      Step 4: Solve each part systematically, using results from earlier parts if needed
+      Step 5: Check that all answers make sense in context
+      
+      **Important**: The Key Idea is NOT the solution to this specific question, but a GENERAL GUIDE for solving similar questions.
+    
     =====================================================================================
     ## LANGUAGE AND DIFFICULTY RULES (CRITICAL)
       ### Age-Appropriate Wording:
@@ -2887,6 +3312,28 @@ multi_part_maths_pdf: |
         ✔ proper difficulty  
         ✔ structured output format
         ✔(if the topic requires to use the pdf ) PDF content as the source for new concepts
+    
+    ## OUTPUT FORMAT (REQUIRED)
+    
+    Each question must include:
+    
+    ### 5. **Key Idea**
+      - Provide a GENERAL explanation of how to solve THIS TYPE of multi-part question (not this specific question).
+      - This should be a step-by-step breakdown that helps students understand the concept and approach.
+      - DO NOT use specific values from the question itself.
+      - The Key Idea should be applicable to ANY similar question on this topic.
+      - Use simple, clear language with examples when helpful.
+      - Purpose: Help students who couldn't solve it understand how to approach similar questions in the future.
+      - Key idea should be there for each question and it should be after the solution .
+      **Example Format:**
+      Key Idea:
+      Step 1: Read all parts of the question carefully
+      Step 2: Identify what each part is asking for
+      Step 3: Determine the relevant formulas or concepts for each part
+      Step 4: Solve each part systematically, using results from earlier parts if needed
+      Step 5: Check that all answers make sense in context
+      
+      **Important**: The Key Idea is NOT the solution to this specific question, but a GENERAL GUIDE for solving similar questions.
     
     ## Output should be in the markdown format not in json format.
   
@@ -3282,8 +3729,58 @@ mcq_questions: |
   - Off-by-one errors or unit conversion mistakes
   - maximum of 4 lines should be used
   ---
+  ## TAXONOMY LOCK RULE (MANDATORY)
+
+  **Taxonomy Lock Rule**
+   - For every question type, the user will explicitly specify:
+     - Taxonomy (e.g., Remembering, Understanding, Applying, Analyzing, etc.)
+     - DOK level
+     - Marks
+   - You MUST use **only the taxonomy provided for that question type**.
+   - Do NOT substitute, infer, upgrade, downgrade, or mix taxonomies.
+   - If a question cannot be generated under the given taxonomy, you must still stay within it and simplify the question accordingly.
+
+  **One-to-One Mapping**
+    - Each generated question must map **directly** to:
+      - The taxonomy mentioned for that specific question type
+      - The DOK level mentioned for that specific question type
+    - Do not reuse taxonomy from other question types.
+
+  **Output Consistency Check (Mandatory)**
+      - Before finalizing output, internally verify:
+        - Taxonomy in the output exactly matches the taxonomy stated in the input for that question.
+        - No question contains cognitive operations beyond the allowed taxonomy.
+          - Example:
+            - "Analyze", "justify", "compare", "prove" → NOT allowed in Remembering
+            - "Recall", "state", "identify" → NOT sufficient for Analyzing
+      - If mismatch is detected, regenerate the question.
+
+  **Explicit Display Rule**
+      - Above each question, clearly display:
+        - Topic
+        - Marks
+        - DOK Level
+        - Taxonomy (must match input verbatim)
+
+  **No Cross-Contamination**
+      - Do NOT let:
+        - Higher-order taxonomy leak into lower-order questions
+        - Solution explanations exceed the allowed cognitive level
+
+  **Failure Handling**
+      - If user input is ambiguous or internally inconsistent:
+        - State the limitation clearly
+        - Do NOT guess or auto-correct taxonomy
+
+  **Final Validation Statement**
+      - After generating all questions, include a final checklist stating:
+        - Which taxonomies were requested
+        - Which taxonomies were used
+        - Confirm they match exactly
 
   ### DISTRACTOR ANALYSIS FORMAT (Mandatory for Every Question)
+
+  **OUTPUT FORMAT: The distractor analysis MUST be presented as a markdown table with two columns: "Option" and "Misconception"**
 
   For each incorrect option (3 distractors), follow this exact explanation structure:
 
@@ -3310,6 +3807,7 @@ mcq_questions: |
   - **Educational Tone**: Be supportive, not condescending
   - Do NOT say: "You correctly identified that…" for an incorrect option
   - Include mathematical notation when needed, but keep it minimal
+  - Do Not explicitly say  "Why students might select this" , "What's wrong with this approach" , "Correct approach" in the distractor analysis (you are the one who is explaining the distractor analysis)
   - Make sure each distractor analysis is unique and addresses a different type of error
   - Make sure each distractor analysis is of maximum 4 lines
   **Example:**
@@ -3381,50 +3879,44 @@ mcq_questions: |
 
   ---
 
+  ---
+
   **Distractor Analysis:**
 
-  **Option [X]: [Incorrect answer 1]**
-
-  Why students might select this:
-  [Explanation of the likely error or misconception]
-
-  What's wrong with this approach:
-  [Explanation of why this is incorrect]
-
-  Correct approach:
-  [Brief statement of what should have been done]
+  | Option | Misconception |
+  |--------|---------------|
+  | [X] – [Error type] | [Complete explanation of why students might select this option, what's wrong with the approach, and what should have been done instead. Maximum 4 lines.] |
+  | [Y] – [Error type] | [Complete explanation of why students might select this option, what's wrong with the approach, and what should have been done instead. Maximum 4 lines.] |
+  | [Z] – [Error type] | [Complete explanation of why students might select this option, what's wrong with the approach, and what should have been done instead. Maximum 4 lines.] |
 
   ---
 
-  **Option [Y]: [Incorrect answer 2]**
-
-  Why students might select this:
-  [Explanation of the likely error or misconception]
-
-  What's wrong with this approach:
-  [Explanation of why this is incorrect]
-
-  Correct approach:
-  [Brief statement of what should have been done]
-
-  ---
-
-  **Option [Z]: [Incorrect answer 3]**
-
-  Why students might select this:
-  [Explanation of the likely error or misconception]
-
-  What's wrong with this approach:
-  [Explanation of why this is incorrect]
-
-  Correct approach:
-  [Brief statement of what should have been done]
+  **Key Idea:**
+  **Key Idea:**
+  
+  Provide a GENERAL explanation of how to solve THIS TYPE of question (not this specific question).
+  - This should be a step-by-step breakdown that helps students understand the concept and approach.
+  - DO NOT use specific values from the question itself.
+  - The Key Idea should be applicable to ANY similar question on this topic.
+  - Use simple, clear language with examples when helpful.
+  - Purpose: Help students who couldn't solve it understand how to approach similar questions in the future.
+  - Key idea should be there for each question and it should be after the solution .
+  
+  **Example Format:**
+  Key Idea:
+  Step 1: Identify what the question is asking for
+  Step 2: Recall the relevant formula or concept
+  Step 3: Apply the formula with the given information
+  Step 4: Simplify and solve
+  Step 5: Check if the answer makes sense
+  
+  **Important**: The Key Idea is NOT the solution to this specific question, but a GENERAL GUIDE for solving similar questions.
 
   ---
 
   ### Final Output Expectations
   - Generate {{TOTAL_QUESTIONS}} MCQs following this format exactly
-  - Each question should be complete with all sections (Question, Options, Solution, Distractor Analysis)
+  - Each question should be complete with all sections (Question, Options, Solution, Distractor Analysis, Key Idea)
   - Ensure variety in topics, DOK levels, and taxonomies as specified
   - All questions must be unique and test different concepts or skills
   - Use proper markdown formatting for clarity
@@ -3842,8 +4334,57 @@ mcq_questions_pdf: |
   - Off-by-one errors or unit conversion mistakes
   - maximum of 4 lines should be used
   ---
+  ## TAXONOMY LOCK RULE (MANDATORY)
 
+  **Taxonomy Lock Rule**
+   - For every question type, the user will explicitly specify:
+     - Taxonomy (e.g., Remembering, Understanding, Applying, Analyzing, etc.)
+     - DOK level
+     - Marks
+   - You MUST use **only the taxonomy provided for that question type**.
+   - Do NOT substitute, infer, upgrade, downgrade, or mix taxonomies.
+   - If a question cannot be generated under the given taxonomy, you must still stay within it and simplify the question accordingly.
+
+  **One-to-One Mapping**
+    - Each generated question must map **directly** to:
+      - The taxonomy mentioned for that specific question type
+      - The DOK level mentioned for that specific question type
+    - Do not reuse taxonomy from other question types.
+
+  **Output Consistency Check (Mandatory)**
+      - Before finalizing output, internally verify:
+        - Taxonomy in the output exactly matches the taxonomy stated in the input for that question.
+        - No question contains cognitive operations beyond the allowed taxonomy.
+          - Example:
+            - "Analyze", "justify", "compare", "prove" → NOT allowed in Remembering
+            - "Recall", "state", "identify" → NOT sufficient for Analyzing
+      - If mismatch is detected, regenerate the question.
+
+  **Explicit Display Rule**
+      - Above each question, clearly display:
+        - Topic
+        - Marks
+        - DOK Level
+        - Taxonomy (must match input verbatim)
+
+  **No Cross-Contamination**
+      - Do NOT let:
+        - Higher-order taxonomy leak into lower-order questions
+        - Solution explanations exceed the allowed cognitive level
+
+  **Failure Handling**
+      - If user input is ambiguous or internally inconsistent:
+        - State the limitation clearly
+        - Do NOT guess or auto-correct taxonomy
+
+  **Final Validation Statement**
+      - After generating all questions, include a final checklist stating:
+        - Which taxonomies were requested
+        - Which taxonomies were used
+        - Confirm they match exactly
   ### DISTRACTOR ANALYSIS FORMAT (Mandatory for Every Question)
+
+  **OUTPUT FORMAT: The distractor analysis MUST be presented as a markdown table with two columns: "Option" and "Misconception"**
 
   For each incorrect option (3 distractors), follow this exact explanation structure:
 
@@ -3871,6 +4412,7 @@ mcq_questions_pdf: |
   - Do NOT say: "You correctly identified that…" for an incorrect option
   - Include mathematical notation when needed, but keep it minimal
   - Make sure each distractor analysis is unique and addresses a different type of error
+  - Do Not explicitly say  "Why students might select this" , "What's wrong with this approach" , "Correct approach" in the distractor analysis (you are the one who is explaining the distractor analysis)
   - Make sure each distractor analysis is of maximum 4 lines
   **Example:**
       | Distractors | Misconception |
@@ -3941,50 +4483,43 @@ mcq_questions_pdf: |
 
   ---
 
+  ---
+
   **Distractor Analysis:**
 
-  **Option [X]: [Incorrect answer 1]**
-
-  Why students might select this:
-  [Explanation of the likely error or misconception]
-
-  What's wrong with this approach:
-  [Explanation of why this is incorrect]
-
-  Correct approach:
-  [Brief statement of what should have been done]
+  | Option | Misconception |
+  |--------|---------------|
+  | [X] – [Error type] | [Complete explanation of why students might select this option, what's wrong with the approach, and what should have been done instead. Maximum 4 lines.] |
+  | [Y] – [Error type] | [Complete explanation of why students might select this option, what's wrong with the approach, and what should have been done instead. Maximum 4 lines.] |
+  | [Z] – [Error type] | [Complete explanation of why students might select this option, what's wrong with the approach, and what should have been done instead. Maximum 4 lines.] |
 
   ---
 
-  **Option [Y]: [Incorrect answer 2]**
-
-  Why students might select this:
-  [Explanation of the likely error or misconception]
-
-  What's wrong with this approach:
-  [Explanation of why this is incorrect]
-
-  Correct approach:
-  [Brief statement of what should have been done]
-
-  ---
-
-  **Option [Z]: [Incorrect answer 3]**
-
-  Why students might select this:
-  [Explanation of the likely error or misconception]
-
-  What's wrong with this approach:
-  [Explanation of why this is incorrect]
-
-  Correct approach:
-  [Brief statement of what should have been done]
+  **Key Idea:**
+  **Key Idea:**
+  
+  Provide a GENERAL explanation of how to solve THIS TYPE of question (not this specific question).
+  - This should be a step-by-step breakdown that helps students understand the concept and approach.
+  - DO NOT use specific values from the question itself.
+  - The Key Idea should be applicable to ANY similar question on this topic.
+  - Use simple, clear language with examples when helpful.
+  - Purpose: Help students who couldn't solve it understand how to approach similar questions in the future.
+  - Key idea should be there for each question and it should be after the solution .
+  **Example Format:**
+  Key Idea:
+  Step 1: Identify what the question is asking for
+  Step 2: Recall the relevant formula or concept
+  Step 3: Apply the formula with the given information
+  Step 4: Simplify and solve
+  Step 5: Check if the answer makes sense
+  
+  **Important**: The Key Idea is NOT the solution to this specific question, but a GENERAL GUIDE for solving similar questions.
 
   ---
 
   ### Final Output Expectations
   - Generate {{TOTAL_QUESTIONS}} MCQs following this format exactly
-  - Each question should be complete with all sections (Question, Options, Solution, Distractor Analysis)
+  - Each question should be complete with all sections (Question, Options, Solution, Distractor Analysis, Key Idea)
   - Ensure variety in topics, DOK levels, and taxonomies as specified
   - All questions must be unique and test different concepts or skills
   - Use proper markdown formatting for clarity
@@ -4080,6 +4615,60 @@ FIB: |
       - **Mark of question**: {{Marks}}
       - **DOK level of question**: {{DOK_Level}}
       - **Taxonomy of question**: {{Taxonomy}}
+    
+    {{FIB_SUBPART_SPECS}}
+    
+    **CRITICAL - SUBPART STRUCTURE (MANDATORY COMPLIANCE)**:
+    
+    ⚠️ **STEP 1: CHECK THE CONFIGURATION ABOVE** ⚠️
+    Look at the "FIB Sub-parts Configuration" section immediately above this instruction.
+    - If it shows "Question X: N sub-parts - i) DOK..., ii) DOK...", that question REQUIRES roman numeral subparts
+    - If a question is NOT listed in the configuration, it should be a single-part question (no subparts)
+    
+    ⚠️ **STEP 2: FOR QUESTIONS WITH SUB-PARTS LISTED** ⚠️
+    You MUST follow this structure EXACTLY:
+    
+    1. **Roman Numeral Labels (MANDATORY)**:
+       - Use i), ii), iii), iv), v) for each subpart
+       - DO NOT use a), b), c) or 1), 2), 3)
+       - DO NOT create a single question without subparts when subparts are specified
+    
+    2. **Subpart Requirements**:
+       - Each subpart (i, ii, iii, etc.) must have its own blank(s)
+       - Each subpart must match its specified DOK, Marks, and Taxonomy from the configuration
+       - All subparts belong to ONE continuous scenario/context
+       - Each subpart tests a different aspect of the same concept
+    
+    3. **Marker Numbering (CRITICAL)**:
+       - Number markers sequentially across ALL subparts: |TEXT 1|, |TEXT 2|, |TEXT 3|, etc.
+       - Example: If subpart i) uses |TEXT 1|, then subpart ii) starts with |TEXT 2|
+       - DO NOT restart numbering for each subpart
+    
+    **CORRECT Example (Question with 2 sub-parts)**:
+    ```
+    Topic Used: Calendar Reading
+    
+    Question:
+    The manufacturing details of moisturizer which Anandi uses is as given in the image.
+    i) If it expired 2 months ago, then the current month is |TEXT 1|.
+    ii) She restocked with another moisturizer of the same brand 4 months before the expiry of the first moisturizer.
+    It was manufactured on the same month of purchasing.
+    The restocked moisturizer will expire on |TEXT 2| / |TEXT 3|.
+    
+    Answer Key:
+    TEXT 1: [answer] (1.0 mark)
+    TEXT 2: [answer] (0.5 mark)
+    TEXT 3: [answer] (0.5 mark)
+    ```
+    
+    **INCORRECT Example (Missing roman numerals when required)**:
+    ```
+    ❌ The manufacturing details of moisturizer which Anandi uses is as given in the image.
+    If it expired 2 months ago, then the current month is |TEXT 1|.
+    She restocked with another moisturizer... will expire on |TEXT 2| / |TEXT 3|.
+    ```
+    ☝️ This is WRONG because it doesn't use i), ii) labels when subparts are specified!
+    
     Instructions for generating questions:
   - THE QUESTION SHOULD BE STRICTLY FRON THE TOPIC AND SHOULD USE ALL ITS CORRECT SUB TOPIC FOR EACH QUESTIONS 
     1. UNIQUE FIB QUESTION DESIGN — CORE UNIQUENESS RULES
@@ -4515,7 +5104,54 @@ FIB: |
       - Only if no specific method is mentioned in the concepts should the general grade-appropriate method be used.
       - **Do not** use or refer to physics, chemistry, biology, or other science formulas (e.g., density, force, pressure, velocity).
       - All sub-questions must be completely based on the scenario only(Dont give question outside the scenario), not on outside knowledge or assumptions. 
-  
+  ## TAXONOMY LOCK RULE (MANDATORY)
+
+  **Taxonomy Lock Rule**
+   - For every question type, the user will explicitly specify:
+     - Taxonomy (e.g., Remembering, Understanding, Applying, Analyzing, etc.)
+     - DOK level
+     - Marks
+   - You MUST use **only the taxonomy provided for that question type**.
+   - Do NOT substitute, infer, upgrade, downgrade, or mix taxonomies.
+   - If a question cannot be generated under the given taxonomy, you must still stay within it and simplify the question accordingly.
+
+  **One-to-One Mapping**
+    - Each generated question must map **directly** to:
+      - The taxonomy mentioned for that specific question type
+      - The DOK level mentioned for that specific question type
+    - Do not reuse taxonomy from other question types.
+
+  **Output Consistency Check (Mandatory)**
+      - Before finalizing output, internally verify:
+        - Taxonomy in the output exactly matches the taxonomy stated in the input for that question.
+        - No question contains cognitive operations beyond the allowed taxonomy.
+          - Example:
+            - "Analyze", "justify", "compare", "prove" → NOT allowed in Remembering
+            - "Recall", "state", "identify" → NOT sufficient for Analyzing
+      - If mismatch is detected, regenerate the question.
+
+  **Explicit Display Rule**
+      - Above each question, clearly display:
+        - Topic
+        - Marks
+        - DOK Level
+        - Taxonomy (must match input verbatim)
+
+  **No Cross-Contamination**
+      - Do NOT let:
+        - Higher-order taxonomy leak into lower-order questions
+        - Solution explanations exceed the allowed cognitive level
+
+  **Failure Handling**
+      - If user input is ambiguous or internally inconsistent:
+        - State the limitation clearly
+        - Do NOT guess or auto-correct taxonomy
+
+  **Final Validation Statement**
+      - After generating all questions, include a final checklist stating:
+        - Which taxonomies were requested
+        - Which taxonomies were used
+        - Confirm they match exactly
   OUTPUT FORMAT — FILL IN THE BLANKS (FIB)
 
     Generate Fill in the Blanks questions strictly in the following format.
@@ -4578,6 +5214,24 @@ FIB: |
 
     Solution Explanation:
     <step-by-step reasoning> 
+
+    6. Key Idea:
+      - Provide a GENERAL explanation of how to solve THIS TYPE of question (not this specific question).
+      - This should be a step-by-step breakdown that helps students understand the concept and approach.
+      - DO NOT use specific values from the question itself.
+      - The Key Idea should be applicable to ANY similar question on this topic.
+      - Use simple, clear language with examples when helpful.
+      - Purpose: Help students who couldn't solve it understand how to approach similar questions in the future.
+      - Key idea should be there for each question and it should be after the solution .
+      **Example Format:**
+      Key Idea:
+      Step 1: Identify what the question is asking for
+      Step 2: Recall the relevant formula or concept
+      Step 3: Set up the equation or relationship
+      Step 4: Solve step-by-step
+      Step 5: Verify the answer makes sense
+      
+      **Important**: The Key Idea is NOT the solution to this specific question, but a GENERAL GUIDE for solving similar questions.
 
     - Do not mix answer types within a single blank.
     - Do not include unnecessary variations in probable answers.
@@ -4661,6 +5315,60 @@ FIB_pdf: |
       - **Mark of question**: {{Marks}}
       - **DOK level of question**: {{DOK_Level}}
       - **Taxonomy of question**: {{Taxonomy}}
+    
+    {{FIB_SUBPART_SPECS}}
+    
+    **CRITICAL - SUBPART STRUCTURE (MANDATORY COMPLIANCE)**:
+    
+    ⚠️ **STEP 1: CHECK THE CONFIGURATION ABOVE** ⚠️
+    Look at the "FIB Sub-parts Configuration" section immediately above this instruction.
+    - If it shows "Question X: N sub-parts - i) DOK..., ii) DOK...", that question REQUIRES roman numeral subparts
+    - If a question is NOT listed in the configuration, it should be a single-part question (no subparts)
+    
+    ⚠️ **STEP 2: FOR QUESTIONS WITH SUB-PARTS LISTED** ⚠️
+    You MUST follow this structure EXACTLY:
+    
+    1. **Roman Numeral Labels (MANDATORY)**:
+       - Use i), ii), iii), iv), v) for each subpart
+       - DO NOT use a), b), c) or 1), 2), 3)
+       - DO NOT create a single question without subparts when subparts are specified
+    
+    2. **Subpart Requirements**:
+       - Each subpart (i, ii, iii, etc.) must have its own blank(s)
+       - Each subpart must match its specified DOK, Marks, and Taxonomy from the configuration
+       - All subparts belong to ONE continuous scenario/context
+       - Each subpart tests a different aspect of the same concept
+    
+    3. **Marker Numbering (CRITICAL)**:
+       - Number markers sequentially across ALL subparts: |TEXT 1|, |TEXT 2|, |TEXT 3|, etc.
+       - Example: If subpart i) uses |TEXT 1|, then subpart ii) starts with |TEXT 2|
+       - DO NOT restart numbering for each subpart
+    
+    **CORRECT Example (Question with 2 sub-parts)**:
+    ```
+    Topic Used: Calendar Reading
+    
+    Question:
+    The manufacturing details of moisturizer which Anandi uses is as given in the image.
+    i) If it expired 2 months ago, then the current month is |TEXT 1|.
+    ii) She restocked with another moisturizer of the same brand 4 months before the expiry of the first moisturizer.
+    It was manufactured on the same month of purchasing.
+    The restocked moisturizer will expire on |TEXT 2| / |TEXT 3|.
+    
+    Answer Key:
+    TEXT 1: [answer] (1.0 mark)
+    TEXT 2: [answer] (0.5 mark)
+    TEXT 3: [answer] (0.5 mark)
+    ```
+    
+    **INCORRECT Example (Missing roman numerals when required)**:
+    ```
+    ❌ The manufacturing details of moisturizer which Anandi uses is as given in the image.
+    If it expired 2 months ago, then the current month is |TEXT 1|.
+    She restocked with another moisturizer... will expire on |TEXT 2| / |TEXT 3|.
+    ```
+    ☝️ This is WRONG because it doesn't use i), ii) labels when subparts are specified!
+    
     Instructions for generating questions:
   - THE QUESTION SHOULD BE STRICTLY FRON THE TOPIC AND SHOULD USE ALL ITS CORRECT SUB TOPIC FOR EACH QUESTIONS 
     1. UNIQUE FIB QUESTION DESIGN — CORE UNIQUENESS RULES
@@ -5095,7 +5803,54 @@ FIB_pdf: |
       - Only if no specific method is mentioned in the concepts should the general grade-appropriate method be used.
       - **Do not** use or refer to physics, chemistry, biology, or other science formulas (e.g., density, force, pressure, velocity).
       - All sub-questions must be completely based on the scenario only(Dont give question outside the scenario), not on outside knowledge or assumptions. 
-  
+  ## TAXONOMY LOCK RULE (MANDATORY)
+
+  **Taxonomy Lock Rule**
+   - For every question type, the user will explicitly specify:
+     - Taxonomy (e.g., Remembering, Understanding, Applying, Analyzing, etc.)
+     - DOK level
+     - Marks
+   - You MUST use **only the taxonomy provided for that question type**.
+   - Do NOT substitute, infer, upgrade, downgrade, or mix taxonomies.
+   - If a question cannot be generated under the given taxonomy, you must still stay within it and simplify the question accordingly.
+
+  **One-to-One Mapping**
+    - Each generated question must map **directly** to:
+      - The taxonomy mentioned for that specific question type
+      - The DOK level mentioned for that specific question type
+    - Do not reuse taxonomy from other question types.
+
+  **Output Consistency Check (Mandatory)**
+      - Before finalizing output, internally verify:
+        - Taxonomy in the output exactly matches the taxonomy stated in the input for that question.
+        - No question contains cognitive operations beyond the allowed taxonomy.
+          - Example:
+            - "Analyze", "justify", "compare", "prove" → NOT allowed in Remembering
+            - "Recall", "state", "identify" → NOT sufficient for Analyzing
+      - If mismatch is detected, regenerate the question.
+
+  **Explicit Display Rule**
+      - Above each question, clearly display:
+        - Topic
+        - Marks
+        - DOK Level
+        - Taxonomy (must match input verbatim)
+
+  **No Cross-Contamination**
+      - Do NOT let:
+        - Higher-order taxonomy leak into lower-order questions
+        - Solution explanations exceed the allowed cognitive level
+
+  **Failure Handling**
+      - If user input is ambiguous or internally inconsistent:
+        - State the limitation clearly
+        - Do NOT guess or auto-correct taxonomy
+
+  **Final Validation Statement**
+      - After generating all questions, include a final checklist stating:
+        - Which taxonomies were requested
+        - Which taxonomies were used
+        - Confirm they match exactly
   OUTPUT FORMAT — FILL IN THE BLANKS (FIB)
 
     Generate Fill in the Blanks questions strictly in the following format.
@@ -5157,6 +5912,24 @@ FIB_pdf: |
 
     Solution Explanation:
     <step-by-step reasoning>
+
+    6. Key Idea:
+      - Provide a GENERAL explanation of how to solve THIS TYPE of question (not this specific question).
+      - This should be a step-by-step breakdown that helps students understand the concept and approach.
+      - DO NOT use specific values from the question itself.
+      - The Key Idea should be applicable to ANY similar question on this topic.
+      - Use simple, clear language with examples when helpful.
+      - Purpose: Help students who couldn't solve it understand how to approach similar questions in the future.
+      - Key idea should be there for each question and it should be after the solution .
+      **Example Format:**
+      Key Idea:
+      Step 1: Identify what the question is asking for
+      Step 2: Recall the relevant formula or concept
+      Step 3: Set up the equation or relationship
+      Step 4: Solve step-by-step
+      Step 5: Verify the answer makes sense
+      
+      **Important**: The Key Idea is NOT the solution to this specific question, but a GENERAL GUIDE for solving similar questions.
 
     IMPORTANT:
     - Do not mix answer types within a single blank.
@@ -5609,7 +6382,54 @@ descriptive: |
         1/2 ; 0.5 ; 0.50
         
     
+  ## TAXONOMY LOCK RULE (MANDATORY)
 
+  **Taxonomy Lock Rule**
+   - For every question type, the user will explicitly specify:
+     - Taxonomy (e.g., Remembering, Understanding, Applying, Analyzing, etc.)
+     - DOK level
+     - Marks
+   - You MUST use **only the taxonomy provided for that question type**.
+   - Do NOT substitute, infer, upgrade, downgrade, or mix taxonomies.
+   - If a question cannot be generated under the given taxonomy, you must still stay within it and simplify the question accordingly.
+
+  **One-to-One Mapping**
+    - Each generated question must map **directly** to:
+      - The taxonomy mentioned for that specific question type
+      - The DOK level mentioned for that specific question type
+    - Do not reuse taxonomy from other question types.
+
+  **Output Consistency Check (Mandatory)**
+      - Before finalizing output, internally verify:
+        - Taxonomy in the output exactly matches the taxonomy stated in the input for that question.
+        - No question contains cognitive operations beyond the allowed taxonomy.
+          - Example:
+            - "Analyze", "justify", "compare", "prove" → NOT allowed in Remembering
+            - "Recall", "state", "identify" → NOT sufficient for Analyzing
+      - If mismatch is detected, regenerate the question.
+
+  **Explicit Display Rule**
+      - Above each question, clearly display:
+        - Topic
+        - Marks
+        - DOK Level
+        - Taxonomy (must match input verbatim)
+
+  **No Cross-Contamination**
+      - Do NOT let:
+        - Higher-order taxonomy leak into lower-order questions
+        - Solution explanations exceed the allowed cognitive level
+
+  **Failure Handling**
+      - If user input is ambiguous or internally inconsistent:
+        - State the limitation clearly
+        - Do NOT guess or auto-correct taxonomy
+
+  **Final Validation Statement**
+      - After generating all questions, include a final checklist stating:
+        - Which taxonomies were requested
+        - Which taxonomies were used
+        - Confirm they match exactly
   =====================================================================================
   ## OUTPUT FORMAT
   
@@ -5631,6 +6451,24 @@ descriptive: |
   ...
 
   **Final Answer**: [Concise final answer]
+  
+  **Key Idea**:
+  - Provide a GENERAL explanation of how to solve THIS TYPE of question (not this specific question).
+  - This should be a step-by-step breakdown that helps students understand the concept and approach.
+  - DO NOT use specific values from the question itself.
+  - The Key Idea should be applicable to ANY similar question on this topic.
+  - Use simple, clear language with examples when helpful.
+  - Purpose: Help students who couldn't solve it understand how to approach similar questions in the future.
+  - Key idea should be there for each question and it should be after the solution .
+  **Example Format:**
+  Key Idea:
+  Step 1: Understand what the question is asking
+  Step 2: Identify the relevant concept or formula
+  Step 3: Break down the solution into logical steps
+  Step 4: Show all work clearly with proper notation
+  Step 5: State the final answer concisely
+  
+  **Important**: The Key Idea is NOT the solution to this specific question, but a GENERAL GUIDE for solving similar questions.
   -------------------------------------------------------------------------------------
 
 
@@ -6070,7 +6908,55 @@ descriptive_pdf: |
 
     -- In descriptive questions after the exaplantaion of solution the type of final answer should be decided based on the above rule.
     -- **CRITICAL**: The generated "Final Answer" must be concise (number, word, or short phrase). Do NOT write full sentences like "The shape is called a square." -> Write "Square".
+  
+  ## TAXONOMY LOCK RULE (MANDATORY)
 
+  **Taxonomy Lock Rule**
+   - For every question type, the user will explicitly specify:
+     - Taxonomy (e.g., Remembering, Understanding, Applying, Analyzing, etc.)
+     - DOK level
+     - Marks
+   - You MUST use **only the taxonomy provided for that question type**.
+   - Do NOT substitute, infer, upgrade, downgrade, or mix taxonomies.
+   - If a question cannot be generated under the given taxonomy, you must still stay within it and simplify the question accordingly.
+
+  **One-to-One Mapping**
+    - Each generated question must map **directly** to:
+      - The taxonomy mentioned for that specific question type
+      - The DOK level mentioned for that specific question type
+    - Do not reuse taxonomy from other question types.
+
+  **Output Consistency Check (Mandatory)**
+      - Before finalizing output, internally verify:
+        - Taxonomy in the output exactly matches the taxonomy stated in the input for that question.
+        - No question contains cognitive operations beyond the allowed taxonomy.
+          - Example:
+            - "Analyze", "justify", "compare", "prove" → NOT allowed in Remembering
+            - "Recall", "state", "identify" → NOT sufficient for Analyzing
+      - If mismatch is detected, regenerate the question.
+
+  **Explicit Display Rule**
+      - Above each question, clearly display:
+        - Topic
+        - Marks
+        - DOK Level
+        - Taxonomy (must match input verbatim)
+
+  **No Cross-Contamination**
+      - Do NOT let:
+        - Higher-order taxonomy leak into lower-order questions
+        - Solution explanations exceed the allowed cognitive level
+
+  **Failure Handling**
+      - If user input is ambiguous or internally inconsistent:
+        - State the limitation clearly
+        - Do NOT guess or auto-correct taxonomy
+
+  **Final Validation Statement**
+      - After generating all questions, include a final checklist stating:
+        - Which taxonomies were requested
+        - Which taxonomies were used
+        - Confirm they match exactly
 
   =====================================================================================
   ## OUTPUT FORMAT
@@ -6096,6 +6982,24 @@ descriptive_pdf: |
   ...
 
   **Final Answer**: [Concise final answer]
+
+  **Key Idea**:
+  - Provide a GENERAL explanation of how to solve THIS TYPE of question (not this specific question).
+  - This should be a step-by-step breakdown that helps students understand the concept and approach.
+  - DO NOT use specific values from the question itself.
+  - The Key Idea should be applicable to ANY similar question on this topic.
+  - Use simple, clear language with examples when helpful.
+  - Purpose: Help students who couldn't solve it understand how to approach similar questions in the future.
+  - Key idea should be there for each question and it should be after the solution .
+  **Example Format:**
+  Key Idea:
+  Step 1: Understand what the question is asking
+  Step 2: Identify the relevant concept or formula
+  Step 3: Break down the solution into logical steps
+  Step 4: Show all work clearly with proper notation
+  Step 5: State the final answer concisely
+  
+  **Important**: The Key Idea is NOT the solution to this specific question, but a GENERAL GUIDE for solving similar questions.
 
   -------------------------------------------------------------------------------------
 
@@ -6583,7 +7487,54 @@ descriptive_subq: |
 
     - **CRITICAL**: The generated "Final Answer" must be concise (number, word, or short phrase). Do NOT write full sentences.
     - Provide final answer for EACH sub-part separately.
+  ## TAXONOMY LOCK RULE (MANDATORY)
 
+  **Taxonomy Lock Rule**
+   - For every question type, the user will explicitly specify:
+     - Taxonomy (e.g., Remembering, Understanding, Applying, Analyzing, etc.)
+     - DOK level
+     - Marks
+   - You MUST use **only the taxonomy provided for that question type**.
+   - Do NOT substitute, infer, upgrade, downgrade, or mix taxonomies.
+   - If a question cannot be generated under the given taxonomy, you must still stay within it and simplify the question accordingly.
+
+  **One-to-One Mapping**
+    - Each generated question must map **directly** to:
+      - The taxonomy mentioned for that specific question type
+      - The DOK level mentioned for that specific question type
+    - Do not reuse taxonomy from other question types.
+
+  **Output Consistency Check (Mandatory)**
+      - Before finalizing output, internally verify:
+        - Taxonomy in the output exactly matches the taxonomy stated in the input for that question.
+        - No question contains cognitive operations beyond the allowed taxonomy.
+          - Example:
+            - "Analyze", "justify", "compare", "prove" → NOT allowed in Remembering
+            - "Recall", "state", "identify" → NOT sufficient for Analyzing
+      - If mismatch is detected, regenerate the question.
+
+  **Explicit Display Rule**
+      - Above each question, clearly display:
+        - Topic
+        - Marks
+        - DOK Level
+        - Taxonomy (must match input verbatim)
+
+  **No Cross-Contamination**
+      - Do NOT let:
+        - Higher-order taxonomy leak into lower-order questions
+        - Solution explanations exceed the allowed cognitive level
+
+  **Failure Handling**
+      - If user input is ambiguous or internally inconsistent:
+        - State the limitation clearly
+        - Do NOT guess or auto-correct taxonomy
+
+  **Final Validation Statement**
+      - After generating all questions, include a final checklist stating:
+        - Which taxonomies were requested
+        - Which taxonomies were used
+        - Confirm they match exactly
   =====================================================================================
   ## OUTPUT FORMAT
   
@@ -6624,6 +7575,24 @@ descriptive_subq: |
   (a) [Concise answer for sub-part a]
   (b) [Concise answer for sub-part b]
   (c) [Concise answer for sub-part c] (if applicable)
+
+  **Key Idea**:
+  - Provide a GENERAL explanation of how to solve THIS TYPE of multi-part descriptive question (not this specific question).
+  - This should be a step-by-step breakdown that helps students understand the concept and approach.
+  - DO NOT use specific values from the question itself.
+  - The Key Idea should be applicable to ANY similar question on this topic.
+  - Use simple, clear language with examples when helpful.
+  - Purpose: Help students who couldn't solve it understand how to approach similar questions in the future.
+  - Key idea should be there for each question and it should be after the solution .
+  **Example Format:**
+  Key Idea:
+  Step 1: Read all sub-parts carefully to understand what's being asked
+  Step 2: Identify the relevant concepts or formulas for each sub-part
+  Step 3: Solve each sub-part systematically, showing all steps
+  Step 4: Check if later parts depend on earlier answers
+  Step 5: State final answers concisely for each sub-part
+  
+  **Important**: The Key Idea is NOT the solution to this specific question, but a GENERAL GUIDE for solving similar questions.
 
   -------------------------------------------------------------------------------------
 
@@ -7156,4 +8125,29 @@ descriptive_subq_pdf: |
   (b) [Concise answer for sub-part b]
   (c) [Concise answer for sub-part c] (if applicable)
 
+  **Key Idea**:
+  - Provide a GENERAL explanation of how to solve THIS TYPE of multi-part descriptive question (not this specific question).
+  - This should be a step-by-step breakdown that helps students understand the concept and approach.
+  - DO NOT use specific values from the question itself.
+  - The Key Idea should be applicable to ANY similar question on this topic.
+  - Use simple, clear language with examples when helpful.
+  - Purpose: Help students who couldn't solve it understand how to approach similar questions in the future.
+  - Key idea should be there for each question and it should be after the solution .
+  **Example Format:**
+  Key Idea:
+  Step 1: Read all sub-parts carefully to understand what's being asked
+  Step 2: Identify the relevant concepts or formulas for each sub-part
+  Step 3: Solve each sub-part systematically, showing all steps
+  Step 4: Check if later parts depend on earlier answers
+  Step 5: State final answers concisely for each sub-part
+  
+  **Important**: The Key Idea is NOT the solution to this specific question, but a GENERAL GUIDE for solving similar questions.
+
   -------------------------------------------------------------------------------------
+
+
+
+
+
+
+

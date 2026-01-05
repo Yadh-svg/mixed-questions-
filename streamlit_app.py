@@ -91,6 +91,14 @@ st.markdown("""
         border-radius: 4px;
         margin: 1rem 0;
     }
+    
+    /* Hide copy-to-clipboard buttons */
+    button[title="Copy to clipboard"],
+    button[data-testid="stCopyButton"],
+    .copy-button,
+    [data-testid="stMarkdownContainer"] button {
+        display: none !important;
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -99,8 +107,8 @@ if 'question_types_config' not in st.session_state:
     st.session_state.question_types_config = {}
 if 'generated_output' not in st.session_state:
     st.session_state.generated_output = None
-if 'global_pdf' not in st.session_state:
-    st.session_state.global_pdf = None
+if 'universal_pdf' not in st.session_state:
+    st.session_state.universal_pdf = None
 
 # Header
 st.markdown("""
@@ -170,6 +178,24 @@ with tab1:
             help="New concepts being taught"
         )
     
+    # Universal file upload option (PDF or Image)
+    st.markdown("### 📄 Universal New Concept File (Optional)")
+    st.info("💡 Upload a PDF or image that will be used for ALL questions that select 'New Concept File' as their source. This is a universal file that applies across all question types.")
+    
+    universal_pdf = st.file_uploader(
+        "Upload Universal New Concept File (PDF/Image)",
+        type=['pdf', 'png', 'jpg', 'jpeg', 'gif', 'webp'],
+        key="universal_new_concept_pdf",
+        help="This file will be used for all questions that select 'pdf' as their new concept source"
+    )
+    
+    # Store in session state
+    if universal_pdf:
+        st.session_state.universal_pdf = universal_pdf
+        st.success(f"✅ Universal file uploaded: {universal_pdf.name}")
+    else:
+        st.session_state.universal_pdf = None
+    
     additional_notes = st.text_area(
         "Additional Notes (Optional)",
         placeholder="Any special instructions for question generation...",
@@ -178,21 +204,6 @@ with tab1:
     )
     
     st.markdown("---")
-    st.markdown("### 📎 Global PDF Upload (Optional)")
-    st.info("Upload a PDF here to use it across multiple questions. You can select this PDF when configuring individual questions.")
-    
-    global_pdf = st.file_uploader(
-        "Upload Global PDF",
-        type=['pdf'],
-        key="global_pdf_uploader",
-        help="This PDF can be reused for multiple questions"
-    )
-    
-    if global_pdf:
-        st.session_state.global_pdf = global_pdf
-        st.success(f"✅ Global PDF uploaded: {global_pdf.name} ({global_pdf.size / 1024:.1f} KB)")
-    else:
-        st.session_state.global_pdf = None
     
     st.markdown('<div class="section-header">Question Types Configuration</div>', unsafe_allow_html=True)
     
@@ -244,8 +255,11 @@ with tab1:
             default_questions = []
             default_questions.append({
                 'topic': '',
-                'content_source': 'new_concept',
-                'pdf_file': None,
+                'new_concept_source': 'pdf',  # Default to pdf
+                'new_concept_pdf': None,
+                'additional_notes_source': 'none',  # Default to none
+                'additional_notes_text': '',  # Per-question additional notes text
+                'additional_notes_pdf': None,
                 'dok': 1,
                 'marks': 1.0,
                 'taxonomy': 'Remembering'
@@ -300,8 +314,11 @@ with tab1:
                     for i in range(current_count, num_questions):
                         st.session_state.question_types_config[qtype]['questions'].append({
                             'topic': '',
-                            'content_source': 'new_concept',  # Default to new concept
-                            'pdf_file': None
+                            'new_concept_source': 'pdf',  # Default to pdf
+                            'new_concept_pdf': None,
+                            'additional_notes_source': 'none',  # Default to none
+                            'additional_notes_text': '',  # Per-question additional notes text
+                            'additional_notes_pdf': None
                         })
                 else:
                     # Remove excess
@@ -355,34 +372,76 @@ with tab1:
                         )
                         st.session_state.question_types_config[qtype]['questions'][i]['taxonomy'] = taxonomy
                     
-                    # Content source selection
-                    st.markdown("**Content Source:**")
-                    content_source = st.radio(
-                        "Select content source",
-                        options=["new_concept", "global_pdf", "upload_pdf"],
+                    # New Concept Source Selection (MANDATORY)
+                    st.markdown("**New Concept Source:**")
+                    new_concept_source = st.radio(
+                        "Select new concept source",
+                        options=["text", "pdf"],
                         format_func=lambda x: {
-                            "new_concept": "📝 Use New Concept",
-                            "global_pdf": "📎 Use Already Uploaded PDF",
-                            "upload_pdf": "📤 Upload New PDF"
+                            "text": "📝 Use Universal Text Concept",
+                            "pdf": "📄 Use Universal File (PDF/Image)"
                         }[x],
-                        key=f"mcq_source_{i}",
-                        index=["new_concept", "global_pdf", "upload_pdf"].index(
-                            st.session_state.question_types_config[qtype]['questions'][i].get('content_source', 'new_concept')
+                        key=f"mcq_new_concept_source_{i}",
+                        index=["text", "pdf"].index(
+                            st.session_state.question_types_config[qtype]['questions'][i].get('new_concept_source', 'pdf')
                         ),
                         horizontal=True
                     )
-                    st.session_state.question_types_config[qtype]['questions'][i]['content_source'] = content_source
+                    st.session_state.question_types_config[qtype]['questions'][i]['new_concept_source'] = new_concept_source
                     
-                    # Show PDF uploader only if "upload_pdf" is selected
-                    if content_source == 'upload_pdf':
-                        pdf = st.file_uploader(
-                            "Upload PDF for this question",
-                            type=['pdf'],
-                            key=f"mcq_pdf_{i}"
+                    # Show info message based on selection
+                    if new_concept_source == 'pdf':
+                        if st.session_state.get('universal_pdf'):
+                            st.info(f"ℹ️ Will use universal file: **{st.session_state.universal_pdf.name}**")
+                        else:
+                            st.warning("⚠️ Please upload a Universal File (PDF/Image) in the General Information section above")
+                        st.session_state.question_types_config[qtype]['questions'][i]['new_concept_pdf'] = None
+                    else:
+                        st.session_state.question_types_config[qtype]['questions'][i]['new_concept_pdf'] = None
+                    
+                    # Additional Notes Source Selection (OPTIONAL)
+                    st.markdown("**Additional Notes Source (Optional):**")
+                    additional_notes_source = st.radio(
+                        "Select additional notes source",
+                        options=["none", "text", "pdf"],
+                        format_func=lambda x: {
+                            "none": "🚫 None",
+                            "text": "📝 Additional Notes Text",
+                            "pdf": "📄 Additional Notes File (PDF/Image)"
+                        }[x],
+                        key=f"mcq_additional_notes_source_{i}",
+                        index=["none", "text", "pdf"].index(
+                            st.session_state.question_types_config[qtype]['questions'][i].get('additional_notes_source', 'none')
+                        ),
+                        horizontal=True
+                    )
+                    st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_source'] = additional_notes_source
+                    
+                    # Show text area if text is selected
+                    if additional_notes_source == 'text':
+                        additional_notes_text = st.text_area(
+                            "Additional Notes for this question",
+                            key=f"mcq_additional_notes_text_{i}",
+                            value=st.session_state.question_types_config[qtype]['questions'][i].get('additional_notes_text', ''),
+                            placeholder="Enter specific notes/instructions for this question...",
+                            height=100
                         )
-                        st.session_state.question_types_config[qtype]['questions'][i]['pdf_file'] = pdf
-                    elif content_source == 'global_pdf' and not st.session_state.global_pdf:
-                        st.warning("⚠️ No global PDF uploaded. Please upload one in the General Information section.")
+                        st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_text'] = additional_notes_text
+                        st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_pdf'] = None
+                    # Show PDF uploader if PDF is selected
+                    elif additional_notes_source == 'pdf':
+                        additional_notes_pdf = st.file_uploader(
+                            "Upload Additional Notes File (PDF/Image)",
+                            type=['pdf', 'png', 'jpg', 'jpeg', 'gif', 'webp'],
+                            key=f"mcq_additional_notes_pdf_{i}"
+                        )
+                        st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_pdf'] = additional_notes_pdf
+                        st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_text'] = ''
+                        if additional_notes_pdf:
+                            st.success(f"✅ Uploaded: {additional_notes_pdf.name}")
+                    else:
+                        st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_pdf'] = None
+                        st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_text'] = ''
                     
                     st.markdown("---")
             
@@ -399,36 +458,270 @@ with tab1:
                     )
                     st.session_state.question_types_config[qtype]['questions'][i]['topic'] = topic
                     
-                    st.markdown("**Content Source:**")
-                    content_source = st.radio(
-                        "Select content source",
-                        options=["new_concept", "global_pdf", "upload_pdf"],
+                    # New Concept Source Selection (MANDATORY)
+                    st.markdown("**New Concept Source:**")
+                    new_concept_source = st.radio(
+                        "Select new concept source",
+                        options=["text", "pdf"],
                         format_func=lambda x: {
-                            "new_concept": "📝 Use New Concept",
-                            "global_pdf": "📎 Use Already Uploaded PDF",
-                            "upload_pdf": "📤 Upload New PDF"
+                            "text": "📝 Use Universal Text Concept",
+                            "pdf": "📄 Use Universal File (PDF/Image)"
                         }[x],
-                        key=f"ar_source_{i}",
-                        index=["new_concept", "global_pdf", "upload_pdf"].index(
-                            st.session_state.question_types_config[qtype]['questions'][i].get('content_source', 'new_concept')
+                        key=f"ar_new_concept_source_{i}",
+                        index=["text", "pdf"].index(
+                            st.session_state.question_types_config[qtype]['questions'][i].get('new_concept_source', 'pdf')
                         ),
                         horizontal=True
                     )
-                    st.session_state.question_types_config[qtype]['questions'][i]['content_source'] = content_source
+                    st.session_state.question_types_config[qtype]['questions'][i]['new_concept_source'] = new_concept_source
                     
-                    if content_source == 'upload_pdf':
-                        pdf = st.file_uploader(
-                            "Upload PDF for this question",
-                            type=['pdf'],
-                            key=f"ar_pdf_{i}"
+                    if new_concept_source == 'pdf':
+                        if st.session_state.get('universal_pdf'):
+                            st.info(f"ℹ️ Will use universal file: **{st.session_state.universal_pdf.name}**")
+                        else:
+                            st.warning("⚠️ Please upload a Universal File (PDF/Image) in the General Information section above")
+                        st.session_state.question_types_config[qtype]['questions'][i]['new_concept_pdf'] = None
+                    else:
+                        st.session_state.question_types_config[qtype]['questions'][i]['new_concept_pdf'] = None
+                    
+                    # Additional Notes Source Selection (OPTIONAL)
+                    st.markdown("**Additional Notes Source (Optional):**")
+                    additional_notes_source = st.radio(
+                        "Select additional notes source",
+                        options=["none", "text", "pdf"],
+                        format_func=lambda x: {
+                            "none": "🚫 None",
+                            "text": "📝 Additional Notes Text",
+                            "pdf": "📄 Additional Notes File (PDF/Image)"
+                        }[x],
+                        key=f"ar_additional_notes_source_{i}",
+                        index=["none", "text", "pdf"].index(
+                            st.session_state.question_types_config[qtype]['questions'][i].get('additional_notes_source', 'none')
+                        ),
+                        horizontal=True
+                    )
+                    st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_source'] = additional_notes_source
+                    
+                    if additional_notes_source == 'text':
+                        additional_notes_text = st.text_area(
+                            "Additional Notes for this question",
+                            key=f"ar_additional_notes_text_{i}",
+                            value=st.session_state.question_types_config[qtype]['questions'][i].get('additional_notes_text', ''),
+                            placeholder="Enter specific notes/instructions for this question...",
+                            height=100
                         )
-                        st.session_state.question_types_config[qtype]['questions'][i]['pdf_file'] = pdf
-                    elif content_source == 'global_pdf' and not st.session_state.global_pdf:
-                        st.warning("⚠️ No global PDF uploaded. Please upload one in the General Information section.")
+                        st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_text'] = additional_notes_text
+                        st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_pdf'] = None
+                    elif additional_notes_source == 'pdf':
+                        additional_notes_pdf = st.file_uploader(
+                            "Upload Additional Notes File (PDF/Image)",
+                            type=['pdf', 'png', 'jpg', 'jpeg', 'gif', 'webp'],
+                            key=f"ar_additional_notes_pdf_{i}"
+                        )
+                        st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_pdf'] = additional_notes_pdf
+                        st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_text'] = ''
+                        if additional_notes_pdf:
+                            st.success(f"✅ Uploaded: {additional_notes_pdf.name}")
+                    else:
+                        st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_pdf'] = None
+                        st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_text'] = ''
                     
                     st.markdown("---")
             
-            elif qtype in ["Fill in the Blanks", "Descriptive", "Descriptive w/ Subquestions"]:
+            elif qtype == "Fill in the Blanks":
+                st.markdown("#### Fill in the Blanks Configuration")
+                
+                # Per-question config with subparts
+                for i in range(num_questions):
+                    st.markdown(f"**Question {i+1}**")
+                    
+                    # Topic field
+                    topic = st.text_input(
+                        "Topic",
+                        key=f"fib_topic_{i}",
+                        value=st.session_state.question_types_config[qtype]['questions'][i].get('topic', ''),
+                        placeholder="e.g., nth term of AP"
+                    )
+                    st.session_state.question_types_config[qtype]['questions'][i]['topic'] = topic
+                    
+                    # Number of subparts for this specific question
+                    num_subparts = st.number_input(
+                        "Number of Sub-Parts",
+                        min_value=1,
+                        max_value=5,
+                        value=st.session_state.question_types_config[qtype]['questions'][i].get('num_subparts', 1),
+                        key=f"fib_subparts_{i}",
+                        help="Set to 1 for single-part, or 2-5 for questions with roman numeral subparts (i, ii, iii, etc.)"
+                    )
+                    st.session_state.question_types_config[qtype]['questions'][i]['num_subparts'] = num_subparts
+                    
+                    # If single-part (num_subparts = 1), show DOK, Marks, Taxonomy directly
+                    if num_subparts == 1:
+                        cols = st.columns([1, 1, 2])
+                        
+                        with cols[0]:
+                            dok = st.selectbox(
+                                "DOK",
+                                [1, 2, 3],
+                                key=f"fib_dok_{i}",
+                                index=st.session_state.question_types_config[qtype]['questions'][i].get('dok', 1) - 1
+                            )
+                            st.session_state.question_types_config[qtype]['questions'][i]['dok'] = dok
+                        
+                        with cols[1]:
+                            marks = st.number_input(
+                                "Marks",
+                                min_value=0.5,
+                                max_value=10.0,
+                                step=0.5,
+                                key=f"fib_marks_{i}",
+                                value=st.session_state.question_types_config[qtype]['questions'][i].get('marks', 1.0)
+                            )
+                            st.session_state.question_types_config[qtype]['questions'][i]['marks'] = marks
+                        
+                        with cols[2]:
+                            taxonomy = st.selectbox(
+                                "Taxonomy",
+                                taxonomy_options,
+                                key=f"fib_taxonomy_{i}",
+                                index=taxonomy_options.index(
+                                    st.session_state.question_types_config[qtype]['questions'][i].get('taxonomy', 'Remembering')
+                                )
+                            )
+                            st.session_state.question_types_config[qtype]['questions'][i]['taxonomy'] = taxonomy
+                    
+                    else:
+                        # Multi-part: show subpart configuration
+                        # Initialize subparts for this question
+                        if 'subparts' not in st.session_state.question_types_config[qtype]['questions'][i]:
+                            st.session_state.question_types_config[qtype]['questions'][i]['subparts'] = []
+                        
+                        current_subparts = len(st.session_state.question_types_config[qtype]['questions'][i]['subparts'])
+                        if num_subparts != current_subparts:
+                            if num_subparts > current_subparts:
+                                for j in range(current_subparts, num_subparts):
+                                    roman_numerals = ['i', 'ii', 'iii', 'iv', 'v']
+                                    st.session_state.question_types_config[qtype]['questions'][i]['subparts'].append({
+                                        'part': roman_numerals[j] if j < len(roman_numerals) else f'part_{j+1}',
+                                        'dok': 1,
+                                        'marks': 1.0,
+                                        'taxonomy': 'Remembering'
+                                    })
+                            else:
+                                st.session_state.question_types_config[qtype]['questions'][i]['subparts'] = \
+                                    st.session_state.question_types_config[qtype]['questions'][i]['subparts'][:num_subparts]
+                        
+                        # Subparts config
+                        st.markdown("**Sub-Parts Configuration**")
+                        for j in range(num_subparts):
+                            cols = st.columns([1, 1, 1, 2])
+                            roman_numerals = ['i', 'ii', 'iii', 'iv', 'v']
+                            
+                            with cols[0]:
+                                st.markdown(f"Part ({roman_numerals[j] if j < len(roman_numerals) else j+1})")
+                            
+                            with cols[1]:
+                                dok = st.selectbox(
+                                    "DOK",
+                                    [1, 2, 3],
+                                    key=f"fib_subpart_dok_{i}_{j}",
+                                    index=st.session_state.question_types_config[qtype]['questions'][i]['subparts'][j].get('dok', 1) - 1
+                                )
+                                st.session_state.question_types_config[qtype]['questions'][i]['subparts'][j]['dok'] = dok
+                            
+                            with cols[2]:
+                                marks = st.number_input(
+                                    "Marks",
+                                    min_value=0.5,
+                                    max_value=10.0,
+                                    step=0.5,
+                                    key=f"fib_subpart_marks_{i}_{j}",
+                                    value=st.session_state.question_types_config[qtype]['questions'][i]['subparts'][j].get('marks', 1.0)
+                                )
+                                st.session_state.question_types_config[qtype]['questions'][i]['subparts'][j]['marks'] = marks
+                            
+                            with cols[3]:
+                                taxonomy = st.selectbox(
+                                    "Taxonomy",
+                                    taxonomy_options,
+                                    key=f"fib_subpart_taxonomy_{i}_{j}",
+                                    index=taxonomy_options.index(
+                                        st.session_state.question_types_config[qtype]['questions'][i]['subparts'][j].get('taxonomy', 'Remembering')
+                                    )
+                                )
+                                st.session_state.question_types_config[qtype]['questions'][i]['subparts'][j]['taxonomy'] = taxonomy
+                    
+                    # New Concept Source Selection (MANDATORY)
+                    st.markdown("**New Concept Source:**")
+                    new_concept_source = st.radio(
+                        "Select new concept source",
+                        options=["text", "pdf"],
+                        format_func=lambda x: {
+                            "text": "📝 Use Universal Text Concept",
+                            "pdf": "📄 Use Universal File (PDF/Image)"
+                        }[x],
+                        key=f"fib_new_concept_source_{i}",
+                        index=["text", "pdf"].index(
+                            st.session_state.question_types_config[qtype]['questions'][i].get('new_concept_source', 'pdf')
+                        ),
+                        horizontal=True
+                    )
+                    st.session_state.question_types_config[qtype]['questions'][i]['new_concept_source'] = new_concept_source
+                    
+                    if new_concept_source == 'pdf':
+                        if st.session_state.get('universal_pdf'):
+                            st.info(f"ℹ️ Will use universal file: **{st.session_state.universal_pdf.name}**")
+                        else:
+                            st.warning("⚠️ Please upload a Universal File (PDF/Image) in the General Information section above")
+                        st.session_state.question_types_config[qtype]['questions'][i]['new_concept_pdf'] = None
+                    else:
+                        st.session_state.question_types_config[qtype]['questions'][i]['new_concept_pdf'] = None
+                    
+                    # Additional Notes Source Selection (OPTIONAL)
+                    st.markdown("**Additional Notes Source (Optional):**")
+                    additional_notes_source = st.radio(
+                        "Select additional notes source",
+                        options=["none", "text", "pdf"],
+                        format_func=lambda x: {
+                            "none": "🚫 None",
+                            "text": "📝 Additional Notes Text",
+                            "pdf": "📄 Additional Notes File (PDF/Image)"
+                        }[x],
+                        key=f"fib_additional_notes_source_{i}",
+                        index=["none", "text", "pdf"].index(
+                            st.session_state.question_types_config[qtype]['questions'][i].get('additional_notes_source', 'none')
+                        ),
+                        horizontal=True
+                    )
+                    st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_source'] = additional_notes_source
+                    
+                    if additional_notes_source == 'text':
+                        additional_notes_text = st.text_area(
+                            "Additional Notes for this question",
+                            key=f"fib_additional_notes_text_{i}",
+                            value=st.session_state.question_types_config[qtype]['questions'][i].get('additional_notes_text', ''),
+                            placeholder="Enter specific notes/instructions for this question...",
+                            height=100
+                        )
+                        st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_text'] = additional_notes_text
+                        st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_pdf'] = None
+                    elif additional_notes_source == 'pdf':
+                        additional_notes_pdf = st.file_uploader(
+                            "Upload Additional Notes File (PDF/Image)",
+                            type=['pdf', 'png', 'jpg', 'jpeg', 'gif', 'webp'],
+                            key=f"fib_additional_notes_pdf_{i}"
+                        )
+                        st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_pdf'] = additional_notes_pdf
+                        st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_text'] = ''
+                        if additional_notes_pdf:
+                            st.success(f"✅ Uploaded: {additional_notes_pdf.name}")
+                    else:
+                        st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_pdf'] = None
+                        st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_text'] = ''
+                    
+                    st.markdown("---")
+            
+            elif qtype in ["Descriptive", "Descriptive w/ Subquestions"]:
                 st.markdown(f"#### {qtype} Configuration")
                 for i in range(num_questions):
                     st.markdown(f"**Question {i+1}**")
@@ -474,33 +767,73 @@ with tab1:
                         )
                         st.session_state.question_types_config[qtype]['questions'][i]['taxonomy'] = taxonomy
                     
-                    # Content source selection
-                    st.markdown("**Content Source:**")
-                    content_source = st.radio(
-                        "Select content source",
-                        options=["new_concept", "global_pdf", "upload_pdf"],
+                    # New Concept Source Selection (MANDATORY)
+                    st.markdown("**New Concept Source:**")
+                    new_concept_source = st.radio(
+                        "Select new concept source",
+                        options=["text", "pdf"],
                         format_func=lambda x: {
-                            "new_concept": "📝 Use New Concept",
-                            "global_pdf": "📎 Use Already Uploaded PDF",
-                            "upload_pdf": "📤 Upload New PDF"
+                            "text": "📝 Use Universal Text Concept",
+                            "pdf": "📄 Use Universal File (PDF/Image)"
                         }[x],
-                        key=f"{qtype}_source_{i}",
-                        index=["new_concept", "global_pdf", "upload_pdf"].index(
-                            st.session_state.question_types_config[qtype]['questions'][i].get('content_source', 'new_concept')
+                        key=f"{qtype}_new_concept_source_{i}",
+                        index=["text", "pdf"].index(
+                            st.session_state.question_types_config[qtype]['questions'][i].get('new_concept_source', 'pdf')
                         ),
                         horizontal=True
                     )
-                    st.session_state.question_types_config[qtype]['questions'][i]['content_source'] = content_source
+                    st.session_state.question_types_config[qtype]['questions'][i]['new_concept_source'] = new_concept_source
                     
-                    if content_source == 'upload_pdf':
-                        pdf = st.file_uploader(
-                            "Upload PDF for this question",
-                            type=['pdf'],
-                            key=f"{qtype}_pdf_{i}"
+                    if new_concept_source == 'pdf':
+                        if st.session_state.get('universal_pdf'):
+                            st.info(f"ℹ️ Will use universal file: **{st.session_state.universal_pdf.name}**")
+                        else:
+                            st.warning("⚠️ Please upload a Universal File (PDF/Image) in the General Information section above")
+                        st.session_state.question_types_config[qtype]['questions'][i]['new_concept_pdf'] = None
+                    else:
+                        st.session_state.question_types_config[qtype]['questions'][i]['new_concept_pdf'] = None
+                    
+                    # Additional Notes Source Selection (OPTIONAL)
+                    st.markdown("**Additional Notes Source (Optional):**")
+                    additional_notes_source = st.radio(
+                        "Select additional notes source",
+                        options=["none", "text", "pdf"],
+                        format_func=lambda x: {
+                            "none": "🚫 None",
+                            "text": "📝 Additional Notes Text",
+                            "pdf": "📄 Additional Notes File (PDF/Image)"
+                        }[x],
+                        key=f"{qtype}_additional_notes_source_{i}",
+                        index=["none", "text", "pdf"].index(
+                            st.session_state.question_types_config[qtype]['questions'][i].get('additional_notes_source', 'none')
+                        ),
+                        horizontal=True
+                    )
+                    st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_source'] = additional_notes_source
+                    
+                    if additional_notes_source == 'text':
+                        additional_notes_text = st.text_area(
+                            "Additional Notes for this question",
+                            key=f"{qtype}_additional_notes_text_{i}",
+                            value=st.session_state.question_types_config[qtype]['questions'][i].get('additional_notes_text', ''),
+                            placeholder="Enter specific notes/instructions for this question...",
+                            height=100
                         )
-                        st.session_state.question_types_config[qtype]['questions'][i]['pdf_file'] = pdf
-                    elif content_source == 'global_pdf' and not st.session_state.global_pdf:
-                        st.warning("⚠️ No global PDF uploaded. Please upload one in the General Information section.")
+                        st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_text'] = additional_notes_text
+                        st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_pdf'] = None
+                    elif additional_notes_source == 'pdf':
+                        additional_notes_pdf = st.file_uploader(
+                            "Upload Additional Notes File (PDF/Image)",
+                            type=['pdf', 'png', 'jpg', 'jpeg', 'gif', 'webp'],
+                            key=f"{qtype}_additional_notes_pdf_{i}"
+                        )
+                        st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_pdf'] = additional_notes_pdf
+                        st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_text'] = ''
+                        if additional_notes_pdf:
+                            st.success(f"✅ Uploaded: {additional_notes_pdf.name}")
+                    else:
+                        st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_pdf'] = None
+                        st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_text'] = ''
                     
                     st.markdown("---")
             
@@ -518,32 +851,73 @@ with tab1:
                     )
                     st.session_state.question_types_config[qtype]['questions'][i]['topic'] = topic
                     
-                    st.markdown("**Content Source:**")
-                    content_source = st.radio(
-                        "Select content source",
-                        options=["new_concept", "global_pdf", "upload_pdf"],
+                    # New Concept Source Selection (MANDATORY)
+                    st.markdown("**New Concept Source:**")
+                    new_concept_source = st.radio(
+                        "Select new concept source",
+                        options=["text", "pdf"],
                         format_func=lambda x: {
-                            "new_concept": "📝 Use New Concept",
-                            "global_pdf": "📎 Use Already Uploaded PDF",
-                            "upload_pdf": "📤 Upload New PDF"
+                            "text": "📝 Use Universal Text Concept",
+                            "pdf": "📄 Use Universal File (PDF/Image)"
                         }[x],
-                        key=f"case_source_{i}",
-                        index=["new_concept", "global_pdf", "upload_pdf"].index(
-                            st.session_state.question_types_config[qtype]['questions'][i].get('content_source', 'new_concept')
+                        key=f"case_new_concept_source_{i}",
+                        index=["text", "pdf"].index(
+                            st.session_state.question_types_config[qtype]['questions'][i].get('new_concept_source', 'pdf')
                         ),
                         horizontal=True
                     )
-                    st.session_state.question_types_config[qtype]['questions'][i]['content_source'] = content_source
+                    st.session_state.question_types_config[qtype]['questions'][i]['new_concept_source'] = new_concept_source
                     
-                    if content_source == 'upload_pdf':
-                        pdf = st.file_uploader(
-                            "Upload PDF for this question",
-                            type=['pdf'],
-                            key=f"case_pdf_{i}"
+                    if new_concept_source == 'pdf':
+                        if st.session_state.get('universal_pdf'):
+                            st.info(f"ℹ️ Will use universal file: **{st.session_state.universal_pdf.name}**")
+                        else:
+                            st.warning("⚠️ Please upload a Universal File (PDF/Image) in the General Information section above")
+                        st.session_state.question_types_config[qtype]['questions'][i]['new_concept_pdf'] = None
+                    else:
+                        st.session_state.question_types_config[qtype]['questions'][i]['new_concept_pdf'] = None
+                    
+                    # Additional Notes Source Selection (OPTIONAL)
+                    st.markdown("**Additional Notes Source (Optional):**")
+                    additional_notes_source = st.radio(
+                        "Select additional notes source",
+                        options=["none", "text", "pdf"],
+                        format_func=lambda x: {
+                            "none": "🚫 None",
+                            "text": "📝 Additional Notes Text",
+                            "pdf": "📄 Additional Notes File (PDF/Image)"
+                        }[x],
+                        key=f"case_additional_notes_source_{i}",
+                        index=["none", "text", "pdf"].index(
+                            st.session_state.question_types_config[qtype]['questions'][i].get('additional_notes_source', 'none')
+                        ),
+                        horizontal=True
+                    )
+                    st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_source'] = additional_notes_source
+                    
+                    if additional_notes_source == 'text':
+                        additional_notes_text = st.text_area(
+                            "Additional Notes for this question",
+                            key=f"case_additional_notes_text_{i}",
+                            value=st.session_state.question_types_config[qtype]['questions'][i].get('additional_notes_text', ''),
+                            placeholder="Enter specific notes/instructions for this question...",
+                            height=100
                         )
-                        st.session_state.question_types_config[qtype]['questions'][i]['pdf_file'] = pdf
-                    elif content_source == 'global_pdf' and not st.session_state.global_pdf:
-                        st.warning("⚠️ No global PDF uploaded. Please upload one in the General Information section.")
+                        st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_text'] = additional_notes_text
+                        st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_pdf'] = None
+                    elif additional_notes_source == 'pdf':
+                        additional_notes_pdf = st.file_uploader(
+                            "Upload Additional Notes File (PDF/Image)",
+                            type=['pdf', 'png', 'jpg', 'jpeg', 'gif', 'webp'],
+                            key=f"case_additional_notes_pdf_{i}"
+                        )
+                        st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_pdf'] = additional_notes_pdf
+                        st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_text'] = ''
+                        if additional_notes_pdf:
+                            st.success(f"✅ Uploaded: {additional_notes_pdf.name}")
+                    else:
+                        st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_pdf'] = None
+                        st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_text'] = ''
                     
                     # Number of subparts
                     num_subparts = st.number_input(
@@ -688,32 +1062,73 @@ with tab1:
                     )
                     st.session_state.question_types_config[qtype]['questions'][i]['topic'] = topic
                     
-                    st.markdown("**Content Source:**")
-                    content_source = st.radio(
-                        "Select content source",
-                        options=["new_concept", "global_pdf", "upload_pdf"],
+                    # New Concept Source Selection (MANDATORY)
+                    st.markdown("**New Concept Source:**")
+                    new_concept_source = st.radio(
+                        "Select new concept source",
+                        options=["text", "pdf"],
                         format_func=lambda x: {
-                            "new_concept": "📝 Use New Concept",
-                            "global_pdf": "📎 Use Already Uploaded PDF",
-                            "upload_pdf": "📤 Upload New PDF"
+                            "text": "📝 Use Universal Text Concept",
+                            "pdf": "📄 Use Universal File (PDF/Image)"
                         }[x],
-                        key=f"multipart_source_{i}",
-                        index=["new_concept", "global_pdf", "upload_pdf"].index(
-                            st.session_state.question_types_config[qtype]['questions'][i].get('content_source', 'new_concept')
+                        key=f"multipart_new_concept_source_{i}",
+                        index=["text", "pdf"].index(
+                            st.session_state.question_types_config[qtype]['questions'][i].get('new_concept_source', 'pdf')
                         ),
                         horizontal=True
                     )
-                    st.session_state.question_types_config[qtype]['questions'][i]['content_source'] = content_source
+                    st.session_state.question_types_config[qtype]['questions'][i]['new_concept_source'] = new_concept_source
                     
-                    if content_source == 'upload_pdf':
-                        pdf = st.file_uploader(
-                            "Upload PDF for this question",
-                            type=['pdf'],
-                            key=f"multipart_pdf_{i}"
+                    if new_concept_source == 'pdf':
+                        if st.session_state.get('universal_pdf'):
+                            st.info(f"ℹ️ Will use universal file: **{st.session_state.universal_pdf.name}**")
+                        else:
+                            st.warning("⚠️ Please upload a Universal File (PDF/Image) in the General Information section above")
+                        st.session_state.question_types_config[qtype]['questions'][i]['new_concept_pdf'] = None
+                    else:
+                        st.session_state.question_types_config[qtype]['questions'][i]['new_concept_pdf'] = None
+                    
+                    # Additional Notes Source Selection (OPTIONAL)
+                    st.markdown("**Additional Notes Source (Optional):**")
+                    additional_notes_source = st.radio(
+                        "Select additional notes source",
+                        options=["none", "text", "pdf"],
+                        format_func=lambda x: {
+                            "none": "🚫 None",
+                            "text": "📝 Additional Notes Text",
+                            "pdf": "📄 Additional Notes File (PDF/Image)"
+                        }[x],
+                        key=f"multipart_additional_notes_source_{i}",
+                        index=["none", "text", "pdf"].index(
+                            st.session_state.question_types_config[qtype]['questions'][i].get('additional_notes_source', 'none')
+                        ),
+                        horizontal=True
+                    )
+                    st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_source'] = additional_notes_source
+                    
+                    if additional_notes_source == 'text':
+                        additional_notes_text = st.text_area(
+                            "Additional Notes for this question",
+                            key=f"multipart_additional_notes_text_{i}",
+                            value=st.session_state.question_types_config[qtype]['questions'][i].get('additional_notes_text', ''),
+                            placeholder="Enter specific notes/instructions for this question...",
+                            height=100
                         )
-                        st.session_state.question_types_config[qtype]['questions'][i]['pdf_file'] = pdf
-                    elif content_source == 'global_pdf' and not st.session_state.global_pdf:
-                        st.warning("⚠️ No global PDF uploaded. Please upload one in the General Information section.")
+                        st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_text'] = additional_notes_text
+                        st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_pdf'] = None
+                    elif additional_notes_source == 'pdf':
+                        additional_notes_pdf = st.file_uploader(
+                            "Upload Additional Notes File (PDF/Image)",
+                            type=['pdf', 'png', 'jpg', 'jpeg', 'gif', 'webp'],
+                            key=f"multipart_additional_notes_pdf_{i}"
+                        )
+                        st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_pdf'] = additional_notes_pdf
+                        st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_text'] = ''
+                        if additional_notes_pdf:
+                            st.success(f"✅ Uploaded: {additional_notes_pdf.name}")
+                    else:
+                        st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_pdf'] = None
+                        st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_text'] = ''
                     
                     st.markdown("---")
 
@@ -732,21 +1147,14 @@ with tab1:
             else:
                 # Validate that all questions have topics
                 missing_topics = []
-                needs_global_pdf = False
                 
                 for qtype, config in st.session_state.question_types_config.items():
                     for i, q in enumerate(config.get('questions', []), 1):
                         if not q.get('topic', '').strip():
                             missing_topics.append(f"{qtype} Question {i}")
-                        
-                        # Check if any question needs global PDF but it's not uploaded
-                        if q.get('content_source') == 'global_pdf':
-                            needs_global_pdf = True
                 
                 if missing_topics:
                     st.error(f"❌ Please specify topics for: {', '.join(missing_topics)}")
-                elif needs_global_pdf and not st.session_state.global_pdf:
-                    st.error("❌ Some questions are configured to use the global PDF, but no global PDF has been uploaded. Please upload a global PDF in the General Information section.")
                 else:
                     with st.spinner("🔄 Generating questions... This may take a moment."):
                         try:
@@ -760,7 +1168,7 @@ with tab1:
                                 'new_concept': new_concept,
                                 'additional_notes': additional_notes,
                                 'api_key': api_key,
-                                'global_pdf': st.session_state.global_pdf  # Pass global PDF
+                                'universal_pdf': st.session_state.get('universal_pdf')  # Pass universal PDF
                             }
                             
                             # Process each question type
@@ -787,7 +1195,6 @@ with tab1:
                             
                             st.session_state.generated_output = results
                             st.success("✅ Questions generated successfully!")
-                            st.balloons()
                             
                             # Show results immediately below
                             st.markdown("---")

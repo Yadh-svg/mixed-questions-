@@ -14,7 +14,7 @@ case_study_maths: |
       - You are generating questions for {{NUMBER_OF_TOPICS}} topic(s).
       - Process each topic independently.
       - Ensure clear separation of questions by topic.
-      - Follow the exact number of questions specified for each topic.
+      - Follow the exact number of questions,DOK level and Marks specified for each topic.
   ## TOPIC COVERAGE AND TRACEABILITY (MANDATORY)
 
   1. Coverage Rule (MANDATORY)
@@ -56,49 +56,12 @@ case_study_maths: |
      Example format:
      - Topic: ______ → Generated: __ / Required: __ → Status: COMPLETE
 
-  ## TOPIC COVERAGE AND TRACEABILITY (MANDATORY)
-
-  1. Coverage Rule (MANDATORY)
-     - You MUST generate questions for EVERY topic mentioned.
-     - Do NOT skip, merge, or partially cover any topic.
-     - If a topic requires N questions, generate exactly N questions.
-
-  2. Topic Traceability Rule
-     - Above EACH question, explicitly mention:
-       Topic Used: <exact topic name>
-     - The topic name must exactly match one of the input topics.
-
-  3. Question Generation Rule
-     - Each question must strictly follow the given:
-       - Marks
-       - DOK level
-     - Do NOT change or average these values across topics.
-     - Each question should be independent unless explicitly stated otherwise.
-
-  4. Initial Planning Section (REQUIRED)
-     Before generating questions, create a clear plan in this format:
-
-     Planned Topics and Question Allocation:
-     - Topic 1: <topic name> → <number of questions>, <marks>, <DOK level>
-     - Topic 2: <topic name> → <number of questions>, <marks>, <DOK level>
-     (Include ALL topics provided by the user.)
-
-  5. Final Verification Section (REQUIRED)
-     After generating all questions, add a final section titled:
-
-     "Topic Coverage Verification"
-
-     In this section:
-     - List ALL topics provided by the user.
-     - For each topic, explicitly state:
-       - Number of questions generated
-       - Confirmation that the requirement is fulfilled
-
-     Example format:
-     - Topic: ______ → Generated: __ / Required: __ → Status: COMPLETE
 
   ## CONCEPTS:
     - Old Concept: {{Old_Concept}}
+
+  **Additional Instructions:** (contains extra instructions or configuration for how questions or solutions should be generated. Consider these notes when creating questions and formatting solutions.)
+  {{Additional_Notes}}
 
   
   All the questions Should start with Scenario which should be made using the bellow rules 
@@ -120,9 +83,9 @@ case_study_maths: |
     4. No Repetition Rule:
       - Details or data mentioned in the scenario must NOT be repeated in the sub-questions or the diagram.
       - Each section must serve a distinct purpose:
-          • Scenario = Real-life setup and qualitative context  
-          • Diagram = Visual/numerical representation of the setup  
-          • Sub-questions = Logical and mathematical reasoning based on both
+          • Scenario = Real-life setup and qualitative context  /  Only qualitative and descriptive (no numbers).  
+          • Diagram = Visual/numerical representation of the setup  / Introduce actual values, quantities, or relationships. 
+          • Sub-questions = Logical and mathematical reasoning based on both  /  Use those numbers for reasoning, comparison, and problem-solving.
           
     5. Scenario Flow and Realism:
       - The scenario must be realistic, logically consistent, and contextually appropriate for Indian settings (names, ₹, metric units, etc.).
@@ -142,12 +105,7 @@ case_study_maths: |
       - Each scenario must be unique in context and structure — do not repeat common setups like “a shop,” “a playground,” or “a garden” across different questions.
       - Use fresh, diverse, and age-appropriate contexts.
 
-    9. Numerical Placement Rules:
-      - **Scenario:** Only qualitative and descriptive (no numbers).  
-      - **Diagram Prompt:** Introduce actual values, quantities, or relationships.  
-      - **Sub-Questions:** Use those numbers for reasoning, comparison, and problem-solving.
-
-    10. Example for Clarity:
+    9. Example for Clarity:
 
         ✅ Good Scenario Example:
         "The Ward Office of Bengaluru’s Urban Greening Department has launched a citywide initiative to increase greenery in public parks. The department plans to distribute saplings of different types to neighborhood parks. Each park has different space availability and planting zones, so the team needs to plan the distribution carefully."
@@ -157,10 +115,41 @@ case_study_maths: |
         ❌ Poor Scenario Example:
         "8,300 saplings are divided into 3 packs of different sizes. Each takes a certain time to unload."
         (This reads like a direct math problem instead of a real-life story setup.)
+    ## DIAGRAM RULES
+    - Diagram is optional (unless the topic inherently requires visual representation).
+    - If included, give a **diagram prompt** (NOT the actual image).
+    - If the topic inherently requires visual representation, then the diagram is mandatory.And the questions in the topic should be image based and everything should be related to the image .
+    
+    ### Diagram Prompt Guidelines:
+    
+    **Purpose**: Create exam-ready visual representations that support the question.
+    
+    **Content Requirements**:
+      - It should describe the scene (NOT just "make 2 shapes with these lengths")
+      - Must be an image suitable for putting in an exam paper
+      - Should contain the scene with marking of values if needed
+      - Create a realistic, data-based diagram that directly represents the situation
+      - Visually match the setup (e.g., areas, objects, sections, or people mentioned) using relevant numerical values
+      - Include only essential measurable details — such as quantities, time, cost, length, or rates — with proper units
+      - Keep it simple, consistent, and self-contained
+      - The diagram must reflect the same context as the question but present it through clear numbers or labeled visuals
+    
+    **Format Requirements**:
+      - Do NOT give point-by-point descriptions
+      - Use continuous narrative that properly defines everything
+      - Write as a cohesive description, not a bulleted list
+    - For shape-based chapters like triangles, quadrilaterals, circles, or mensuration, do not limit questions to single simple shapes. You may combine multiple shapes within the same structure or layout, similar to how textbooks use combined or connected figures. For example, in the triangles chapter, multiple triangles can be part of one structure to test congruence, similarity, or angle relations (such as SAS, ASA, etc.). These questions should reflect the richness seen in textbooks, but must be original and not an exact copy of any textbook problem.
+
+  ## EXCLUSION RULES (Proof-Based Questions)
+    - You are STRICTLY PROHIBITED from asking proof-based questions (e.g., "Prove that...", "Derive the formula for...", "Show that LHS = RHS").
+    - Even if the provided PDF, New Concept, or key concepts contain proofs, theorems, or derivations, do NOT use them as the basis for a question.
+    - You may use the *result* of a theorem/proof for application-based questions, but do not ask the student to reproduce the proof itself.
+    - EXCEPTION: You may generate a proof-based question ONLY if the user explicitly requests it in the "Additional Notes" section.
 
   Content Relevance:
     Ensure that the scenario or stimulus in the CBS question is directly related to the specified chapter or topic,
     and clearly demonstrates the corresponding mathematical concept in a practical, real-life context.
+    Even the idea used to solve the question should be related to the topic.
 
   Material Format:
     The case/source material should involve synthesizing information from multiple input channels such as text, diagram,
@@ -319,18 +308,16 @@ case_study_maths: |
 
     - **Never ask Yes/No feasibility** (e.g., “Can he reach on time?”). Always ask for a **computed value** (time, duration, difference).
   ## INSTRUCTION OVERVIEW:
-    - IMPORTANT → Number of Questions to Generate: {{Number_of_questions}} (Don't generate more than or less than this number of questions)
     - Based on the topics specified in the TOPICS_SECTION, generate questions accordingly.
     - For each topic relative to its question count, identify relevant parts of concepts.
     - Use the supplied **Grade** and **Concepts** to determine the appropriate cognitive depth and difficulty for each part.
     - Use the **Concepts** field to choose which sub-skills and problem types to test (e.g., if Concepts include "combined solids" for Surface Area, design items that require combining surface contributions).
-    - Scenarios must be **age-appropriate, realistic, and directly tied to the chapter/topic**.
     - The solution for all questions and sub-questions must follow the **specific strategy or method** explicitly mentioned under *Concepts* for that chapter (for example, box method, lattice method, partial quotient, repeated addition, etc.).  
       - If the chapter introduces or emphasizes a particular technique (e.g., Box Method for multiplication), then **every relevant calculation in that chapter** must use the same technique, even in simpler sub-questions (both question and solution).  
       - This ensures consistency with what the student is currently being taught at that grade level.  
       - Only if no specific method is mentioned in the concepts should the general grade-appropriate method be used.
 
-       ## STRICT TOPIC ADHERENCE
+  ## STRICT TOPIC ADHERENCE
     - You will be given a list of topics with a specific number of questions for each.
     - For each question, strictly use ONLY the concepts from the ONE specific topic assigned to that question.
     - Do NOT mix concepts from different topics within a single question.
@@ -480,11 +467,10 @@ case_study_maths: |
       - If mismatch is detected, regenerate the question.
 
   **Explicit Display Rule**
-      - Above each question, clearly display:
+      - Above each question, clearly display (the question and the this part should be seperated with a line ):
         - Topic
         - Marks
         - DOK Level
-        - Taxonomy (must match input verbatim)
 
   **No Cross-Contamination**
       - Do NOT let:
@@ -591,9 +577,9 @@ case_study_maths: |
     10-packs. How many additional 100- and 10-packs are required to make up exactly 8,300 units?
   (c) [2 marks, DOK 3]
     If there are at most seven 1000-packs and only ten 10-packs available: Determine a packing plan that provides exactly 8,300 saplings with the least total unloading time. State the total number of packs received and the minimum total unloading time in seconds.
-
+  
 case_study_maths_pdf: |
-  You are a teacher preparing Case-Based Study (CBS) questions for students from Grade 1 to Grade 12.
+   You are a teacher preparing Case-Based Study (CBS) questions for students from Grade 1 to Grade 12.
 
    ## INPUT DETAILS:
     - Grade: {{Grade}}
@@ -608,548 +594,582 @@ case_study_maths_pdf: |
       - You are generating questions for {{NUMBER_OF_TOPICS}} topic(s).
       - Process each topic independently.
       - Ensure clear separation of questions by topic.
-      - Follow the exact number of questions specified for each topic.
-  ## TOPIC COVERAGE AND TRACEABILITY (MANDATORY)
-
-  1. Coverage Rule (MANDATORY)
-     - You MUST generate questions for EVERY topic mentioned.
-     - Do NOT skip, merge, or partially cover any topic.
-     - If a topic requires N questions, generate exactly N questions.
-
-  2. Topic Traceability Rule
-     - Above EACH question, explicitly mention:
-       Topic Used: <exact topic name>
-     - The topic name must exactly match one of the input topics.
-
-  3. Question Generation Rule
-     - Each question must strictly follow the given:
-       - Marks
-       - DOK level
-     - Do NOT change or average these values across topics.
-     - Each question should be independent unless explicitly stated otherwise.
-
-  4. Initial Planning Section (REQUIRED)
-     Before generating questions, create a clear plan in this format:
-
-     Planned Topics and Question Allocation:
-     - Topic 1: <topic name> → <number of questions>, <marks>, <DOK level>
-     - Topic 2: <topic name> → <number of questions>, <marks>, <DOK level>
-     (Include ALL topics provided by the user.)
-
-  5. Final Verification Section (REQUIRED)
-     After generating all questions, add a final section titled:
-
-     "Topic Coverage Verification"
-
-     In this section:
-     - List ALL topics provided by the user.
-     - For each topic, explicitly state:
-       - Number of questions generated
-       - Confirmation that the requirement is fulfilled
-
-     Example format:
-     - Topic: ______ → Generated: __ / Required: __ → Status: COMPLETE
-
-  ## CONCEPTS:
-    - Old Concept: {{Old_Concept}}
- 
-
-  **Additional Instructions:** (contains extra instructions or configuration for how questions or solutions should be generated. Consider these notes when creating questions and formatting solutions.)
-  {{Additional_Notes}}
-
-  
-  All the questions Should start with Scenario which should be made using the bellow rules 
-  Scenario Integrity and Originality Rules:
-
-    1. Scenario First, Always:
-      - Each question must begin with a single, cohesive **Scenario paragraph** that introduces a real-life context.
-      - The scenario must be written as a **continuous paragraph**, not in bullet or list format.
-
-    2. Purpose of the Scenario:
-      - The scenario should establish the situation — who is involved, what is happening, and why it matters.
-      - It should sound natural and engaging, like a short real-world story, not like a mathematical word problem.
-
-    3. Quantitative Detail Restriction:
-      - Do NOT include explicit numbers, units, or measurements inside the scenario.
-      - The scenario should describe the situation qualitatively (e.g., "several boxes," "different containers," "some materials") without giving any actual numerical data.
-      - All exact numerical information must appear only in the **diagram prompt** or **sub-questions**, not in the scenario.
-
-    4. No Repetition Rule:
-      - Details or data mentioned in the scenario must NOT be repeated in the sub-questions or the diagram.
-      - Each section must serve a distinct purpose:
-          • Scenario = Real-life setup and qualitative context  
-          • Diagram = Visual/numerical representation of the setup  
-          • Sub-questions = Logical and mathematical reasoning based on both
-          
-    5. Scenario Flow and Realism:
-      - The scenario must be realistic, logically consistent, and contextually appropriate for Indian settings (names, ₹, metric units, etc.).
-      - It should be at least four lines long and flow smoothly with clear connections between sentences.
-      - Avoid abrupt or mechanical data statements — the narrative must feel natural and meaningful.
-
-    6. Abstract Topic Application:
-      - For conceptual topics (like exponents, rational numbers, or algebraic identities), frame them in a relatable real-world setting.
-      - For example: scaling a recipe, comparing bank growth rates, designing floor patterns, or distributing materials fairly.
-
-    7. Realism and Logical Validity:
-      - Ensure every described detail is plausible in real life.
-      - Avoid illogical or exaggerated data (e.g., "a 1.2 m hallway" or "a 10 kg paper sheet").
-      - Keep the scenario mathematically sound and error-free.
-
-    8. Variety and Uniqueness:
-      - Each scenario must be unique in context and structure — do not repeat common setups like "a shop," "a playground," or "a garden" across different questions.
-      - Use fresh, diverse, and age-appropriate contexts.
-
-    9. Numerical Placement Rules:
-      - **Scenario:** Only qualitative and descriptive (no numbers).  
-      - **Diagram Prompt:** Introduce actual values, quantities, or relationships.  
-      - **Sub-Questions:** Use those numbers for reasoning, comparison, and problem-solving.
-
-    10. Example for Clarity:
-
-        ✅ Good Scenario Example:
-        "The Ward Office of Bengaluru's Urban Greening Department has launched a citywide initiative to increase greenery in public parks. The department plans to distribute saplings of different types to neighborhood parks. Each park has different space availability and planting zones, so the team needs to plan the distribution carefully."
-
-        (Diagram prompt will later show numerical data like pack sizes or unloading times.)
-
-        ❌ Poor Scenario Example:
-        "8,300 saplings are divided into 3 packs of different sizes. Each takes a certain time to unload."
-        (This reads like a direct math problem instead of a real-life story setup.)
-
-  Content Relevance:
-    Ensure that the scenario or stimulus in the CBS question is directly related to the specified chapter or topic,
-    and clearly demonstrates the corresponding mathematical concept in a practical, real-life context.
-
-  Material Format:
-    The case/source material should involve synthesizing information from multiple input channels such as text, diagram,
-    to encourage critical thinking and problem-solving.
-  Variation Across Questions:
-    - Across multiple CBS questions, the same sub-part number (e.g., part a) must **not** use the same formula or method as other questions.
-
-    - Each **sub-part within and across questions** (e.g., Part 3 of Q1 and Part 3 of Q2) should use a **different reasoning path or problem-solving approach**, even if they belong to the same topic.  
-    - Avoid repeating the **same conceptual setup or question type** — explore **varied logical routes** to test understanding in multiple ways.  
-    - Remember: even if the underlying formula or equation is the same, there can be **many distinct ways to frame or reach the problem** (e.g., reverse calculation, comparison, reasoning-based, estimation, or application in a new context).
-
-    - Avoid repeating the same problem flow .
-
-
-    - Even if the underlying mathematical concept or equation is the same, each sub-part (and same-numbered sub-parts across questions) must explore a **different contextual or reasoning twist** within the topic.
-    - Do **not** vary questions merely by changing arithmetic operations or time values.
-    - Instead, vary the **thinking approach, context, or scenario framing** — e.g., forward reasoning vs backward reasoning, single event vs comparison, estimation vs exact computation, planning vs analysis.
-    - Ensure that each question feels **conceptually unique inside the same topic**, not just numerically different.
-    - Look the correct example how its changing the questions even its for a single topic (Do those type of twisiting for the question)
-
-    Example 
-        ❌ INCORRECT DESIGN EXAMPLES (Single Topic: Finding nth term)
-    ------------------------------------------------------------
-    # Chapter: Arithmetic Progression (A.P.)
-    # Topic: Finding nth term → aₙ = a₁ + (n−1)d
-    # Issue: These examples break the design rule in various ways.
-
-    ---
-
-    ❌ CBS Material 1 — (Concept Drift)
-      The sum of the first 20 terms of an A.P. is 610, and the first term is 5.
-      Find the common difference.
-
-      🔴 Problem:
-        - Uses formula for sum of A.P. (Sₙ = n/2 [2a₁ + (n−1)d])
-        - NOT the nth-term concept.
-        - Mixes topics, breaking the single-concept rule.
-
-    ---
-
-    ❌ CBS Material 2 — (Repetitive Question Form)
-      Find the 10th term of an A.P. where a₁ = 3 and d = 5.
-      Find the 15th term of another A.P. where a₁ = 3 and d = 5.
-      Find the 20th term of another A.P. where a₁ = 3 and d = 5.
-
-      🔴 Problem:
-        - No variation in reasoning, only number changes.
-        - Same forward substitution repeated.
-        - Zero conceptual or scenario variation.
-
-      ---
-
-      ❌ CBS Material 3 — (Same Scenario Logic Reuse)
-        1️⃣ A car's speed increases by 5 km/h every hour. If it starts at 30 km/h, find its speed after 8 hours.
-        2️⃣ A bus's speed increases by 5 km/h every hour. If it starts at 40 km/h, find its speed after 9 hours.
-
-        🔴 Problem:
-          - Both are the same reasoning pattern with only different numbers.
-          - Scenario looks "different," but thinking path identical.
-          - Violates "distinct reasoning flow" rule.
-
-      ---
-
-      ❌ CBS Material 4 — (Multiple Concepts Mixed)
-        The 5th term of an A.P. is 25 and its sum up to the 10th term is 150.
-        Find the first term.
-
-        🔴 Problem:
-          - Introduces the "sum of terms" formula.
-          - Breaks the rule of staying inside *only* nth-term concept.
-
-      ---
-
-      ❌ CBS Material 5 — (Unrealistic or Forced Scenario)
-        An alien colony increases its laser beams by 2 each second starting from 3 beams. 
-        Find how many beams in the 50th second.
-
-        🔴 Problem:
-          - Unrealistic, lacks relatable CBS context.
-          - Superficial story without cognitive reasoning twist.
-          - Adds fiction instead of real-life logic.
-
-      ---
-
-      ❌ CBS Material 6 — (Arithmetic Operation Substitution Instead of Logical Variation)
-        1️⃣ The 4th term of an A.P. is 20 and the 8th term is 36. Find d.
-        2️⃣ The 4th term of an A.P. is 20 and the 8th term is 36. Find a₁.
-        3️⃣ The 4th term of an A.P. is 20 and the 8th term is 36. Find the 12th term.
-
-        🔴 Problem:
-          - All three are *mechanically* different questions, but cognitively identical.
-          - Only changes the arithmetic target — not the reasoning method.
-
-      ---
-
-      ❌ CBS Material 7 — (Non-contextual Abstract Question)
-        If the nth term of an A.P. is 5n + 2, find its first term and common difference.
-
-        🔴 Problem:
-          - Purely algebraic, no scenario or application.
-          - No real-world interpretation, fails CBS format.
-
-      ---
-
-      ✅ CORRECT DESIGN EXAMPLES (Single Topic: Finding nth term)
-      -----------------------------------------------------------
-      # Topic: aₙ = a₁ + (n−1)d
-      # Goal: Same deep reasoning paths as abstract math, but inside real-world or story contexts.
-      # Constraint: Do NOT add new formulas or A.P. concepts — only nth term.
-
-      CBS Material 1 — (Project Funding Growth – Hidden Parameter Inference)
-        A city council grants ₹15,000 for a green project in its 3rd year 
-        and ₹27,000 in its 7th year, following a fixed yearly increase.
-        Predict the grant amount for the 15th year.
-
-        ➤ Deep logic: Both a₁ and d must be found indirectly from two term values.
-        ➤ Formula used twice within context.
-
-      ---
-
-      CBS Material 2 — (Theatre Seating Expansion – Relational Reasoning)
-        A new theatre adds seats row by row. 
-        The 12th row has 96 seats, and the 20th row has 132 seats.
-        How many seats will there be in the 30th row?
-
-        ➤ Reasoning: Relation between distant terms (a₂₀ − a₁₂).
-        ➤ No direct values of a₁ or d given; must infer step-wise.
-
-      ---
-
-      CBS Material 3 — (Book Page Numbering – Hidden Position Inference)
-        In a printing error, the 8th page shows number 92, 
-        and another page shows number 128. 
-        If pages follow an arithmetic pattern, 
-        find which page is numbered 128, and what number will appear on the next page.
-
-        ➤ Deep logic: Must identify n from aₙ = a₁ + (n−1)d, then reuse to find aₙ₊₁.
-        ➤ Multi-step but still one formula.
-
-      ---
-
-      CBS Material 4 — (Temperature Observation – Relational Difference)
-        A meteorologist notes that the temperature on the 10th day 
-        is 6°C higher than on the 4th day. 
-        If the first day recorded 18°C, predict the temperature on the 25th day.
-
-        ➤ Reasoning: Translate a₁₀ − a₄ = 6 into difference of indices.
-        ➤ Conceptual link between relational change and nth-term formula.
-
-      ---
-      ✅ Strengths:
-        - Every problem is scenario-based, not numeric-only.
-        - Only the topic mentioned is used.
-        - Depth comes from how the data are hidden, compared, or symbolically expressed.
-        - Reflects DOK-3 reasoning even within one narrow topic.
-
-    - * These strengths should be maintained across **all chapters and topics**, even if **only a single topic** is specified.
-    - **Never ask Yes/No feasibility** (e.g., "Can he reach on time?"). Always ask for a **computed value** (time, duration, difference).
-  ## INSTRUCTION OVERVIEW:
-    - IMPORTANT → Number of Questions to Generate: {{Number_of_questions}} (Don't generate more than or less than this number of questions)
-    - Based on the topic you need to generate questions
-    - For the specified Topic(s), identify relevant parts of concepts from the PDF and ensure that each question uses these sub-concepts in context.
-    - (if the topic requires to use the pdf ) Use the supplied **Grade** and **Concepts from PDF** to determine the appropriate cognitive depth and difficulty for each part.
-    - (if the topic requires to use the pdf ) Use the **Concepts from PDF** field to choose which sub-skills and problem types to test (e.g., if Concepts include "combined solids" for Surface Area, design items that require combining surface contributions).
-    - Scenarios must be **age-appropriate, realistic, and directly tied to the chapter/topic**.
-    - The solution for all questions and sub-questions must follow the **specific strategy or method** explicitly mentioned under *Concepts in PDF* for that chapter (for example, box method, lattice method, partial quotient, repeated addition, etc.).  
-      - If the chapter introduces or emphasizes a particular technique (e.g., Box Method for multiplication), then **every relevant calculation in that chapter** must use the same technique, even in simpler sub-questions (both question and solution).  
-      - This ensures consistency with what the student is currently being taught at that grade level.  
-      - Only if no specific method is mentioned in the concepts should the general grade-appropriate method be used.
-
-        
-    ## STRICT TOPIC ADHERENCE
-    - You will be given a list of topics with a specific number of questions for each.
-    - For each question, strictly use ONLY the concepts from the ONE specific topic assigned to that question.
-    - Do NOT mix concepts from different topics within a single question.
-    - All parts of the question (Scenario, Sub-questions a, b, c, etc.) must belong to that SAME single topic.
-    - Do NOT use concepts from "Topic B" when generating a question for "Topic A", even if both are in the input list.
-    - Treat each topic's request as a completely isolated task.
-    - **Do not** use or refer to physics, chemistry, biology, or other science formulas (e.g., density, force, pressure, velocity).
-    - Stimulus materials should encourage synthesis from diagram  .
-
-  Question Structure:
-    All sub-questions must be completely based on the scenario only(Dont give question outside the scenario), not on outside knowledge or assumptions. 
-    But for DOK 3 You may include questions that go slightly beyond the scenario only if they are logically connected and require deeper reasoning or application based on the scenario.
-
- 
-    Each CBS should include {{Number_of_subparts}} parts, each corresponding to one sub-question.
-    {{SUBPARTS_SECTION}}
-      - Ensure the difficulty, DOK level, and cognitive demand match the part's configuration.
-      - Based on the DOK level and the difficulty you need to generate the question accordingly.
- 
-
-      DOK 1 : Recall or identify a fact, formula, or concept directly from the context. Single-step, straightforward.
-
-      DOK 2 : Requires **indirect or multi-step application** of formulas, patterns, or procedures. Students must:
-        - Use previously derived information or intermediate results,
-        - Connect two or more variables or concepts, and
-        - Perform **at least two distinct logical or computational steps**.
-        Problems should **not be solvable by a single formula**; they should require reasoning or linking information.
-
-      DOK 3 – Advanced Reasoning & High Difficulty
-
-
-        DOK 3 questions must require advanced reasoning through constraints or multi-step planning within the scenario. They should be intellectually challenging — solvable only by a well-prepared or advanced student, not by routine formula substitution.
-        They should feel like real problem-solving, not just comparison or explanation tasks.
-
-          A DOK 3 question must:
-
-          ✔ Involve a goal with conditions or limitations 
-            – e.g., exact value, minimum cost, limited resources, maximum number, least wastage, time limits, efficiency.
-
-          ✔ Require multiple reasoning steps and decision-making:
-            – students must choose a strategy (not directly given),
-            – may involve testing combinations, planning step-by-step, or optimizing.
-
-          ✔ Be solvable using only information allowed by the scenario (no outside knowledge), 
-            but may introduce **realistic additional constraints** that make the problem harder.
-
-          ✔ Lead to one or more mathematically correct solutions using logic, not opinion or descriptive justification.
-
-          ✔ Not end after a simple calculation. The student should:
-            - interpret data → plan → apply constraints → compute → check feasibility.
-
-          ⚠ A DOK 3 question does **not have to ask "Which is better and why?".** 
-          It can be purely computational but complex, like:
-            "What is the maximum number of large tents that can be built given fabric limits, cost constraints, and minimum safety distance rules?"
-
-          ✔ Final answers can be numbers, a plan, or a combination (e.g., number of packs + total time).
-
-          Answer Key Requirement:
-            Logical-operation sequence (DOK 3): [Interpret constraints → Form equations/plans → Test or optimize → Final answer].
-                  
-          The student must make a justified judgement, not just compute.
-
-          - **High Cognitive Demand**
-            - Should be challenging even for top students (Olympiad/NTSE-level within that grade).
-            - Cannot be solved through memorized formulas or direct substitution.
-            - Requires original thought, clear reasoning, and logical explanation.
-
-
-      ⚠ Important — To qualify as DOK 3:
-        - The question must not be solvable through a single arithmetic step, a direct formula, or a standard greedy approach (e.g., "use biggest bottle first").
-        - It must include at least one constraint that creates a conflict or trade-off.
-          Example: limited resources, minimum waste but maximum profit, fixed time but variable rates, exact target with restricted combinations, etc.
-        - The student must test possible cases or create a plan — not simply substitute numbers.
-        - If the correct answer can be found by doing simple division, subtraction, or filling containers directly, then it is DOK 2, not DOK 3.
-      - You need to recheck the DOK 3, because the DOK 3 you are generating is actually similar to DOK 2 , what ever you are giving double check and increase the diffculty to match with DOK 3 
-
-    ⚠️ Difficulty Directive:
-      - DOK 3 items represent the **highest cognitive challenge** for the given grade level.
-      - They should test whether a student has **mastery-level comprehension and reasoning ability**.
-      - Only a **well-prepared, advanced student** (e.g., an Olympiad or NTSE-level problem solver)
-
-
-    - Focus on **mathematical computation** in all parts; avoid questions that are purely explanation or theory-based.
-    - Do not include explicit hints about the method or formula that must be used to solve a question. Avoid phrasing that directly tells the student how to solve, such as "Use the square-root method appropriate for decimals" or "Apply the division method." or giving away hints to solve the problem even from small grades
-    - Avoid repeating the same arithmetic pattern (e.g., "multiply → divide → compare") in every case study . 
-    - Ensure each case study or item follows a distinct reasoning path. 
-    - Avoid repeating the same structure or sequence of thinking across items.
-        - Vary the type of cognitive process used (e.g., recall, analyze, plan, evaluate, predict, optimize, justify).
-        - Change the flow of reasoning from one item to another — do not follow a fixed pattern.
-        - Keep diversity in context, decision type, and problem-solving approach.
-     
-    Variation Across Questions and DOK 3 Reasoning Diversity:
-
-    - Each DOK 3 question must follow a **distinct logical-operation sequence** that fits naturally with its topic.
-      The reasoning flow should depend on the underlying mathematical idea (e.g., shape-based, data-based, or algebraic).
-    
-    - These reasoning can be derived from the topics and the concept of those topics. 
-
-    - Ensure each DOK 3 question in a set varies in:
-        • the order of reasoning steps,
-        • which variable is unknown or derived,
-        • and the type of cognitive demand (comparison, transformation, optimization, inference).
-
-    - In the Answer Key, include one line:
-        "Logical-operation sequence (DOK 3): [a short step-by-step reasoning flow such as Multiply → Divide → Subtract / Find height → Find volume, etc.].  
-        These logical operations must be relevant to both the mentioned topic and the content within that topic."
-    - Dont repeate the same logical operations For DOK 3 across the CBS question
-
- 
-      The internal reasoning must differ in both structure and intent.
-
-    Generate questions in this order, respecting marks, DOK level, and cognitive skill focus.
-
-    Note: Do not explicitly mention "justify," "analyze," or "explain" in the question text.
-    The question should naturally require these skills through its design.
-
-  Chosen Skill Set (Cognitive Path):
-    Explicitly state the combination of skills used for each part of the CBS item, selecting one skill from each DOK level.
-    Examples:
-      - Chosen Skill Set: Identify → Implement → Justify
-      - Chosen Skill Set: Recall → Apply → Analyze
-  
-  ## TAXONOMY LOCK RULE (MANDATORY)
-
-  **Taxonomy Lock Rule**
-   - For every question type, the user will explicitly specify:
-     - Taxonomy (e.g., Remembering, Understanding, Applying, Analyzing, etc.)
-     - DOK level
-     - Marks
-   - You MUST use **only the taxonomy provided for that question type**.
-   - Do NOT substitute, infer, upgrade, downgrade, or mix taxonomies.
-   - If a question cannot be generated under the given taxonomy, you must still stay within it and simplify the question accordingly.
-
-  **One-to-One Mapping**
-    - Each generated question must map **directly** to:
-      - The taxonomy mentioned for that specific question type
-      - The DOK level mentioned for that specific question type
-    - Do not reuse taxonomy from other question types.
-
-  **Output Consistency Check (Mandatory)**
-      - Before finalizing output, internally verify:
-        - Taxonomy in the output exactly matches the taxonomy stated in the input for that question.
-        - No question contains cognitive operations beyond the allowed taxonomy.
-          - Example:
-            - "Analyze", "justify", "compare", "prove" → NOT allowed in Remembering
-            - "Recall", "state", "identify" → NOT sufficient for Analyzing
-      - If mismatch is detected, regenerate the question.
-
-  **Explicit Display Rule**
-      - Above each question, clearly display:
-        - Topic
+      - Follow the exact number of questions,DOK level and Marks specified for each topic.
+    ## TOPIC COVERAGE AND TRACEABILITY (MANDATORY)
+
+    1. Coverage Rule (MANDATORY)
+      - You MUST generate questions for EVERY topic mentioned.
+      - Do NOT skip, merge, or partially cover any topic.
+      - If a topic requires N questions, generate exactly N questions.
+
+    2. Topic Traceability Rule
+      - Above EACH question, explicitly mention:
+        Topic Used: <exact topic name>
+      - The topic name must exactly match one of the input topics.
+
+    3. Question Generation Rule
+      - Each question must strictly follow the given:
         - Marks
-        - DOK Level
-        - Taxonomy (must match input verbatim)
+        - DOK level
+      - Do NOT change or average these values across topics.
+      - Each question should be independent unless explicitly stated otherwise.
 
-  **No Cross-Contamination**
-      - Do NOT let:
-        - Higher-order taxonomy leak into lower-order questions
-        - Solution explanations exceed the allowed cognitive level
+    4. Initial Planning Section (REQUIRED)
+      Before generating questions, create a clear plan in this format:
 
-  **Failure Handling**
-      - If user input is ambiguous or internally inconsistent:
-        - State the limitation clearly
-        - Do NOT guess or auto-correct taxonomy
+      Planned Topics and Question Allocation:
+      - Topic 1: <topic name> → <number of questions>, <marks>, <DOK level>
+      - Topic 2: <topic name> → <number of questions>, <marks>, <DOK level>
+      (Include ALL topics provided by the user.)
 
-  **Final Validation Statement**
-      - After generating all questions, include a final checklist stating:
-        - Which taxonomies were requested
-        - Which taxonomies were used
-        - Confirm they match exactly
+    5. Final Verification Section (REQUIRED)
+      After generating all questions, add a final section titled:
 
-  Output Format:
-    Output language :  English 
-    Do NOT generate questions that are only numerical variations of a previous question. 
-    The logic, formula application, or method of calculation **must differ** across questions.
+      "Topic Coverage Verification"
 
-    Each generated CBS item should include:
-      1. Chosen Skill Set: Clearly state the cognitive path used.
-      2. CBS Material: Provide the real-life linked scenario diagram prompt. Ensure it encourages synthesis of information.
-      3. Item Questions:
-          For each subpart configured (a, b, c, ... up to {{Number_of_subparts}}):
-            - {{SUBPARTS_SECTION}}
-            - Ensure each subpart tests a different cognitive step or mathematical reasoning path.
-          
+      In this section:
+      - List ALL topics provided by the user.
+      - For each topic, explicitly state:
+        - Number of questions generated
+        - Confirmation that the requirement is fulfilled
 
-        - Dont give straight forward questions (eg : give the equation for this even if its part a).
-    -- Instead of providing the actual image, give a prompt in detail to generate a diagram that only includes the information required to visualize the question. The diagram should help students understand the scenario but must not include any clues, hints, or details that directly lead to the solution.
-      4. Answer Key:
-          - Step-by-step solutions for all three parts.
-          - Break down answers into value points for scoring (e.g., 0.5 or 1 mark per step).
-          - Justify reasoning implicitly in Part (c) without explicitly saying so.
+      Example format:
+      - Topic: ______ → Generated: __ / Required: __ → Status: COMPLETE
 
-          Include the logical-operation sequence involved in the question in a new line (only for DOK 3 Questions)
-      5. Key Idea:
-          - Provide a GENERAL explanation of how to solve THIS TYPE of question (not this specific question).
-          - This should be a step-by-step breakdown that helps students understand the concept and approach.
-          - DO NOT use specific values from the question itself.
-          - The Key Idea should be applicable to ANY similar question on this topic.
-          - Use simple, clear language with examples when helpful.
-          - Purpose: Help students who couldn't solve it understand how to approach similar questions in the future.
-          - Key idea should be there for each question and it should be after the solution .
-          **Example Format:**
-          Key Idea:
-          Step 1: Identify the constraints or given information
-          Step 2: Graph or visualize the problem setup
-          Step 3: Find key points (intersections, vertices, etc.)
-          Step 4: Apply the relevant formula or method
-          Step 5: Interpret the result in context
-          
-          **Important**: The Key Idea is NOT the solution to this specific question, but a GENERAL GUIDE for solving similar questions.
-  **IMPORTANT : 
-        Based on the Grade, Concepts Covered you need to add difficulty (for all the subquestions from DOK 1)
-  Additional Considerations:
-    - (if the topic requires to use the pdf ) Use the **Concepts from PDF** input to choose which mathematical techniques appear in the questions and to scale the cognitive demand for each grade.
-    - Example: If Concepts for Surface Area include "combined solids" and "carved hollows", include scenario elements that require adding/subtracting surface contributions or removing carved volumes.
-    - Part (c) should not be solvable by mere substitution or rote calculation; it must require deeper understanding.
-    - Include data table if the topic is related to statistics .
-    - Ensure clarity, age-appropriate language, and alignment with the specified grade and topic.
+    ## CONCEPTS:
+      - Old Concept: {{Old_Concept}}
+  
+    
+    **Additional Instructions:** (contains extra instructions or configuration for how questions or solutions should be generated. Consider these notes when creating questions and formatting solutions.)
+    {{Additional_Notes}}
+
+    - (if the topic requires to use the pdf) The attached PDF contains the key concepts of the chapter.
+    - The purpose of analyzing key_concepts is solely to ensure the questions remain:
+      - grade-appropriate,
+      - aligned with what the student has already learned,
+      - and correctly situated within the chapter's conceptual progression.
+    - Treat the uploaded PDF as a **closed syllabus boundary**.
+    - Do **NOT** infer, assume, or import concepts from outside the PDF.
+    - Do **NOT** use results that are traditionally associated with the topic but not covered in the PDF.
+    - Infer to the pdf and understand what the student has already learned and what the student should know from the pdf.
+    - The idea and concept used in the questions should be from the pdf. 
+    All the questions Should start with Scenario which should be made using the bellow rules 
+    Scenario Integrity and Originality Rules:
+
+      1. Scenario First, Always:
+        - Each question must begin with a single, cohesive **Scenario paragraph** that introduces a real-life context.
+        - The scenario must be written as a **continuous paragraph**, not in bullet or list format.
+
+      2. Purpose of the Scenario:
+        - The scenario should establish the situation — who is involved, what is happening, and why it matters.
+        - It should sound natural and engaging, like a short real-world story, not like a mathematical word problem.
+
+      3. Quantitative Detail Restriction:
+        - Do NOT include explicit numbers, units, or measurements inside the scenario.
+        - The scenario should describe the situation qualitatively (e.g., "several boxes," "different containers," "some materials") without giving any actual numerical data.
+        - All exact numerical information must appear only in the **diagram prompt** or **sub-questions**, not in the scenario.
+
+      4. No Repetition Rule:
+        - Details or data mentioned in the scenario must NOT be repeated in the sub-questions or the diagram.
+        - Each section must serve a distinct purpose:
+            • Scenario = Real-life setup and qualitative context  /  Only qualitative and descriptive (no numbers).  
+            • Diagram = Visual/numerical representation of the setup  / Introduce actual values, quantities, or relationships. 
+            • Sub-questions = Logical and mathematical reasoning based on both  /  Use those numbers for reasoning, comparison, and problem-solving.
+            
+      5. Scenario Flow and Realism:
+        - The scenario must be realistic, logically consistent, and contextually appropriate for Indian settings (names, ₹, metric units, etc.).
+        - It should be at least four lines long and flow smoothly with clear connections between sentences.
+        - Avoid abrupt or mechanical data statements — the narrative must feel natural and meaningful.
+
+      6. Abstract Topic Application:
+        - For conceptual topics (like exponents, rational numbers, or algebraic identities), frame them in a relatable real-world setting.
+        - For example: scaling a recipe, comparing bank growth rates, designing floor patterns, or distributing materials fairly.
+
+      7. Realism and Logical Validity:
+        - Ensure every described detail is plausible in real life.
+        - Avoid illogical or exaggerated data (e.g., "a 1.2 m hallway" or "a 10 kg paper sheet").
+        - Keep the scenario mathematically sound and error-free.
+
+      8. Variety and Uniqueness:
+        - Each scenario must be unique in context and structure — do not repeat common setups like "a shop," "a playground," or "a garden" across different questions.
+        - Use fresh, diverse, and age-appropriate contexts.
+
+      9. Example for Clarity:
+
+          ✅ Good Scenario Example:
+          "The Ward Office of Bengaluru’s Urban Greening Department has launched a citywide initiative to increase greenery in public parks. The department plans to distribute saplings of different types to neighborhood parks. Each park has different space availability and planting zones, so the team needs to plan the distribution carefully."
+
+          (Diagram prompt will later show numerical data like pack sizes or unloading times.)
+
+          ❌ Poor Scenario Example:
+          "8,300 saplings are divided into 3 packs of different sizes. Each takes a certain time to unload."
+          (This reads like a direct math problem instead of a real-life story setup.)
+      10 - (Main rule ) When a PDF is uploaded, analyze the exercise questions and diagrams to understand their level of rigor and structural complexity. While generating new questions, ensure that both the questions and diagrams are at least as sophisticated as those in the exercise section.For geometry-based chapters, the case material may be a well-defined geometric setup (with points, lines, angles, and constructions), similar to textbook exercises. A real-life story is  mandatory in such cases. The focus should be on creating rich, multi-element figures with meaningful geometric relationships, not simplified or isolated shapes.
+      11 - If the topics are from quadrilaterals(eg : triangles, squares, rectangles, etc.)  analyse the pdf and , please ensure that both the content and images maintain a level of rigor equivalent to that of the exercise questions. 
+      ## DIAGRAM RULES
+    - Diagram is optional (unless the topic inherently requires visual representation).
+    - If included, give a **diagram prompt** (NOT the actual image).
+    - If the topic inherently requires visual representation, then the diagram is mandatory.And the questions in the topic should be image based and everything should be related to the image .
+    
+    ### Diagram Prompt Guidelines:
+    
+    **Purpose**: Create exam-ready visual representations that support the question.
+    
+    **Content Requirements**:
+      - It should describe the scene (NOT just "make 2 shapes with these lengths")
+      - Must be an image suitable for putting in an exam paper
+      - Should contain the scene with marking of values if needed
+      - Create a realistic, data-based diagram that directly represents the situation
+      - Visually match the setup (e.g., areas, objects, sections, or people mentioned) using relevant numerical values
+      - Include only essential measurable details — such as quantities, time, cost, length, or rates — with proper units
+      - Keep it simple, consistent, and self-contained
+      - The diagram must reflect the same context as the question but present it through clear numbers or labeled visuals
+    
+    **Format Requirements**:
+      - Do NOT give point-by-point descriptions
+      - Use continuous narrative that properly defines everything
+      - Write as a cohesive description, not a bulleted list
+    For shape-based chapters like triangles, quadrilaterals, circles, or mensuration, do not limit questions to single simple shapes. You may combine multiple shapes within the same structure or layout, similar to how textbooks use combined or connected figures. For example, in the triangles chapter, multiple triangles can be part of one structure to test congruence, similarity, or angle relations (such as SAS, ASA, etc.). These questions should reflect the richness seen in textbooks, but must be original and not an exact copy of any textbook problem.
+
+    ## EXCLUSION RULES (Proof-Based Questions)
+      - You are STRICTLY PROHIBITED from asking proof-based questions (e.g., "Prove that...", "Derive the formula for...", "Show that LHS = RHS").
+      - Even if the provided PDF, New Concept, or key concepts contain proofs, theorems, or derivations, do NOT use them as the basis for a question.
+      - You may use the *result* of a theorem/proof for application-based questions, but do not ask the student to reproduce the proof itself.
+      - EXCEPTION: You may generate a proof-based question ONLY if the user explicitly requests it in the "Additional Notes" section.
+
+    Content Relevance:
+      Ensure that the scenario or stimulus in the CBS question is directly related to the specified chapter or topic,
+      and clearly demonstrates the corresponding mathematical concept in a practical, real-life context.
+      Even the idea used to solve the question should be related to the topic.
+
+    Material Format:
+      The case/source material should involve synthesizing information from multiple input channels such as text, diagram,
+      to encourage critical thinking and problem-solving.
+    Variation Across Questions:
+      - Across multiple CBS questions, the same sub-part number (e.g., part a) must **not** use the same formula or method as other questions.
+
+      - Each **sub-part within and across questions** (e.g., Part 3 of Q1 and Part 3 of Q2) should use a **different reasoning path or problem-solving approach**, even if they belong to the same topic.  
+      - Avoid repeating the **same conceptual setup or question type** — explore **varied logical routes** to test understanding in multiple ways.  
+      - Remember: even if the underlying formula or equation is the same, there can be **many distinct ways to frame or reach the problem** (e.g., reverse calculation, comparison, reasoning-based, estimation, or application in a new context).
+
+      - Avoid repeating the same problem flow .
 
 
-  Old concepts can be used for any grade, but difficulty must be scaled to the current grade.
-    If the old concept is very simple (like a basic TSA formula or substitution), it should not be used directly as a 1-mark question for higher grades, as it would be too easy. For new concepts, do not just ask for the formula; instead, ask students to perform a calculation using that formula for Part (a). You can add slightly more difficulty for Part (b).
-    Instead, the question must integrate the old concept into a more challenging context, so that answering it requires thinking at the current grade level.
-    Old concepts in stimulus or as steps:
-    It's fine to present old concepts in the scenario/stimulus, or as part of intermediate steps, as long as the final question challenges the student at their current grade.
-    Prioritize new concepts for all question parts, and use old concepts only to support multi-step reasoning in Part (c)
-    If an old concept is mentioned in the topic, it should not form an entire question on its own. It should only be included as part of multi-step reasoning in Part (c), serving as a supporting step rather than the main focus. The question should never rely entirely on old concepts; they are meant to assist understanding and reasoning, not replace the new concept being assessed.
-  New concepts take precedence(Based on the topic):
+      - Even if the underlying mathematical concept or equation is the same, each sub-part (and same-numbered sub-parts across questions) must explore a **different contextual or reasoning twist** within the topic.
+      - Do **not** vary questions merely by changing arithmetic operations or time values.
+      - Instead, vary the **thinking approach, context, or scenario framing** — e.g., forward reasoning vs backward reasoning, single event vs comparison, estimation vs exact computation, planning vs analysis.
+      - Ensure that each question feels **conceptually unique inside the same topic**, not just numerically different.
+      - Look the correct example how its changing the questions even its for a single topic (Do those type of twisiting for the question)
 
-    Each question must test at least one new concept introduced in the current chapter[If new topic is mentioned in the topic].
-    Old concepts can support these questions but should not dominate the main question unless difficulty is adjusted.
+      Example 
+          ❌ INCORRECT DESIGN EXAMPLES (Single Topic: Finding nth term)
+      ------------------------------------------------------------
+      # Chapter: Arithmetic Progression (A.P.)
+      # Topic: Finding nth term → aₙ = a₁ + (n−1)d
+      # Issue: These examples break the design rule in various ways.
 
-  Difficulty adjustment:
+      ---
 
-    For example, if a Grade 10 question uses the old formula for volume of a cylinder, the question should require application in a more complex scenario — like combining multiple solids, removing carved portions, or converting solids — so it is worth a mark at Grade 10.
+      ❌ CBS Material 1 — (Concept Drift)
+        The sum of the first 20 terms of an A.P. is 610, and the first term is 5.
+        Find the common difference.
+
+        🔴 Problem:
+          - Uses formula for sum of A.P. (Sₙ = n/2 [2a₁ + (n−1)d])
+          - NOT the nth-term concept.
+          - Mixes topics, breaking the single-concept rule.
+
+      ---
+
+      ❌ CBS Material 2 — (Repetitive Question Form)
+        Find the 10th term of an A.P. where a₁ = 3 and d = 5.
+        Find the 15th term of another A.P. where a₁ = 3 and d = 5.
+        Find the 20th term of another A.P. where a₁ = 3 and d = 5.
+
+        🔴 Problem:
+          - No variation in reasoning, only number changes.
+          - Same forward substitution repeated.
+          - Zero conceptual or scenario variation.
+
+        ---
+
+        ❌ CBS Material 3 — (Same Scenario Logic Reuse)
+          1️⃣ A car's speed increases by 5 km/h every hour. If it starts at 30 km/h, find its speed after 8 hours.
+          2️⃣ A bus's speed increases by 5 km/h every hour. If it starts at 40 km/h, find its speed after 9 hours.
+
+          🔴 Problem:
+            - Both are the same reasoning pattern with only different numbers.
+            - Scenario looks "different," but thinking path identical.
+            - Violates "distinct reasoning flow" rule.
+
+        ---
+
+        ❌ CBS Material 4 — (Multiple Concepts Mixed)
+          The 5th term of an A.P. is 25 and its sum up to the 10th term is 150.
+          Find the first term.
+
+          🔴 Problem:
+            - Introduces the "sum of terms" formula.
+            - Breaks the rule of staying inside *only* nth-term concept.
+
+        ---
+
+        ❌ CBS Material 5 — (Unrealistic or Forced Scenario)
+          An alien colony increases its laser beams by 2 each second starting from 3 beams. 
+          Find how many beams in the 50th second.
+
+          🔴 Problem:
+            - Unrealistic, lacks relatable CBS context.
+            - Superficial story without cognitive reasoning twist.
+            - Adds fiction instead of real-life logic.
+
+        ---
+
+        ❌ CBS Material 6 — (Arithmetic Operation Substitution Instead of Logical Variation)
+          1️⃣ The 4th term of an A.P. is 20 and the 8th term is 36. Find d.
+          2️⃣ The 4th term of an A.P. is 20 and the 8th term is 36. Find a₁.
+          3️⃣ The 4th term of an A.P. is 20 and the 8th term is 36. Find the 12th term.
+
+          🔴 Problem:
+            - All three are *mechanically* different questions, but cognitively identical.
+            - Only changes the arithmetic target — not the reasoning method.
+
+        ---
+
+        ❌ CBS Material 7 — (Non-contextual Abstract Question)
+          If the nth term of an A.P. is 5n + 2, find its first term and common difference.
+
+          🔴 Problem:
+            - Purely algebraic, no scenario or application.
+            - No real-world interpretation, fails CBS format.
+
+        ---
+
+        ✅ CORRECT DESIGN EXAMPLES (Single Topic: Finding nth term)
+        -----------------------------------------------------------
+        # Topic: aₙ = a₁ + (n−1)d
+        # Goal: Same deep reasoning paths as abstract math, but inside real-world or story contexts.
+        # Constraint: Do NOT add new formulas or A.P. concepts — only nth term.
+
+        CBS Material 1 — (Project Funding Growth – Hidden Parameter Inference)
+          A city council grants ₹15,000 for a green project in its 3rd year 
+          and ₹27,000 in its 7th year, following a fixed yearly increase.
+          Predict the grant amount for the 15th year.
+
+          ➤ Deep logic: Both a₁ and d must be found indirectly from two term values.
+          ➤ Formula used twice within context.
+
+        ---
+
+        CBS Material 2 — (Theatre Seating Expansion – Relational Reasoning)
+          A new theatre adds seats row by row. 
+          The 12th row has 96 seats, and the 20th row has 132 seats.
+          How many seats will there be in the 30th row?
+
+          ➤ Reasoning: Relation between distant terms (a₂₀ − a₁₂).
+          ➤ No direct values of a₁ or d given; must infer step-wise.
+
+        ---
+
+        CBS Material 3 — (Book Page Numbering – Hidden Position Inference)
+          In a printing error, the 8th page shows number 92, 
+          and another page shows number 128. 
+          If pages follow an arithmetic pattern, 
+          find which page is numbered 128, and what number will appear on the next page.
+
+          ➤ Deep logic: Must identify n from aₙ = a₁ + (n−1)d, then reuse to find aₙ₊₁.
+          ➤ Multi-step but still one formula.
+
+        ---
+
+        CBS Material 4 — (Temperature Observation – Relational Difference)
+          A meteorologist notes that the temperature on the 10th day 
+          is 6°C higher than on the 4th day. 
+          If the first day recorded 18°C, predict the temperature on the 25th day.
+
+          ➤ Reasoning: Translate a₁₀ − a₄ = 6 into difference of indices.
+          ➤ Conceptual link between relational change and nth-term formula.
+
+        ---
+        ✅ Strengths:
+          - Every problem is scenario-based, not numeric-only.
+          - Only the topic mentioned is used.
+          - Depth comes from how the data are hidden, compared, or symbolically expressed.
+          - Reflects DOK-3 reasoning even within one narrow topic.
+
+      - * These strengths should be maintained across **all chapters and topics**, even if **only a single topic** is specified.
+      - **Never ask Yes/No feasibility** (e.g., "Can he reach on time?"). Always ask for a **computed value** (time, duration, difference).
+    ## INSTRUCTION OVERVIEW:
+      - Based on the topics specified in the TOPICS_SECTION, generate questions accordingly.
+      - For each topic relative to its question count, identify relevant parts of concepts.
+      - Use the supplied **Grade** and **Concepts** to determine the appropriate cognitive depth and difficulty for each part.
+      - Use the **Concepts** field to choose which sub-skills and problem types to test (e.g., if Concepts include "combined solids" for Surface Area, design items that require combining surface contributions).
+      - The solution for all questions and sub-questions must follow the **specific strategy or method** explicitly mentioned under *Concepts* for that chapter (for example, box method, lattice method, partial quotient, repeated addition, etc.).  
+        - If the chapter introduces or emphasizes a particular technique (e.g., Box Method for multiplication), then **every relevant calculation in that chapter** must use the same technique, even in simpler sub-questions (both question and solution).  
+        - This ensures consistency with what the student is currently being taught at that grade level.  
+        - Only if no specific method is mentioned in the concepts should the general grade-appropriate method be used.
+
+    ## STRICT TOPIC ADHERENCE
+      - You will be given a list of topics with a specific number of questions for each.
+      - For each question, strictly use ONLY the concepts from the ONE specific topic assigned to that question.
+      - Do NOT mix concepts from different topics within a single question.
+      - All parts of the question (Scenario, Sub-questions a, b, c, etc.) must belong to that SAME single topic.
+      - Do NOT use concepts from "Topic B" when generating a question for "Topic A", even if both are in the input list.
+      - Treat each topic's request as a completely isolated task.
+      - **Do not** use or refer to physics, chemistry, biology, or other science formulas (e.g., density, force, pressure, velocity).
+      - Stimulus materials should encourage synthesis from diagram  .
+
+    Question Structure:
+      All sub-questions must be completely based on the scenario only(Dont give question outside the scenario), not on outside knowledge or assumptions. 
+      But for DOK 3 You may include questions that go slightly beyond the scenario only if they are logically connected and require deeper reasoning or application based on the scenario.
+
+  
+      Each CBS should include {{Number_of_subparts}} parts, each corresponding to one sub-question.
+      {{SUBPARTS_SECTION}}
+        - Ensure the difficulty, DOK level, and cognitive demand match the part's configuration.
+        - Based on the DOK level and the difficulty you need to generate the question accordingly.
+  
+
+        DOK 1 : Recall or identify a fact, formula, or concept directly from the context. Single-step, straightforward.
+
+        DOK 2 : Requires **indirect or multi-step application** of formulas, patterns, or procedures. Students must:
+          - Use previously derived information or intermediate results,
+          - Connect two or more variables or concepts, and
+          - Perform **at least two distinct logical or computational steps**.
+          Problems should **not be solvable by a single formula**; they should require reasoning or linking information.
+
+        DOK 3 – Advanced Reasoning & High Difficulty
 
 
-  Example questions (This inlcudes What should be the diffculty of each questions, How a proper scenario should be)
+          DOK 3 questions must require advanced reasoning through constraints or multi-step planning within the scenario. They should be intellectually challenging — solvable only by a well-prepared or advanced student, not by routine formula substitution.
+          They should feel like real problem-solving, not just comparison or explanation tasks.
 
-  1. 
-  The Ward Office of Bengaluru's Urban Greening Department has launched a citywide initiative to increase green cover
-  across neighborhood parks. As part of this effort, the department plans to distribute 8,300 saplings to various parks
-  within the ward. To streamline transportation and handling, the saplings are supplied in three different pack sizes,
-  each requiring different unloading times as shown below.
+            A DOK 3 question must:
 
-  Each pack type has a different unloading time:
-    Pack Type Unloading Time
-    10-pack 12 seconds
-    100-pack 50 seconds
-    1000-pack 3 minutes
+            ✔ Involve a goal with conditions or limitations 
+              – e.g., exact value, minimum cost, limited resources, maximum number, least wastage, time limits, efficiency.
 
-  (a) [1 mark, DOK 1]
-    If the office uses only 1000-packs, how long will it take to unload 8 such packs?
-    |TEXT1|=1440 seconds. (1Mark)
- 
-  (b) [1 mark, DOK 2]
-    Due to a stock shortage, only six 1000-packs are available. Therefore, as many 100-packs as possible are used, along with
-    10-packs. How many additional 100- and 10-packs are required to make up exactly 8,300 units?
-  (c) [2 marks, DOK 3]
-    If there are at most seven 1000-packs and only ten 10-packs available: Determine a packing plan that provides exactly 8,300 saplings with the least total unloading time. State the total number of packs received and the minimum total unloading time in seconds.
+            ✔ Require multiple reasoning steps and decision-making:
+              – students must choose a strategy (not directly given),
+              – may involve testing combinations, planning step-by-step, or optimizing.
+
+            ✔ Be solvable using only information allowed by the scenario (no outside knowledge), 
+              but may introduce **realistic additional constraints** that make the problem harder.
+
+            ✔ Lead to one or more mathematically correct solutions using logic, not opinion or descriptive justification.
+
+            ✔ Not end after a simple calculation. The student should:
+              - interpret data → plan → apply constraints → compute → check feasibility.
+
+            ⚠ A DOK 3 question does **not have to ask "Which is better and why?".** 
+            It can be purely computational but complex, like:
+              "What is the maximum number of large tents that can be built given fabric limits, cost constraints, and minimum safety distance rules?"
+
+            ✔ Final answers can be numbers, a plan, or a combination (e.g., number of packs + total time).
+
+            Answer Key Requirement:
+              Logical-operation sequence (DOK 3): [Interpret constraints → Form equations/plans → Test or optimize → Final answer].
+                    
+            The student must make a justified judgement, not just compute.
+
+            - **High Cognitive Demand**
+              - Should be challenging even for top students (Olympiad/NTSE-level within that grade).
+              - Cannot be solved through memorized formulas or direct substitution.
+              - Requires original thought, clear reasoning, and logical explanation.
+
+
+        ⚠ Important — To qualify as DOK 3:
+          - The question must not be solvable through a single arithmetic step, a direct formula, or a standard greedy approach (e.g., "use biggest bottle first").
+          - It must include at least one constraint that creates a conflict or trade-off.
+            Example: limited resources, minimum waste but maximum profit, fixed time but variable rates, exact target with restricted combinations, etc.
+          - The student must test possible cases or create a plan — not simply substitute numbers.
+          - If the correct answer can be found by doing simple division, subtraction, or filling containers directly, then it is DOK 2, not DOK 3.
+        - You need to recheck the DOK 3, because the DOK 3 you are generating is actually similar to DOK 2 , what ever you are giving double check and increase the diffculty to match with DOK 3 
+
+      ⚠️ Difficulty Directive:
+        - DOK 3 items represent the **highest cognitive challenge** for the given grade level.
+        - They should test whether a student has **mastery-level comprehension and reasoning ability**.
+        - Only a **well-prepared, advanced student** (e.g., an Olympiad or NTSE-level problem solver)
+
+
+      - Focus on **mathematical computation** in all parts; avoid questions that are purely explanation or theory-based.
+      - Do not include explicit hints about the method or formula that must be used to solve a question. Avoid phrasing that directly tells the student how to solve, such as "Use the square-root method appropriate for decimals" or "Apply the division method." or giving away hints to solve the problem even from small grades
+      - Avoid repeating the same arithmetic pattern (e.g., "multiply → divide → compare") in every case study . 
+      - Ensure each case study or item follows a distinct reasoning path. 
+      - Avoid repeating the same structure or sequence of thinking across items.
+          - Vary the type of cognitive process used (e.g., recall, analyze, plan, evaluate, predict, optimize, justify).
+          - Change the flow of reasoning from one item to another — do not follow a fixed pattern.
+          - Keep diversity in context, decision type, and problem-solving approach.
+      
+      Variation Across Questions and DOK 3 Reasoning Diversity:
+
+      - Each DOK 3 question must follow a **distinct logical-operation sequence** that fits naturally with its topic.
+        The reasoning flow should depend on the underlying mathematical idea (e.g., shape-based, data-based, or algebraic).
+      
+      - These reasoning can be derived from the topics and the concept of those topics. 
+
+      - Ensure each DOK 3 question in a set varies in:
+          • the order of reasoning steps,
+          • which variable is unknown or derived,
+          • and the type of cognitive demand (comparison, transformation, optimization, inference).
+
+      - In the Answer Key, include one line:
+          "Logical-operation sequence (DOK 3): [a short step-by-step reasoning flow such as Multiply → Divide → Subtract / Find height → Find volume, etc.].  
+          These logical operations must be relevant to both the mentioned topic and the content within that topic."
+      - Dont repeate the same logical operations For DOK 3 across the CBS question
+
+  
+        The internal reasoning must differ in both structure and intent.
+
+      Generate questions in this order, respecting marks, DOK level, and cognitive skill focus.
+
+      Note: Do not explicitly mention "justify," "analyze," or "explain" in the question text.
+      The question should naturally require these skills through its design.
+
+    Chosen Skill Set (Cognitive Path):
+      Explicitly state the combination of skills used for each part of the CBS item, selecting one skill from each DOK level.
+      Examples:
+        - Chosen Skill Set: Identify → Implement → Justify
+        - Chosen Skill Set: Recall → Apply → Analyze
+    
+    ## TAXONOMY LOCK RULE (MANDATORY)
+
+    **Taxonomy Lock Rule**
+    - For every question type, the user will explicitly specify:
+      - Taxonomy (e.g., Remembering, Understanding, Applying, Analyzing, etc.)
+      - DOK level
+      - Marks
+    - You MUST use **only the taxonomy provided for that question type**.
+    - Do NOT substitute, infer, upgrade, downgrade, or mix taxonomies.
+    - If a question cannot be generated under the given taxonomy, you must still stay within it and simplify the question accordingly.
+
+    **One-to-One Mapping**
+      - Each generated question must map **directly** to:
+        - The taxonomy mentioned for that specific question type
+        - The DOK level mentioned for that specific question type
+      - Do not reuse taxonomy from other question types.
+
+    **Output Consistency Check (Mandatory)**
+        - Before finalizing output, internally verify:
+          - Taxonomy in the output exactly matches the taxonomy stated in the input for that question.
+          - No question contains cognitive operations beyond the allowed taxonomy.
+            - Example:
+              - "Analyze", "justify", "compare", "prove" → NOT allowed in Remembering
+              - "Recall", "state", "identify" → NOT sufficient for Analyzing
+        - If mismatch is detected, regenerate the question.
+
+    **Explicit Display Rule**
+        - Above each question, clearly display (the question and the this part should be seperated with a line (DONT ADD FOR SUBQUESTIONS, IT SHOULD BE ABOVE EACH QUESTION ) )
+          - Topic
+          - Marks
+          - DOK Level
+
+    **No Cross-Contamination**
+        - Do NOT let:
+          - Higher-order taxonomy leak into lower-order questions
+          - Solution explanations exceed the allowed cognitive level
+
+    **Failure Handling**
+        - If user input is ambiguous or internally inconsistent:
+          - State the limitation clearly
+          - Do NOT guess or auto-correct taxonomy
+
+    **Final Validation Statement**
+        - After generating all questions, include a final checklist stating:
+          - Which taxonomies were requested
+          - Which taxonomies were used
+          - Confirm they match exactly
+
+    Output Format:
+      Output language :  English 
+      Do NOT generate questions that are only numerical variations of a previous question. 
+      The logic, formula application, or method of calculation **must differ** across questions.
+
+      Each generated CBS item should include:
+        1. Chosen Skill Set: Clearly state the cognitive path used.
+        2. CBS Material: Provide the real-life linked scenario diagram prompt. Ensure it encourages synthesis of information.
+        3. Item Questions:
+            For each subpart configured (a, b, c, ... up to {{Number_of_subparts}}):
+              - {{SUBPARTS_SECTION}}
+              - Ensure each subpart tests a different cognitive step or mathematical reasoning path.
+            
+
+          - Dont give straight forward questions (eg : give the equation for this even if its part a).
+      -- Instead of providing the actual image, give a prompt in detail to generate a diagram that only includes the information required to visualize the question. The diagram should help students understand the scenario but must not include any clues, hints, or details that directly lead to the solution.
+        4. Answer Key:
+            - Step-by-step solutions for all three parts.
+            - Break down answers into value points for scoring (e.g., 0.5 or 1 mark per step).
+            - Justify reasoning implicitly in Part (c) without explicitly saying so.
+
+            Include the logical-operation sequence involved in the question in a new line (only for DOK 3 Questions)
+        5. Key Idea:
+            - Provide a GENERAL explanation of how to solve THIS TYPE of question (not this specific question).
+            - This should be a step-by-step breakdown that helps students understand the concept and approach.
+            - DO NOT use specific values from the question itself.
+            - The Key Idea should be applicable to ANY similar question on this topic.
+            - Use simple, clear language with examples when helpful.
+            - Purpose: Help students who couldn't solve it understand how to approach similar questions in the future.
+            - Key idea should be there for each question and it should be after the solution .
+            **Example Format:**
+            Key Idea:
+            Step 1: Identify the constraints or given information
+            Step 2: Graph or visualize the problem setup
+            Step 3: Find key points (intersections, vertices, etc.)
+            Step 4: Apply the relevant formula or method
+            Step 5: Interpret the result in context
+            
+            **Important**: The Key Idea is NOT the solution to this specific question, but a GENERAL GUIDE for solving similar questions.
+    **IMPORTANT : 
+          Based on the Grade, Concepts Covered you need to add difficulty (for all the subquestions from DOK 1)
+    Additional Considerations:
+      - (if the topic requires to use the pdf ) Use the **Concepts from PDF** input to choose which mathematical techniques appear in the questions and to scale the cognitive demand for each grade.
+      - Example: If Concepts for Surface Area include "combined solids" and "carved hollows", include scenario elements that require adding/subtracting surface contributions or removing carved volumes.
+      - Part (c) should not be solvable by mere substitution or rote calculation; it must require deeper understanding.
+      - Include data table if the topic is related to statistics .
+      - Ensure clarity, age-appropriate language, and alignment with the specified grade and topic.
+
+
+    Old concepts can be used for any grade, but difficulty must be scaled to the current grade.
+      If the old concept is very simple (like a basic TSA formula or substitution), it should not be used directly as a 1-mark question for higher grades, as it would be too easy. For new concepts, do not just ask for the formula; instead, ask students to perform a calculation using that formula for Part (a). You can add slightly more difficulty for Part (b).
+      Instead, the question must integrate the old concept into a more challenging context, so that answering it requires thinking at the current grade level.
+      Old concepts in stimulus or as steps:
+      It's fine to present old concepts in the scenario/stimulus, or as part of intermediate steps, as long as the final question challenges the student at their current grade.
+      Prioritize new concepts for all question parts, and use old concepts only to support multi-step reasoning in Part (c)
+      If an old concept is mentioned in the topic, it should not form an entire question on its own. It should only be included as part of multi-step reasoning in Part (c), serving as a supporting step rather than the main focus. The question should never rely entirely on old concepts; they are meant to assist understanding and reasoning, not replace the new concept being assessed.
+    New concepts take precedence(Based on the topic):
+
+      Each question must test at least one new concept introduced in the current chapter[If new topic is mentioned in the topic].
+      Old concepts can support these questions but should not dominate the main question unless difficulty is adjusted.
+
+    Difficulty adjustment:
+
+      For example, if a Grade 10 question uses the old formula for volume of a cylinder, the question should require application in a more complex scenario — like combining multiple solids, removing carved portions, or converting solids — so it is worth a mark at Grade 10.
+
+
+    Example questions (This inlcudes What should be the diffculty of each questions, How a proper scenario should be)
+
+    1. 
+    The Ward Office of Bengaluru's Urban Greening Department has launched a citywide initiative to increase green cover
+    across neighborhood parks. As part of this effort, the department plans to distribute 8,300 saplings to various parks
+    within the ward. To streamline transportation and handling, the saplings are supplied in three different pack sizes,
+    each requiring different unloading times as shown below.
+
+    Each pack type has a different unloading time:
+      Pack Type Unloading Time
+      10-pack 12 seconds
+      100-pack 50 seconds
+      1000-pack 3 minutes
+
+    (a) [1 mark, DOK 1]
+      If the office uses only 1000-packs, how long will it take to unload 8 such packs?
+      |TEXT1|=1440 seconds. (1Mark)
+  
+    (b) [1 mark, DOK 2]
+      Due to a stock shortage, only six 1000-packs are available. Therefore, as many 100-packs as possible are used, along with
+      10-packs. How many additional 100- and 10-packs are required to make up exactly 8,300 units?
+    (c) [2 marks, DOK 3]
+      If there are at most seven 1000-packs and only ten 10-packs available: Determine a packing plan that provides exactly 8,300 saplings with the least total unloading time. State the total number of packs received and the minimum total unloading time in seconds.
+
 
 assertion_reasoning: |
 
@@ -1378,7 +1398,7 @@ assertion_reasoning: |
       - If mismatch is detected, regenerate the question.
 
   **Explicit Display Rule**
-      - Above each question, clearly display:
+      - Above each question, clearly display(the question and the this part should be seperated with a line (DONT ADD FOR SUBQUESTIONS, IT SHOULD BE ABOVE EACH QUESTION ) ):
         - Topic
         - Marks
         - DOK Level
@@ -1604,7 +1624,11 @@ assertion_reasoning_pdf: |
     - grade-appropriate,
     - aligned with what the student has already learned,
     - and correctly situated within the chapter’s conceptual progression.
-
+  - Treat the uploaded PDF as a **closed syllabus boundary**.
+  - Do **NOT** infer, assume, or import concepts from outside the PDF.
+  - Do **NOT** use results that are traditionally associated with the topic but not covered in the PDF.
+  - Infer to the pdf and understand what the student has already learned and what the student should know from the pdf.
+  - The idea and concept used in the questions should be from the pdf. 
   - Do NOT create questions mixing prerequisite topics not listed in the specified topics.  
     Key concepts guide background understanding, but topics generate the actual content.
 
@@ -1761,7 +1785,7 @@ assertion_reasoning_pdf: |
       - If mismatch is detected, regenerate the question.
 
   **Explicit Display Rule**
-      - Above each question, clearly display:
+      - Above each question, clearly display(the question and the this part should be seperated with a line (DONT ADD FOR SUBQUESTIONS, IT SHOULD BE ABOVE EACH QUESTION ) ):
         - Topic
         - Marks
         - DOK Level
@@ -2215,7 +2239,7 @@ multi_part_maths: |
       - If mismatch is detected, regenerate the question.
 
   **Explicit Display Rule**
-      - Above each question, clearly display:
+      - Above each question, clearly display(the question and the this part should be seperated with a line (DONT ADD FOR SUBQUESTIONS, IT SHOULD BE ABOVE EACH QUESTION ) ):
         - Topic
         - Marks
         - DOK Level
@@ -2691,6 +2715,16 @@ multi_part_maths_pdf: |
       - Old Concept: {{Old_Concept}}
       - Additional Notes: {{Additional_Notes}}
       
+      - (if the topic requires to use the pdf) The attached PDF contains the key concepts of the chapter.
+      - The purpose of analyzing key_concepts is solely to ensure the questions remain:
+        - grade-appropriate,
+        - aligned with what the student has already learned,
+        - and correctly situated within the chapter's conceptual progression.
+      - Treat the uploaded PDF as a **closed syllabus boundary**.
+      - Do **NOT** infer, assume, or import concepts from outside the PDF.
+      - Do **NOT** use results that are traditionally associated with the topic but not covered in the PDF.
+      - Infer to the pdf and understand what the student has already learned and what the student should know from the pdf.
+      - The idea and concept used in the questions should be from the pdf. 
       **About Concepts:**
       - **Old Concept** contains prerequisite knowledge - concepts the student should already know from previous chapters. Use this to gauge the student's existing knowledge level.
       - **New Concept** can be found in the provided PDF document. The PDF contains everything covered in this chapter - all the topics and subtopics the student is currently learning.
@@ -2914,7 +2948,7 @@ multi_part_maths_pdf: |
       - If mismatch is detected, regenerate the question.
 
   **Explicit Display Rule**
-      - Above each question, clearly display:
+      - Above each question, clearly display(the question and the this part should be seperated with a line (DONT ADD FOR SUBQUESTIONS, IT SHOULD BE ABOVE EACH QUESTION ) ):
         - Topic
         - Marks
         - DOK Level
@@ -3434,6 +3468,12 @@ mcq_questions: |
     - Application of concepts to new situations
     - Requires at least two linked operations or inferences
     - Focus/Skill Area: Apply, Classify, Organize, Estimate, Compare
+    
+    -For statement based question's
+      Up to grade 5, Identifying correct statement falls under DOK level 2.
+      From grade 6 onwards, identifying the combination of correct statement falls under DOK level 2.
+  
+
 
     **DOK 3 (Strategic Thinking and Reasoning)**: 
     - Complex reasoning with multiple steps
@@ -3558,7 +3598,19 @@ mcq_questions: |
   - Treat each topic's request as a completely isolated task.
 
   ---
+  ### DOK 2 Question Framing Rule for Statement-Based Questions
 
+    When the **input DOK level is DOK 2**, apply the following rules strictly while generating or validating questions:
+
+    • **Up to Grade 5**  
+      - DOK 2 questions must involve **identifying whether a single statement is correct or incorrect**.
+      - Do NOT ask for combinations of statements at this level.
+
+    • **Grade 6 and Above**  
+      - DOK 2 questions involve **identifying the correct combination of statements** (e.g., I & III, II & IV).
+      - Students are expected to evaluate and compare multiple statements, but **no justification or reasoning** should be required.
+
+ 
   ### MCQ Structure Requirements
 
   Each MCQ must have:
@@ -3584,7 +3636,64 @@ mcq_questions: |
      - How to correct the misunderstanding
      - It should be maximum of 4 lines 
 
+  ## Statement based question rule 
+
+
+    When generating **statement-based questions**, follow all rules below strictly.
+
+    ### Stem Requirement (Mandatory)
+    - First create a **clear stem** (context, situation, figure, expression, or given information).
+    - All numbered statements (I, II, III, IV) must be **directly derived from this stem**.
+    - Statements must NOT be independent or unrelated facts.
+    - Each statement should test interpretation, evaluation, or application of the given stem.
+
+    ### Statement Structure
+    - Provide **multiple numbered statements** (e.g., I, II, III, IV).
+    - Each statement must be independently verifiable as **true or false** based only on the stem.
+    - Avoid ambiguous or overlapping statements.
+
+    ### Options Structure
+    - Options must be **combinations of statement numbers**, such as:
+      - I and II only
+      - I, III and IV only
+    - There must be **exactly one correct combination**.
+    - No two options may represent the same logical outcome.
+
+    ### Correct Answer Rule
+    - Clearly identify which statements are **true**.
+    - The correct option must include **all and only** the true statements.
+
+    ### Distractor Analysis Requirement (Mandatory)
+    For **each incorrect option**, provide a distractor analysis that:
+
+    1. States which statements were **correctly identified**.
+    2. States which **true statements were missed**, if any.
+    3. States which **false statements were incorrectly identified as true**.
+    4. Gives a **specific reason** for each error.
+    5. Classifies each error under one of the following:
+      - Computational
+      - Conceptual
+      - Communication
+      - Comprehension
+
+    ### Mandatory Distractor Analysis Format
+    Use the structure below without altering the narrative flow:
+
+    "You have identified that Statement ___ is true.  
+    But you missed to identify that Statement ___ is also a true statement.  
+    You might have thought so since ___ (error type).  
+    Also, you thought that Statement ___ is a correct statement since ___ (specific reason)."
+
+    ### Output Constraints
+    - Do NOT use vague language.
+    - Do NOT skip mentioning:
+      - a missed true statement (if applicable), and
+      - a wrongly selected false statement.
+    - Each incorrect option must have its **own complete distractor analysis**.
+
   ---
+
+
 
    ## TEXTBOOK CONTENT HANDLING (CRITICAL)
     - **Do NOT treat the textbook/concept excerpts as reading passages in questions**
@@ -3722,12 +3831,17 @@ mcq_questions: |
   5. **Test Understanding**: Help identify specific gaps in student knowledge
   6. - It should be maximum of 4 lines 
   ### Examples of Distractor Types:
-  - Result from applying the wrong formula
-  - Answer to a related but different question
-  - Result from a common calculation error
-  - Result from misunderstanding the concept
-  - Off-by-one errors or unit conversion mistakes
-  - maximum of 4 lines should be used
+    - Conceptual Error  
+    - Computational Error
+    - Communicational Error  
+    - Comprehensional Error   
+    -You can select random error type for each distractor option. Dont repeat the same error type for all options.
+
+  Error-Type–First Rule (MANDATORY):
+    Before writing any distractor option, first select the intended error type.
+    The numerical value and reasoning of the option must be a direct consequence of that error type.
+    Error types must NOT be assigned after generating the option.
+
   ---
   ## TAXONOMY LOCK RULE (MANDATORY)
 
@@ -3756,7 +3870,7 @@ mcq_questions: |
       - If mismatch is detected, regenerate the question.
 
   **Explicit Display Rule**
-      - Above each question, clearly display:
+      - Above each question, clearly display(the question and the this part should be seperated with a line (DONT ADD FOR SUBQUESTIONS, IT SHOULD BE ABOVE EACH QUESTION ) ):
         - Topic
         - Marks
         - DOK Level
@@ -3779,10 +3893,100 @@ mcq_questions: |
         - Confirm they match exactly
 
   ### DISTRACTOR ANALYSIS FORMAT (Mandatory for Every Question)
+            
+      For every mcq question, a Distractor Analysis is compulsory.
 
-  **OUTPUT FORMAT: The distractor analysis MUST be presented as a markdown table with two columns: "Option" and "Misconception"**
+      1. Distractor Design Rule
+        Each incorrect option MUST be intentionally framed using exactly ONE identifiable mathematical error type. 
+        Distractors must reflect realistic student mistakes and must not be random, vague, or purely eliminative.
+        Do NOT mix multiple error types within a single option.
 
-  For each incorrect option (3 distractors), follow this exact explanation structure:
+      2. Permitted Error Types (Use ONLY these)
+
+        A. Conceptual Error  
+          Definition: Arises from an incorrect understanding of a mathematical concept, rule, or property, leading to the wrong method or idea being applied.  
+          Nature: Misunderstanding what concept should be used.  
+          Use in distractors: Target common misconceptions.
+          eg : Examples:
+              • Believing (a+b)^2 = a^2 + b^2
+              • Using the area formula when the perimeter is required
+            Use in distractors:
+              Targets common misconceptions.
+
+        B. Computational Error  
+          Definition: Occurs when the correct concept and method are chosen, but a mistake is made during arithmetic or algebraic computation.  
+          Nature: Careless calculation or manipulation error.  
+          Use in distractors: Capture calculation-based mistakes.
+          Examples:
+            • 7 \times 8 = 54
+            • Sign error: -4 + 6 = -10
+            • Incorrect simplification: \frac{6}{3} = 1
+          Use in distractors:
+            Captures careless calculation mistakes.
+        C. Communicational Error  
+          Definition: Occurs when the student understands the mathematical concept and solution
+          but expresses the answer using incorrect notation, symbols, format, or units.  
+          Nature: Error in mathematical communication or representation.  
+          Use in distractors: Test notation, symbols, units, and expression clarity.
+
+          Examples:
+            Writing x = 2 instead of x ± 2
+            Writing x = 3 instead of x ≥ 3
+            Giving 30 instead of 30 km/h
+            Writing x = 1,2 instead of {1,2}
+
+            Use in distractors:
+            Tests mathematical communication and notation skills.
+        D. Comprehensional Error    
+          Definition: Occurs when the student correctly understands the mathematical concepts
+          but misreads, overlooks, or ignores explicit instructions, conditions, or keywords
+          in the question.  
+          Nature: Error in interpreting what is asked, not in understanding mathematics.
+          Use in distractors: Identify reading comprehension and instruction-following weaknesses.
+          Examples:
+            • Finding the area when the question asks for perimeter
+            • Ignoring words like “number of solutions”, “at most”, “except”
+            • Solving for x when the question asks for the value of an expression
+            Use in distractors:
+              Identifies weaknesses in reading comprehension and attention to detail.
+      ### Error-Type Classification Gate (MANDATORY)
+
+          Before assigning an error type to any distractor, apply this gate:
+
+          1. If the student’s mistake would STILL occur even if the question were reworded or simplified,
+            then it is NOT a Comprehensional Error.
+
+          2. Comprehensional Error may be used ONLY when:
+            - the student ignores or misreads an explicit instruction, keyword, or condition
+            - AND the mathematical concept itself is correctly understood
+
+          3. Any misunderstanding of:
+            - sign (positive / negative / zero)
+            - number properties
+            - definitions
+            - term meaning (e.g., “negative”, “odd”, “multiple”)
+            MUST be classified as a Conceptual Error, not Comprehensional.
+        ### Error-Type Decision Table (MANDATORY)
+
+      | Observed Student Mistake | Correct Error Type |
+      |--------------------------|-------------------|
+      | Thinks 0 is negative | Conceptual Error |
+      | Uses wrong formula | Conceptual Error |
+      | Ignores word like “except”, “first”, “at most” | Comprehensional Error |
+      | Solves correctly but answers a different quantity | Comprehensional Error |
+      | Arithmetic slip with correct method | Computational Error |
+      | Wrong units / notation / symbol | Communicational Error |
+
+    IMPORTANT EXCLUSION:
+      If the error arises from misunderstanding a mathematical definition, property,
+      classification, or meaning (e.g., sign of a number, term meaning, formula components),
+      it MUST be classified as a Conceptual Error, not Comprehensional.
+
+      -- First finalize on what type of error will be used then make options based on that error type.
+
+  **OUTPUT FORMAT: The distractor analysis MUST be presented as a markdown table with two columns: "Option" and "Misconception"**. The “Option” column must display the option label followed by the assigned error type, separated by a hyphen (e.g., B – Conceptual Error).
+
+    For each incorrect option (3 distractors), follow this exact explanation structure:
 
   **Option [X]: [The incorrect answer]**
 
@@ -3799,6 +4003,53 @@ mcq_questions: |
   **Correct approach:
   - Briefly state what the student should have done instead
   - Connect back to the correct answer
+  - Do not explicitly use headings or labels such as "Why the Student Chose It", "Correct the Misunderstanding", or "Final Clarification". Each distractor explanation must be written as one continuous paragraph that implicitly includes: (i) the reasoning or misconception that could lead a student to select the option, (ii) an explanation of why that reasoning is incorrect, and (iii) a brief statement of the correct idea or approach. All three elements must appear in this order within the same paragraph.
+
+      **Important Rules:**
+      - Do NOT partially praise the student unless it matches the option's meaning.  
+      - Keep the explanation simple, student-friendly, detailed, and grammatically correct.
+      - Use equations or symbols when needed.
+      - Maintain a smooth flow between sentences.
+
+  ### Mandatory Distractor Analysis for DOK 2 questions for grade 6 and upper (for statement based questions)
+
+    When providing distractor analysis for DOK 2 grade 6 adn upper questions, follow the format and rules below strictly.
+
+    #### Core Requirement
+    The distractor analysis MUST:
+    1. State which statements were correctly identified as true.
+    2. Explicitly state any true statement that the student failed to identify.
+    3. Explicitly explain why any incorrect statement was mistakenly identified as true.
+
+    #### Mandatory Structure
+    Use the exact narrative structure below (modify only statement numbers and reasons):
+
+    "You have identified that Statement ___ is true.  
+    But you missed to identify that Statement ___ is also a true statement.  
+    You might have thought so since ___ (reason category: computational / conceptual / communication / comprehension).  
+    Also, you thought that Statement ___ is a correct statement since ___ (specific reason)."
+
+    #### If Multiple Statements Are Correctly Identified
+    - Clearly acknowledge all correctly identified statements.
+    - Then address each incorrectly identified statement individually with a reason.
+
+    #### Reason Specification Rules
+    - Reasons must be **specific and concrete**, not vague.
+    - Acceptable examples include:
+      - You might have misunderstood a parallelogram as a square.
+      - You might have forgotten to apply the theorem.
+      - You might have added instead of subtracting.
+      - You might have missed noticing a condition in the question.
+      - You might be unaware of the relevant property or rule.
+    - Always classify the error under one of the following:
+      **computational / conceptual / communication / comprehension**
+
+    #### Output Constraint
+    - Do NOT change the tone or structure.
+    - Do NOT omit either:
+      - the reason for missing a true statement, or
+      - the reason for selecting a false statement.
+    - This format is mandatory for all statement-based distractor analyses.
 
   **CRITICAL Distractor Analysis Requirements:**
   - **Maximum Length**: Each distractor rationale must be **4 lines maximum** (total for all three sub-sections combined)
@@ -3810,12 +4061,17 @@ mcq_questions: |
   - Do Not explicitly say  "Why students might select this" , "What's wrong with this approach" , "Correct approach" in the distractor analysis (you are the one who is explaining the distractor analysis)
   - Make sure each distractor analysis is unique and addresses a different type of error
   - Make sure each distractor analysis is of maximum 4 lines
+
+  Error-Type Diversity Rule (MANDATORY):
+    Each of the three distractors must be based on a different error type.
+    No two distractors may rely on the same underlying mistake, even if expressed differently.
+
   **Example:**
       | Distractors | Misconception |
       |------------|----------------|
       | B – Conceptual error | You correctly identified that Statement I is true, but you might have misunderstood the term “first five.” The sum of the first five consecutive odd numbers (1 + 3 + 5 + 7 + 9) is 25, not 4³ = 64. Since Statement II is mathematically incorrect, this option is incorrect as a whole. |
-      | C – Conceptual error | You correctly identified that Statement I is true, but you might have assumed that the sum of any three odd numbers always equals 3³ = 27. For example, 1 + 3 + 5 equals 9, not 27. Because Statement III is incorrect, this option is incorrect. |
-      | D – Conceptual error | You correctly identified that Statement I is true, but you might have misunderstood two ideas: believing that any three odd numbers always sum to 27, and assuming that the sum of consecutive odd numbers is always odd. For example, 1 + 3 = 4 (even). Since Statement III and Statement IV are both incorrect, this option is wrong. |
+      | C – Computational Error   | You correctly identified that Statement I is true, but you might have assumed that the sum of any three odd numbers always equals 3³ = 27. For example, 1 + 3 + 5 equals 9, not 27. Because Statement III is incorrect, this option is incorrect. |
+      | D – Comprehensional Error | You correctly identified that Statement I is true, but you might have misunderstood two ideas: believing that any three odd numbers always sum to 27, and assuming that the sum of consecutive odd numbers is always odd. For example, 1 + 3 = 4 (even). Since Statement III and Statement IV are both incorrect, this option is wrong. |
 
 
   ---
@@ -3956,6 +4212,16 @@ mcq_questions_pdf: |
     - Old Concepts: {{Old_Concept}}  # Prerequisite knowledge - what the student has already studied before this chapter
     - **Additional Notes**: {{Additional_Notes}}  # Extra instructions or configuration for how questions or solutions should be generated. Consider these notes when creating questions and formatting solutions.
 
+    - (if the topic requires to use the pdf) The attached PDF contains the key concepts of the chapter.
+    - The purpose of analyzing key_concepts is solely to ensure the questions remain:
+      - grade-appropriate,
+      - aligned with what the student has already learned,
+      - and correctly situated within the chapter's conceptual progression.
+    - Treat the uploaded PDF as a **closed syllabus boundary**.
+    - Do **NOT** infer, assume, or import concepts from outside the PDF.
+    - Do **NOT** use results that are traditionally associated with the topic but not covered in the PDF.
+    - Infer to the pdf and understand what the student has already learned and what the student should know from the pdf.
+    - The idea and concept used in the questions should be from the pdf. 
     ## MULTI-TOPIC HANDLING:
       - You are generating questions for {{NUMBER_OF_TOPICS}} topic(s).
       - Process each topic independently.
@@ -4361,7 +4627,7 @@ mcq_questions_pdf: |
       - If mismatch is detected, regenerate the question.
 
   **Explicit Display Rule**
-      - Above each question, clearly display:
+      - Above each question, clearly display(the question and the this part should be seperated with a line (DONT ADD FOR SUBQUESTIONS, IT SHOULD BE ABOVE EACH QUESTION ) ):
         - Topic
         - Marks
         - DOK Level
@@ -5131,7 +5397,7 @@ FIB: |
       - If mismatch is detected, regenerate the question.
 
   **Explicit Display Rule**
-      - Above each question, clearly display:
+      - Above each question, clearly display(the question and the this part should be seperated with a line (DONT ADD FOR SUBQUESTIONS, IT SHOULD BE ABOVE EACH QUESTION ) ):
         - Topic
         - Marks
         - DOK Level
@@ -5250,6 +5516,17 @@ FIB_pdf: |
     {{TOPICS_SECTION}}
     - **Note**: New Concepts are provided in the PDF document/new concepts. The PDF/new concepts contains everything covered in this chapter - all the topics and subtopics the student is currently learning. Old Concepts show prerequisite knowledge - what the student should already know from previous learning. Prioritize new concepts from the PDF/new concept for questions.
     - **Additional Notes**: {{Additional_Notes}}  # Extra instructions or configuration for how questions or solutions should be generated. Consider these notes when creating questions and formatting solutions.
+
+    - (if the topic requires to use the pdf) The attached PDF contains the key concepts of the chapter.
+    - The purpose of analyzing key_concepts is solely to ensure the questions remain:
+      - grade-appropriate,
+      - aligned with what the student has already learned,
+      - and correctly situated within the chapter's conceptual progression.
+    - Treat the uploaded PDF as a **closed syllabus boundary**.
+    - Do **NOT** infer, assume, or import concepts from outside the PDF.
+    - Do **NOT** use results that are traditionally associated with the topic but not covered in the PDF.
+    - Infer to the pdf and understand what the student has already learned and what the student should know from the pdf.
+    - The idea and concept used in the questions should be from the pdf. 
     - IMPORTANT → Total Questions to Generate: {{TOTAL_QUESTIONS}} (Sum of all questions across topics)
       (Generate the specified number of unique Fill in the Blanks questions for each topic as per the list above.)
 
@@ -5830,7 +6107,7 @@ FIB_pdf: |
       - If mismatch is detected, regenerate the question.
 
   **Explicit Display Rule**
-      - Above each question, clearly display:
+      - Above each question, clearly display(the question and the this part should be seperated with a line (DONT ADD FOR SUBQUESTIONS, IT SHOULD BE ABOVE EACH QUESTION ) ):
         - Topic
         - Marks
         - DOK Level
@@ -6409,7 +6686,7 @@ descriptive: |
       - If mismatch is detected, regenerate the question.
 
   **Explicit Display Rule**
-      - Above each question, clearly display:
+      - Above each question, clearly display(the question and the this part should be seperated with a line (DONT ADD FOR SUBQUESTIONS, IT SHOULD BE ABOVE EACH QUESTION ) ):
         - Topic
         - Marks
         - DOK Level
@@ -6486,6 +6763,17 @@ descriptive_pdf: |
     - New Concept: (Provided in Content Reference Instruction above)
     {{TOPICS_SECTION}}
     - Additional Notes: {{Additional_Notes}}
+
+    - (if the topic requires to use the pdf) The attached PDF contains the key concepts of the chapter.
+    - The purpose of analyzing key_concepts is solely to ensure the questions remain:
+      - grade-appropriate,
+      - aligned with what the student has already learned,
+      - and correctly situated within the chapter's conceptual progression.
+    - Treat the uploaded PDF as a **closed syllabus boundary**.
+    - Do **NOT** infer, assume, or import concepts from outside the PDF.
+    - Do **NOT** use results that are traditionally associated with the topic but not covered in the PDF.
+    - Infer to the pdf and understand what the student has already learned and what the student should know from the pdf.
+    - The idea and concept used in the questions should be from the pdf. 
     - Total Questions to Generate: {{TOTAL_QUESTIONS}}
 
     ## MULTI-TOPIC HANDLING:
@@ -6936,7 +7224,7 @@ descriptive_pdf: |
       - If mismatch is detected, regenerate the question.
 
   **Explicit Display Rule**
-      - Above each question, clearly display:
+      - Above each question, clearly (the question and the this part should be seperated with a line (DONT ADD FOR SUBQUESTIONS, IT SHOULD BE ABOVE EACH QUESTION ) ):
         - Topic
         - Marks
         - DOK Level
@@ -7514,7 +7802,7 @@ descriptive_subq: |
       - If mismatch is detected, regenerate the question.
 
   **Explicit Display Rule**
-      - Above each question, clearly display:
+      - Above each question, clearly display(the question and the this part should be seperated with a line (DONT ADD FOR SUBQUESTIONS, IT SHOULD BE ABOVE EACH QUESTION ) ):
         - Topic
         - Marks
         - DOK Level
@@ -7611,6 +7899,17 @@ descriptive_subq_pdf: |
     - Old Concept: {{Old_Concept}}
     {{TOPICS_SECTION}}
     - Additional Notes: {{Additional_Notes}}
+
+    - (if the topic requires to use the pdf) The attached PDF contains the key concepts of the chapter.
+    - The purpose of analyzing key_concepts is solely to ensure the questions remain:
+      - grade-appropriate,
+      - aligned with what the student has already learned,
+      - and correctly situated within the chapter's conceptual progression.
+    - Treat the uploaded PDF as a **closed syllabus boundary**.
+    - Do **NOT** infer, assume, or import concepts from outside the PDF.
+    - Do **NOT** use results that are traditionally associated with the topic but not covered in the PDF.
+    - Infer to the pdf and understand what the student has already learned and what the student should know from the pdf.
+    - The idea and concept used in the questions should be from the pdf. 
     - Total Questions to Generate: {{TOTAL_QUESTIONS}}
 
     ## MULTI-TOPIC HANDLING:
@@ -8083,6 +8382,54 @@ descriptive_subq_pdf: |
 
     - **CRITICAL**: The generated "Final Answer" must be concise (number, word, or short phrase). Do NOT write full sentences.
     - Provide final answer for EACH sub-part separately.
+  ## TAXONOMY LOCK RULE (MANDATORY)
+
+  **Taxonomy Lock Rule**
+   - For every question type, the user will explicitly specify:
+     - Taxonomy (e.g., Remembering, Understanding, Applying, Analyzing, etc.)
+     - DOK level
+     - Marks
+   - You MUST use **only the taxonomy provided for that question type**.
+   - Do NOT substitute, infer, upgrade, downgrade, or mix taxonomies.
+   - If a question cannot be generated under the given taxonomy, you must still stay within it and simplify the question accordingly.
+
+  **One-to-One Mapping**
+    - Each generated question must map **directly** to:
+      - The taxonomy mentioned for that specific question type
+      - The DOK level mentioned for that specific question type
+    - Do not reuse taxonomy from other question types.
+
+  **Output Consistency Check (Mandatory)**
+      - Before finalizing output, internally verify:
+        - Taxonomy in the output exactly matches the taxonomy stated in the input for that question.
+        - No question contains cognitive operations beyond the allowed taxonomy.
+          - Example:
+            - "Analyze", "justify", "compare", "prove" → NOT allowed in Remembering
+            - "Recall", "state", "identify" → NOT sufficient for Analyzing
+      - If mismatch is detected, regenerate the question.
+
+  **Explicit Display Rule**
+      - Above each question, clearly (the question and the this part should be seperated with a line (DONT ADD FOR SUBQUESTIONS, IT SHOULD BE ABOVE EACH QUESTION ) ):
+        - Topic
+        - Marks
+        - DOK Level
+        - Taxonomy (must match input verbatim)
+
+  **No Cross-Contamination**
+      - Do NOT let:
+        - Higher-order taxonomy leak into lower-order questions
+        - Solution explanations exceed the allowed cognitive level
+
+  **Failure Handling**
+      - If user input is ambiguous or internally inconsistent:
+        - State the limitation clearly
+        - Do NOT guess or auto-correct taxonomy
+
+  **Final Validation Statement**
+      - After generating all questions, include a final checklist stating:
+        - Which taxonomies were requested
+        - Which taxonomies were used
+        - Confirm they match exactly
 
   =====================================================================================
   ## OUTPUT FORMAT

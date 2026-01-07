@@ -2,7 +2,6 @@
 Streamlit Question Generator Application
 A modern UI for generating educational questions across multiple topics and types.
 """
-
 import streamlit as st
 import yaml
 import asyncio
@@ -151,13 +150,15 @@ with tab1:
     grade = st.selectbox(
         "Grade",
         [f"Grade {i}" for i in range(1, 13)],
-        help="Select the grade level"
+        help="Select the grade level",
+        key="general_grade"
     )
     
     chapter = st.text_input(
         "Chapter/Unit Name",
         placeholder="e.g., Arithmetic Progressions",
-        help="Enter the chapter or unit name"
+        help="Enter the chapter or unit name",
+        key="general_chapter"
     )
     
     col1, col2 = st.columns(2)
@@ -167,7 +168,8 @@ with tab1:
             "Old Concepts (Prerequisites)",
             placeholder="Enter prerequisite knowledge the student already has...",
             height=150,
-            help="Concepts students should already know"
+            help="Concepts students should already know",
+            key="general_old_concept"
         )
     
     with col2:
@@ -175,7 +177,8 @@ with tab1:
             "New Concepts (Current Chapter)",
             placeholder="Enter the concepts being taught in this chapter...",
             height=150,
-            help="New concepts being taught"
+            help="New concepts being taught",
+            key="general_new_concept"
         )
     
     # Universal file upload option (PDF or Image)
@@ -200,7 +203,8 @@ with tab1:
         "Additional Notes (Optional)",
         placeholder="Any special instructions for question generation...",
         height=100,
-        help="Extra instructions or configuration"
+        help="Extra instructions or configuration",
+        key="general_additional_notes"
     )
     
     st.markdown("---")
@@ -1196,49 +1200,52 @@ with tab1:
                             st.session_state.generated_output = results
                             st.success("✅ Questions generated successfully!")
                             
-                            # Show results immediately below
-                            st.markdown("---")
-                            st.markdown('<div class="section-header">Generated Questions</div>', unsafe_allow_html=True)
-                            
-                            # Display results for each batch
-                            for batch_key, batch_result in results.items():
-                                with st.expander(f"📋 {batch_key}", expanded=True):
-                                    if batch_result.get('error'):
-                                        st.error(f"❌ Error: {batch_result['error']}")
-                                    else:
-                                        st.markdown(batch_result.get('text', 'No output'))
-                                        
-                                        # Show metadata
-                                        st.markdown("---")
-                                        col1, col2 = st.columns(2)
-                                        with col1:
-                                            st.metric("Questions", batch_result.get('question_count', 'N/A'))
-                                        with col2:
-                                            st.metric("Time Taken", f"{batch_result.get('elapsed', 0):.2f}s")
-                            
-                            # Download option
-                            st.markdown("---")
-                            
-                            # Combine all results
-                            combined_output = ""
-                            for batch_key, batch_result in results.items():
-                                combined_output += f"\n\n{'='*80}\n"
-                                combined_output += f"BATCH: {batch_key}\n"
-                                combined_output += f"{'='*80}\n\n"
-                                combined_output += batch_result.get('text', 'No output')
-                            
-                            st.download_button(
-                                label="📥 Download All Questions",
-                                data=combined_output,
-                                file_name="generated_questions.md",
-                                mime="text/markdown",
-                                use_container_width=True,
-                                key="download_saved_results"
-                            )
-                            
                         except Exception as e:
                             st.error(f"❌ Error during generation: {str(e)}")
                             st.exception(e)
+
+        if st.session_state.generated_output:
+            results = st.session_state.generated_output
+            
+            # Show results immediately below
+            st.markdown("---")
+            st.markdown('<div class="section-header">Generated Questions</div>', unsafe_allow_html=True)
+            
+            # Display results for each batch
+            for batch_key, batch_result in results.items():
+                with st.expander(f"📋 {batch_key}", expanded=True):
+                    if batch_result.get('error'):
+                        st.error(f"❌ Error: {batch_result['error']}")
+                    else:
+                        st.markdown(batch_result.get('text', 'No output'))
+                        
+                        # Show metadata
+                        st.markdown("---")
+                        col1, col2 = st.columns(2)
+                        with col1:
+                            st.metric("Questions", batch_result.get('question_count', 'N/A'))
+                        with col2:
+                            st.metric("Time Taken", f"{batch_result.get('elapsed', 0):.2f}s")
+            
+            # Download option
+            st.markdown("---")
+            
+            # Combine all results
+            combined_output = ""
+            for batch_key, batch_result in results.items():
+                combined_output += f"\n\n{'='*80}\n"
+                combined_output += f"BATCH: {batch_key}\n"
+                combined_output += f"{'='*80}\n\n"
+                combined_output += batch_result.get('text', 'No output')
+            
+            st.download_button(
+                label="📥 Download All Questions",
+                data=combined_output,
+                file_name="generated_questions.md",
+                mime="text/markdown",
+                use_container_width=True,
+                key="download_saved_results"
+            )
 
 
 with tab2:

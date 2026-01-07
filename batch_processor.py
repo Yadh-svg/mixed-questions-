@@ -9,6 +9,7 @@ from collections import defaultdict
 import logging
 from datetime import datetime
 from pathlib import Path
+import os
 
 from llm_engine import run_gemini_async
 from prompt_builder import build_prompt_for_batch
@@ -17,6 +18,32 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
+def save_prompt_to_file(prompt_text: str, batch_key: str) -> str:
+    """
+    Save the generated prompt to a text file.
+    
+    Args:
+        prompt_text: The prompt text to save
+        batch_key: The batch key (question type) for naming
+    
+    Returns:
+        Path to the saved file
+    """
+    # Create prompt_logs directory if it doesn't exist
+    logs_dir = Path("prompt_logs")
+    logs_dir.mkdir(exist_ok=True)
+    
+    # Generate timestamped filename
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    filename = f"prompt_{batch_key}_{timestamp}.txt"
+    filepath = logs_dir / filename
+    
+    # Save prompt to file
+    with open(filepath, 'w', encoding='utf-8') as f:
+        f.write(prompt_text)
+    
+    logger.info(f"Saved prompt to: {filepath}")
+    return str(filepath)
 
 
 
@@ -70,6 +97,8 @@ async def process_single_batch(
         file_metadata = prompt_data.get('file_metadata', {})
         api_key = general_config['api_key']
         
+        # Save prompt to file for review
+        save_prompt_to_file(prompt_text, batch_key)
         
         # Call Gemini API with files and metadata
         result = await run_gemini_async(

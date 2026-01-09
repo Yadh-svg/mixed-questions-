@@ -12,6 +12,46 @@ from dotenv import load_dotenv
 
 # Load environment variables
 load_dotenv()
+from st_img_pastebutton import paste
+import io
+import base64
+import re
+
+class PastedFile(io.BytesIO):
+    """Wrapper to make pasted images look like UploadedFile objects"""
+    def __init__(self, content, name="pasted_image.png", type="image/png"):
+        if isinstance(content, str):
+            if content.startswith("data:"):
+                # Handle Data URI (e.g., data:image/png;base64,...)
+                try:
+                    header, encoded = content.split(",", 1)
+                    content = base64.b64decode(encoded)
+                    # Try to extract type from header
+                    if "image/" in header:
+                        type_match = re.search(r"image/(\w+)", header)
+                        if type_match:
+                            type = f"image/{type_match.group(1)}"
+                            ext = type_match.group(1)
+                            if not name.endswith(f".{ext}"):
+                                name = f"pasted_image.{ext}"
+                except Exception:
+                    # Fallback or invalid data uri
+                    pass
+            else:
+                # Try hex (original assumption)
+                try:
+                    content = bytes.fromhex(content)
+                except ValueError:
+                    # Try raw base64 as last resort
+                    try:
+                        content = base64.b64decode(content)
+                    except Exception:
+                        pass # Keep as is if all fails (likely to error later but allow debug)
+
+        super().__init__(content)
+        self.name = name
+        self.type = type
+        self.size = len(content)
 
 # Page configuration
 st.set_page_config(
@@ -185,17 +225,33 @@ with tab1:
     st.markdown("### 📄 Universal New Concept File (Optional)")
     st.info("💡 Upload a PDF or image that will be used for ALL questions that select 'New Concept File' as their source. This is a universal file that applies across all question types.")
     
-    universal_pdf = st.file_uploader(
-        "Upload Universal New Concept File (PDF/Image)",
-        type=['pdf', 'png', 'jpg', 'jpeg', 'gif', 'webp'],
-        key="universal_new_concept_pdf",
-        help="This file will be used for all questions that select 'pdf' as their new concept source"
-    )
+    col_upload, col_paste = st.columns([3, 1])
+    
+    with col_upload:
+        universal_pdf_upload = st.file_uploader(
+            "Upload Universal New Concept File (PDF/Image)",
+            type=['pdf', 'png', 'jpg', 'jpeg', 'gif', 'webp'],
+            key="universal_new_concept_pdf",
+            help="This file will be used for all questions that select 'pdf' as their new concept source"
+        )
+
+    with col_paste:
+        st.markdown("<br>", unsafe_allow_html=True)  # Align with uploader
+        pasted_content = paste(label="📋 Paste Image", key="universal_paste_btn")
+    
+    # Logic to handle both upload and paste
+    universal_pdf = None
+    
+    if universal_pdf_upload:
+        universal_pdf = universal_pdf_upload
+    elif pasted_content:
+        # Convert pasted bytes to file-like object
+        universal_pdf = PastedFile(pasted_content, name="pasted_universal_image.png")
     
     # Store in session state
     if universal_pdf:
         st.session_state.universal_pdf = universal_pdf
-        st.success(f"✅ Universal file uploaded: {universal_pdf.name}")
+        st.success(f"✅ Universal file ready: {universal_pdf.name}")
     else:
         st.session_state.universal_pdf = None
     
@@ -434,15 +490,27 @@ with tab1:
                         st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_pdf'] = None
                     # Show PDF uploader if PDF is selected
                     elif additional_notes_source == 'pdf':
-                        additional_notes_pdf = st.file_uploader(
-                            "Upload Additional Notes File (PDF/Image)",
-                            type=['pdf', 'png', 'jpg', 'jpeg', 'gif', 'webp'],
-                            key=f"mcq_additional_notes_pdf_{i}"
-                        )
-                        st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_pdf'] = additional_notes_pdf
+                        col_u, col_p = st.columns([3, 1])
+                        with col_u:
+                            an_upload = st.file_uploader(
+                                "Upload Additional Notes File (PDF/Image)",
+                                type=['pdf', 'png', 'jpg', 'jpeg', 'gif', 'webp'],
+                                key=f"mcq_additional_notes_pdf_{i}"
+                            )
+                        with col_p:
+                            st.markdown("<br>", unsafe_allow_html=True)
+                            an_paste = paste(label="📋 Paste", key=f"mcq_paste_{i}")
+                        
+                        an_final = None
+                        if an_upload:
+                            an_final = an_upload
+                        elif an_paste:
+                            an_final = PastedFile(an_paste, name=f"pasted_mcq_{i}.png")
+                            
+                        st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_pdf'] = an_final
                         st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_text'] = ''
-                        if additional_notes_pdf:
-                            st.success(f"✅ Uploaded: {additional_notes_pdf.name}")
+                        if an_final:
+                            st.success(f"✅ Ready: {an_final.name}")
                     else:
                         st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_pdf'] = None
                         st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_text'] = ''
@@ -517,15 +585,27 @@ with tab1:
                         st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_text'] = additional_notes_text
                         st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_pdf'] = None
                     elif additional_notes_source == 'pdf':
-                        additional_notes_pdf = st.file_uploader(
-                            "Upload Additional Notes File (PDF/Image)",
-                            type=['pdf', 'png', 'jpg', 'jpeg', 'gif', 'webp'],
-                            key=f"ar_additional_notes_pdf_{i}"
-                        )
-                        st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_pdf'] = additional_notes_pdf
+                        col_u, col_p = st.columns([3, 1])
+                        with col_u:
+                            an_upload = st.file_uploader(
+                                "Upload Additional Notes File (PDF/Image)",
+                                type=['pdf', 'png', 'jpg', 'jpeg', 'gif', 'webp'],
+                                key=f"ar_additional_notes_pdf_{i}"
+                            )
+                        with col_p:
+                            st.markdown("<br>", unsafe_allow_html=True)
+                            an_paste = paste(label="📋 Paste", key=f"ar_paste_{i}")
+                            
+                        an_final = None
+                        if an_upload:
+                            an_final = an_upload
+                        elif an_paste:
+                            an_final = PastedFile(an_paste, name=f"pasted_ar_{i}.png")
+
+                        st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_pdf'] = an_final
                         st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_text'] = ''
-                        if additional_notes_pdf:
-                            st.success(f"✅ Uploaded: {additional_notes_pdf.name}")
+                        if an_final:
+                            st.success(f"✅ Ready: {an_final.name}")
                     else:
                         st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_pdf'] = None
                         st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_text'] = ''
@@ -597,23 +677,23 @@ with tab1:
                     else:
                         # Multi-part: show subpart configuration
                         # Initialize subparts for this question
-                        if 'subparts' not in st.session_state.question_types_config[qtype]['questions'][i]:
-                            st.session_state.question_types_config[qtype]['questions'][i]['subparts'] = []
+                        if 'subparts_config' not in st.session_state.question_types_config[qtype]['questions'][i]:
+                            st.session_state.question_types_config[qtype]['questions'][i]['subparts_config'] = []
                         
-                        current_subparts = len(st.session_state.question_types_config[qtype]['questions'][i]['subparts'])
+                        current_subparts = len(st.session_state.question_types_config[qtype]['questions'][i]['subparts_config'])
                         if num_subparts != current_subparts:
                             if num_subparts > current_subparts:
                                 for j in range(current_subparts, num_subparts):
                                     roman_numerals = ['i', 'ii', 'iii', 'iv', 'v']
-                                    st.session_state.question_types_config[qtype]['questions'][i]['subparts'].append({
+                                    st.session_state.question_types_config[qtype]['questions'][i]['subparts_config'].append({
                                         'part': roman_numerals[j] if j < len(roman_numerals) else f'part_{j+1}',
                                         'dok': 1,
                                         'marks': 1.0,
                                         'taxonomy': 'Remembering'
                                     })
                             else:
-                                st.session_state.question_types_config[qtype]['questions'][i]['subparts'] = \
-                                    st.session_state.question_types_config[qtype]['questions'][i]['subparts'][:num_subparts]
+                                st.session_state.question_types_config[qtype]['questions'][i]['subparts_config'] = \
+                                    st.session_state.question_types_config[qtype]['questions'][i]['subparts_config'][:num_subparts]
                         
                         # Subparts config
                         st.markdown("**Sub-Parts Configuration**")
@@ -629,9 +709,9 @@ with tab1:
                                     "DOK",
                                     [1, 2, 3],
                                     key=f"fib_subpart_dok_{i}_{j}",
-                                    index=st.session_state.question_types_config[qtype]['questions'][i]['subparts'][j].get('dok', 1) - 1
+                                    index=st.session_state.question_types_config[qtype]['questions'][i]['subparts_config'][j].get('dok', 1) - 1
                                 )
-                                st.session_state.question_types_config[qtype]['questions'][i]['subparts'][j]['dok'] = dok
+                                st.session_state.question_types_config[qtype]['questions'][i]['subparts_config'][j]['dok'] = dok
                             
                             with cols[2]:
                                 marks = st.number_input(
@@ -640,9 +720,9 @@ with tab1:
                                     max_value=10.0,
                                     step=0.5,
                                     key=f"fib_subpart_marks_{i}_{j}",
-                                    value=st.session_state.question_types_config[qtype]['questions'][i]['subparts'][j].get('marks', 1.0)
+                                    value=st.session_state.question_types_config[qtype]['questions'][i]['subparts_config'][j].get('marks', 1.0)
                                 )
-                                st.session_state.question_types_config[qtype]['questions'][i]['subparts'][j]['marks'] = marks
+                                st.session_state.question_types_config[qtype]['questions'][i]['subparts_config'][j]['marks'] = marks
                             
                             with cols[3]:
                                 taxonomy = st.selectbox(
@@ -650,10 +730,10 @@ with tab1:
                                     taxonomy_options,
                                     key=f"fib_subpart_taxonomy_{i}_{j}",
                                     index=taxonomy_options.index(
-                                        st.session_state.question_types_config[qtype]['questions'][i]['subparts'][j].get('taxonomy', 'Remembering')
+                                        st.session_state.question_types_config[qtype]['questions'][i]['subparts_config'][j].get('taxonomy', 'Remembering')
                                     )
                                 )
-                                st.session_state.question_types_config[qtype]['questions'][i]['subparts'][j]['taxonomy'] = taxonomy
+                                st.session_state.question_types_config[qtype]['questions'][i]['subparts_config'][j]['taxonomy'] = taxonomy
                     
                     # New Concept Source Selection (MANDATORY)
                     st.markdown("**New Concept Source:**")
@@ -710,15 +790,27 @@ with tab1:
                         st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_text'] = additional_notes_text
                         st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_pdf'] = None
                     elif additional_notes_source == 'pdf':
-                        additional_notes_pdf = st.file_uploader(
-                            "Upload Additional Notes File (PDF/Image)",
-                            type=['pdf', 'png', 'jpg', 'jpeg', 'gif', 'webp'],
-                            key=f"fib_additional_notes_pdf_{i}"
-                        )
-                        st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_pdf'] = additional_notes_pdf
+                        col_u, col_p = st.columns([3, 1])
+                        with col_u:
+                            an_upload = st.file_uploader(
+                                "Upload Additional Notes File (PDF/Image)",
+                                type=['pdf', 'png', 'jpg', 'jpeg', 'gif', 'webp'],
+                                key=f"fib_additional_notes_pdf_{i}"
+                            )
+                        with col_p:
+                            st.markdown("<br>", unsafe_allow_html=True)
+                            an_paste = paste(label="📋 Paste", key=f"fib_paste_{i}")
+                            
+                        an_final = None
+                        if an_upload:
+                            an_final = an_upload
+                        elif an_paste:
+                            an_final = PastedFile(an_paste, name=f"pasted_fib_{i}.png")
+
+                        st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_pdf'] = an_final
                         st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_text'] = ''
-                        if additional_notes_pdf:
-                            st.success(f"✅ Uploaded: {additional_notes_pdf.name}")
+                        if an_final:
+                            st.success(f"✅ Ready: {an_final.name}")
                     else:
                         st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_pdf'] = None
                         st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_text'] = ''
@@ -826,15 +918,27 @@ with tab1:
                         st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_text'] = additional_notes_text
                         st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_pdf'] = None
                     elif additional_notes_source == 'pdf':
-                        additional_notes_pdf = st.file_uploader(
-                            "Upload Additional Notes File (PDF/Image)",
-                            type=['pdf', 'png', 'jpg', 'jpeg', 'gif', 'webp'],
-                            key=f"{qtype}_additional_notes_pdf_{i}"
-                        )
-                        st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_pdf'] = additional_notes_pdf
+                        col_u, col_p = st.columns([3, 1])
+                        with col_u:
+                            an_upload = st.file_uploader(
+                                "Upload Additional Notes File (PDF/Image)",
+                                type=['pdf', 'png', 'jpg', 'jpeg', 'gif', 'webp'],
+                                key=f"{qtype}_additional_notes_pdf_{i}"
+                            )
+                        with col_p:
+                            st.markdown("<br>", unsafe_allow_html=True)
+                            an_paste = paste(label="📋 Paste", key=f"{qtype}_paste_{i}")
+                            
+                        an_final = None
+                        if an_upload:
+                            an_final = an_upload
+                        elif an_paste:
+                            an_final = PastedFile(an_paste, name=f"pasted_{qtype}_{i}.png")
+
+                        st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_pdf'] = an_final
                         st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_text'] = ''
-                        if additional_notes_pdf:
-                            st.success(f"✅ Uploaded: {additional_notes_pdf.name}")
+                        if an_final:
+                            st.success(f"✅ Ready: {an_final.name}")
                     else:
                         st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_pdf'] = None
                         st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_text'] = ''
@@ -982,159 +1086,158 @@ with tab1:
             
             elif qtype == "Multi-Part":
                 st.markdown("#### Multi-Part Configuration")
+                st.info("Configure each Multi-Part question individually. You can define specific sub-parts for each question.")
                 
-                # Number of sub-parts per question (shared across all questions)
-                num_subparts = st.number_input(
-                    "Number of Sub-Parts per Question",
-                    min_value=2,
-                    max_value=5,
-                    value=st.session_state.question_types_config[qtype].get('num_subparts', 3),
-                    key=f"multipart_subparts"
-                )
-                st.session_state.question_types_config[qtype]['num_subparts'] = num_subparts
-                
-                # Initialize subparts config
-                if 'subparts_config' not in st.session_state.question_types_config[qtype]:
-                    st.session_state.question_types_config[qtype]['subparts_config'] = []
-                
-                # Adjust subparts config length
-                current_subparts = len(st.session_state.question_types_config[qtype]['subparts_config'])
-                if num_subparts != current_subparts:
-                    if num_subparts > current_subparts:
-                        for i in range(current_subparts, num_subparts):
-                            st.session_state.question_types_config[qtype]['subparts_config'].append({
-                                'part': chr(97 + i),
-                                'dok': 1,
-                                'marks': 1.0,
-                                'taxonomy': 'Remembering'
-                            })
-                    else:
-                        st.session_state.question_types_config[qtype]['subparts_config'] = \
-                            st.session_state.question_types_config[qtype]['subparts_config'][:num_subparts]
-                
-                st.markdown("**Subparts Configuration** (Shared across all Multi-Part questions)")
-                for i in range(num_subparts):
-                    cols = st.columns([1, 1, 1, 2])
-                    
-                    with cols[0]:
-                        st.markdown(f"**Part ({chr(97 + i)})**")
-                    
-                    with cols[1]:
-                        dok = st.selectbox(
-                            "DOK",
-                            [1, 2, 3],
-                            key=f"multipart_subpart_dok_{i}",
-                            index=st.session_state.question_types_config[qtype]['subparts_config'][i].get('dok', 1) - 1
-                        )
-                        st.session_state.question_types_config[qtype]['subparts_config'][i]['dok'] = dok
-                    
-                    with cols[2]:
-                        marks = st.number_input(
-                            "Marks",
-                            min_value=0.5,
-                            max_value=10.0,
-                            step=0.5,
-                            key=f"multipart_subpart_marks_{i}",
-                            value=st.session_state.question_types_config[qtype]['subparts_config'][i].get('marks', 1.0)
-                        )
-                        st.session_state.question_types_config[qtype]['subparts_config'][i]['marks'] = marks
-                    
-                    with cols[3]:
-                        taxonomy = st.selectbox(
-                            "Taxonomy",
-                            taxonomy_options,
-                            key=f"multipart_subpart_taxonomy_{i}",
-                            index=taxonomy_options.index(
-                                st.session_state.question_types_config[qtype]['subparts_config'][i].get('taxonomy', 'Remembering')
-                            )
-                        )
-                        st.session_state.question_types_config[qtype]['subparts_config'][i]['taxonomy'] = taxonomy
-                
-                st.markdown("---")
-                
-                # Per-question config (topic and content source)
-                st.markdown("**Per-Question Configuration**")
+                # Per-question config
                 for i in range(num_questions):
-                    st.markdown(f"**Question {i+1}**")
-                    
-                    # Add Topic field for Multi-Part questions
-                    topic = st.text_input(
-                        "Topic",
-                        key=f"multipart_topic_{i}",
-                        value=st.session_state.question_types_config[qtype]['questions'][i].get('topic', ''),
-                        placeholder="e.g., nth term of AP"
-                    )
-                    st.session_state.question_types_config[qtype]['questions'][i]['topic'] = topic
-                    
-                    # New Concept Source Selection (MANDATORY)
-                    st.markdown("**New Concept Source:**")
-                    new_concept_source = st.radio(
-                        "Select new concept source",
-                        options=["text", "pdf"],
-                        format_func=lambda x: {
-                            "text": "📝 Use Universal Text Concept",
-                            "pdf": "📄 Use Universal File (PDF/Image)"
-                        }[x],
-                        key=f"multipart_new_concept_source_{i}",
-                        index=["text", "pdf"].index(
-                            st.session_state.question_types_config[qtype]['questions'][i].get('new_concept_source', 'pdf')
-                        ),
-                        horizontal=True
-                    )
-                    st.session_state.question_types_config[qtype]['questions'][i]['new_concept_source'] = new_concept_source
-                    
-                    if new_concept_source == 'pdf':
-                        if st.session_state.get('universal_pdf'):
-                            st.info(f"ℹ️ Will use universal file: **{st.session_state.universal_pdf.name}**")
+                    with st.expander(f"Question {i+1} Configuration", expanded=True):
+                        
+                        # Add Topic field
+                        topic = st.text_input(
+                            "Topic",
+                            key=f"multipart_topic_{i}",
+                            value=st.session_state.question_types_config[qtype]['questions'][i].get('topic', ''),
+                            placeholder="e.g., nth term of AP"
+                        )
+                        st.session_state.question_types_config[qtype]['questions'][i]['topic'] = topic
+                        
+                        # New Concept Source Selection
+                        st.markdown("**New Concept Source:**")
+                        new_concept_source = st.radio(
+                            "Select new concept source",
+                            options=["text", "pdf"],
+                            format_func=lambda x: {
+                                "text": "📝 Use Universal Text Concept",
+                                "pdf": "📄 Use Universal File (PDF/Image)"
+                            }[x],
+                            key=f"multipart_new_concept_source_{i}",
+                            index=["text", "pdf"].index(
+                                st.session_state.question_types_config[qtype]['questions'][i].get('new_concept_source', 'pdf')
+                            ),
+                            horizontal=True
+                        )
+                        st.session_state.question_types_config[qtype]['questions'][i]['new_concept_source'] = new_concept_source
+                        
+                        if new_concept_source == 'pdf':
+                            if st.session_state.get('universal_pdf'):
+                                st.info(f"ℹ️ Will use universal file: **{st.session_state.universal_pdf.name}**")
+                            else:
+                                st.warning("⚠️ Please upload a Universal File (PDF/Image) in the General Information section above")
+                        
+                        # Additional Notes Source Selection
+                        st.markdown("**Additional Notes Source (Optional):**")
+                        additional_notes_source = st.radio(
+                            "Select additional notes source",
+                            options=["none", "text", "pdf"],
+                            format_func=lambda x: {
+                                "none": "🚫 None",
+                                "text": "📝 Additional Notes Text",
+                                "pdf": "📄 Additional Notes File (PDF/Image)"
+                            }[x],
+                            key=f"multipart_additional_notes_source_{i}",
+                            index=["none", "text", "pdf"].index(
+                                st.session_state.question_types_config[qtype]['questions'][i].get('additional_notes_source', 'none')
+                            ),
+                            horizontal=True
+                        )
+                        st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_source'] = additional_notes_source
+                        
+                        if additional_notes_source == 'text':
+                            additional_notes_text = st.text_area(
+                                "Additional Notes for this question",
+                                key=f"multipart_additional_notes_text_{i}",
+                                value=st.session_state.question_types_config[qtype]['questions'][i].get('additional_notes_text', ''),
+                                placeholder="Enter specific notes/instructions for this question...",
+                                height=100
+                            )
+                            st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_text'] = additional_notes_text
+                            st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_pdf'] = None
+                        elif additional_notes_source == 'pdf':
+                            additional_notes_pdf = st.file_uploader(
+                                "Upload Additional Notes File (PDF/Image)",
+                                type=['pdf', 'png', 'jpg', 'jpeg', 'gif', 'webp'],
+                                key=f"multipart_additional_notes_pdf_{i}"
+                            )
+                            st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_pdf'] = additional_notes_pdf
+                            st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_text'] = ''
+                            if additional_notes_pdf:
+                                st.success(f"✅ Uploaded: {additional_notes_pdf.name}")
                         else:
-                            st.warning("⚠️ Please upload a Universal File (PDF/Image) in the General Information section above")
-                        st.session_state.question_types_config[qtype]['questions'][i]['new_concept_pdf'] = None
-                    else:
-                        st.session_state.question_types_config[qtype]['questions'][i]['new_concept_pdf'] = None
-                    
-                    # Additional Notes Source Selection (OPTIONAL)
-                    st.markdown("**Additional Notes Source (Optional):**")
-                    additional_notes_source = st.radio(
-                        "Select additional notes source",
-                        options=["none", "text", "pdf"],
-                        format_func=lambda x: {
-                            "none": "🚫 None",
-                            "text": "📝 Additional Notes Text",
-                            "pdf": "📄 Additional Notes File (PDF/Image)"
-                        }[x],
-                        key=f"multipart_additional_notes_source_{i}",
-                        index=["none", "text", "pdf"].index(
-                            st.session_state.question_types_config[qtype]['questions'][i].get('additional_notes_source', 'none')
-                        ),
-                        horizontal=True
-                    )
-                    st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_source'] = additional_notes_source
-                    
-                    if additional_notes_source == 'text':
-                        additional_notes_text = st.text_area(
-                            "Additional Notes for this question",
-                            key=f"multipart_additional_notes_text_{i}",
-                            value=st.session_state.question_types_config[qtype]['questions'][i].get('additional_notes_text', ''),
-                            placeholder="Enter specific notes/instructions for this question...",
-                            height=100
+                            st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_pdf'] = None
+                            st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_text'] = ''
+                        
+                        st.markdown("---")
+                        
+                        # Sub-Part Configuration (Per Question)
+                        st.markdown("**Sub-Parts Configuration**")
+                        
+                        num_subparts = st.number_input(
+                            "Number of Sub-Parts",
+                            min_value=2,
+                            max_value=5,
+                            value=st.session_state.question_types_config[qtype]['questions'][i].get('num_subparts', 2),
+                            key=f"multipart_subparts_{i}"
                         )
-                        st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_text'] = additional_notes_text
-                        st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_pdf'] = None
-                    elif additional_notes_source == 'pdf':
-                        additional_notes_pdf = st.file_uploader(
-                            "Upload Additional Notes File (PDF/Image)",
-                            type=['pdf', 'png', 'jpg', 'jpeg', 'gif', 'webp'],
-                            key=f"multipart_additional_notes_pdf_{i}"
-                        )
-                        st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_pdf'] = additional_notes_pdf
-                        st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_text'] = ''
-                        if additional_notes_pdf:
-                            st.success(f"✅ Uploaded: {additional_notes_pdf.name}")
-                    else:
-                        st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_pdf'] = None
-                        st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_text'] = ''
-                    
-                    st.markdown("---")
+                        st.session_state.question_types_config[qtype]['questions'][i]['num_subparts'] = num_subparts
+                        
+                        # Initialize subparts config for this question
+                        if 'subparts_config' not in st.session_state.question_types_config[qtype]['questions'][i]:
+                            st.session_state.question_types_config[qtype]['questions'][i]['subparts_config'] = []
+                        
+                        # Adjust list length
+                        current_subparts = len(st.session_state.question_types_config[qtype]['questions'][i]['subparts_config'])
+                        if num_subparts != current_subparts:
+                            if num_subparts > current_subparts:
+                                for j in range(current_subparts, num_subparts):
+                                    st.session_state.question_types_config[qtype]['questions'][i]['subparts_config'].append({
+                                        'part': chr(97 + j),
+                                        'dok': 1,
+                                        'marks': 1.0,
+                                        'taxonomy': 'Remembering'
+                                    })
+                            else:
+                                st.session_state.question_types_config[qtype]['questions'][i]['subparts_config'] = \
+                                    st.session_state.question_types_config[qtype]['questions'][i]['subparts_config'][:num_subparts]
+                        
+                        # Render subpart inputs
+                        for j in range(num_subparts):
+                            cols = st.columns([1, 1, 1, 2])
+                            
+                            with cols[0]:
+                                st.markdown(f"**Part ({chr(97 + j)})**")
+                            
+                            with cols[1]:
+                                dok = st.selectbox(
+                                    "DOK",
+                                    [1, 2, 3],
+                                    key=f"multipart_subpart_dok_{i}_{j}",
+                                    index=st.session_state.question_types_config[qtype]['questions'][i]['subparts_config'][j].get('dok', 1) - 1
+                                )
+                                st.session_state.question_types_config[qtype]['questions'][i]['subparts_config'][j]['dok'] = dok
+                            
+                            with cols[2]:
+                                marks = st.number_input(
+                                    "Marks",
+                                    min_value=0.5,
+                                    max_value=10.0,
+                                    step=0.5,
+                                    key=f"multipart_subpart_marks_{i}_{j}",
+                                    value=st.session_state.question_types_config[qtype]['questions'][i]['subparts_config'][j].get('marks', 1.0)
+                                )
+                                st.session_state.question_types_config[qtype]['questions'][i]['subparts_config'][j]['marks'] = marks
+                            
+                            with cols[3]:
+                                taxonomy = st.selectbox(
+                                    "Taxonomy",
+                                    taxonomy_options,
+                                    key=f"multipart_subpart_taxonomy_{i}_{j}",
+                                    index=taxonomy_options.index(
+                                        st.session_state.question_types_config[qtype]['questions'][i]['subparts_config'][j].get('taxonomy', 'Remembering')
+                                    )
+                                )
+                                st.session_state.question_types_config[qtype]['questions'][i]['subparts_config'][j]['taxonomy'] = taxonomy
+                        
+                        st.markdown("---")
 
     # Generate button at the bottom of configuration
     st.markdown('<div class="section-header">Generate Questions</div>', unsafe_allow_html=True)

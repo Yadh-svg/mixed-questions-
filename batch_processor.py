@@ -35,7 +35,9 @@ def save_prompt_to_file(prompt_text: str, batch_key: str) -> str:
     
     # Generate timestamped filename
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    filename = f"prompt_{batch_key}_{timestamp}.txt"
+    # Sanitize batch_key to remove invalid filename characters
+    safe_key = batch_key.replace('/', '_').replace('\\', '_').replace(':', '')
+    filename = f"prompt_{safe_key}_{timestamp}.txt"
     filepath = logs_dir / filename
     
     # Save prompt to file

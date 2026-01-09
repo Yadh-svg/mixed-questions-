@@ -71,16 +71,47 @@ def build_topics_section(questions: List[Dict[str, Any]]) -> str:
         else:
             additional_notes_label = 'None'
         
-        # Each question gets its own line with Questions: 1
-        dok = q.get('dok', 1)
-        marks = q.get('marks', 1)
-        
-        line = f'    - Topic: "{topic}" → Questions: 1, DOK: {dok}, Marks: {marks}, Taxonomy: {taxonomy} | New Concept Source: {new_concept_label} | Additional Notes Source: {additional_notes_label}'
-        lines.append(line)
+        # Check for subpart configuration (supports both 'subparts_config' and legacy 'subparts')
+        subparts_config = q.get('subparts_config', [])
+        if not subparts_config:
+            subparts_config = q.get('subparts', [])
+            
+        # Use subparts_config if present and non-empty
+        if subparts_config and len(subparts_config) > 0:
+            # Inline subpart configuration
+            parts_details = []
+            for sp in subparts_config:
+                part_label = sp.get('part', '?')
+                pdok = sp.get('dok', 1)
+                pmarks = sp.get('marks', 1)
+                # Helper to handle taxonomy regardless of where it defaults
+                ptax = sp.get('taxonomy', 'Remembering') 
+                parts_details.append(f"{part_label}: DOK {pdok}, Marks {pmarks}, Taxonomy {ptax}")
+            
+            subparts_str = f"Sub-parts: {len(subparts_config)} [{', '.join(parts_details)}]"
+            
+            # Format WITHOUT top-level DOK/Marks/Taxonomy as they are irrelevant
+            line = f'    - Topic: "{topic}" → Questions: 1 | {subparts_str} | New Concept Source: {new_concept_label} | Additional Notes Source: {additional_notes_label}'
+            
+        else:
+            # Standard single-part question format with top-level DOK/Marks/Taxonomy
+            dok = q.get('dok', 1)
+            marks = q.get('marks', 1)
+            line = f'    - Topic: "{topic}" → Questions: 1, DOK: {dok}, Marks: {marks}, Taxonomy: {taxonomy} | New Concept Source: {new_concept_label} | Additional Notes Source: {additional_notes_label}'
         
         # Add per-question additional notes if present
         if additional_notes_source == 'text' and additional_notes_text:
-            lines.append(f'      Additional Notes for this question: {additional_notes_text}')
+            # For questions with subparts (compact mode), add notes inline
+            if subparts_config:
+                # Sanitize newlines to keep it on one line
+                clean_notes = additional_notes_text.replace('\n', '  ')
+                line += f" | Additional Notes: {clean_notes}"
+                lines.append(line)
+            else:
+                lines.append(line)
+                lines.append(f'      Additional Notes for this question: {additional_notes_text}')
+        else:
+            lines.append(line)
     
     return "\n".join(lines)
 
@@ -205,6 +236,7 @@ def build_prompt_for_batch(
         # We have at least one file
         file_names = ', '.join(filenames) if filenames else "the uploaded file(s)"
         
+        # Base instruction without Global Notes
         reference_instruction = f"""
     
     ## CONTENT REFERENCE INSTRUCTION:
@@ -215,7 +247,7 @@ def build_prompt_for_batch(
     - For topics marked with "New Concept File" → Extract concepts from the corresponding uploaded file: {file_names}
     
     **Additional Notes Sources:**
-    - **Global Additional Notes** (shown below) apply to ALL questions
+    - **Global Additional Notes** (apply to ALL questions)
     - **Per-Question Additional Notes** are shown directly in the TOPICS_SECTION for specific questions
     - For topics with "Additional Notes File" → Extract additional context from the corresponding uploaded file: {file_names}
     - For topics with "None" → No per-question additional notes for this topic (global notes still apply)
@@ -228,10 +260,16 @@ def build_prompt_for_batch(
     
     **New Concepts (for text-based topics):**
     {{{{New_Concept}}}}
+    """
     
+        # Only inject Global Notes block if NOT in template to avoid duplication
+        if '{{Additional_Notes}}' not in template:
+             reference_instruction += """
     **Global Additional Notes (applies to ALL questions):**
-    {{{{Additional_Notes}}}}
-    
+    {{Additional_Notes}}
+    """
+        
+        reference_instruction += """
     **Per-Question Additional Notes:**
     Some topics may have specific additional notes shown directly in the TOPICS_SECTION below.
     These per-question notes supplement the global notes for that specific question.
@@ -241,6 +279,7 @@ def build_prompt_for_batch(
     """
     else:
         # Text only, no PDFs
+        # Base instruction without Global Notes
         reference_instruction = """
     
     ## CONTENT REFERENCE INSTRUCTION:
@@ -251,10 +290,16 @@ def build_prompt_for_batch(
     
     **New Concepts to Reference:**
     {{New_Concept}}
+    """
     
+        # Only inject Global Notes block if NOT in template
+        if '{{Additional_Notes}}' not in template:
+             reference_instruction += """
     **Global Additional Notes (applies to ALL questions):**
     {{Additional_Notes}}
-    
+    """
+        
+        reference_instruction += """
     **Per-Question Additional Notes:**
     Some topics may have specific additional notes shown directly in the TOPICS_SECTION below.
     These per-question notes take precedence over global notes for that specific question.
@@ -279,26 +324,42 @@ def build_prompt_for_batch(
     }
     
     # Special handling for multi-part questions
-    if 'multi_part' in template_key.lower() and type_config:
-        subparts_config = type_config.get('subparts_config', [])
+    if 'multi_part' in template_key.lower():
+        # Check if we have per-question subpart configuration
+        has_per_question_subparts = any('subparts_config' in q for q in questions)
         
-        if subparts_config:
-            num_subparts = len(subparts_config)
-            replacements['{{Number_of_subparts}}'] = str(num_subparts)
+        if has_per_question_subparts:
+            # Per-question configuration takes precedence
+            replacements['{{Number_of_subparts}}'] = 'Variable (see TOPICS section)'
+            replacements['{{SUBPARTS_SECTION}}'] = '    Subpart Configuration: Refer to the specific sub-part configuration provided for each question in the TOPICS section above.'
+        elif type_config:
+            # Fallback to global configuration if provided
+            subparts_config = type_config.get('subparts_config', [])
             
-            # Build subparts section dynamically
-            subparts_lines = ["    Subpart Configuration:"]
-            for subpart in subparts_config:
-                part = subpart.get('part', 'a')
-                dok = subpart.get('dok', 1)
-                marks = subpart.get('marks', 1.0)
-                taxonomy = subpart.get('taxonomy', 'Remembering')
-                line = f"      {part} → DOK {dok}, Marks: {marks}, Taxonomy: {taxonomy}"
-                subparts_lines.append(line)
-            
-            replacements['{{SUBPARTS_SECTION}}'] = "\n".join(subparts_lines)
+            if subparts_config:
+                num_subparts = len(subparts_config)
+                replacements['{{Number_of_subparts}}'] = str(num_subparts)
+                
+                # Build subparts section dynamically
+                subparts_lines = ["    Subpart Configuration:"]
+                for subpart in subparts_config:
+                    part = subpart.get('part', 'a')
+                    dok = subpart.get('dok', 1)
+                    marks = subpart.get('marks', 1.0)
+                    taxonomy = subpart.get('taxonomy', 'Remembering')
+                    line = f"      {part} → DOK {dok}, Marks: {marks}, Taxonomy: {taxonomy}"
+                    subparts_lines.append(line)
+                
+                replacements['{{SUBPARTS_SECTION}}'] = "\n".join(subparts_lines)
+            else:
+                # Fallback default
+                replacements['{{Number_of_subparts}}'] = '3'
+                replacements['{{SUBPARTS_SECTION}}'] = """    Subpart Configuration:
+      a → DOK 1, Marks: 1.0, Taxonomy: Remembering
+      b → DOK 2, Marks: 1.0, Taxonomy: Understanding
+      c → DOK 3, Marks: 1.0, Taxonomy: Applying"""
         else:
-            # Fallback to default if no config provided
+             # Fallback default if neither per-question nor type_config exists
             replacements['{{Number_of_subparts}}'] = '3'
             replacements['{{SUBPARTS_SECTION}}'] = """    Subpart Configuration:
       a → DOK 1, Marks: 1.0, Taxonomy: Remembering
@@ -307,30 +368,9 @@ def build_prompt_for_batch(
     
     # Special handling for FIB questions with per-question subparts
     if 'fib' in template_key.lower():
-        # For FIB, we need to inject per-question subpart configuration
-        # Similar to case study handling
-        fib_configs = []
-        for idx, q in enumerate(questions, 1):
-            num_subparts = q.get('num_subparts', 1)
-            
-            if num_subparts > 1 and 'subparts' in q:
-                subparts = q['subparts']
-                subpart_strs = []
-                for sp in subparts:
-                    part = sp.get('part', 'i')  # Roman numerals
-                    dok = sp.get('dok', 1)
-                    marks = sp.get('marks', 1.0)
-                    taxonomy = sp.get('taxonomy', 'Remembering')
-                    subpart_strs.append(f"{part}) DOK {dok}, Marks {marks}, Taxonomy: {taxonomy}")
-                
-                config_str = f"Question {idx}: {len(subparts)} sub-parts - {', '.join(subpart_strs)}"
-                fib_configs.append(config_str)
-        
-        if fib_configs:
-            fib_note = "\n\nFIB Sub-parts Configuration:\n" + "\n".join(fib_configs)
-            replacements['{{FIB_SUBPART_SPECS}}'] = fib_note
-        else:
-            replacements['{{FIB_SUBPART_SPECS}}'] = ""
+        # Clean up the placeholder if it exists in the template, but don't inject anything
+        # The subpart info is now in the TOPICS_SECTION
+        replacements['{{FIB_SUBPART_SPECS}}'] = ""
     
 
     # Special handling for case study questions

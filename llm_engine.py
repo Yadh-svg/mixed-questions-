@@ -70,7 +70,7 @@ def run_gemini(
     prompt: str,
     api_key: str,
     files: Optional[List] = None,
-    thinking_budget: int = 5500,
+    thinking_budget: int = 10000,
     file_metadata: Optional[Dict[str, Any]] = None
 ) -> Dict[str, Any]:
     """

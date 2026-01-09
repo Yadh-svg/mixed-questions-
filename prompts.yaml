@@ -5757,8 +5757,7 @@ FIB: |
       - Use **at least three blanks** (any valid combination of 0.5 or 1 mark each).
 
     - It is allowed to include **multiple blanks and/or dropdowns** as appropriate to the question type, provided the above marking rules are satisfied.
-
-
+    - Each blank should carry marks in proportion to its allotted value.
   5. Diagram Prompt (for visualization purposes only) 
     ## DIAGRAM RULES
         - Diagram is optional (unless the topic inherently requires visual representation).
@@ -6478,6 +6477,8 @@ FIB_pdf: |
 
     - It is allowed to include **multiple blanks and/or dropdowns** as appropriate to the question type, provided the above marking rules are satisfied.
     - the mark inputted by the user and the mark calculated by the system should be same.
+    - Each blank should carry marks in proportion to its allotted value.
+    
   5. Diagram Prompt (for visualization purposes only) 
     ## DIAGRAM RULES
         - Diagram is optional (unless the topic inherently requires visual representation).

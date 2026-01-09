@@ -459,37 +459,29 @@ with tab1:
                     else:
                         st.session_state.question_types_config[qtype]['questions'][i]['new_concept_pdf'] = None
                     
-                    # Additional Notes Source Selection (OPTIONAL)
-                    st.markdown("**Additional Notes Source (Optional):**")
-                    additional_notes_source = st.radio(
-                        "Select additional notes source",
-                        options=["none", "text", "pdf"],
-                        format_func=lambda x: {
-                            "none": "🚫 None",
-                            "text": "📝 Additional Notes Text",
-                            "pdf": "📄 Additional Notes File (PDF/Image)"
-                        }[x],
-                        key=f"mcq_additional_notes_source_{i}",
-                        index=["none", "text", "pdf"].index(
-                            st.session_state.question_types_config[qtype]['questions'][i].get('additional_notes_source', 'none')
-                        ),
-                        horizontal=True
-                    )
-                    st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_source'] = additional_notes_source
+                    # Additional Notes Selection (OPTIONAL)
+                    st.markdown("**Additional Notes (Optional):**")
+                    col_cb1, col_cb2 = st.columns(2)
+                    with col_cb1:
+                        has_text_note = st.checkbox("Add Text Note", key=f"mcq_cb_text_{i}", value=bool(st.session_state.question_types_config[qtype]['questions'][i].get('additional_notes_text', '')))
+                    with col_cb2:
+                        has_file_note = st.checkbox("Add File", key=f"mcq_cb_file_{i}", value=bool(st.session_state.question_types_config[qtype]['questions'][i].get('additional_notes_pdf', None)))
                     
-                    # Show text area if text is selected
-                    if additional_notes_source == 'text':
+                    # Handle Text Note
+                    if has_text_note:
                         additional_notes_text = st.text_area(
-                            "Additional Notes for this question",
+                            "Additional Notes Text",
                             key=f"mcq_additional_notes_text_{i}",
                             value=st.session_state.question_types_config[qtype]['questions'][i].get('additional_notes_text', ''),
                             placeholder="Enter specific notes/instructions for this question...",
                             height=100
                         )
                         st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_text'] = additional_notes_text
-                        st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_pdf'] = None
-                    # Show PDF uploader if PDF is selected
-                    elif additional_notes_source == 'pdf':
+                    else:
+                        st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_text'] = ''
+                        
+                    # Handle File Note
+                    if has_file_note:
                         col_u, col_p = st.columns([3, 1])
                         with col_u:
                             an_upload = st.file_uploader(
@@ -507,13 +499,25 @@ with tab1:
                         elif an_paste:
                             an_final = PastedFile(an_paste, name=f"pasted_mcq_{i}.png")
                             
+                        # Only update if a new file is provided or keep existing if not explicitly cleared? 
+                        # Streamlit file uploader handles persistence usually within the run, but here we are manually mapping.
+                        # We should trust the uploader's state for 'an_upload'.
                         st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_pdf'] = an_final
-                        st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_text'] = ''
+                        
                         if an_final:
                             st.success(f"✅ Ready: {an_final.name}")
                     else:
-                        st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_pdf'] = None
-                        st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_text'] = ''
+                         st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_pdf'] = None
+                    
+                    # Update source for compatibility
+                    if has_text_note and has_file_note:
+                        st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_source'] = 'both'
+                    elif has_text_note:
+                        st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_source'] = 'text'
+                    elif has_file_note:
+                        st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_source'] = 'pdf'
+                    else:
+                        st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_source'] = 'none'
                     
                     st.markdown("---")
             
@@ -556,35 +560,29 @@ with tab1:
                     else:
                         st.session_state.question_types_config[qtype]['questions'][i]['new_concept_pdf'] = None
                     
-                    # Additional Notes Source Selection (OPTIONAL)
-                    st.markdown("**Additional Notes Source (Optional):**")
-                    additional_notes_source = st.radio(
-                        "Select additional notes source",
-                        options=["none", "text", "pdf"],
-                        format_func=lambda x: {
-                            "none": "🚫 None",
-                            "text": "📝 Additional Notes Text",
-                            "pdf": "📄 Additional Notes File (PDF/Image)"
-                        }[x],
-                        key=f"ar_additional_notes_source_{i}",
-                        index=["none", "text", "pdf"].index(
-                            st.session_state.question_types_config[qtype]['questions'][i].get('additional_notes_source', 'none')
-                        ),
-                        horizontal=True
-                    )
-                    st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_source'] = additional_notes_source
-                    
-                    if additional_notes_source == 'text':
+                    # Additional Notes Selection (OPTIONAL)
+                    st.markdown("**Additional Notes (Optional):**")
+                    col_cb1, col_cb2 = st.columns(2)
+                    with col_cb1:
+                        has_text_note = st.checkbox("Add Text Note", key=f"ar_cb_text_{i}", value=bool(st.session_state.question_types_config[qtype]['questions'][i].get('additional_notes_text', '')))
+                    with col_cb2:
+                        has_file_note = st.checkbox("Add File", key=f"ar_cb_file_{i}", value=bool(st.session_state.question_types_config[qtype]['questions'][i].get('additional_notes_pdf', None)))
+
+                    # Handle Text Note
+                    if has_text_note:
                         additional_notes_text = st.text_area(
-                            "Additional Notes for this question",
+                            "Additional Notes Text",
                             key=f"ar_additional_notes_text_{i}",
                             value=st.session_state.question_types_config[qtype]['questions'][i].get('additional_notes_text', ''),
                             placeholder="Enter specific notes/instructions for this question...",
                             height=100
                         )
                         st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_text'] = additional_notes_text
-                        st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_pdf'] = None
-                    elif additional_notes_source == 'pdf':
+                    else:
+                        st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_text'] = ''
+
+                    # Handle File Note
+                    if has_file_note:
                         col_u, col_p = st.columns([3, 1])
                         with col_u:
                             an_upload = st.file_uploader(
@@ -603,12 +601,20 @@ with tab1:
                             an_final = PastedFile(an_paste, name=f"pasted_ar_{i}.png")
 
                         st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_pdf'] = an_final
-                        st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_text'] = ''
                         if an_final:
                             st.success(f"✅ Ready: {an_final.name}")
                     else:
                         st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_pdf'] = None
-                        st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_text'] = ''
+
+                    # Update source for compatibility
+                    if has_text_note and has_file_note:
+                        st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_source'] = 'both'
+                    elif has_text_note:
+                        st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_source'] = 'text'
+                    elif has_file_note:
+                        st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_source'] = 'pdf'
+                    else:
+                        st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_source'] = 'none'
                     
                     st.markdown("---")
             
@@ -761,35 +767,29 @@ with tab1:
                     else:
                         st.session_state.question_types_config[qtype]['questions'][i]['new_concept_pdf'] = None
                     
-                    # Additional Notes Source Selection (OPTIONAL)
-                    st.markdown("**Additional Notes Source (Optional):**")
-                    additional_notes_source = st.radio(
-                        "Select additional notes source",
-                        options=["none", "text", "pdf"],
-                        format_func=lambda x: {
-                            "none": "🚫 None",
-                            "text": "📝 Additional Notes Text",
-                            "pdf": "📄 Additional Notes File (PDF/Image)"
-                        }[x],
-                        key=f"fib_additional_notes_source_{i}",
-                        index=["none", "text", "pdf"].index(
-                            st.session_state.question_types_config[qtype]['questions'][i].get('additional_notes_source', 'none')
-                        ),
-                        horizontal=True
-                    )
-                    st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_source'] = additional_notes_source
-                    
-                    if additional_notes_source == 'text':
+                    # Additional Notes Selection (OPTIONAL)
+                    st.markdown("**Additional Notes (Optional):**")
+                    col_cb1, col_cb2 = st.columns(2)
+                    with col_cb1:
+                        has_text_note = st.checkbox("Add Text Note", key=f"fib_cb_text_{i}", value=bool(st.session_state.question_types_config[qtype]['questions'][i].get('additional_notes_text', '')))
+                    with col_cb2:
+                        has_file_note = st.checkbox("Add File", key=f"fib_cb_file_{i}", value=bool(st.session_state.question_types_config[qtype]['questions'][i].get('additional_notes_pdf', None)))
+
+                    # Handle Text Note
+                    if has_text_note:
                         additional_notes_text = st.text_area(
-                            "Additional Notes for this question",
+                            "Additional Notes Text",
                             key=f"fib_additional_notes_text_{i}",
                             value=st.session_state.question_types_config[qtype]['questions'][i].get('additional_notes_text', ''),
                             placeholder="Enter specific notes/instructions for this question...",
                             height=100
                         )
                         st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_text'] = additional_notes_text
-                        st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_pdf'] = None
-                    elif additional_notes_source == 'pdf':
+                    else:
+                        st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_text'] = ''
+
+                    # Handle File Note
+                    if has_file_note:
                         col_u, col_p = st.columns([3, 1])
                         with col_u:
                             an_upload = st.file_uploader(
@@ -808,12 +808,20 @@ with tab1:
                             an_final = PastedFile(an_paste, name=f"pasted_fib_{i}.png")
 
                         st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_pdf'] = an_final
-                        st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_text'] = ''
                         if an_final:
                             st.success(f"✅ Ready: {an_final.name}")
                     else:
                         st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_pdf'] = None
-                        st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_text'] = ''
+                        
+                    # Update source for compatibility
+                    if has_text_note and has_file_note:
+                        st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_source'] = 'both'
+                    elif has_text_note:
+                        st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_source'] = 'text'
+                    elif has_file_note:
+                        st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_source'] = 'pdf'
+                    else:
+                        st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_source'] = 'none'
                     
                     st.markdown("---")
             
@@ -889,35 +897,29 @@ with tab1:
                     else:
                         st.session_state.question_types_config[qtype]['questions'][i]['new_concept_pdf'] = None
                     
-                    # Additional Notes Source Selection (OPTIONAL)
-                    st.markdown("**Additional Notes Source (Optional):**")
-                    additional_notes_source = st.radio(
-                        "Select additional notes source",
-                        options=["none", "text", "pdf"],
-                        format_func=lambda x: {
-                            "none": "🚫 None",
-                            "text": "📝 Additional Notes Text",
-                            "pdf": "📄 Additional Notes File (PDF/Image)"
-                        }[x],
-                        key=f"{qtype}_additional_notes_source_{i}",
-                        index=["none", "text", "pdf"].index(
-                            st.session_state.question_types_config[qtype]['questions'][i].get('additional_notes_source', 'none')
-                        ),
-                        horizontal=True
-                    )
-                    st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_source'] = additional_notes_source
-                    
-                    if additional_notes_source == 'text':
+                    # Additional Notes Selection (OPTIONAL)
+                    st.markdown("**Additional Notes (Optional):**")
+                    col_cb1, col_cb2 = st.columns(2)
+                    with col_cb1:
+                        has_text_note = st.checkbox("Add Text Note", key=f"{qtype}_cb_text_{i}", value=bool(st.session_state.question_types_config[qtype]['questions'][i].get('additional_notes_text', '')))
+                    with col_cb2:
+                        has_file_note = st.checkbox("Add File", key=f"{qtype}_cb_file_{i}", value=bool(st.session_state.question_types_config[qtype]['questions'][i].get('additional_notes_pdf', None)))
+
+                    # Handle Text Note
+                    if has_text_note:
                         additional_notes_text = st.text_area(
-                            "Additional Notes for this question",
+                            "Additional Notes Text",
                             key=f"{qtype}_additional_notes_text_{i}",
                             value=st.session_state.question_types_config[qtype]['questions'][i].get('additional_notes_text', ''),
                             placeholder="Enter specific notes/instructions for this question...",
                             height=100
                         )
                         st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_text'] = additional_notes_text
-                        st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_pdf'] = None
-                    elif additional_notes_source == 'pdf':
+                    else:
+                        st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_text'] = ''
+
+                    # Handle File Note
+                    if has_file_note:
                         col_u, col_p = st.columns([3, 1])
                         with col_u:
                             an_upload = st.file_uploader(
@@ -936,12 +938,20 @@ with tab1:
                             an_final = PastedFile(an_paste, name=f"pasted_{qtype}_{i}.png")
 
                         st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_pdf'] = an_final
-                        st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_text'] = ''
                         if an_final:
                             st.success(f"✅ Ready: {an_final.name}")
                     else:
                         st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_pdf'] = None
-                        st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_text'] = ''
+                        
+                    # Update source for compatibility
+                    if has_text_note and has_file_note:
+                        st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_source'] = 'both'
+                    elif has_text_note:
+                        st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_source'] = 'text'
+                    elif has_file_note:
+                        st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_source'] = 'pdf'
+                    else:
+                        st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_source'] = 'none'
                     
                     st.markdown("---")
             
@@ -985,47 +995,63 @@ with tab1:
                     else:
                         st.session_state.question_types_config[qtype]['questions'][i]['new_concept_pdf'] = None
                     
-                    # Additional Notes Source Selection (OPTIONAL)
-                    st.markdown("**Additional Notes Source (Optional):**")
-                    additional_notes_source = st.radio(
-                        "Select additional notes source",
-                        options=["none", "text", "pdf"],
-                        format_func=lambda x: {
-                            "none": "🚫 None",
-                            "text": "📝 Additional Notes Text",
-                            "pdf": "📄 Additional Notes File (PDF/Image)"
-                        }[x],
-                        key=f"case_additional_notes_source_{i}",
-                        index=["none", "text", "pdf"].index(
-                            st.session_state.question_types_config[qtype]['questions'][i].get('additional_notes_source', 'none')
-                        ),
-                        horizontal=True
-                    )
-                    st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_source'] = additional_notes_source
-                    
-                    if additional_notes_source == 'text':
+                    # Additional Notes Selection (OPTIONAL)
+                    st.markdown("**Additional Notes (Optional):**")
+                    col_cb1, col_cb2 = st.columns(2)
+                    with col_cb1:
+                        has_text_note = st.checkbox("Add Text Note", key=f"case_cb_text_{i}", value=bool(st.session_state.question_types_config[qtype]['questions'][i].get('additional_notes_text', '')))
+                    with col_cb2:
+                        has_file_note = st.checkbox("Add File", key=f"case_cb_file_{i}", value=bool(st.session_state.question_types_config[qtype]['questions'][i].get('additional_notes_pdf', None)))
+
+                    # Handle Text Note
+                    if has_text_note:
                         additional_notes_text = st.text_area(
-                            "Additional Notes for this question",
+                            "Additional Notes Text",
                             key=f"case_additional_notes_text_{i}",
                             value=st.session_state.question_types_config[qtype]['questions'][i].get('additional_notes_text', ''),
                             placeholder="Enter specific notes/instructions for this question...",
                             height=100
                         )
                         st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_text'] = additional_notes_text
-                        st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_pdf'] = None
-                    elif additional_notes_source == 'pdf':
-                        additional_notes_pdf = st.file_uploader(
-                            "Upload Additional Notes File (PDF/Image)",
-                            type=['pdf', 'png', 'jpg', 'jpeg', 'gif', 'webp'],
-                            key=f"case_additional_notes_pdf_{i}"
-                        )
-                        st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_pdf'] = additional_notes_pdf
+                    else:
                         st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_text'] = ''
-                        if additional_notes_pdf:
-                            st.success(f"✅ Uploaded: {additional_notes_pdf.name}")
+
+                    # Handle File Note
+                    if has_file_note:
+                        # Use file uploader directly as per original Case Study block (which seemed to miss the paste button in the original code, but I'll add checking the original code again... wait, Case Study specific block in original code didn't have paste button in the reading? Let me check line 1017. It says `additional_notes_pdf = st.file_uploader(...)`. It didn't have paste. I should probably ADD paste for consistency, or keep it simple. I'll stick to original functionality + checkboxes, but wait, the plan implies consistency. I will add paste for consistency as it's better.)
+                        # Actually, looking at the previous blocks, paste was added. I'll add paste here too to be consistent with others.
+                        col_u, col_p = st.columns([3, 1])
+                        with col_u:
+                             an_upload = st.file_uploader(
+                                "Upload Additional Notes File (PDF/Image)",
+                                type=['pdf', 'png', 'jpg', 'jpeg', 'gif', 'webp'],
+                                key=f"case_additional_notes_pdf_{i}"
+                            )
+                        with col_p:
+                            st.markdown("<br>", unsafe_allow_html=True)
+                            an_paste = paste(label="📋 Paste", key=f"case_paste_{i}")
+                        
+                        an_final = None
+                        if an_upload:
+                            an_final = an_upload
+                        elif an_paste:
+                            an_final = PastedFile(an_paste, name=f"pasted_case_{i}.png")
+                            
+                        st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_pdf'] = an_final
+                        if an_final:
+                            st.success(f"✅ Ready: {an_final.name}")
                     else:
                         st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_pdf'] = None
-                        st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_text'] = ''
+
+                    # Update source for compatibility
+                    if has_text_note and has_file_note:
+                        st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_source'] = 'both'
+                    elif has_text_note:
+                        st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_source'] = 'text'
+                    elif has_file_note:
+                        st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_source'] = 'pdf'
+                    else:
+                        st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_source'] = 'none'
                     
                     # Number of subparts
                     num_subparts = st.number_input(
@@ -1124,47 +1150,61 @@ with tab1:
                             else:
                                 st.warning("⚠️ Please upload a Universal File (PDF/Image) in the General Information section above")
                         
-                        # Additional Notes Source Selection
-                        st.markdown("**Additional Notes Source (Optional):**")
-                        additional_notes_source = st.radio(
-                            "Select additional notes source",
-                            options=["none", "text", "pdf"],
-                            format_func=lambda x: {
-                                "none": "🚫 None",
-                                "text": "📝 Additional Notes Text",
-                                "pdf": "📄 Additional Notes File (PDF/Image)"
-                            }[x],
-                            key=f"multipart_additional_notes_source_{i}",
-                            index=["none", "text", "pdf"].index(
-                                st.session_state.question_types_config[qtype]['questions'][i].get('additional_notes_source', 'none')
-                            ),
-                            horizontal=True
-                        )
-                        st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_source'] = additional_notes_source
-                        
-                        if additional_notes_source == 'text':
+                        # Additional Notes Selection (OPTIONAL)
+                        st.markdown("**Additional Notes (Optional):**")
+                        col_cb1, col_cb2 = st.columns(2)
+                        with col_cb1:
+                            has_text_note = st.checkbox("Add Text Note", key=f"multipart_cb_text_{i}", value=bool(st.session_state.question_types_config[qtype]['questions'][i].get('additional_notes_text', '')))
+                        with col_cb2:
+                            has_file_note = st.checkbox("Add File", key=f"multipart_cb_file_{i}", value=bool(st.session_state.question_types_config[qtype]['questions'][i].get('additional_notes_pdf', None)))
+
+                        # Handle Text Note
+                        if has_text_note:
                             additional_notes_text = st.text_area(
-                                "Additional Notes for this question",
+                                "Additional Notes Text",
                                 key=f"multipart_additional_notes_text_{i}",
                                 value=st.session_state.question_types_config[qtype]['questions'][i].get('additional_notes_text', ''),
                                 placeholder="Enter specific notes/instructions for this question...",
                                 height=100
                             )
                             st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_text'] = additional_notes_text
-                            st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_pdf'] = None
-                        elif additional_notes_source == 'pdf':
-                            additional_notes_pdf = st.file_uploader(
-                                "Upload Additional Notes File (PDF/Image)",
-                                type=['pdf', 'png', 'jpg', 'jpeg', 'gif', 'webp'],
-                                key=f"multipart_additional_notes_pdf_{i}"
-                            )
-                            st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_pdf'] = additional_notes_pdf
+                        else:
                             st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_text'] = ''
-                            if additional_notes_pdf:
-                                st.success(f"✅ Uploaded: {additional_notes_pdf.name}")
+
+                        # Handle File Note
+                        if has_file_note:
+                            col_u, col_p = st.columns([3, 1])
+                            with col_u:
+                                an_upload = st.file_uploader(
+                                    "Upload Additional Notes File (PDF/Image)",
+                                    type=['pdf', 'png', 'jpg', 'jpeg', 'gif', 'webp'],
+                                    key=f"multipart_additional_notes_pdf_{i}"
+                                )
+                            with col_p:
+                                st.markdown("<br>", unsafe_allow_html=True)
+                                an_paste = paste(label="📋 Paste", key=f"multipart_paste_{i}")
+                            
+                            an_final = None
+                            if an_upload:
+                                an_final = an_upload
+                            elif an_paste:
+                                an_final = PastedFile(an_paste, name=f"pasted_multipart_{i}.png")
+                                
+                            st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_pdf'] = an_final
+                            if an_final:
+                                st.success(f"✅ Ready: {an_final.name}")
                         else:
                             st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_pdf'] = None
-                            st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_text'] = ''
+
+                        # Update source for compatibility
+                        if has_text_note and has_file_note:
+                            st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_source'] = 'both'
+                        elif has_text_note:
+                            st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_source'] = 'text'
+                        elif has_file_note:
+                            st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_source'] = 'pdf'
+                        else:
+                            st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_source'] = 'none'
                         
                         st.markdown("---")
                         

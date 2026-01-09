@@ -63,13 +63,18 @@ def build_topics_section(questions: List[Dict[str, Any]]) -> str:
             new_concept_label = 'Text'
         
         # Determine additional notes source label
-        if additional_notes_source == 'pdf' and additional_notes_file:
+        additional_notes_sources = []
+        if additional_notes_text:
+            additional_notes_sources.append('Text')
+        
+        if additional_notes_file:
             filename = getattr(additional_notes_file, 'name', 'uploaded_file')
-            additional_notes_label = f'File ({filename})'
-        elif additional_notes_source == 'text':
-            additional_notes_label = 'Text'
+            additional_notes_sources.append(f'File ({filename})')
+            
+        if additional_notes_sources:
+            additional_notes_label = ' & '.join(additional_notes_sources)
         else:
-            additional_notes_label = 'None'
+             additional_notes_label = 'None'
         
         # Check for subpart configuration (supports both 'subparts_config' and legacy 'subparts')
         subparts_config = q.get('subparts_config', [])
@@ -100,7 +105,7 @@ def build_topics_section(questions: List[Dict[str, Any]]) -> str:
             line = f'    - Topic: "{topic}" → Questions: 1, DOK: {dok}, Marks: {marks}, Taxonomy: {taxonomy} | New Concept Source: {new_concept_label} | Additional Notes Source: {additional_notes_label}'
         
         # Add per-question additional notes if present
-        if additional_notes_source == 'text' and additional_notes_text:
+        if additional_notes_text:
             # For questions with subparts (compact mode), add notes inline
             if subparts_config:
                 # Sanitize newlines to keep it on one line
@@ -143,16 +148,13 @@ def get_files(questions: List[Dict[str, Any]], general_config: Dict[str, Any]) -
     
     # Collect additional notes files from questions
     for q in questions:
-        additional_notes_source = q.get('additional_notes_source', 'none')
-        
         # Check for additional notes file
-        if additional_notes_source == 'pdf':
-            additional_notes_file = q.get('additional_notes_pdf')  # Keep key name for backward compatibility
-            if additional_notes_file and additional_notes_file not in files:  # Avoid duplicates
-                files.append(additional_notes_file)
-                filename = getattr(additional_notes_file, 'name', 'additional_notes_file')
-                filenames.append(filename)
-                source_types.add('Additional Notes File')
+        additional_notes_file = q.get('additional_notes_pdf')  # Keep key name for backward compatibility
+        if additional_notes_file and additional_notes_file not in files:  # Avoid duplicates
+            files.append(additional_notes_file)
+            filename = getattr(additional_notes_file, 'name', 'uploaded_file')
+            filenames.append(filename)
+            source_types.add('Additional Notes File')
     
     # Determine overall source type
     if files:
@@ -228,9 +230,10 @@ def build_prompt_for_batch(
     
     # Determine if we have files and what types
     has_new_concept_file = any(q.get('new_concept_source') == 'pdf' and q.get('new_concept_pdf') for q in questions)
-    has_additional_notes_file = any(q.get('additional_notes_source') == 'pdf' and q.get('additional_notes_pdf') for q in questions)
+    has_new_concept_file = any(q.get('new_concept_source') == 'pdf' and q.get('new_concept_pdf') for q in questions)
+    has_additional_notes_file = any(q.get('additional_notes_pdf') for q in questions)
     has_new_concept_text = any(q.get('new_concept_source') == 'text' for q in questions)
-    has_additional_notes_text = any(q.get('additional_notes_source') == 'text' for q in questions)
+    has_additional_notes_text = any(q.get('additional_notes_text') for q in questions)
     
     if files:
         # We have at least one file

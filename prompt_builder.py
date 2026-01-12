@@ -81,6 +81,18 @@ def build_topics_section(questions: List[Dict[str, Any]]) -> str:
         if not subparts_config:
             subparts_config = q.get('subparts', [])
             
+        # Handle FIB Type (applies to both single and multi-part)
+        fib_type = q.get('fib_type', 'Auto')
+        fib_type_str = f", FIB Type: {fib_type}" if fib_type != 'Auto' else ""
+
+        # Handle Multi-Part Type
+        multipart_type = q.get('multipart_type', 'Auto')
+        multipart_type_str = f", Multi-Part Type: {multipart_type}" if multipart_type != 'Auto' else ""
+
+        # Handle Descriptive Type
+        descriptive_type = q.get('descriptive_type', 'Auto')
+        descriptive_type_str = f", Descriptive Type: {descriptive_type}" if descriptive_type != 'Auto' else ""
+
         # Use subparts_config if present and non-empty
         if subparts_config and len(subparts_config) > 0:
             # Inline subpart configuration
@@ -96,13 +108,18 @@ def build_topics_section(questions: List[Dict[str, Any]]) -> str:
             subparts_str = f"Sub-parts: {len(subparts_config)} [{', '.join(parts_details)}]"
             
             # Format WITHOUT top-level DOK/Marks/Taxonomy as they are irrelevant
-            line = f'    - Topic: "{topic}" → Questions: 1 | {subparts_str} | New Concept Source: {new_concept_label} | Additional Notes Source: {additional_notes_label}'
+            line = f'    - Topic: "{topic}" → Questions: 1{fib_type_str}{multipart_type_str}{descriptive_type_str} | {subparts_str} | New Concept Source: {new_concept_label} | Additional Notes Source: {additional_notes_label}'
             
         else:
             # Standard single-part question format with top-level DOK/Marks/Taxonomy
             dok = q.get('dok', 1)
             marks = q.get('marks', 1)
-            line = f'    - Topic: "{topic}" → Questions: 1, DOK: {dok}, Marks: {marks}, Taxonomy: {taxonomy} | New Concept Source: {new_concept_label} | Additional Notes Source: {additional_notes_label}'
+            
+            # Handle MCQ Type if present
+            mcq_type = q.get('mcq_type', 'Auto')
+            mcq_type_str = f", MCQ Type: {mcq_type}" if mcq_type != 'Auto' else ""
+            
+            line = f'    - Topic: "{topic}" → Questions: 1{mcq_type_str}{fib_type_str}{descriptive_type_str}, DOK: {dok}, Marks: {marks}, Taxonomy: {taxonomy} | New Concept Source: {new_concept_label} | Additional Notes Source: {additional_notes_label}'
         
         # Add per-question additional notes if present
         if additional_notes_text:

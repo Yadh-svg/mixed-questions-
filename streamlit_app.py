@@ -390,7 +390,7 @@ with tab1:
                 st.markdown("#### MCQ Questions Configuration")
                 for i in range(num_questions):
                     st.markdown(f"**Question {i+1}**")
-                    cols = st.columns([2, 1, 1, 2])
+                    cols = st.columns([3, 3, 1, 1, 2])
                     
                     with cols[0]:
                         topic = st.text_input(
@@ -402,6 +402,23 @@ with tab1:
                         st.session_state.question_types_config[qtype]['questions'][i]['topic'] = topic
                     
                     with cols[1]:
+                        mcq_type_options = [
+                            "Auto",
+                            "Number Based",
+                            "Image Based", 
+                            "Real-World Word Questions",
+                            "Real-World Image-Based Word Questions"
+                        ]
+                        current_type = st.session_state.question_types_config[qtype]['questions'][i].get('mcq_type', 'Auto')
+                        mcq_type = st.selectbox(
+                            "MCQ Type",
+                            mcq_type_options,
+                            key=f"mcq_type_{i}",
+                            index=mcq_type_options.index(current_type) if current_type in mcq_type_options else 0
+                        )
+                        st.session_state.question_types_config[qtype]['questions'][i]['mcq_type'] = mcq_type
+
+                    with cols[2]:
                         dok = st.selectbox(
                             "DOK",
                             [1, 2, 3],
@@ -410,7 +427,7 @@ with tab1:
                         )
                         st.session_state.question_types_config[qtype]['questions'][i]['dok'] = dok
                     
-                    with cols[2]:
+                    with cols[3]:
                         marks = st.number_input(
                             "Marks",
                             min_value=0.5,
@@ -421,7 +438,7 @@ with tab1:
                         )
                         st.session_state.question_types_config[qtype]['questions'][i]['marks'] = marks
                     
-                    with cols[3]:
+                    with cols[4]:
                         taxonomy = st.selectbox(
                             "Taxonomy",
                             taxonomy_options,
@@ -645,6 +662,16 @@ with tab1:
                     )
                     st.session_state.question_types_config[qtype]['questions'][i]['num_subparts'] = num_subparts
                     
+                    # FIB Type Selector
+                    fib_types = ["Auto", "Number Based", "Image Based", "Real-World Word Questions", "Real-World Image-Based Word Questions"]
+                    fib_type = st.selectbox(
+                        "FIB Type",
+                        fib_types,
+                        key=f"fib_type_select_{i}",
+                        index=fib_types.index(st.session_state.question_types_config[qtype]['questions'][i].get('fib_type', 'Auto'))
+                    )
+                    st.session_state.question_types_config[qtype]['questions'][i]['fib_type'] = fib_type
+                    
                     # If single-part (num_subparts = 1), show DOK, Marks, Taxonomy directly
                     if num_subparts == 1:
                         cols = st.columns([1, 1, 2])
@@ -829,7 +856,7 @@ with tab1:
                 st.markdown(f"#### {qtype} Configuration")
                 for i in range(num_questions):
                     st.markdown(f"**Question {i+1}**")
-                    cols = st.columns([2, 1, 1, 2])
+                    cols = st.columns([2, 2, 1, 1, 2])
                     
                     with cols[0]:
                         topic = st.text_input(
@@ -841,6 +868,24 @@ with tab1:
                         st.session_state.question_types_config[qtype]['questions'][i]['topic'] = topic
                     
                     with cols[1]:
+                        descriptive_type_options = [
+                            "Auto",
+                            "Descriptive (Number Based)",
+                            "Descriptive (Image Based)",
+                            "Descriptive (Real World Word Questions)",
+                            "Descriptive (Real World Image-Based Word Questions)"
+                        ]
+                        descriptive_type = st.selectbox(
+                            "Descriptive Type",
+                            descriptive_type_options,
+                            key=f"{qtype}_type_{i}",
+                            index=descriptive_type_options.index(
+                                st.session_state.question_types_config[qtype]['questions'][i].get('descriptive_type', 'Auto')
+                            )
+                        )
+                        st.session_state.question_types_config[qtype]['questions'][i]['descriptive_type'] = descriptive_type
+
+                    with cols[2]:
                         dok = st.selectbox(
                             "DOK",
                             [1, 2, 3],
@@ -849,7 +894,7 @@ with tab1:
                         )
                         st.session_state.question_types_config[qtype]['questions'][i]['dok'] = dok
                     
-                    with cols[2]:
+                    with cols[3]:
                         marks = st.number_input(
                             "Marks",
                             min_value=0.5,
@@ -860,7 +905,7 @@ with tab1:
                         )
                         st.session_state.question_types_config[qtype]['questions'][i]['marks'] = marks
                     
-                    with cols[3]:
+                    with cols[4]:
                         taxonomy = st.selectbox(
                             "Taxonomy",
                             taxonomy_options,
@@ -1219,6 +1264,16 @@ with tab1:
                             key=f"multipart_subparts_{i}"
                         )
                         st.session_state.question_types_config[qtype]['questions'][i]['num_subparts'] = num_subparts
+                        
+                        # Multi-Part Type Selector
+                        multipart_types = ["Auto", "Number Based", "Image Based", "Real-World Word Questions", "Real-World Image-Based Word Questions"]
+                        multipart_type = st.selectbox(
+                            "Multi-Part Type",
+                            multipart_types,
+                            key=f"multipart_type_select_{i}",
+                            index=multipart_types.index(st.session_state.question_types_config[qtype]['questions'][i].get('multipart_type', 'Auto'))
+                        )
+                        st.session_state.question_types_config[qtype]['questions'][i]['multipart_type'] = multipart_type
                         
                         # Initialize subparts config for this question
                         if 'subparts_config' not in st.session_state.question_types_config[qtype]['questions'][i]:

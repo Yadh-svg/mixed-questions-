@@ -1560,7 +1560,7 @@ assertion_reasoning: |
 
 
    ### DISTRACTOR ANALYSIS (Mandatory for Every Question — Correct/Incorrect Structure)
-       For every mcq question, a Distractor Analysis is compulsory.
+       for every assertion_reasoning question a Distractor Analysis is compulsory.
 
       1. Distractor Design Rule
         Each incorrect option MUST be intentionally framed using exactly ONE identifiable mathematical error type. 
@@ -1605,7 +1605,7 @@ assertion_reasoning: |
 
             Use in distractors:
             Tests mathematical communication and notation skills.
-        D. Comprehensional Error    
+        D. Comprehension Error    
           Definition: Occurs when the student correctly understands the mathematical concepts
           but misreads, overlooks, or ignores explicit instructions, conditions, or keywords
           in the question.  
@@ -1623,9 +1623,9 @@ assertion_reasoning: |
           Before assigning an error type to any distractor, apply this gate:
 
           1. If the student’s mistake would STILL occur even if the question were reworded or simplified,
-            then it is NOT a Comprehensional Error.
+            then it is NOT a Comprehension Error.
 
-          2. Comprehensional Error may be used ONLY when:
+          2. Comprehension Error may be used ONLY when:
             - the student ignores or misreads an explicit instruction, keyword, or condition
             - AND the mathematical concept itself is correctly understood
 
@@ -1634,7 +1634,7 @@ assertion_reasoning: |
             - number properties
             - definitions
             - term meaning (e.g., “negative”, “odd”, “multiple”)
-            MUST be classified as a Conceptual Error, not Comprehensional.
+            MUST be classified as a Conceptual Error, not Comprehension.
           4. No two option should be of same error type ( there should be validation fot that)
         ### Error-Type Decision Table (MANDATORY)
 
@@ -1642,15 +1642,15 @@ assertion_reasoning: |
       |--------------------------|-------------------|
       | Thinks 0 is negative | Conceptual Error |
       | Uses wrong formula | Conceptual Error |
-      | Ignores word like “except”, “first”, “at most” | Comprehensional Error |
-      | Solves correctly but answers a different quantity | Comprehensional Error |
+      | Ignores word like “except”, “first”, “at most” | Comprehension Error |
+      | Solves correctly but answers a different quantity | Comprehension Error |
       | Arithmetic slip with correct method | Computational Error |
       | Wrong units / notation / symbol | Communicational Error |
 
     IMPORTANT EXCLUSION:
       If the error arises from misunderstanding a mathematical definition, property,
       classification, or meaning (e.g., sign of a number, term meaning, formula components),
-      it MUST be classified as a Conceptual Error, not Comprehensional.
+      it MUST be classified as a Conceptual Error, not Comprehension.
 
       For distractor analysis, there are four predefined error types. When constructing a set of answer options, select any three of these error types first. Each of the three incorrect answer choices must correspond to one of the selected error types, with no repetition of error types across the distractors. After finalizing which three error types will be used, design the three incorrect options to accurately reflect those specific errors. Do not generate distractors first and then assign error labels afterward; the selection of error types must precede the creation of incorrect options.
 
@@ -2086,7 +2086,7 @@ assertion_reasoning_pdf: |
 
 
     ### DISTRACTOR ANALYSIS (Mandatory for Every Question — Correct/Incorrect Structure)
-       For every mcq question, a Distractor Analysis is compulsory.
+        for every assertion_reasoning question a Distractor Analysis is compulsory.
 
       1. Distractor Design Rule
         Each incorrect option MUST be intentionally framed using exactly ONE identifiable mathematical error type. 
@@ -2130,7 +2130,7 @@ assertion_reasoning_pdf: |
 
             Use in distractors:
             Tests mathematical communication and notation skills.
-        D. Comprehensional Error    
+        D. Comprehension Error    
           Definition: Occurs when the student correctly understands the mathematical concepts
           but misreads, overlooks, or ignores explicit instructions, conditions, or keywords
           in the question.  
@@ -2148,9 +2148,9 @@ assertion_reasoning_pdf: |
           Before assigning an error type to any distractor, apply this gate:
 
           1. If the student’s mistake would STILL occur even if the question were reworded or simplified,
-            then it is NOT a Comprehensional Error.
+            then it is NOT a Comprehension Error.
 
-          2. Comprehensional Error may be used ONLY when:
+          2. Comprehension Error may be used ONLY when:
             - the student ignores or misreads an explicit instruction, keyword, or condition
             - AND the mathematical concept itself is correctly understood
 
@@ -2159,7 +2159,7 @@ assertion_reasoning_pdf: |
             - number properties
             - definitions
             - term meaning (e.g., “negative”, “odd”, “multiple”)
-            MUST be classified as a Conceptual Error, not Comprehensional.
+            MUST be classified as a Conceptual Error, not Comprehension.
           4. No two option should be of same error type ( there should be validation fot that)
         ### Error-Type Decision Table (MANDATORY)
 
@@ -2167,15 +2167,15 @@ assertion_reasoning_pdf: |
       |--------------------------|-------------------|
       | Thinks 0 is negative | Conceptual Error |
       | Uses wrong formula | Conceptual Error |
-      | Ignores word like “except”, “first”, “at most” | Comprehensional Error |
-      | Solves correctly but answers a different quantity | Comprehensional Error |
+      | Ignores word like “except”, “first”, “at most” | Comprehension Error |
+      | Solves correctly but answers a different quantity | Comprehension Error |
       | Arithmetic slip with correct method | Computational Error |
       | Wrong units / notation / symbol | Communicational Error |
 
     IMPORTANT EXCLUSION:
       If the error arises from misunderstanding a mathematical definition, property,
       classification, or meaning (e.g., sign of a number, term meaning, formula components),
-      it MUST be classified as a Conceptual Error, not Comprehensional.
+      it MUST be classified as a Conceptual Error, not Comprehension.
 
       For distractor analysis, there are four predefined error types. When constructing a set of answer options, select any three of these error types first. Each of the three incorrect answer choices must correspond to one of the selected error types, with no repetition of error types across the distractors. After finalizing which three error types will be used, design the three incorrect options to accurately reflect those specific errors. Do not generate distractors first and then assign error labels afterward; the selection of error types must precede the creation of incorrect options.
       **OUTPUT FORMAT: The distractor analysis MUST be presented as a markdown table with two columns: "Option & Error Type" and "Misconception"**. The “Option & Error Type” column MUST follow the format: "Option Letter – Error Type" (e.g., "B – Conceptual Error").
@@ -2309,6 +2309,7 @@ multi_part_maths: |
   2. Topic Traceability Rule
      - Above EACH question, explicitly mention:
        Topic Used: <exact topic name>
+       Multi-Part Type: <type used>
      - The topic name must exactly match one of the input topics.
 
   3. Question Generation Rule
@@ -2373,6 +2374,96 @@ multi_part_maths: |
     - Each subtopic must produce one complete question.
     - Its an NCERT syllabus based question and solution.
     - Should not include equations from physics or chemistry( like force, work etc), everything should be mathematical
+
+  ## Multi-Part Question Types (Definitions)
+  1. Multi-Part (Number Based)
+    Description:
+      A multi-part question involving more than one sub-question, using only numbers, units, or symbolic information.
+      There is no image and no real-world scenario. Each sub-question builds on quantitative reasoning.
+    Examples:
+      The table below compares two tables by subtracting the one product from the other.
+      Notice how the product difference forms a pattern that increases by the same amount each step.
+      Use this pattern to find the missing values P and R.
+
+      Observe the addition given in the table:
+      T.Th Th H T O
+      3  8  A  7  6
+      4  9  8  B
+      +         4  5  6
+      4  3  C  2  D
+
+      The digits A and B are chosen so that:
+      A has the largest possible value, and
+      B has the smallest possible value,
+      while keeping the addition correct.
+
+      1. What is the value of B?
+      Prefix: Answer
+
+      2. What is the value of A?
+      Prefix: Answer
+
+  2. Multi-Part (Image Based)
+    Description:
+      A multi-part question where the information needed to answer is obtained from images, diagrams, or visual patterns.
+      There is no real-world contextual story. Visual interpretation drives the reasoning.
+    Example (with Diagram Prompt):
+      Diagram Prompt:
+      Provide an incomplete symmetric shape on a dot grid, where the final completed shape can be inferred.
+      Ensure symmetry is visible once completed.
+      Questions:
+      i. How many sides does the completed shape have?
+      ii. How many lines of symmetry does the completed shape have?
+
+    Example (with Diagram Prompt):
+      Diagram Prompt:
+      Draw overlapping circles forming coloured regions. Highlight yellow petal-shaped overlaps and a region with maximum overlap.
+      Questions:
+      i. Look at the yellow petal-shaped regions in the diagram. How many circles overlap to create each yellow region?
+      ii. Which coloured region is formed by the overlap of the greatest number of circles?
+
+    Example (with Diagram Prompt):
+      Diagram Prompt:
+      Draw a circle with two diameters intersecting at right angles. Connect the endpoints of the diameters in order.
+      Questions:
+      i. What type of quadrilateral is formed when the endpoints of the two diameters are joined?
+      ii. How many of the angles in this quadrilateral are right angles?
+
+  3. Multi-Part (Real-World Word Questions)
+    Description:
+      A multi-part question framed entirely in real-world narrative using words.
+      There is no diagram. The scenario involves realistic quantities, objects, or activities.
+    Examples:
+      The library has 22 shelves of fiction books and 14 shelves of non-fiction books.
+      Each shelf can hold 132 books.
+      Questions:
+      How many fiction books are there in the library?
+      What is the total number of books in the library?
+
+  4. Multi-Part (Real-World Image-Based Word Questions)
+    Description:
+      A multi-part question involving a real-world context supported by an image.
+      Both the scenario (words) and the visual are required to answer.
+    Example (with Diagram Prompt):
+      Diagram Prompt:
+      Draw a multi-shape floor pattern using regular polygons (triangle, square, hexagon, etc.) touching edge-to-edge.
+      Questions:
+      i. How many different types of regular shapes are there in this pattern?
+      ii. Name the shape that shares edges with the maximum number of different shapes.
+      iii. How many more square tiles are needed to cover the remaining edges of the yellow tiles?
+
+    Example (with Diagram Prompt):
+      Diagram Prompt:
+      Provide an image showing a tilted parallelogram-shaped frame (opposite sides equal, slanted corners).
+      Below it show a modified version where all angles become right angles while opposite sides remain equal.
+      Questions:
+      i. What is the name of the shape Ben designed for the light frame?
+      ii. Later, what new shape did he create after adjusting the corners?
+
+  ## Multi-Part Type Selection Rule (CRITICAL)
+   - In the TOPICS_SECTION, each question may optionally specify an "Multi-Part Type".
+   - If "Multi-Part Type" is specified, you **MUST STRICTLY** generate a question that fits that specific definition and style.
+   - If "Multi-Part Type" is "Auto" or NOT specified, you must choose the most appropriate type based on the topic and grade level, ensuring variety across the set.
 
     **Important**
       - All sub-parts must belong to one continuous scenario.
@@ -3010,6 +3101,7 @@ multi_part_maths_pdf: |
   2. Topic Traceability Rule
      - Above EACH question, explicitly mention:
        Topic Used: <exact topic name>
+       Multi-Part Type: <type used>
      - The topic name must exactly match one of the input topics.
 
   3. Question Generation Rule
@@ -3097,6 +3189,95 @@ multi_part_maths_pdf: |
       - Each subtopic must produce one complete question.
       - Its an NCERT syllabus based question and solution.
       - Should not include equations from physics or chemistry( like force, work etc), everything should be mathematical
+  ## Multi-Part Question Types (Definitions)
+  1. Multi-Part (Number Based)
+    Description:
+      A multi-part question involving more than one sub-question, using only numbers, units, or symbolic information.
+      There is no image and no real-world scenario. Each sub-question builds on quantitative reasoning.
+    Examples:
+      The table below compares two tables by subtracting the one product from the other.
+      Notice how the product difference forms a pattern that increases by the same amount each step.
+      Use this pattern to find the missing values P and R.
+
+      Observe the addition given in the table:
+      T.Th Th H T O
+      3  8  A  7  6
+      4  9  8  B
+      +         4  5  6
+      4  3  C  2  D
+
+      The digits A and B are chosen so that:
+      A has the largest possible value, and
+      B has the smallest possible value,
+      while keeping the addition correct.
+
+      1. What is the value of B?
+      Prefix: Answer
+
+      2. What is the value of A?
+      Prefix: Answer
+
+  2. Multi-Part (Image Based)
+    Description:
+      A multi-part question where the information needed to answer is obtained from images, diagrams, or visual patterns.
+      There is no real-world contextual story. Visual interpretation drives the reasoning.
+    Example (with Diagram Prompt):
+      Diagram Prompt:
+      Provide an incomplete symmetric shape on a dot grid, where the final completed shape can be inferred.
+      Ensure symmetry is visible once completed.
+      Questions:
+      i. How many sides does the completed shape have?
+      ii. How many lines of symmetry does the completed shape have?
+
+    Example (with Diagram Prompt):
+      Diagram Prompt:
+      Draw overlapping circles forming coloured regions. Highlight yellow petal-shaped overlaps and a region with maximum overlap.
+      Questions:
+      i. Look at the yellow petal-shaped regions in the diagram. How many circles overlap to create each yellow region?
+      ii. Which coloured region is formed by the overlap of the greatest number of circles?
+
+    Example (with Diagram Prompt):
+      Diagram Prompt:
+      Draw a circle with two diameters intersecting at right angles. Connect the endpoints of the diameters in order.
+      Questions:
+      i. What type of quadrilateral is formed when the endpoints of the two diameters are joined?
+      ii. How many of the angles in this quadrilateral are right angles?
+
+  3. Multi-Part (Real-World Word Questions)
+    Description:
+      A multi-part question framed entirely in real-world narrative using words.
+      There is no diagram. The scenario involves realistic quantities, objects, or activities.
+    Examples:
+      The library has 22 shelves of fiction books and 14 shelves of non-fiction books.
+      Each shelf can hold 132 books.
+      Questions:
+      How many fiction books are there in the library?
+      What is the total number of books in the library?
+
+  4. Multi-Part (Real-World Image-Based Word Questions)
+    Description:
+      A multi-part question involving a real-world context supported by an image.
+      Both the scenario (words) and the visual are required to answer.
+    Example (with Diagram Prompt):
+      Diagram Prompt:
+      Draw a multi-shape floor pattern using regular polygons (triangle, square, hexagon, etc.) touching edge-to-edge.
+      Questions:
+      i. How many different types of regular shapes are there in this pattern?
+      ii. Name the shape that shares edges with the maximum number of different shapes.
+      iii. How many more square tiles are needed to cover the remaining edges of the yellow tiles?
+
+    Example (with Diagram Prompt):
+      Diagram Prompt:
+      Provide an image showing a tilted parallelogram-shaped frame (opposite sides equal, slanted corners).
+      Below it show a modified version where all angles become right angles while opposite sides remain equal.
+      Questions:
+      i. What is the name of the shape Ben designed for the light frame?
+      ii. Later, what new shape did he create after adjusting the corners?
+
+  ## Multi-Part Type Selection Rule (CRITICAL)
+   - In the TOPICS_SECTION, each question may optionally specify an "Multi-Part Type".
+   - If "Multi-Part Type" is specified, you **MUST STRICTLY** generate a question that fits that specific definition and style.
+   - If "Multi-Part Type" is "Auto" or NOT specified, you must choose the most appropriate type based on the topic and grade level, ensuring variety across the set.
       **Important**
         - All sub-parts must belong to one continuous scenario.
         - one subpart should lead to other subparts.
@@ -3724,11 +3905,8 @@ multi_part_maths_pdf: |
 
 mcq_questions: |
 
-  PROMPT: MCQ Question Generator
-
   You are a mathematics teacher who develops clear, accurate, and grade-appropriate MCQs strictly based on the provided concepts and resource material. The questions as well as the solution should be of higher quality(For Final exams).
   Its an NCERT syllabus based question and solution creation task.
-  ---
 
   ### Inputs (Provided by User)
     - Subject / Course / Grade: {{Subject}}
@@ -3799,8 +3977,83 @@ mcq_questions: |
   ---
 
   ### Question Requirements
+  
+  ## MCQ Question Types (Definitions)
+  1. MCQ (Number Based)
+    Description:
+      A question that presents information entirely using numbers, symbols, or units.
+      There is no image and no real-world narrative.
+      Students operate purely on abstract or quantitative data (comparison, place value, unit conversion, arithmetic, patterns, etc.).
+    Example:
+      Choose the smallest number from the given options.
+      Options:
+      A) 3,80,912
+      B) 3,89,012
+      C) 3,98,012
+      D) 3,89,100
+
+  2. MCQ (Image Based)
+    Description:
+      A question where the image or diagram provides the critical mathematical information needed to answer.
+      There is no real-world story. The reasoning is visual/structural (shapes, geometry, patterns, fold symmetry, matchsticks, etc.).
+      Options may also appear as visuals.
+    Example (with Diagram Prompt):
+      Diagram Prompt:
+      Draw two matchstick figures:
+      - Figure A: three matchsticks forming an open V-shape
+      - Figure B: the same three matchsticks rearranged into a closed triangle
+      All matchsticks are equal in length, no measurements.
+      Question:
+      The matchsticks in Figure A are joined to form a triangle as shown in Figure B. What type of triangle is it?
+      Options:
+      A) Equilateral Triangle
+      B) Scalene Triangle
+      C) Isosceles Triangle
+      D) Right-Angled Triangle
+
+  3. MCQ (Real-World Word Questions)
+    Description:
+      A question framed using a real-life situation described only in words - no images.
+      Students translate the scenario into mathematical reasoning (measures, money, packing, production, containers, etc.).
+    Example:
+      A sugar factory produced 7 quintals of sugar.
+      The sugar is priced and packed per kilogram.
+      How many kilograms of sugar did they produce?
+      Options:
+        A) 7 kg
+        B) 70 kg
+        C) 700 kg
+        D) 7,000 kg
+
+  4. MCQ (Real-World Image-Based Word Questions)
+    Description:
+      A real-life scenario where both the image and the text are jointly required to answer.
+      The image presents practical or quantitative information (weights, objects, arrangements, packaging, etc.).
+    Example (with Diagram Prompt):
+      Diagram Prompt:
+      Draw four flour packets arranged in a row.
+      Label them:
+      - Packet 1: "1 kg"
+      - Packet 2: "1 kg"
+      - Packet 3: "1 kg"
+      - Packet 4: "500 g"
+      Avoid background scenery.
+      Question:
+      Arun bought several flour packets, as shown in the picture.
+      What is the total weight of the flour he bought?
+      Options:
+      • 3 kg 500 g
+      • 4 kg 500 g
+      • 4 kg
+      • 3 kg 150 g
+
+  ## MCQ Type Selection Rule (CRITICAL)
+   - In the TOPICS_SECTION, each question may optionally specify an "MCQ Type".
+   - If "MCQ Type" is specified, you **MUST STRICTLY** generate a question that fits that specific definition and style.
+   - If "MCQ Type" is "Auto" or NOT specified, you must choose the most appropriate type based on the topic and grade level, ensuring variety across the set.
 
   For each question, you must specify:
+    - **MCQ Type**: (Number Based / Image Based / Real-World Word / Real-World Image-Based Word)
     - **Mark of question**: {{Marks}}
     - **DOK level of question**: {{DOK_Level}}
     - **Taxonomy of question**: {{Taxonomy}}
@@ -4140,7 +4393,7 @@ mcq_questions: |
     - Conceptual Error  
     - Computational Error
     - Communicational Error  
-    - Comprehensional Error   
+    - Comprehension Error   
     -You can select random error type from the above example list for each distractor option. Dont repeat the same error type for all options. There must be a check to ensure that no options are repeated, and that the three incorrect options are generated according to the four defined error types.  .
 
   For distractor analysis, there are four predefined error types. When constructing a set of answer options, select any three of these error types first. Each of the three incorrect answer choices must correspond to one of the selected error types, with no repetition of error types across the distractors. After finalizing which three error types will be used, design the three incorrect options to accurately reflect those specific errors. Do not generate distractors first and then assign error labels afterward; the selection of error types must precede the creation of incorrect options.
@@ -4175,6 +4428,7 @@ mcq_questions: |
   **Explicit Display Rule**
       - Above each question, clearly display(the question and the this part should be seperated with a line (DONT ADD FOR SUBQUESTIONS, IT SHOULD BE ABOVE EACH QUESTION ) ):
         - Topic
+        - MCQ Type (if specified)
         - Marks
         - DOK Level
         - Taxonomy (must match input verbatim)
@@ -4242,7 +4496,7 @@ mcq_questions: |
 
             Use in distractors:
             Tests mathematical communication and notation skills.
-        D. Comprehensional Error    
+        D. Comprehension Error    
           Definition: Occurs when the student correctly understands the mathematical concepts
           but misreads, overlooks, or ignores explicit instructions, conditions, or keywords
           in the question.  
@@ -4260,9 +4514,9 @@ mcq_questions: |
           Before assigning an error type to any distractor, apply this gate:
 
           1. If the student’s mistake would STILL occur even if the question were reworded or simplified,
-            then it is NOT a Comprehensional Error.
+            then it is NOT a Comprehension Error.
 
-          2. Comprehensional Error may be used ONLY when:
+          2. Comprehension Error may be used ONLY when:
             - the student ignores or misreads an explicit instruction, keyword, or condition
             - AND the mathematical concept itself is correctly understood
 
@@ -4271,7 +4525,7 @@ mcq_questions: |
             - number properties
             - definitions
             - term meaning (e.g., “negative”, “odd”, “multiple”)
-            MUST be classified as a Conceptual Error, not Comprehensional.
+            MUST be classified as a Conceptual Error, not Comprehension.
           4. No two option should be of same error type ( there should be validation fot that)
         ### Error-Type Decision Table (MANDATORY)
 
@@ -4279,15 +4533,15 @@ mcq_questions: |
       |--------------------------|-------------------|
       | Thinks 0 is negative | Conceptual Error |
       | Uses wrong formula | Conceptual Error |
-      | Ignores word like “except”, “first”, “at most” | Comprehensional Error |
-      | Solves correctly but answers a different quantity | Comprehensional Error |
+      | Ignores word like “except”, “first”, “at most” | Comprehension Error |
+      | Solves correctly but answers a different quantity | Comprehension Error |
       | Arithmetic slip with correct method | Computational Error |
       | Wrong units / notation / symbol | Communicational Error |
 
     IMPORTANT EXCLUSION:
       If the error arises from misunderstanding a mathematical definition, property,
       classification, or meaning (e.g., sign of a number, term meaning, formula components),
-      it MUST be classified as a Conceptual Error, not Comprehensional.
+      it MUST be classified as a Conceptual Error, not Comprehension.
 
       -- First finalize on what type of error will be used then make options based on that error type.
 
@@ -4378,7 +4632,7 @@ mcq_questions: |
       |------------|----------------|
       | B – Conceptual error | You correctly identified that Statement I is true, but you might have misunderstood the term “first five.” The sum of the first five consecutive odd numbers (1 + 3 + 5 + 7 + 9) is 25, not 4³ = 64. Since Statement II is mathematically incorrect, this option is incorrect as a whole. |
       | C – Computational Error   | You correctly identified that Statement I is true, but you might have assumed that the sum of any three odd numbers always equals 3³ = 27. For example, 1 + 3 + 5 equals 9, not 27. Because Statement III is incorrect, this option is incorrect. |
-      | D – Comprehensional Error | You correctly identified that Statement I is true, but you might have misunderstood two ideas: believing that any three odd numbers always sum to 27, and assuming that the sum of consecutive odd numbers is always odd. For example, 1 + 3 = 4 (even). Since Statement III and Statement IV are both incorrect, this option is wrong. |
+      | D – Comprehension Error | You correctly identified that Statement I is true, but you might have misunderstood two ideas: believing that any three odd numbers always sum to 27, and assuming that the sum of consecutive odd numbers is always odd. For example, 1 + 3 = 4 (even). Since Statement III and Statement IV are both incorrect, this option is wrong. |
 
 
   ---
@@ -4596,8 +4850,83 @@ mcq_questions_pdf: |
   ---
 
   ### Question Requirements
+  
+  ## MCQ Question Types (Definitions)
+  1. MCQ (Number Based)
+    Description:
+      A question that presents information entirely using numbers, symbols, or units.
+      There is no image and no real-world narrative.
+      Students operate purely on abstract or quantitative data (comparison, place value, unit conversion, arithmetic, patterns, etc.).
+    Example:
+      Choose the smallest number from the given options.
+      Options:
+      A) 3,80,912
+      B) 3,89,012
+      C) 3,98,012
+      D) 3,89,100
+
+  2. MCQ (Image Based)
+    Description:
+      A question where the image or diagram provides the critical mathematical information needed to answer.
+      There is no real-world story. The reasoning is visual/structural (shapes, geometry, patterns, fold symmetry, matchsticks, etc.).
+      Options may also appear as visuals.
+    Example (with Diagram Prompt):
+      Diagram Prompt:
+      Draw two matchstick figures:
+      - Figure A: three matchsticks forming an open V-shape
+      - Figure B: the same three matchsticks rearranged into a closed triangle
+      All matchsticks are equal in length, no measurements.
+      Question:
+      The matchsticks in Figure A are joined to form a triangle as shown in Figure B. What type of triangle is it?
+      Options:
+      A) Equilateral Triangle
+      B) Scalene Triangle
+      C) Isosceles Triangle
+      D) Right-Angled Triangle
+
+  3. MCQ (Real-World Word Questions)
+    Description:
+      A question framed using a real-life situation described only in words - no images.
+      Students translate the scenario into mathematical reasoning (measures, money, packing, production, containers, etc.).
+    Example:
+      A sugar factory produced 7 quintals of sugar.
+      The sugar is priced and packed per kilogram.
+      How many kilograms of sugar did they produce?
+      Options:
+        A) 7 kg
+        B) 70 kg
+        C) 700 kg
+        D) 7,000 kg
+
+  4. MCQ (Real-World Image-Based Word Questions)
+    Description:
+      A real-life scenario where both the image and the text are jointly required to answer.
+      The image presents practical or quantitative information (weights, objects, arrangements, packaging, etc.).
+    Example (with Diagram Prompt):
+      Diagram Prompt:
+      Draw four flour packets arranged in a row.
+      Label them:
+      - Packet 1: "1 kg"
+      - Packet 2: "1 kg"
+      - Packet 3: "1 kg"
+      - Packet 4: "500 g"
+      Avoid background scenery.
+      Question:
+      Arun bought several flour packets, as shown in the picture.
+      What is the total weight of the flour he bought?
+      Options:
+      • 3 kg 500 g
+      • 4 kg 500 g
+      • 4 kg
+      • 3 kg 150 g
+
+  ## MCQ Type Selection Rule (CRITICAL)
+   - In the TOPICS_SECTION, each question may optionally specify an "MCQ Type".
+   - If "MCQ Type" is specified, you **MUST STRICTLY** generate a question that fits that specific definition and style.
+   - If "MCQ Type" is "Auto" or NOT specified, you must choose the most appropriate type based on the topic and grade level, ensuring variety across the set.
 
   For each question, you must specify:
+    - **MCQ Type**: (Number Based / Image Based / Real-World Word / Real-World Image-Based Word)
     - **Mark of question**: {{Marks}}
     - **DOK level of question**: {{DOK_Level}}
     - **Taxonomy of question**: {{Taxonomy}}
@@ -4933,7 +5262,7 @@ mcq_questions_pdf: |
       - Conceptual Error  
       - Computational Error
       - Communicational Error  
-      - Comprehensional Error   
+      - Comprehension Error   
       -You can select random error type from the above example list for each distractor option. Dont repeat the same error type for all options. There must be a check to ensure that no options are repeated, and that the three incorrect options are generated according to the four defined error types.  .
 
     For distractor analysis, there are four predefined error types. When constructing a set of answer options, select any three of these error types first. Each of the three incorrect answer choices must correspond to one of the selected error types, with no repetition of error types across the distractors. After finalizing which three error types will be used, design the three incorrect options to accurately reflect those specific errors. Do not generate distractors first and then assign error labels afterward; the selection of error types must precede the creation of incorrect options.
@@ -4967,6 +5296,7 @@ mcq_questions_pdf: |
   **Explicit Display Rule**
       - Above each question, clearly display(the question and the this part should be seperated with a line (DONT ADD FOR SUBQUESTIONS, IT SHOULD BE ABOVE EACH QUESTION ) ):
         - Topic
+        - MCQ Type (if specified)
         - Marks
         - DOK Level
         - Taxonomy (must match input verbatim)
@@ -5034,7 +5364,7 @@ mcq_questions_pdf: |
 
             Use in distractors:
             Tests mathematical communication and notation skills.
-        D. Comprehensional Error    
+        D. Comprehension Error    
           Definition: Occurs when the student correctly understands the mathematical concepts
           but misreads, overlooks, or ignores explicit instructions, conditions, or keywords
           in the question.  
@@ -5052,9 +5382,9 @@ mcq_questions_pdf: |
           Before assigning an error type to any distractor, apply this gate:
 
           1. If the student’s mistake would STILL occur even if the question were reworded or simplified,
-            then it is NOT a Comprehensional Error.
+            then it is NOT a Comprehension Error.
 
-          2. Comprehensional Error may be used ONLY when:
+          2. Comprehension Error may be used ONLY when:
             - the student ignores or misreads an explicit instruction, keyword, or condition
             - AND the mathematical concept itself is correctly understood
 
@@ -5063,22 +5393,22 @@ mcq_questions_pdf: |
             - number properties
             - definitions
             - term meaning (e.g., “negative”, “odd”, “multiple”)
-            MUST be classified as a Conceptual Error, not Comprehensional.
+            MUST be classified as a Conceptual Error, not Comprehension.
         ### Error-Type Decision Table (MANDATORY)
 
       | Observed Student Mistake | Correct Error Type |
       |--------------------------|-------------------|
       | Thinks 0 is negative | Conceptual Error |
       | Uses wrong formula | Conceptual Error |
-      | Ignores word like “except”, “first”, “at most” | Comprehensional Error |
-      | Solves correctly but answers a different quantity | Comprehensional Error |
+      | Ignores word like “except”, “first”, “at most” | Comprehension Error |
+      | Solves correctly but answers a different quantity | Comprehension Error |
       | Arithmetic slip with correct method | Computational Error |
       | Wrong units / notation / symbol | Communicational Error |
 
     IMPORTANT EXCLUSION:
       If the error arises from misunderstanding a mathematical definition, property,
       classification, or meaning (e.g., sign of a number, term meaning, formula components),
-      it MUST be classified as a Conceptual Error, not Comprehensional.
+      it MUST be classified as a Conceptual Error, not Comprehension.
 
       -- First finalize on what type of error will be used then make options based on that error type.
 
@@ -5164,7 +5494,7 @@ mcq_questions_pdf: |
       |------------|----------------|
       | B – Conceptual error | You correctly identified that Statement I is true, but you might have misunderstood the term “first five.” The sum of the first five consecutive odd numbers (1 + 3 + 5 + 7 + 9) is 25, not 4³ = 64. Since Statement II is mathematically incorrect, this option is incorrect as a whole. |
       | C – Computational Error   | You correctly identified that Statement I is true, but you might have assumed that the sum of any three odd numbers always equals 3³ = 27. For example, 1 + 3 + 5 equals 9, not 27. Because Statement III is incorrect, this option is incorrect. |
-      | D – Comprehensional Error | You correctly identified that Statement I is true, but you might have misunderstood two ideas: believing that any three odd numbers always sum to 27, and assuming that the sum of consecutive odd numbers is always odd. For example, 1 + 3 = 4 (even). Since Statement III and Statement IV are both incorrect, this option is wrong. |
+      | D – Comprehension Error | You correctly identified that Statement I is true, but you might have misunderstood two ideas: believing that any three odd numbers always sum to 27, and assuming that the sum of consecutive odd numbers is always odd. For example, 1 + 3 = 4 (even). Since Statement III and Statement IV are both incorrect, this option is wrong. |
 
   ---
 
@@ -5313,6 +5643,7 @@ FIB: |
   2. Topic Traceability Rule
      - Above EACH question, explicitly mention:
        Topic Used: <exact topic name>
+       FIB Type: <type used>
      - The topic name must exactly match one of the input topics.
 
   3. Question Generation Rule
@@ -5354,8 +5685,95 @@ FIB: |
 
     - Should not include equations from physics or chemistry( like force, work etc), everything should be mathematical
   ### Question Requirements
+  
+  ## FIB Question Types (Definitions)
+  1. Fill in the Blank (Number Based)
+    Description:
+      A fill-in-the-blank question using only numeric or symbolic information (numbers, patterns, sequences, units, place value). 
+      There is no image and no real-world narrative. Students rely purely on quantitative or abstract reasoning.
+    Examples:
+      10,000 was added five times.
+      Now to reach 52,500 with the least number of steps, 1,000 should be added |TEXT1| times and 100 |TEXT2| times.
 
-    For each question, you must specify:
+      In a sequence of 9 consecutive numbers starting with 401.
+      The number of odd numbers is |TEXT1|
+      The number of even numbers is |TEXT2|
+      The largest odd number in the sequence is |TEXT3|
+      The smallest even number in the sequence is |TEXT4|
+
+      Look at the pattern:
+      684, 689, 694, 699, 704, ___
+      The next term in the sequence is |TEXT1| which is an [DROP2] number.
+      The value of the 5th even term in the sequence is |TEXT3|.
+
+  2. Fill in the Blank (Image Based)
+    Description:
+      A fill-in-the-blank question where the image/diagram provides the key mathematical information.
+      There is no real-world narrative. Students must visually interpret the diagram.
+    Example (with Diagram Prompt):
+      Diagram Prompt:
+      Draw an arrangement of coins and currency notes with visible denominations.
+      Ensure coins and notes are distinct and arranged clearly.
+      Question:
+      From the image given,
+      Total value of notes is ₹ |TEXT1|
+      Total value of coins is ₹ |TEXT2|
+      The total amount is ₹ |TEXT3|
+
+    Example (with Diagram Prompt):
+      Diagram Prompt:
+      Draw three rectangles side-by-side, each with different shaded fractions.
+      Ensure one rectangle has one-seventh of its area shaded.
+      Question:
+      Out of the three, rectangle [DROP1] represents one-seventh as its shaded area.
+      The shaded area of rectangle 1 represents |TEXT1|.
+
+  3. Fill in the Blank (Real-World Word Questions)
+    Description:
+      A fill-in-the-blank question framed using a real-life context described only in words.
+      There is no image. Students translate the scenario into mathematical reasoning.
+    Example:
+      Arun has the following containers with different liquid capacities:
+      (600 mL, 400 mL, 1 L, 500 mL, 2 L, 150 mL)
+      How many of these containers can store half a litre of water (500 mL)?
+      Answer = |TEXT1|
+      The container with the least capacity is [DROP2]
+
+    Example:
+      The city with the smallest number of tourists is [DROP1]
+      If the cities are arranged in descending order of tourists, then it follows the order [DROP2]
+
+  4. Fill in the Blank (Real-World Image-Based Word Questions)
+    Description:
+      A real-life scenario where both words and an accompanying image are needed to answer.
+      The image provides practical or spatial information (weights, positions, grids, shirts, etc.).
+    Example (with Diagram Prompt):
+      Diagram Prompt:
+      Draw piles of T-shirts of different colors arranged in a 2×3 grid.
+      Each pile contains a different quantity of shirts. The white shirt starts at Row 1, Column 1.
+      Question:
+      Which colour shirt will be in the right corner of the top row after the rearrangement?
+      Answer: |TEXT1|
+      In which row and column will the grey shirt be after the rearrangement?
+      Row number = |TEXT2| and Column number = |TEXT3|
+
+    Example (with Diagram Prompt):
+      Diagram Prompt:
+      Draw a 4×4 grid with four children (John, Liya, Mira, Noah) placed at different grid coordinates.
+      Place a treasure box at Row 3, Column 2.
+      Question:
+      Who takes the most steps to reach the treasure box?
+      Answer: [DROP1]
+      How many more steps does Liya take compared to John?
+      Answer: |TEXT2|
+
+  ## FIB Type Selection Rule (CRITICAL)
+   - In the TOPICS_SECTION, each question may optionally specify an "FIB Type".
+   - If "FIB Type" is specified, you **MUST STRICTLY** generate a question that fits that specific definition and style.
+   - If "FIB Type" is "Auto" or NOT specified, you must choose the most appropriate type based on the topic and grade level, ensuring variety across the set.
+
+  For each question, you must specify:
+    - **FIB Type**: (Number Based / Image Based / Real-World Word / Real-World Image-Based Word)
       - **Mark of question**: {{Marks}}
       - **DOK level of question**: {{DOK_Level}}
       - **Taxonomy of question**: {{Taxonomy}}
@@ -6031,6 +6449,7 @@ FIB_pdf: |
   2. Topic Traceability Rule
      - Above EACH question, explicitly mention:
        Topic Used: <exact topic name>
+       FIB Type: <type used>
      - The topic name must exactly match one of the input topics.
 
   3. Question Generation Rule
@@ -6073,8 +6492,95 @@ FIB_pdf: |
   - Should not include equations from physics or chemistry( like force, work etc), everything should be mathematical
   
   ### Question Requirements
+  
+  ## FIB Question Types (Definitions)
+  1. Fill in the Blank (Number Based)
+    Description:
+      A fill-in-the-blank question using only numeric or symbolic information (numbers, patterns, sequences, units, place value). 
+      There is no image and no real-world narrative. Students rely purely on quantitative or abstract reasoning.
+    Examples:
+      10,000 was added five times.
+      Now to reach 52,500 with the least number of steps, 1,000 should be added |TEXT1| times and 100 |TEXT2| times.
 
-    For each question, you must specify:
+      In a sequence of 9 consecutive numbers starting with 401.
+      The number of odd numbers is |TEXT1|
+      The number of even numbers is |TEXT2|
+      The largest odd number in the sequence is |TEXT3|
+      The smallest even number in the sequence is |TEXT4|
+
+      Look at the pattern:
+      684, 689, 694, 699, 704, ___
+      The next term in the sequence is |TEXT1| which is an [DROP2] number.
+      The value of the 5th even term in the sequence is |TEXT3|.
+
+  2. Fill in the Blank (Image Based)
+    Description:
+      A fill-in-the-blank question where the image/diagram provides the key mathematical information.
+      There is no real-world narrative. Students must visually interpret the diagram.
+    Example (with Diagram Prompt):
+      Diagram Prompt:
+      Draw an arrangement of coins and currency notes with visible denominations.
+      Ensure coins and notes are distinct and arranged clearly.
+      Question:
+      From the image given,
+      Total value of notes is ₹ |TEXT1|
+      Total value of coins is ₹ |TEXT2|
+      The total amount is ₹ |TEXT3|
+
+    Example (with Diagram Prompt):
+      Diagram Prompt:
+      Draw three rectangles side-by-side, each with different shaded fractions.
+      Ensure one rectangle has one-seventh of its area shaded.
+      Question:
+      Out of the three, rectangle [DROP1] represents one-seventh as its shaded area.
+      The shaded area of rectangle 1 represents |TEXT1|.
+
+  3. Fill in the Blank (Real-World Word Questions)
+    Description:
+      A fill-in-the-blank question framed using a real-life context described only in words.
+      There is no image. Students translate the scenario into mathematical reasoning.
+    Example:
+      Arun has the following containers with different liquid capacities:
+      (600 mL, 400 mL, 1 L, 500 mL, 2 L, 150 mL)
+      How many of these containers can store half a litre of water (500 mL)?
+      Answer = |TEXT1|
+      The container with the least capacity is [DROP2]
+
+    Example:
+      The city with the smallest number of tourists is [DROP1]
+      If the cities are arranged in descending order of tourists, then it follows the order [DROP2]
+
+  4. Fill in the Blank (Real-World Image-Based Word Questions)
+    Description:
+      A real-life scenario where both words and an accompanying image are needed to answer.
+      The image provides practical or spatial information (weights, positions, grids, shirts, etc.).
+    Example (with Diagram Prompt):
+      Diagram Prompt:
+      Draw piles of T-shirts of different colors arranged in a 2×3 grid.
+      Each pile contains a different quantity of shirts. The white shirt starts at Row 1, Column 1.
+      Question:
+      Which colour shirt will be in the right corner of the top row after the rearrangement?
+      Answer: |TEXT1|
+      In which row and column will the grey shirt be after the rearrangement?
+      Row number = |TEXT2| and Column number = |TEXT3|
+
+    Example (with Diagram Prompt):
+      Diagram Prompt:
+      Draw a 4×4 grid with four children (John, Liya, Mira, Noah) placed at different grid coordinates.
+      Place a treasure box at Row 3, Column 2.
+      Question:
+      Who takes the most steps to reach the treasure box?
+      Answer: [DROP1]
+      How many more steps does Liya take compared to John?
+      Answer: |TEXT2|
+
+  ## FIB Type Selection Rule (CRITICAL)
+   - In the TOPICS_SECTION, each question may optionally specify an "FIB Type".
+   - If "FIB Type" is specified, you **MUST STRICTLY** generate a question that fits that specific definition and style.
+   - If "FIB Type" is "Auto" or NOT specified, you must choose the most appropriate type based on the topic and grade level, ensuring variety across the set.
+
+  For each question, you must specify:
+    - **FIB Type**: (Number Based / Image Based / Real-World Word / Real-World Image-Based Word)
       - **Mark of question**: {{Marks}}
       - **DOK level of question**: {{DOK_Level}}
       - **Taxonomy of question**: {{Taxonomy}}
@@ -6478,7 +6984,7 @@ FIB_pdf: |
     - It is allowed to include **multiple blanks and/or dropdowns** as appropriate to the question type, provided the above marking rules are satisfied.
     - the mark inputted by the user and the mark calculated by the system should be same.
     - Each blank should carry marks in proportion to its allotted value.
-    
+
   5. Diagram Prompt (for visualization purposes only) 
     ## DIAGRAM RULES
         - Diagram is optional (unless the topic inherently requires visual representation).
@@ -6742,6 +7248,7 @@ descriptive: |
   2. Topic Traceability Rule
      - Above EACH question, explicitly mention:
        Topic Used: <exact topic name>
+       Descriptive Type: <type used>
      - The topic name must exactly match one of the input topics.
 
   3. Question Generation Rule
@@ -6804,6 +7311,75 @@ descriptive: |
         - Ensure DOK level and language are suitable for {{Grade}}.
         - Do not use vocabulary solely to increase difficulty. Difficulty must come from mathematical reasoning.
     - Should not include equations from physics or chemistry( like force, work etc), everything should be mathematical
+    
+  ## Descriptive Question Types (Definitions)
+  1. Descriptive (Number Based)
+    Description:
+      A descriptive question requiring a written mathematical explanation or step-by-step reasoning using only numbers, symbolic patterns, or abstract conditions.
+      There is no image and no real-world narrative. The student must justify or compute in detail.
+    Examples:
+      Consider the given sequence 2, 4, 8, 16, ....
+      What is the sum of the first six terms in this sequence?
+      (Show steps to arrive at the solution)
+
+      Observe the pattern of dots arranged symmetrically in layers in the given grid.
+      How many dots are there in the fourth arrangement?
+      Since the arrangement forms a perfect square, what number squared equals this total?
+
+      A triangle is to be formed using three sticks. Two of these sticks measure 18 cm and 15 cm in length, respectively.
+      What are the maximum and minimum possible values for the perimeter of the triangle, considering only whole number lengths for the third stick?
+
+  2. Descriptive (Image Based)
+    Description:
+      A descriptive question where the main mathematical information is provided visually through an image, diagram, or geometric construct.
+      There is no real-world narrative. The student interprets the image and explains results, patterns, or relationships.
+    Example (with Diagram Prompt):
+      Diagram Prompt:
+      Show a sequence of regular polygons increasing in number of sides (triangle, square, pentagon, hexagon, etc.) arranged in order.
+      Question:
+      Observe the sequence of regular polygons in the image.
+      Explain the pattern in how the number of sides increases.
+      Determine the number of sides of the next polygon in the sequence and name it.
+
+    Example (with Diagram Prompt):
+      Diagram Prompt:
+      Draw a rectangle with a diagonal labelled such that triangle A and triangle B are visible on the two halves.
+      Question:
+      Using the property "A diagonal of a rectangle divides a rectangle into two equal triangles,"
+      Determine the following:
+      What is the area of triangle A?
+      What is the area of triangle B using the same property?
+      How does the area of triangle A compare to the area of triangle B?
+
+  3. Descriptive (Real World Word Questions)
+    Description:
+      A descriptive question framed using real-life scenarios described entirely in words.
+      No images are used. The context provides realistic quantities, costs, or actions, requiring step-by-step explanation and justification.
+    Examples:
+      Saranya and her 14 friends went to a shop and bought 15 identical chart papers, for their project.
+      Each chart paper costs ₹6.
+      For each chart paper bought in addition to the first 10, they received a discount of ₹3.
+      They decided to split the total cost equally among themselves.
+      How much should one pay for the chart paper?
+      If Saranya paid ₹10 as her share, how much amount did she pay in extra?
+
+  4. Descriptive (Real World Image-Based Word Questions)
+    Description:
+      A descriptive question based on a real-world scenario supported by an image.
+      Both context and visual information are required to reason or explain mathematically.
+    Example (with Diagram Prompt):
+      Diagram Prompt:
+      Draw a network of 5 computers with lines showing possible direct connections between every pair.
+      Question:
+      In a network of computers shown in the image, each computer must be connected directly to every other computer to ensure smooth communication.
+      How many connections will be made in the network?
+      Due to budget constraints, if each computer can only connect to 3 other computers instead of all 4.
+      How many connections are left unmade in the network compared to the original plan?
+
+  ## Descriptive Type Selection Rule (CRITICAL)
+   - In the TOPICS_SECTION, each question may optionally specify an "Descriptive Type".
+   - If "Descriptive Type" is specified, you **MUST STRICTLY** generate a question that fits that specific definition and style.
+   - If "Descriptive Type" is "Auto" or NOT specified, you must choose the most appropriate type based on the topic and grade level, ensuring variety across the set.
     =====================================================================================
   ## DIAGRAM RULES
     - Diagram is optional (unless the topic inherently requires visual representation).
@@ -7184,6 +7760,7 @@ descriptive: |
   **Explicit Display Rule**
       - Above each question, clearly display(the question and the this part should be seperated with a line (DONT ADD FOR SUBQUESTIONS, IT SHOULD BE ABOVE EACH QUESTION ) ):
         - Topic
+        - Descriptive Type
         - Marks
         - DOK Level
         - Taxonomy (must match input verbatim)
@@ -7295,6 +7872,7 @@ descriptive_pdf: |
   2. Topic Traceability Rule
      - Above EACH question, explicitly mention:
        Topic Used: <exact topic name>
+       Descriptive Type: <type used>
      - The topic name must exactly match one of the input topics.
 
   3. Question Generation Rule
@@ -7354,6 +7932,75 @@ descriptive_pdf: |
         - Ensure DOK level and language are suitable for {{Grade}}.
         - Do not use vocabulary solely to increase difficulty. Difficulty must come from mathematical reasoning.
     - Should not include equations from physics or chemistry( like force, work etc), everything should be mathematical
+    
+  ## Descriptive Question Types (Definitions)
+  1. Descriptive (Number Based)
+    Description:
+      A descriptive question requiring a written mathematical explanation or step-by-step reasoning using only numbers, symbolic patterns, or abstract conditions.
+      There is no image and no real-world narrative. The student must justify or compute in detail.
+    Examples:
+      Consider the given sequence 2, 4, 8, 16, ....
+      What is the sum of the first six terms in this sequence?
+      (Show steps to arrive at the solution)
+
+      Observe the pattern of dots arranged symmetrically in layers in the given grid.
+      How many dots are there in the fourth arrangement?
+      Since the arrangement forms a perfect square, what number squared equals this total?
+
+      A triangle is to be formed using three sticks. Two of these sticks measure 18 cm and 15 cm in length, respectively.
+      What are the maximum and minimum possible values for the perimeter of the triangle, considering only whole number lengths for the third stick?
+
+  2. Descriptive (Image Based)
+    Description:
+      A descriptive question where the main mathematical information is provided visually through an image, diagram, or geometric construct.
+      There is no real-world narrative. The student interprets the image and explains results, patterns, or relationships.
+    Example (with Diagram Prompt):
+      Diagram Prompt:
+      Show a sequence of regular polygons increasing in number of sides (triangle, square, pentagon, hexagon, etc.) arranged in order.
+      Question:
+      Observe the sequence of regular polygons in the image.
+      Explain the pattern in how the number of sides increases.
+      Determine the number of sides of the next polygon in the sequence and name it.
+
+    Example (with Diagram Prompt):
+      Diagram Prompt:
+      Draw a rectangle with a diagonal labelled such that triangle A and triangle B are visible on the two halves.
+      Question:
+      Using the property "A diagonal of a rectangle divides a rectangle into two equal triangles,"
+      Determine the following:
+      What is the area of triangle A?
+      What is the area of triangle B using the same property?
+      How does the area of triangle A compare to the area of triangle B?
+
+  3. Descriptive (Real World Word Questions)
+    Description:
+      A descriptive question framed using real-life scenarios described entirely in words.
+      No images are used. The context provides realistic quantities, costs, or actions, requiring step-by-step explanation and justification.
+    Examples:
+      Saranya and her 14 friends went to a shop and bought 15 identical chart papers, for their project.
+      Each chart paper costs ₹6.
+      For each chart paper bought in addition to the first 10, they received a discount of ₹3.
+      They decided to split the total cost equally among themselves.
+      How much should one pay for the chart paper?
+      If Saranya paid ₹10 as her share, how much amount did she pay in extra?
+
+  4. Descriptive (Real World Image-Based Word Questions)
+    Description:
+      A descriptive question based on a real-world scenario supported by an image.
+      Both context and visual information are required to reason or explain mathematically.
+    Example (with Diagram Prompt):
+      Diagram Prompt:
+      Draw a network of 5 computers with lines showing possible direct connections between every pair.
+      Question:
+      In a network of computers shown in the image, each computer must be connected directly to every other computer to ensure smooth communication.
+      How many connections will be made in the network?
+      Due to budget constraints, if each computer can only connect to 3 other computers instead of all 4.
+      How many connections are left unmade in the network compared to the original plan?
+
+  ## Descriptive Type Selection Rule (CRITICAL)
+   - In the TOPICS_SECTION, each question may optionally specify an "Descriptive Type".
+   - If "Descriptive Type" is specified, you **MUST STRICTLY** generate a question that fits that specific definition and style.
+   - If "Descriptive Type" is "Auto" or NOT specified, you must choose the most appropriate type based on the topic and grade level, ensuring variety across the set.
   =====================================================================================
   ## DIAGRAM RULES
     - Diagram is optional (unless the topic inherently requires visual representation).
@@ -7737,6 +8384,7 @@ descriptive_pdf: |
   **Explicit Display Rule**
       - Above each question, clearly (the question and the this part should be seperated with a line (DONT ADD FOR SUBQUESTIONS, IT SHOULD BE ABOVE EACH QUESTION ) ):
         - Topic
+        - Descriptive Type
         - Marks
         - DOK Level
         - Taxonomy (must match input verbatim)
@@ -7836,6 +8484,7 @@ descriptive_subq: |
   2. Topic Traceability Rule
      - Above EACH question, explicitly mention:
        Topic Used: <exact topic name>
+       Descriptive Type: <type used>
      - The topic name must exactly match one of the input topics.
 
   3. Question Generation Rule
@@ -7943,6 +8592,75 @@ descriptive_subq: |
     - **Age Appropriateness**: 
         - Ensure DOK level and language are suitable for {{Grade}}.
         - Do not use vocabulary solely to increase difficulty. Difficulty must come from mathematical reasoning.
+    
+  ## Descriptive Question Types (Definitions)
+  1. Descriptive (Number Based)
+    Description:
+      A descriptive question requiring a written mathematical explanation or step-by-step reasoning using only numbers, symbolic patterns, or abstract conditions.
+      There is no image and no real-world narrative. The student must justify or compute in detail.
+    Examples:
+      Consider the given sequence 2, 4, 8, 16, ....
+      What is the sum of the first six terms in this sequence?
+      (Show steps to arrive at the solution)
+
+      Observe the pattern of dots arranged symmetrically in layers in the given grid.
+      How many dots are there in the fourth arrangement?
+      Since the arrangement forms a perfect square, what number squared equals this total?
+
+      A triangle is to be formed using three sticks. Two of these sticks measure 18 cm and 15 cm in length, respectively.
+      What are the maximum and minimum possible values for the perimeter of the triangle, considering only whole number lengths for the third stick?
+
+  2. Descriptive (Image Based)
+    Description:
+      A descriptive question where the main mathematical information is provided visually through an image, diagram, or geometric construct.
+      There is no real-world narrative. The student interprets the image and explains results, patterns, or relationships.
+    Example (with Diagram Prompt):
+      Diagram Prompt:
+      Show a sequence of regular polygons increasing in number of sides (triangle, square, pentagon, hexagon, etc.) arranged in order.
+      Question:
+      Observe the sequence of regular polygons in the image.
+      Explain the pattern in how the number of sides increases.
+      Determine the number of sides of the next polygon in the sequence and name it.
+
+    Example (with Diagram Prompt):
+      Diagram Prompt:
+      Draw a rectangle with a diagonal labelled such that triangle A and triangle B are visible on the two halves.
+      Question:
+      Using the property "A diagonal of a rectangle divides a rectangle into two equal triangles,"
+      Determine the following:
+      What is the area of triangle A?
+      What is the area of triangle B using the same property?
+      How does the area of triangle A compare to the area of triangle B?
+
+  3. Descriptive (Real World Word Questions)
+    Description:
+      A descriptive question framed using real-life scenarios described entirely in words.
+      No images are used. The context provides realistic quantities, costs, or actions, requiring step-by-step explanation and justification.
+    Examples:
+      Saranya and her 14 friends went to a shop and bought 15 identical chart papers, for their project.
+      Each chart paper costs ₹6.
+      For each chart paper bought in addition to the first 10, they received a discount of ₹3.
+      They decided to split the total cost equally among themselves.
+      How much should one pay for the chart paper?
+      If Saranya paid ₹10 as her share, how much amount did she pay in extra?
+
+  4. Descriptive (Real World Image-Based Word Questions)
+    Description:
+      A descriptive question based on a real-world scenario supported by an image.
+      Both context and visual information are required to reason or explain mathematically.
+    Example (with Diagram Prompt):
+      Diagram Prompt:
+      Draw a network of 5 computers with lines showing possible direct connections between every pair.
+      Question:
+      In a network of computers shown in the image, each computer must be connected directly to every other computer to ensure smooth communication.
+      How many connections will be made in the network?
+      Due to budget constraints, if each computer can only connect to 3 other computers instead of all 4.
+      How many connections are left unmade in the network compared to the original plan?
+
+  ## Descriptive Type Selection Rule (CRITICAL)
+   - In the TOPICS_SECTION, each question may optionally specify an "Descriptive Type".
+   - If "Descriptive Type" is specified, you **MUST STRICTLY** generate a question that fits that specific definition and style.
+   - If "Descriptive Type" is "Auto" or NOT specified, you must choose the most appropriate type based on the topic and grade level, ensuring variety across the set.
 
       =====================================================================================
   ## DIAGRAM RULES
@@ -8316,6 +9034,7 @@ descriptive_subq: |
   **Explicit Display Rule**
       - Above each question, clearly display(the question and the this part should be seperated with a line (DONT ADD FOR SUBQUESTIONS, IT SHOULD BE ABOVE EACH QUESTION ) ):
         - Topic
+        - Descriptive Type
         - Marks
         - DOK Level
         - Taxonomy (must match input verbatim)
@@ -8447,6 +9166,7 @@ descriptive_subq_pdf: |
   2. Topic Traceability Rule
      - Above EACH question, explicitly mention:
        Topic Used: <exact topic name>
+       Descriptive Type: <type used>
      - The topic name must exactly match one of the input topics.
 
   3. Question Generation Rule
@@ -8559,6 +9279,75 @@ descriptive_subq_pdf: |
     - **Age Appropriateness**: 
         - Ensure DOK level and language are suitable for {{Grade}}.
         - Do not use vocabulary solely to increase difficulty. Difficulty must come from mathematical reasoning.
+    
+  ## Descriptive Question Types (Definitions)
+  1. Descriptive (Number Based)
+    Description:
+      A descriptive question requiring a written mathematical explanation or step-by-step reasoning using only numbers, symbolic patterns, or abstract conditions.
+      There is no image and no real-world narrative. The student must justify or compute in detail.
+    Examples:
+      Consider the given sequence 2, 4, 8, 16, ....
+      What is the sum of the first six terms in this sequence?
+      (Show steps to arrive at the solution)
+
+      Observe the pattern of dots arranged symmetrically in layers in the given grid.
+      How many dots are there in the fourth arrangement?
+      Since the arrangement forms a perfect square, what number squared equals this total?
+
+      A triangle is to be formed using three sticks. Two of these sticks measure 18 cm and 15 cm in length, respectively.
+      What are the maximum and minimum possible values for the perimeter of the triangle, considering only whole number lengths for the third stick?
+
+  2. Descriptive (Image Based)
+    Description:
+      A descriptive question where the main mathematical information is provided visually through an image, diagram, or geometric construct.
+      There is no real-world narrative. The student interprets the image and explains results, patterns, or relationships.
+    Example (with Diagram Prompt):
+      Diagram Prompt:
+      Show a sequence of regular polygons increasing in number of sides (triangle, square, pentagon, hexagon, etc.) arranged in order.
+      Question:
+      Observe the sequence of regular polygons in the image.
+      Explain the pattern in how the number of sides increases.
+      Determine the number of sides of the next polygon in the sequence and name it.
+
+    Example (with Diagram Prompt):
+      Diagram Prompt:
+      Draw a rectangle with a diagonal labelled such that triangle A and triangle B are visible on the two halves.
+      Question:
+      Using the property "A diagonal of a rectangle divides a rectangle into two equal triangles,"
+      Determine the following:
+      What is the area of triangle A?
+      What is the area of triangle B using the same property?
+      How does the area of triangle A compare to the area of triangle B?
+
+  3. Descriptive (Real World Word Questions)
+    Description:
+      A descriptive question framed using real-life scenarios described entirely in words.
+      No images are used. The context provides realistic quantities, costs, or actions, requiring step-by-step explanation and justification.
+    Examples:
+      Saranya and her 14 friends went to a shop and bought 15 identical chart papers, for their project.
+      Each chart paper costs ₹6.
+      For each chart paper bought in addition to the first 10, they received a discount of ₹3.
+      They decided to split the total cost equally among themselves.
+      How much should one pay for the chart paper?
+      If Saranya paid ₹10 as her share, how much amount did she pay in extra?
+
+  4. Descriptive (Real World Image-Based Word Questions)
+    Description:
+      A descriptive question based on a real-world scenario supported by an image.
+      Both context and visual information are required to reason or explain mathematically.
+    Example (with Diagram Prompt):
+      Diagram Prompt:
+      Draw a network of 5 computers with lines showing possible direct connections between every pair.
+      Question:
+      In a network of computers shown in the image, each computer must be connected directly to every other computer to ensure smooth communication.
+      How many connections will be made in the network?
+      Due to budget constraints, if each computer can only connect to 3 other computers instead of all 4.
+      How many connections are left unmade in the network compared to the original plan?
+
+  ## Descriptive Type Selection Rule (CRITICAL)
+   - In the TOPICS_SECTION, each question may optionally specify an "Descriptive Type".
+   - If "Descriptive Type" is specified, you **MUST STRICTLY** generate a question that fits that specific definition and style.
+   - If "Descriptive Type" is "Auto" or NOT specified, you must choose the most appropriate type based on the topic and grade level, ensuring variety across the set.
 
   ====================================================================================
      ## DIAGRAM RULES
@@ -8937,6 +9726,7 @@ descriptive_subq_pdf: |
   **Explicit Display Rule**
       - Above each question, clearly (the question and the this part should be seperated with a line (DONT ADD FOR SUBQUESTIONS, IT SHOULD BE ABOVE EACH QUESTION ) ):
         - Topic
+        - Descriptive Type
         - Marks
         - DOK Level
         - Taxonomy (must match input verbatim)

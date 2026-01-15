@@ -29,7 +29,7 @@ QUESTION_TYPE_MAPPING = {
 }
 
 
-def build_topics_section(questions: List[Dict[str, Any]]) -> str:
+def build_topics_section(questions: List[Dict[str, Any]], batch_key: str = "") -> str:
     """
     Build the {{TOPICS_SECTION}} string from a list of questions.
     
@@ -119,7 +119,11 @@ def build_topics_section(questions: List[Dict[str, Any]]) -> str:
             mcq_type = q.get('mcq_type', 'Auto')
             mcq_type_str = f", MCQ Type: {mcq_type}" if mcq_type != 'Auto' else ""
             
-            line = f'    - Topic: "{topic}" → Questions: 1{mcq_type_str}{fib_type_str}{descriptive_type_str}, DOK: {dok}, Marks: {marks}, Taxonomy: {taxonomy} | New Concept Source: {new_concept_label} | Additional Notes Source: {additional_notes_label}'
+            if batch_key == "Assertion-Reasoning":
+                # For Assertion-Reasoning, exclude DOK and Taxonomy, but KEEP Marks
+                line = f'    - Topic: "{topic}" → Questions: 1, Marks: {marks} | New Concept Source: {new_concept_label} | Additional Notes Source: {additional_notes_label}'
+            else:
+                line = f'    - Topic: "{topic}" → Questions: 1{mcq_type_str}{fib_type_str}{descriptive_type_str}, DOK: {dok}, Marks: {marks}, Taxonomy: {taxonomy} | New Concept Source: {new_concept_label} | Additional Notes Source: {additional_notes_label}'
         
         # Add per-question additional notes if present
         if additional_notes_text:
@@ -236,7 +240,7 @@ def build_prompt_for_batch(
     logger.info(f"Building prompt | Template: {template_key} | Source: {source_type}{file_info} | Questions: {len(questions)}")
     
     # Build topics section
-    topics_section = build_topics_section(questions)
+    topics_section = build_topics_section(questions, batch_key)
     
     # Calculate total questions
     total_questions = len(questions)

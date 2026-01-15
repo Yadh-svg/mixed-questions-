@@ -1374,30 +1374,30 @@ with tab1:
                             }
                             
                             # Process each question type
-                            results = {}
-                            
+                            questions_list = []
                             for qtype, type_config in st.session_state.question_types_config.items():
                                 questions = type_config.get('questions', [])
+                                for q in questions:
+                                    # Ensure type is set
+                                    q['type'] = qtype
+                                    questions_list.append(q)
+                            
+                            if questions_list:
+                                # Import here to avoid circular imports
+                                from batch_processor import process_batches_pipeline
                                 
-                                if questions:
-                                    # Import here to avoid circular imports
-                                    from batch_processor import process_single_batch
-                                    
-                                    # Run async function
-                                    result = asyncio.run(
-                                        process_single_batch(
-                                            batch_key=qtype,
-                                            questions=questions,
-                                            general_config=config,
-                                            type_config=type_config  # Pass type-specific config
-                                        )
+                                # Run async pipeline
+                                st.session_state.generated_output = asyncio.run(
+                                    process_batches_pipeline(
+                                        questions_config=questions_list,
+                                        general_config=config
                                     )
-                                    
-                                    results[qtype] = result
-                            
-                            st.session_state.generated_output = results
-                            st.success("✅ Questions generated successfully!")
-                            
+                                )
+                                
+                                st.success("✅ Questions generated and validated successfully!")
+                            else:
+                                st.warning("No questions found to process.")
+                                
                         except Exception as e:
                             st.error(f"❌ Error during generation: {str(e)}")
                             st.exception(e)
@@ -1409,32 +1409,60 @@ with tab1:
             st.markdown("---")
             st.markdown('<div class="section-header">Generated Questions</div>', unsafe_allow_html=True)
             
+            # Import renderer
+            from result_renderer import render_batch_results
+
             # Display results for each batch
             for batch_key, batch_result in results.items():
                 with st.expander(f"📋 {batch_key}", expanded=True):
-                    if batch_result.get('error'):
-                        st.error(f"❌ Error: {batch_result['error']}")
+                    
+                    # Extract raw and validated results
+                    raw_res = batch_result.get('raw', {})
+                    val_res = batch_result.get('validated', {})
+                    
+                    # Display Validated Content (Default)
+                    if val_res and not val_res.get('error'):
+                         st.markdown("### ✅ Validated Output")
+                         # Use the new renderer
+                         render_batch_results(batch_key, val_res)
+                    elif val_res and val_res.get('error'):
+                         st.error(f"❌ Validation Error: {val_res['error']}")
+                         st.error(val_res.get('text', ''))
                     else:
-                        st.markdown(batch_result.get('text', 'No output'))
-                        
-                        # Show metadata
-                        st.markdown("---")
-                        col1, col2 = st.columns(2)
-                        with col1:
-                            st.metric("Questions", batch_result.get('question_count', 'N/A'))
-                        with col2:
-                            st.metric("Time Taken", f"{batch_result.get('elapsed', 0):.2f}s")
+                         st.warning("⚠️ Validation step missing or failed silently.")
+
+                    # Show Metadata (from validation step or generation step)
+                    st.markdown("---")
+                    col1, col2 = st.columns(2)
+                    with col1:
+                        st.metric("Questions", raw_res.get('question_count', 'N/A'))
+                    with col2:
+                        # Sum times
+                        raw_time = raw_res.get('elapsed', 0)
+                        val_time = val_res.get('elapsed', 0) if val_res else 0
+                        st.metric("Total Time", f"{raw_time + val_time:.2f}s")
+
+                    # Expandable Raw Output
+                    with st.expander("Show Generated Version (Raw Backend Output)"):
+                        if raw_res.get('error'):
+                            st.error(f"Generation Error: {raw_res['error']}")
+                        st.text_area("Raw Generator Output", value=raw_res.get('text', 'No output'), height=300, disabled=True)
             
             # Download option
             st.markdown("---")
             
-            # Combine all results
+            # Combine all results (Validated preferred)
             combined_output = ""
             for batch_key, batch_result in results.items():
+                val_res = batch_result.get('validated', {})
+                raw_res = batch_result.get('raw', {})
+                
+                final_text = val_res.get('text', '') if val_res else raw_res.get('text', 'Error')
+                
                 combined_output += f"\n\n{'='*80}\n"
                 combined_output += f"BATCH: {batch_key}\n"
                 combined_output += f"{'='*80}\n\n"
-                combined_output += batch_result.get('text', 'No output')
+                combined_output += final_text
             
             st.download_button(
                 label="📥 Download All Questions",
@@ -1452,22 +1480,41 @@ with tab2:
     if st.session_state.generated_output:
         results = st.session_state.generated_output
         
-        
+        # Import renderer (if not already imported in scope, but safest to import here too if needed or rely on top level if used)
+        from result_renderer import render_batch_results # Safe re-import inside function/block
+
         # Display results for each batch
         for batch_key, batch_result in results.items():
             with st.expander(f"📋 {batch_key}", expanded=True):
-                if batch_result.get('error'):
-                    st.error(f"❌ Error: {batch_result['error']}")
+                
+                # Extract raw and validated results
+                raw_res = batch_result.get('raw', {})
+                val_res = batch_result.get('validated', {})
+                
+                # Display Validated Content
+                if val_res and not val_res.get('error'):
+                        st.markdown("### ✅ Validated Output")
+                        # Use the new renderer
+                        render_batch_results(batch_key, val_res)
+                elif val_res and val_res.get('error'):
+                        st.error(f"❌ Validation Error: {val_res['error']}")
+                        st.error(val_res.get('text', ''))
                 else:
-                    st.markdown(batch_result.get('text', 'No output'))
-                    
-                    # Show metadata
-                    st.markdown("---")
-                    col1, col2 = st.columns(2)
-                    with col1:
-                        st.metric("Questions", batch_result.get('question_count', 'N/A'))
-                    with col2:
-                        st.metric("Time Taken", f"{batch_result.get('elapsed', 0):.2f}s")
+                        st.warning("⚠️ Validation step missing or failed silently.")
+
+                # Show Metadata
+                st.markdown("---")
+                col1, col2 = st.columns(2)
+                with col1:
+                    st.metric("Questions", raw_res.get('question_count', 'N/A'))
+                with col2:
+                    raw_time = raw_res.get('elapsed', 0)
+                    val_time = val_res.get('elapsed', 0) if val_res else 0
+                    st.metric("Total Time", f"{raw_time + val_time:.2f}s")
+
+                # Expandable Raw Output
+                with st.expander("Show Generated Version (Raw Backend Output)"):
+                    st.text_area("Raw Generator Output", value=raw_res.get('text', 'No output'), height=300, disabled=True, key=f"raw_bak_{batch_key}")
         
         # Download option
         st.markdown("---")
@@ -1475,10 +1522,14 @@ with tab2:
         # Combine all results
         combined_output = ""
         for batch_key, batch_result in results.items():
+            val_res = batch_result.get('validated', {})
+            raw_res = batch_result.get('raw', {})
+            final_text = val_res.get('text', '') if val_res else raw_res.get('text', 'Error')
+
             combined_output += f"\n\n{'='*80}\n"
             combined_output += f"BATCH: {batch_key}\n"
             combined_output += f"{'='*80}\n\n"
-            combined_output += batch_result.get('text', 'No output')
+            combined_output += final_text
         
         st.download_button(
             label="📥 Download All Questions",

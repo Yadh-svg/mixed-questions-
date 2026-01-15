@@ -89,6 +89,7 @@ case_study_maths: |
           
     5. Scenario Flow and Realism:
       - The scenario must be realistic, logically consistent, and contextually appropriate for Indian settings (names, ₹, metric units, etc.).
+      - Names should be simple and commonly used  (eg : Jack	Anna  Ryan	Emily	Sam	Maria	John	Maya	Anand	)
       - It should be at least four lines long and flow smoothly with clear connections between sentences.
       - Avoid abrupt or mechanical data statements — the narrative must feel natural and meaningful.
 
@@ -331,6 +332,23 @@ case_study_maths: |
     - Use only the necessary elements from the content to construct the question.
     - This is exam-ready content - you cannot reference external materials
     - Avoid comprehension-type question framing.
+
+  ## Representation and Operation Discipline
+    All generated questions, options, solutions, reasoning steps, and distractor analyses must strictly conform to the representations, terminology, units, symbols, operations, methods, and concepts that appear in the provided textbook/PDF for that topic and grade.
+
+    Rules:
+    1. Do not introduce any terminology, unit, operation, theorem, transformation, or representation that is not present in the textbook/PDF.
+    2. If the textbook uses specific representations (e.g., turns instead of degrees for rotational symmetry), you must use the same representation consistently.
+    3. If the textbook omits a representation or concept (e.g., order of rotational symmetry, angle measures, orientation mapping, matrices, coordinate geometry), do not introduce it.
+    4. Do not upgrade the abstraction level (e.g., do not convert fractions of turns into degrees or other advanced forms).unless in textbook its there 
+    5. Do not use any problem-solving technique, domain language, or reasoning step that students at this grade have not been taught based on the textbook/PDF.
+    6. During validation, flag and repair any violation of these rules automatically without altering the structural format of the question type.
+    7. Textbook/PDF takes priority over general NCERT content. Only use NCERT-level knowledge if it naturally aligns and does not introduce new constructs.
+    8. If a representation or construct is missing in the textbook/PDF, treat it as prohibited.
+
+    Enforcement:
+    - These rules apply to the question, solution, distractor analysis, and key idea.
+    - Any violation must be corrected before final output.
 
   ## INSTRUCTION OVERVIEW:
     - Based on the topics specified in the TOPICS_SECTION, generate questions accordingly.
@@ -715,6 +733,7 @@ case_study_maths_pdf: |
             
       5. Scenario Flow and Realism:
         - The scenario must be realistic, logically consistent, and contextually appropriate for Indian settings (names, ₹, metric units, etc.).
+        - Names should be simple and commonly used  (eg : Jack	Anna  Ryan	Emily	Sam	Maria	John	Maya	Anand	)
         - It should be at least four lines long and flow smoothly with clear connections between sentences.
         - Avoid abrupt or mechanical data statements — the narrative must feel natural and meaningful.
 
@@ -961,6 +980,23 @@ case_study_maths_pdf: |
     - Use only the necessary elements from the content to construct the question.
     - This is exam-ready content - you cannot reference external materials
     - Avoid comprehension-type question framing.
+
+    ## Representation and Operation Discipline
+      All generated questions, options, solutions, reasoning steps, and distractor analyses must strictly conform to the representations, terminology, units, symbols, operations, methods, and concepts that appear in the provided textbook/PDF for that topic and grade.
+
+      Rules:
+      1. Do not introduce any terminology, unit, operation, theorem, transformation, or representation that is not present in the textbook/PDF.
+      2. If the textbook uses specific representations (e.g., turns instead of degrees for rotational symmetry), you must use the same representation consistently.
+      3. If the textbook omits a representation or concept (e.g., order of rotational symmetry, angle measures, orientation mapping, matrices, coordinate geometry), do not introduce it.
+      4. Do not upgrade the abstraction level (e.g., do not convert fractions of turns into degrees or other advanced forms).unless in textbook its there 
+      5. Do not use any problem-solving technique, domain language, or reasoning step that students at this grade have not been taught based on the textbook/PDF.
+      6. During validation, flag and repair any violation of these rules automatically without altering the structural format of the question type.
+      7. Textbook/PDF takes priority over general NCERT content. Only use NCERT-level knowledge if it naturally aligns and does not introduce new constructs.
+      8. If a representation or construct is missing in the textbook/PDF, treat it as prohibited.
+
+      Enforcement:
+      - These rules apply to the question, solution, distractor analysis, and key idea.
+      - Any violation must be corrected before final output.
     ## INSTRUCTION OVERVIEW:
 
       - Based on the topics specified in the TOPICS_SECTION, generate questions accordingly.
@@ -1515,6 +1551,23 @@ assertion_reasoning: |
     - Use only the necessary elements from the content to construct the question.
     - This is exam-ready content - you cannot reference external materials
     - Avoid comprehension-type question framing.
+
+  ## Representation and Operation Discipline
+    All generated questions, options, solutions, reasoning steps, and distractor analyses must strictly conform to the representations, terminology, units, symbols, operations, methods, and concepts that appear in the provided textbook/PDF for that topic and grade.
+
+    Rules:
+    1. Do not introduce any terminology, unit, operation, theorem, transformation, or representation that is not present in the textbook/PDF.
+    2. If the textbook uses specific representations (e.g., turns instead of degrees for rotational symmetry), you must use the same representation consistently.
+    3. If the textbook omits a representation or concept (e.g., order of rotational symmetry, angle measures, orientation mapping, matrices, coordinate geometry), do not introduce it.
+    4. Do not upgrade the abstraction level (e.g., do not convert fractions of turns into degrees or other advanced forms).unless in textbook its there 
+    5. Do not use any problem-solving technique, domain language, or reasoning step that students at this grade have not been taught based on the textbook/PDF.
+    6. During validation, flag and repair any violation of these rules automatically without altering the structural format of the question type.
+    7. Textbook/PDF takes priority over general NCERT content. Only use NCERT-level knowledge if it naturally aligns and does not introduce new constructs.
+    8. If a representation or construct is missing in the textbook/PDF, treat it as prohibited.
+
+    Enforcement:
+    - These rules apply to the question, solution, distractor analysis, and key idea.
+    - Any violation must be corrected before final output.
   ### Output Format
     - For every question, follow this exact order:
       1. Solution (complete and student-friendly)
@@ -1526,16 +1579,19 @@ assertion_reasoning: |
 
     - Present the Assertion–Reason question clearly.
     - Mention the Topic in brackets.
+    - Start with the exact phrase: "A statement of assertion (A) is followed by a statement of reason (R)."
     - Place Assertion and Reason on separate lines with proper spacing.
+    - End with the exact phrase: "Which among the following options is true regarding the given statements?"
     - Clearly state the Correct Option.
 
     Example Structure:
 
     Topic: Nature of Roots
 
+    A statement of assertion (A) is followed by a statement of reason (R).
     Assertion (A): The quadratic equation x² + 4x + 5 = 0 has no real roots.
-
     Reason (R): The discriminant D of a quadratic equation ax² + bx + c = 0 is given by D = b² − 4ac.
+    Which among the following options is true regarding the given statements?
 
     Correct Option: B
 
@@ -1555,6 +1611,7 @@ assertion_reasoning: |
       - Clear justification for why the correct option is correct
     - Use equations, examples, or properties where needed.
     - Keep the language student-friendly and clear.
+    - Names should be simple and commonly used  (eg : Jack	Anna  Ryan	Emily	Sam	Maria	John	Maya	Anand	)
 
     ---
 
@@ -1705,18 +1762,14 @@ assertion_reasoning: |
   Example of an Assertion and Reasoning question for  6th grade
 
     1. A statement of assertion (A) is followed by a statement of reason (R). 
-    
         Assertion (A): Increasing the width of a rectangle while maintaining a constant area leads to an increase in its perimeter.     
         Reason (R): Changing the dimensions of a rectangle affects its perimeter.
-    
-      Which among the following options is true regarding the given statements?
+       Which among the following options is true regarding the given statements?
     
     2. A statement of assertion (A) is followed by a statement of reason (R).
-
         Assertion (A): A figure with 7 radial arms has no rotational symmetry, since 7 is not a factor of 360°.
         Reason (R): If the smallest angle of symmetry of a figure is a natural number in degrees, then it is a factor of 360°.
-
-      Which among the following options is true regarding the given statements?
+       Which among the following options is true regarding the given statements?
     
   **Distractor Analysis:**
 
@@ -1729,26 +1782,35 @@ assertion_reasoning: |
     ---
 
   **Key Idea:**
-   - Provide a GENERAL explanation of how to solve THIS TYPE of question (not this specific question).
-  - This should be a step-by-step breakdown that helps students understand the concept and approach.
-  - DO NOT use specific values from the question itself.
-  - The Key Idea should be applicable to ANY similar question on this topic.
-  - Use simple, clear language with examples when helpful.
-  - Purpose: Help students who couldn't solve it understand how to approach similar questions in the future.
-  - needs to be included in the output as the last part (KEY IDEA)
-  - Key idea should be there for each question and it should be after the solution .
-  For Assertion-Reasoning questions in general:
-  - Step 1: Read the Assertion (A) carefully and determine if it is true or false
-  - Step 2: Read the Reason (R) carefully and determine if it is true or false
-  - Step 3: If both are true, check if R correctly explains A (logical connection)
-  - Step 4: Select the appropriate option based on your analysis:
-    * Option A: Both true AND R explains A
-    * Option B: Both true BUT R does NOT explain A
-    * Option C: A is true, R is false
-    * Option D: A is false, R is true
-  - Step 5: Verify your choice by checking the logical relationship
-  
-  **Important**: This Key Idea provides a GENERAL approach to solving Assertion-Reasoning questions, not the specific solution to any particular question.
+  The Key Idea should be a general explanation for how to solve Assertion and Reasoning questions for this topic. 
+  It should not mention the specific question values or statements.
+
+  Structure:
+
+  1. Start with a brief conceptual explanation related to the topic itself. 
+    It should describe the idea using simple language, and may include short examples if they help (e.g., π or √2 for irrational numbers). 
+    This explanation should clarify the underlying concept students must know to judge truth or falsity.
+
+  2. After the concept explanation, give guidance on how to analyze Assertion and Reason parts by following these steps, using bullet points:
+
+    Step 1: Check truth of the Assertion
+    - Compare the statement to the concept explained above
+    - Decide if it is true or false based on definitions, properties, or rules
+
+    Step 2: Check truth of the Reason
+    - Evaluate if the reason is itself a correct statement
+    - Check if it matches known facts or properties of the topic
+
+    Step 3: Check relationship between Assertion and Reason (only if both are true)
+    - Decide whether the Reason actually explains why the Assertion is true
+    - See if the Reason provides a logical cause or justification for the Assertion
+
+    Step 4: Evaluate the options
+    - Based on truth values and logical relationship, choose from the standard options (Both true and explains, Both true but does not explain, Assertion true Reason false, Assertion false Reason true)
+
+  3. Key Idea must be clear, practical, and apply to any similar question on the topic. 
+    It should help students understand how to use the concept to evaluate Assertion–Reason statements in future questions.
+
 
   OUTPUT SHOULD BE IN MARKDOWN FORMAT
 
@@ -2041,6 +2103,23 @@ assertion_reasoning_pdf: |
     - Use only the necessary elements from the content to construct the question.
     - This is exam-ready content - you cannot reference external materials
     - Avoid comprehension-type question framing.
+
+  ## Representation and Operation Discipline
+    All generated questions, options, solutions, reasoning steps, and distractor analyses must strictly conform to the representations, terminology, units, symbols, operations, methods, and concepts that appear in the provided textbook/PDF for that topic and grade.
+
+    Rules:
+    1. Do not introduce any terminology, unit, operation, theorem, transformation, or representation that is not present in the textbook/PDF.
+    2. If the textbook uses specific representations (e.g., turns instead of degrees for rotational symmetry), you must use the same representation consistently.
+    3. If the textbook omits a representation or concept (e.g., order of rotational symmetry, angle measures, orientation mapping, matrices, coordinate geometry), do not introduce it.
+    4. Do not upgrade the abstraction level (e.g., do not convert fractions of turns into degrees or other advanced forms).unless in textbook its there 
+    5. Do not use any problem-solving technique, domain language, or reasoning step that students at this grade have not been taught based on the textbook/PDF.
+    6. During validation, flag and repair any violation of these rules automatically without altering the structural format of the question type.
+    7. Textbook/PDF takes priority over general NCERT content. Only use NCERT-level knowledge if it naturally aligns and does not introduce new constructs.
+    8. If a representation or construct is missing in the textbook/PDF, treat it as prohibited.
+
+    Enforcement:
+    - These rules apply to the question, solution, distractor analysis, and key idea.
+    - Any violation must be corrected before final output.
   ### Output Format
 
     ### Output Format
@@ -2054,16 +2133,19 @@ assertion_reasoning_pdf: |
 
     - Present the Assertion–Reason question clearly.
     - Mention the Topic in brackets.
+    - Start with the exact phrase: "A statement of assertion (A) is followed by a statement of reason (R)."
     - Place Assertion and Reason on separate lines with proper spacing.
+    - End with the exact phrase: "Which among the following options is true regarding the given statements?"
     - Clearly state the Correct Option.
 
     Example Structure:
 
     Topic: Nature of Roots
 
+    A statement of assertion (A) is followed by a statement of reason (R).
     Assertion (A): The quadratic equation x² + 4x + 5 = 0 has no real roots.
-
     Reason (R): The discriminant D of a quadratic equation ax² + bx + c = 0 is given by D = b² − 4ac.
+    Which among the following options is true regarding the given statements?
 
     Correct Option: B
 
@@ -2081,6 +2163,7 @@ assertion_reasoning_pdf: |
       - Clear justification for why the correct option is correct
     - Use equations, examples, or properties where needed.
     - Keep the language student-friendly and clear.
+    - Names should be simple and commonly used  (eg : Jack	Anna  Ryan	Emily	Sam	Maria	John	Maya	Anand	)
 
     ---
 
@@ -2229,18 +2312,14 @@ assertion_reasoning_pdf: |
   Example of an Assertion and Reasoning question for  6th grade
 
     1. A statement of assertion (A) is followed by a statement of reason (R). 
-    
         Assertion (A): Increasing the width of a rectangle while maintaining a constant area leads to an increase in its perimeter.     
         Reason (R): Changing the dimensions of a rectangle affects its perimeter.
-    
-      Which among the following options is true regarding the given statements?
+       Which among the following options is true regarding the given statements?
     
     2. A statement of assertion (A) is followed by a statement of reason (R).
-
         Assertion (A): A figure with 7 radial arms has no rotational symmetry, since 7 is not a factor of 360°.
         Reason (R): If the smallest angle of symmetry of a figure is a natural number in degrees, then it is a factor of 360°.
-
-      Which among the following options is true regarding the given statements?
+       Which among the following options is true regarding the given statements?
     
   **Distractor Analysis:**
 
@@ -2253,27 +2332,35 @@ assertion_reasoning_pdf: |
   ---
 
   
-  **Key Idea:**
-    - Provide a GENERAL explanation of how to solve THIS TYPE of question (not this specific question).
-    - This should be a step-by-step breakdown that helps students understand the concept and approach.
-    - DO NOT use specific values from the question itself.
-    - The Key Idea should be applicable to ANY similar question on this topic.
-    - Use simple, clear language with examples when helpful.
-    - Purpose: Help students who couldn't solve it understand how to approach similar questions in the future.
-    - needs to be included in the output as the last part (KEY IDEA)
-    - Key idea should be there for each question and it should be after the solution .
-  For Assertion-Reasoning questions in general:
-  - Step 1: Read the Assertion (A) carefully and determine if it is true or false
-  - Step 2: Read the Reason (R) carefully and determine if it is true or false
-  - Step 3: If both are true, check if R correctly explains A (logical connection)
-  - Step 4: Select the appropriate option based on your analysis:
-    * Option A: Both true AND R explains A
-    * Option B: Both true BUT R does NOT explain A
-    * Option C: A is true, R is false
-    * Option D: A is false, R is true
-  - Step 5: Verify your choice by checking the logical relationship
-  
-  **Important**: This Key Idea provides a GENERAL approach to solving Assertion-Reasoning questions, not the specific solution to any particular question.
+   **Key Idea:**
+    The Key Idea should be a general explanation for how to solve Assertion and Reasoning questions for this topic. 
+    It should not mention the specific question values or statements.
+
+    Structure:
+
+    1. Start with a brief conceptual explanation related to the topic itself. 
+      It should describe the idea using simple language, and may include short examples if they help (e.g., π or √2 for irrational numbers). 
+      This explanation should clarify the underlying concept students must know to judge truth or falsity.
+
+    2. After the concept explanation, give guidance on how to analyze Assertion and Reason parts by following these steps, using bullet points:
+
+      Step 1: Check truth of the Assertion
+      - Compare the statement to the concept explained above
+      - Decide if it is true or false based on definitions, properties, or rules
+
+      Step 2: Check truth of the Reason
+      - Evaluate if the reason is itself a correct statement
+      - Check if it matches known facts or properties of the topic
+
+      Step 3: Check relationship between Assertion and Reason (only if both are true)
+      - Decide whether the Reason actually explains why the Assertion is true
+      - See if the Reason provides a logical cause or justification for the Assertion
+
+      Step 4: Evaluate the options
+      - Based on truth values and logical relationship, choose from the standard options (Both true and explains, Both true but does not explain, Assertion true Reason false, Assertion false Reason true)
+
+    3. Key Idea must be clear, practical, and apply to any similar question on the topic. 
+      It should help students understand how to use the concept to evaluate Assertion–Reason statements in future questions.
 
   OUTPUT SHOULD BE IN MARKDOWN FORMAT
 multi_part_maths: |
@@ -2530,6 +2617,23 @@ multi_part_maths: |
     - Use only the necessary elements from the content to construct the question.
     - This is exam-ready content - you cannot reference external materials
     - Avoid comprehension-type question framing.
+
+  ## Representation and Operation Discipline
+    All generated questions, options, solutions, reasoning steps, and distractor analyses must strictly conform to the representations, terminology, units, symbols, operations, methods, and concepts that appear in the provided textbook/PDF for that topic and grade.
+
+    Rules:
+    1. Do not introduce any terminology, unit, operation, theorem, transformation, or representation that is not present in the textbook/PDF.
+    2. If the textbook uses specific representations (e.g., turns instead of degrees for rotational symmetry), you must use the same representation consistently.
+    3. If the textbook omits a representation or concept (e.g., order of rotational symmetry, angle measures, orientation mapping, matrices, coordinate geometry), do not introduce it.
+    4. Do not upgrade the abstraction level (e.g., do not convert fractions of turns into degrees or other advanced forms).unless in textbook its there 
+    5. Do not use any problem-solving technique, domain language, or reasoning step that students at this grade have not been taught based on the textbook/PDF.
+    6. During validation, flag and repair any violation of these rules automatically without altering the structural format of the question type.
+    7. Textbook/PDF takes priority over general NCERT content. Only use NCERT-level knowledge if it naturally aligns and does not introduce new constructs.
+    8. If a representation or construct is missing in the textbook/PDF, treat it as prohibited.
+
+    Enforcement:
+    - These rules apply to the question, solution, distractor analysis, and key idea.
+    - Any violation must be corrected before final output.
     - Even when content is limited to a single topic, you MUST generate variety through:
         • different numerical setups
         • different problem contexts
@@ -2690,6 +2794,7 @@ multi_part_maths: |
   =====================================================================================
 
   ## CONTEXT RULE (DIRECT & CONCISE)
+    - Names should be simple and commonly used  (eg : Jack	Anna  Ryan	Emily	Sam	Maria	John	Maya	Anand	)
     - A small 1–2 line direct context MAY be used to introduce the object or situation.
     - **STRICTLY FORBIDDEN**: Classroom scenarios, student/teacher interactions, or "observer" narratives.
       - ❌ "A student is learning about triangles..."
@@ -3341,6 +3446,23 @@ multi_part_maths_pdf: |
     - Use only the necessary elements from the content to construct the question.
     - This is exam-ready content - you cannot reference external materials
     - Avoid comprehension-type question framing.
+
+  ## Representation and Operation Discipline
+    All generated questions, options, solutions, reasoning steps, and distractor analyses must strictly conform to the representations, terminology, units, symbols, operations, methods, and concepts that appear in the provided textbook/PDF for that topic and grade.
+
+    Rules:
+    1. Do not introduce any terminology, unit, operation, theorem, transformation, or representation that is not present in the textbook/PDF.
+    2. If the textbook uses specific representations (e.g., turns instead of degrees for rotational symmetry), you must use the same representation consistently.
+    3. If the textbook omits a representation or concept (e.g., order of rotational symmetry, angle measures, orientation mapping, matrices, coordinate geometry), do not introduce it.
+    4. Do not upgrade the abstraction level (e.g., do not convert fractions of turns into degrees or other advanced forms).unless in textbook its there 
+    5. Do not use any problem-solving technique, domain language, or reasoning step that students at this grade have not been taught based on the textbook/PDF.
+    6. During validation, flag and repair any violation of these rules automatically without altering the structural format of the question type.
+    7. Textbook/PDF takes priority over general NCERT content. Only use NCERT-level knowledge if it naturally aligns and does not introduce new constructs.
+    8. If a representation or construct is missing in the textbook/PDF, treat it as prohibited.
+
+    Enforcement:
+    - These rules apply to the question, solution, distractor analysis, and key idea.
+    - Any violation must be corrected before final output.
       - Even when content is limited to a single topic, you MUST generate variety through:
           • different numerical setups
           • different problem contexts
@@ -3503,6 +3625,7 @@ multi_part_maths_pdf: |
     =====================================================================================
 
     ## CONTEXT RULE (DIRECT & CONCISE)
+      - Names should be simple and commonly used  (eg : Jack	Anna  Ryan	Emily	Sam	Maria	John	Maya	Anand	)
       - A small 1–2 line direct context MAY be used to introduce the object or situation.
       - **STRICTLY FORBIDDEN**: Classroom scenarios, student/teacher interactions, or "observer" narratives.
         - ❌ "A student is learning about triangles..."
@@ -4175,6 +4298,7 @@ mcq_questions: |
 
   1. **Question**: A clear, well-formulated question that tests the specified concept
      - Use student-friendly language appropriate for {{Grade}}
+     - Names should be simple and commonly used  (eg : Jack	Anna  Ryan	Emily	Sam	Maria	John	Maya	Anand	)
      - Avoid ambiguous wording
      - Include all necessary information
      - Use correct mathematical notation
@@ -4277,6 +4401,23 @@ mcq_questions: |
     - Use only the necessary elements from the content to construct the question.
     - This is exam-ready content - you cannot reference external materials
     - Avoid comprehension-type question framing.
+
+  ## Representation and Operation Discipline
+    All generated questions, options, solutions, reasoning steps, and distractor analyses must strictly conform to the representations, terminology, units, symbols, operations, methods, and concepts that appear in the provided textbook/PDF for that topic and grade.
+
+    Rules:
+    1. Do not introduce any terminology, unit, operation, theorem, transformation, or representation that is not present in the textbook/PDF.
+    2. If the textbook uses specific representations (e.g., turns instead of degrees for rotational symmetry), you must use the same representation consistently.
+    3. If the textbook omits a representation or concept (e.g., order of rotational symmetry, angle measures, orientation mapping, matrices, coordinate geometry), do not introduce it.
+    4. Do not upgrade the abstraction level (e.g., do not convert fractions of turns into degrees or other advanced forms).unless in textbook its there 
+    5. Do not use any problem-solving technique, domain language, or reasoning step that students at this grade have not been taught based on the textbook/PDF.
+    6. During validation, flag and repair any violation of these rules automatically without altering the structural format of the question type.
+    7. Textbook/PDF takes priority over general NCERT content. Only use NCERT-level knowledge if it naturally aligns and does not introduce new constructs.
+    8. If a representation or construct is missing in the textbook/PDF, treat it as prohibited.
+
+    Enforcement:
+    - These rules apply to the question, solution, distractor analysis, and key idea.
+    - Any violation must be corrected before final output.
     - Even when content is limited to a single topic, you MUST generate variety through:
         • different numerical setups
         • different problem contexts
@@ -5044,6 +5185,7 @@ mcq_questions_pdf: |
 
   1. **Question**: A clear, well-formulated question that tests the specified concept
      - Use student-friendly language appropriate for {{Grade}}
+     - Names should be simple and commonly used  (eg : Jack	Anna  Ryan	Emily	Sam	Maria	John	Maya	Anand	)
      - Avoid ambiguous wording
      - Include all necessary information
      - Use correct mathematical notation
@@ -5142,6 +5284,23 @@ mcq_questions_pdf: |
     - Use only the necessary elements from the content to construct the question.
     - This is exam-ready content - you cannot reference external materials
     - Avoid comprehension-type question framing.
+
+  ## Representation and Operation Discipline
+    All generated questions, options, solutions, reasoning steps, and distractor analyses must strictly conform to the representations, terminology, units, symbols, operations, methods, and concepts that appear in the provided textbook/PDF for that topic and grade.
+
+    Rules:
+    1. Do not introduce any terminology, unit, operation, theorem, transformation, or representation that is not present in the textbook/PDF.
+    2. If the textbook uses specific representations (e.g., turns instead of degrees for rotational symmetry), you must use the same representation consistently.
+    3. If the textbook omits a representation or concept (e.g., order of rotational symmetry, angle measures, orientation mapping, matrices, coordinate geometry), do not introduce it.
+    4. Do not upgrade the abstraction level (e.g., do not convert fractions of turns into degrees or other advanced forms).unless in textbook its there 
+    5. Do not use any problem-solving technique, domain language, or reasoning step that students at this grade have not been taught based on the textbook/PDF.
+    6. During validation, flag and repair any violation of these rules automatically without altering the structural format of the question type.
+    7. Textbook/PDF takes priority over general NCERT content. Only use NCERT-level knowledge if it naturally aligns and does not introduce new constructs.
+    8. If a representation or construct is missing in the textbook/PDF, treat it as prohibited.
+
+    Enforcement:
+    - These rules apply to the question, solution, distractor analysis, and key idea.
+    - Any violation must be corrected before final output.
     - Even when content is limited to a single topic, you MUST generate variety through:
         • different numerical setups
         • different problem contexts
@@ -5832,6 +5991,7 @@ FIB: |
     ☝️ This is WRONG because it doesn't use i), ii) labels when subparts are specified!
     
     Instructions for generating questions:
+    - Names should be simple and commonly used  (eg : Jack	Anna  Ryan	Emily	Sam	Maria	John	Maya	Anand	)
   - THE QUESTION SHOULD BE STRICTLY FRON THE TOPIC AND SHOULD USE ALL ITS CORRECT SUB TOPIC FOR EACH QUESTIONS 
     1. UNIQUE FIB QUESTION DESIGN — CORE UNIQUENESS RULES
 
@@ -6163,6 +6323,7 @@ FIB: |
 
     - Each blank or dropdown must carry either **0.5 mark or 1 mark only**.
     - No blank or dropdown can have marks **less than 0.5 or more than 1**, and no other intermediate values are allowed.
+    - Wherever possible, prioritize using blanks with **0.5 marks** (e.g., split a 1-mark question into two 0.5-mark blanks).
 
     - For a **1-mark question**:
       - Use **one blank of 1 mark**, OR
@@ -6253,6 +6414,23 @@ FIB: |
     - Use only the necessary elements from the content to construct the question.
     - This is exam-ready content - you cannot reference external materials
     - Avoid comprehension-type question framing.
+
+  ## Representation and Operation Discipline
+    All generated questions, options, solutions, reasoning steps, and distractor analyses must strictly conform to the representations, terminology, units, symbols, operations, methods, and concepts that appear in the provided textbook/PDF for that topic and grade.
+
+    Rules:
+    1. Do not introduce any terminology, unit, operation, theorem, transformation, or representation that is not present in the textbook/PDF.
+    2. If the textbook uses specific representations (e.g., turns instead of degrees for rotational symmetry), you must use the same representation consistently.
+    3. If the textbook omits a representation or concept (e.g., order of rotational symmetry, angle measures, orientation mapping, matrices, coordinate geometry), do not introduce it.
+    4. Do not upgrade the abstraction level (e.g., do not convert fractions of turns into degrees or other advanced forms).unless in textbook its there 
+    5. Do not use any problem-solving technique, domain language, or reasoning step that students at this grade have not been taught based on the textbook/PDF.
+    6. During validation, flag and repair any violation of these rules automatically without altering the structural format of the question type.
+    7. Textbook/PDF takes priority over general NCERT content. Only use NCERT-level knowledge if it naturally aligns and does not introduce new constructs.
+    8. If a representation or construct is missing in the textbook/PDF, treat it as prohibited.
+
+    Enforcement:
+    - These rules apply to the question, solution, distractor analysis, and key idea.
+    - Any violation must be corrected before final output.
       - Even when content is limited to a single topic, you MUST generate variety through:
           • different numerical setups
           • different problem contexts
@@ -6639,6 +6817,7 @@ FIB_pdf: |
     ☝️ This is WRONG because it doesn't use i), ii) labels when subparts are specified!
     
     Instructions for generating questions:
+    - Names should be simple and commonly used  (eg : Jack	Anna  Ryan	Emily	Sam	Maria	John	Maya	Anand	)
   - THE QUESTION SHOULD BE STRICTLY FRON THE TOPIC AND SHOULD USE ALL ITS CORRECT SUB TOPIC FOR EACH QUESTIONS 
     1. UNIQUE FIB QUESTION DESIGN — CORE UNIQUENESS RULES
 
@@ -6970,6 +7149,7 @@ FIB_pdf: |
 
     - Each blank or dropdown must carry either **0.5 mark or 1 mark only**.
     - No blank or dropdown can have marks **less than 0.5 or more than 1**, and no other intermediate values are allowed.
+    - Wherever possible, prioritize using blanks with **0.5 marks** (e.g., split a 1-mark question into two 0.5-mark blanks).
 
     - For a **1-mark question**:
       - Use **one blank of 1 mark**, OR
@@ -7063,6 +7243,23 @@ FIB_pdf: |
     - Use only the necessary elements from the content to construct the question.
     - This is exam-ready content - you cannot reference external materials
     - Avoid comprehension-type question framing.
+
+  ## Representation and Operation Discipline
+    All generated questions, options, solutions, reasoning steps, and distractor analyses must strictly conform to the representations, terminology, units, symbols, operations, methods, and concepts that appear in the provided textbook/PDF for that topic and grade.
+
+    Rules:
+    1. Do not introduce any terminology, unit, operation, theorem, transformation, or representation that is not present in the textbook/PDF.
+    2. If the textbook uses specific representations (e.g., turns instead of degrees for rotational symmetry), you must use the same representation consistently.
+    3. If the textbook omits a representation or concept (e.g., order of rotational symmetry, angle measures, orientation mapping, matrices, coordinate geometry), do not introduce it.
+    4. Do not upgrade the abstraction level (e.g., do not convert fractions of turns into degrees or other advanced forms).unless in textbook its there 
+    5. Do not use any problem-solving technique, domain language, or reasoning step that students at this grade have not been taught based on the textbook/PDF.
+    6. During validation, flag and repair any violation of these rules automatically without altering the structural format of the question type.
+    7. Textbook/PDF takes priority over general NCERT content. Only use NCERT-level knowledge if it naturally aligns and does not introduce new constructs.
+    8. If a representation or construct is missing in the textbook/PDF, treat it as prohibited.
+
+    Enforcement:
+    - These rules apply to the question, solution, distractor analysis, and key idea.
+    - Any violation must be corrected before final output.
       - Even when content is limited to a single topic, you MUST generate variety through:
           • different numerical setups
           • different problem contexts
@@ -7218,6 +7415,8 @@ FIB_pdf: |
 descriptive: |
   You are a mathematics teacher who creates clear, grade-appropriate descriptive questions and detailed solutions for NCERT GRADE 1-12. The questions as well as the solution should be of higher quality(For Final exams).
   use Indian cultural names and contexts.
+  - Names should be simple and commonly used  (eg : Jack	Anna  Ryan	Emily	Sam	Maria	John	Maya	Anand	)
+
   Strictly follow the provided Concepts and Resource Material.
 
    ## INPUT DETAILS:
@@ -7307,6 +7506,7 @@ descriptive: |
         - If generating multiple questions, vary the context, numbers, and reasoning path.
         - "Like should be unique".
     - **Context**: Use Indian cultural names (e.g., Aarav, Diya, Raju, Priya), locations, and currency (₹) where applicable.
+    - **Context**: - Names should be simple and commonly used  (eg : Jack	Anna  Ryan	Emily	Sam	Maria	John	Maya	Anand	)
     - **Age Appropriateness**: 
         - Ensure DOK level and language are suitable for {{Grade}}.
         - Do not use vocabulary solely to increase difficulty. Difficulty must come from mathematical reasoning.
@@ -7567,6 +7767,23 @@ descriptive: |
     - Use only the necessary elements from the content to construct the question.
     - This is exam-ready content - you cannot reference external materials
     - Avoid comprehension-type question framing.
+
+  ## Representation and Operation Discipline
+    All generated questions, options, solutions, reasoning steps, and distractor analyses must strictly conform to the representations, terminology, units, symbols, operations, methods, and concepts that appear in the provided textbook/PDF for that topic and grade.
+
+    Rules:
+    1. Do not introduce any terminology, unit, operation, theorem, transformation, or representation that is not present in the textbook/PDF.
+    2. If the textbook uses specific representations (e.g., turns instead of degrees for rotational symmetry), you must use the same representation consistently.
+    3. If the textbook omits a representation or concept (e.g., order of rotational symmetry, angle measures, orientation mapping, matrices, coordinate geometry), do not introduce it.
+    4. Do not upgrade the abstraction level (e.g., do not convert fractions of turns into degrees or other advanced forms).unless in textbook its there 
+    5. Do not use any problem-solving technique, domain language, or reasoning step that students at this grade have not been taught based on the textbook/PDF.
+    6. During validation, flag and repair any violation of these rules automatically without altering the structural format of the question type.
+    7. Textbook/PDF takes priority over general NCERT content. Only use NCERT-level knowledge if it naturally aligns and does not introduce new constructs.
+    8. If a representation or construct is missing in the textbook/PDF, treat it as prohibited.
+
+    Enforcement:
+    - These rules apply to the question, solution, distractor analysis, and key idea.
+    - Any violation must be corrected before final output.
     - Even when content is limited to a single topic, you MUST generate variety through:
         • different numerical setups
         • different problem contexts
@@ -7825,6 +8042,7 @@ descriptive: |
 descriptive_pdf: |
   You are a mathematics teacher who creates clear, grade-appropriate descriptive questions and detailed solutions for NCERT GRADE 1-12. The questions as well as the solution should be of higher quality(For Final exams).
   use Indian cultural names and contexts.
+  - Names should be simple and commonly used  (eg : Jack	Anna  Ryan	Emily	Sam	Maria	John	Maya	Anand	)
   Strictly follow the provided Concepts and Resource Material.
 
    ## INPUT DETAILS:
@@ -7928,6 +8146,8 @@ descriptive_pdf: |
         - If generating multiple questions, vary the context, numbers, and reasoning path.
         - "Like should be unique".
     - **Context**: Use Indian cultural names (e.g., Aarav, Diya, Raju, Priya), locations, and currency (₹) where applicable.
+    - Names should be simple and commonly used  (eg : Jack	Anna  Ryan	Emily	Sam	Maria	John	Maya	Anand	)
+
     - **Age Appropriateness**: 
         - Ensure DOK level and language are suitable for {{Grade}}.
         - Do not use vocabulary solely to increase difficulty. Difficulty must come from mathematical reasoning.
@@ -8189,6 +8409,23 @@ descriptive_pdf: |
     - Use only the necessary elements from the content to construct the question.
     - This is exam-ready content - you cannot reference external materials
     - Avoid comprehension-type question framing.
+
+  ## Representation and Operation Discipline
+    All generated questions, options, solutions, reasoning steps, and distractor analyses must strictly conform to the representations, terminology, units, symbols, operations, methods, and concepts that appear in the provided textbook/PDF for that topic and grade.
+
+    Rules:
+    1. Do not introduce any terminology, unit, operation, theorem, transformation, or representation that is not present in the textbook/PDF.
+    2. If the textbook uses specific representations (e.g., turns instead of degrees for rotational symmetry), you must use the same representation consistently.
+    3. If the textbook omits a representation or concept (e.g., order of rotational symmetry, angle measures, orientation mapping, matrices, coordinate geometry), do not introduce it.
+    4. Do not upgrade the abstraction level (e.g., do not convert fractions of turns into degrees or other advanced forms).unless in textbook its there 
+    5. Do not use any problem-solving technique, domain language, or reasoning step that students at this grade have not been taught based on the textbook/PDF.
+    6. During validation, flag and repair any violation of these rules automatically without altering the structural format of the question type.
+    7. Textbook/PDF takes priority over general NCERT content. Only use NCERT-level knowledge if it naturally aligns and does not introduce new constructs.
+    8. If a representation or construct is missing in the textbook/PDF, treat it as prohibited.
+
+    Enforcement:
+    - These rules apply to the question, solution, distractor analysis, and key idea.
+    - Any violation must be corrected before final output.
     - Even when content is limited to a single topic, you MUST generate variety through:
         • different numerical setups
         • different problem contexts
@@ -8454,6 +8691,7 @@ descriptive_pdf: |
 descriptive_subq: |
   You are a mathematics teacher who creates clear, grade-appropriate descriptive questions with sub-parts. The questions as well as the solution should be of higher quality(For Final exams).
   use Indian cultural names and contexts.
+  - Names should be simple and commonly used  (eg : Jack	Anna  Ryan	Emily	Sam	Maria	John	Maya	Anand	)
   Strictly follow the provided Concepts and Resource Material.
 
    ## INPUT DETAILS:
@@ -8588,7 +8826,8 @@ descriptive_subq: |
         - If generating multiple questions, vary the context, numbers, and reasoning path.
     
     - **Context**: Use Indian cultural names (e.g., Aarav, Diya, Raju, Priya), locations, and currency (₹) where applicable.
-    
+    - Names should be simple and commonly used  (eg : Jack	Anna  Ryan	Emily	Sam	Maria	John	Maya	Anand	)
+
     - **Age Appropriateness**: 
         - Ensure DOK level and language are suitable for {{Grade}}.
         - Do not use vocabulary solely to increase difficulty. Difficulty must come from mathematical reasoning.
@@ -8846,6 +9085,23 @@ descriptive_subq: |
     - Use only the necessary elements from the content to construct the question.
     - This is exam-ready content - you cannot reference external materials
     - Avoid comprehension-type question framing.
+
+  ## Representation and Operation Discipline
+    All generated questions, options, solutions, reasoning steps, and distractor analyses must strictly conform to the representations, terminology, units, symbols, operations, methods, and concepts that appear in the provided textbook/PDF for that topic and grade.
+
+    Rules:
+    1. Do not introduce any terminology, unit, operation, theorem, transformation, or representation that is not present in the textbook/PDF.
+    2. If the textbook uses specific representations (e.g., turns instead of degrees for rotational symmetry), you must use the same representation consistently.
+    3. If the textbook omits a representation or concept (e.g., order of rotational symmetry, angle measures, orientation mapping, matrices, coordinate geometry), do not introduce it.
+    4. Do not upgrade the abstraction level (e.g., do not convert fractions of turns into degrees or other advanced forms).unless in textbook its there 
+    5. Do not use any problem-solving technique, domain language, or reasoning step that students at this grade have not been taught based on the textbook/PDF.
+    6. During validation, flag and repair any violation of these rules automatically without altering the structural format of the question type.
+    7. Textbook/PDF takes priority over general NCERT content. Only use NCERT-level knowledge if it naturally aligns and does not introduce new constructs.
+    8. If a representation or construct is missing in the textbook/PDF, treat it as prohibited.
+
+    Enforcement:
+    - These rules apply to the question, solution, distractor analysis, and key idea.
+    - Any violation must be corrected before final output.
     - Even when content is limited to a single topic, you MUST generate variety through:
         • different numerical setups
         • different problem contexts
@@ -9119,6 +9375,7 @@ descriptive_subq: |
 descriptive_subq_pdf: |
   You are a mathematics teacher who creates clear, grade-appropriate descriptive questions with sub-parts. The questions as well as the solution should be of higher quality(For Final exams).
   use Indian cultural names and contexts.
+  - Names should be simple and commonly used  (eg : Jack	Anna  Ryan	Emily	Sam	Maria	John	Maya	Anand	)
   Strictly follow the provided Concepts and Resource Material.
 
    ## INPUT DETAILS:
@@ -9275,7 +9532,8 @@ descriptive_subq_pdf: |
         - If generating multiple questions, vary the context, numbers, and reasoning path.
     
     - **Context**: Use Indian cultural names (e.g., Aarav, Diya, Raju, Priya), locations, and currency (₹) where applicable.
-    
+    - Names should be simple and commonly used  (eg : Jack	Anna  Ryan	Emily	Sam	Maria	John	Maya	Anand	)
+
     - **Age Appropriateness**: 
         - Ensure DOK level and language are suitable for {{Grade}}.
         - Do not use vocabulary solely to increase difficulty. Difficulty must come from mathematical reasoning.
@@ -9537,6 +9795,23 @@ descriptive_subq_pdf: |
     - Use only the necessary elements from the content to construct the question.
     - This is exam-ready content - you cannot reference external materials
     - Avoid comprehension-type question framing.
+
+  ## Representation and Operation Discipline
+    All generated questions, options, solutions, reasoning steps, and distractor analyses must strictly conform to the representations, terminology, units, symbols, operations, methods, and concepts that appear in the provided textbook/PDF for that topic and grade.
+
+    Rules:
+    1. Do not introduce any terminology, unit, operation, theorem, transformation, or representation that is not present in the textbook/PDF.
+    2. If the textbook uses specific representations (e.g., turns instead of degrees for rotational symmetry), you must use the same representation consistently.
+    3. If the textbook omits a representation or concept (e.g., order of rotational symmetry, angle measures, orientation mapping, matrices, coordinate geometry), do not introduce it.
+    4. Do not upgrade the abstraction level (e.g., do not convert fractions of turns into degrees or other advanced forms).unless in textbook its there 
+    5. Do not use any problem-solving technique, domain language, or reasoning step that students at this grade have not been taught based on the textbook/PDF.
+    6. During validation, flag and repair any violation of these rules automatically without altering the structural format of the question type.
+    7. Textbook/PDF takes priority over general NCERT content. Only use NCERT-level knowledge if it naturally aligns and does not introduce new constructs.
+    8. If a representation or construct is missing in the textbook/PDF, treat it as prohibited.
+
+    Enforcement:
+    - These rules apply to the question, solution, distractor analysis, and key idea.
+    - Any violation must be corrected before final output.
     - Even when content is limited to a single topic, you MUST generate variety through:
         • different numerical setups
         • different problem contexts

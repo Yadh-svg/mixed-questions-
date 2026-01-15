@@ -51,7 +51,8 @@ def render_mcq(q: Dict[str, Any], index: int):
         st.info(f"🖼️ **Diagram Prompt:** {q['DIAGRAM_PROMPT']}")
     
     # Question
-    st.markdown(f"**{q.get('QUESTION', '')}**")
+    # Question
+    st.markdown(f"{q.get('QUESTION', '')}")
     
     # Options
     options = q.get('OPTION', {})
@@ -135,7 +136,7 @@ def render_case_study(q: Dict[str, Any], index: int):
         st.info(f"🖼️ **Diagram Prompt:** {q['DIAGRAM_PROMPT']}")
     
     if q.get('QUESTION'):
-         st.markdown(f"**{q.get('QUESTION', '')}**")
+         st.markdown(f"{q.get('QUESTION', '')}")
 
     # Subquestions
     subqs = q.get('SUBQ', [])
@@ -171,7 +172,7 @@ def render_fib(q: Dict[str, Any], index: int):
     if q.get('DIAGRAM_PROMPT'):
         st.info(f"🖼️ **Diagram Prompt:** {q['DIAGRAM_PROMPT']}")
         
-    st.markdown(f"**{q.get('QUESTION', '')}**")
+    st.markdown(f"{q.get('QUESTION', '')}")
     
     subqs = q.get('SUBQ', [])
     if subqs:
@@ -199,7 +200,7 @@ def render_multipart(q: Dict[str, Any], index: int):
     if q.get('DIAGRAM_PROMPT'):
         st.info(f"🖼️ **Diagram Prompt:** {q['DIAGRAM_PROMPT']}")
         
-    st.markdown(f"**{q.get('QUESTION', '')}**")
+    st.markdown(f"{q.get('QUESTION', '')}")
     
     subqs = q.get('SUBQ', [])
     if subqs:
@@ -231,7 +232,7 @@ def render_ar(q: Dict[str, Any], index: int):
     if q.get('DIAGRAM_PROMPT'):
         st.info(f"🖼️ **Diagram Prompt:** {q['DIAGRAM_PROMPT']}")
         
-    st.markdown(f"**{q.get('QUESTION', '')}**")
+    st.markdown(f"{q.get('QUESTION', '')}")
     
     options = q.get('OPTION', {})
     if options:
@@ -262,7 +263,7 @@ def render_descriptive(q: Dict[str, Any], index: int):
     if q.get('DIAGRAM_PROMPT'):
         st.info(f"🖼️ **Diagram Prompt:** {q['DIAGRAM_PROMPT']}")
         
-    st.markdown(f"**{q.get('QUESTION', '')}**")
+    st.markdown(f"{q.get('QUESTION', '')}")
 
     with st.expander("👁️ View Solution"):
         st.markdown(f"**Answer:** {q.get('CORRECT_ANSWER', '')}")
@@ -282,7 +283,7 @@ def render_descriptive_subq(q: Dict[str, Any], index: int):
     if q.get('DIAGRAM_PROMPT'):
         st.info(f"🖼️ **Diagram Prompt:** {q['DIAGRAM_PROMPT']}")
         
-    st.markdown(f"**{q.get('QUESTION', '')}**")
+    st.markdown(f"{q.get('QUESTION', '')}")
     
     subqs = q.get('SUBQ', [])
     if subqs:

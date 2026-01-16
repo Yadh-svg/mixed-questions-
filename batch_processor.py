@@ -164,7 +164,8 @@ async def validate_batch(
 
 async def process_batches_pipeline(
     questions_config: List[Dict[str, Any]],
-    general_config: Dict[str, Any]
+    general_config: Dict[str, Any],
+    progress_callback=None
 ) -> Dict[str, Dict[str, Any]]:
     """
     Process questions in a localized pipeline:
@@ -289,17 +290,31 @@ async def process_batches_pipeline(
         
         # Loop continues immediately to next generation
     
-    # Wait for all validations to complete
+    # Wait for all validations to complete, but trigger callback as each one finishes
     if validation_tasks:
         logger.info(f"Waiting for {len(validation_tasks)} validation tasks to complete...")
-        results = await asyncio.gather(*[t[1] for t in validation_tasks], return_exceptions=True)
         
-        for (b_key, _), val_res in zip(validation_tasks, results):
-            if isinstance(val_res, Exception):
-                logger.error(f"Validation failed for {b_key}: {val_res}")
-                pipeline_results[b_key]['validated'] = {'error': str(val_res), 'text': "Validation Exception"}
-            else:
-                pipeline_results[b_key]['validated'] = val_res
+        # Process validations as they complete
+        for future in asyncio.as_completed([t[1] for t in validation_tasks]):
+            try:
+                val_res = await future
+                b_key = val_res.get('batch_key', 'unknown')
+                
+                if isinstance(val_res, Exception):
+                    logger.error(f"Validation failed for {b_key}: {val_res}")
+                    pipeline_results[b_key]['validated'] = {'error': str(val_res), 'text': "Validation Exception"}
+                else:
+                    pipeline_results[b_key]['validated'] = val_res
+                
+                # Trigger callback immediately after this batch completes
+                if progress_callback:
+                    try:
+                        progress_callback(b_key, pipeline_results[b_key])
+                    except Exception as callback_error:
+                        logger.error(f"Callback error for {b_key}: {callback_error}")
+                        
+            except Exception as e:
+                logger.error(f"Error processing validation result: {e}")
                 
     logger.info("Pipeline processing completed.")
     return pipeline_results

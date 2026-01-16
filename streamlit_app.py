@@ -1358,120 +1358,167 @@ with tab1:
                 if missing_topics:
                     st.error(f"❌ Please specify topics for: {', '.join(missing_topics)}")
                 else:
-                    with st.spinner("🔄 Generating questions... This may take a moment."):
-                        try:
-                            # Prepare general config
-                            config = {
-                                'curriculum': curriculum,
-                                'grade': grade,
-                                'subject': subject,
-                                'chapter': chapter,
-                                'old_concept': old_concept,
-                                'new_concept': new_concept,
-                                'additional_notes': additional_notes,
-                                'api_key': api_key,
-                                'universal_pdf': st.session_state.get('universal_pdf')  # Pass universal PDF
-                            }
-                            
-                            # Process each question type
-                            questions_list = []
-                            for qtype, type_config in st.session_state.question_types_config.items():
-                                questions = type_config.get('questions', [])
-                                for q in questions:
-                                    # Ensure type is set
-                                    q['type'] = qtype
-                                    questions_list.append(q)
-                            
-                            if questions_list:
+                    # Prepare general config
+                    config = {
+                        'curriculum': curriculum,
+                        'grade': grade,
+                        'subject': subject,
+                        'chapter': chapter,
+                        'old_concept': old_concept,
+                        'new_concept': new_concept,
+                        'additional_notes': additional_notes,
+                        'api_key': api_key,
+                        'universal_pdf': st.session_state.get('universal_pdf')  # Pass universal PDF
+                    }
+                    
+                    # Process each question type
+                    questions_list = []
+                    for qtype, type_config in st.session_state.question_types_config.items():
+                        questions = type_config.get('questions', [])
+                        for q in questions:
+                            # Ensure type is set
+                            q['type'] = qtype
+                            questions_list.append(q)
+                    
+                    if questions_list:
+                        # Create a section for progressive results
+                        st.markdown("---")
+                        st.markdown('<div class="section-header">Generated Questions (Progressive Updates)</div>', unsafe_allow_html=True)
+                        st.info("💡 Results will appear below as each question type completes validation...")
+                        
+                        # Get unique question types from the batch
+                        from collections import defaultdict
+                        grouped = defaultdict(list)
+                        for q in questions_list:
+                            grouped[q.get('type', 'MCQ')].append(q)
+                        question_types_in_batch = list(grouped.keys())
+                        
+                        # Create placeholder containers for each question type
+                        containers = {}
+                        for qtype in question_types_in_batch:
+                            with st.container():
+                                st.markdown(f"### 📋 {qtype}")
+                                status_placeholder = st.empty()
+                                status_placeholder.info(f"⏳ Generating and validating {qtype} questions...")
+                                content_placeholder = st.empty()
+                                containers[qtype] = {
+                                    'status': status_placeholder,
+                                    'content': content_placeholder
+                                }
+                        
+                        # Initialize session state for progressive results
+                        if 'progressive_results' not in st.session_state:
+                            st.session_state.progressive_results = {}
+                        
+                        # Define callback function for progressive updates
+                        def update_ui(batch_key: str, batch_result: dict):
+                            """Callback triggered when each batch completes"""
+                            try:
+                                # Import renderer
+                                from result_renderer import render_batch_results
+                                
+                                # Store result in session state
+                                st.session_state.progressive_results[batch_key] = batch_result
+                                
+                                # Update the UI container for this batch
+                                if batch_key in containers:
+                                    status_container = containers[batch_key]['status']
+                                    content_container = containers[batch_key]['content']
+                                    
+                                    # Extract results
+                                    raw_res = batch_result.get('raw', {})
+                                    val_res = batch_result.get('validated', {})
+                                    
+                                    # Update status
+                                    if val_res and not val_res.get('error'):
+                                        status_container.success(f"✅ {batch_key} completed successfully!")
+                                    elif val_res and val_res.get('error'):
+                                        status_container.error(f"❌ {batch_key} validation failed")
+                                    else:
+                                        status_container.warning(f"⚠️ {batch_key} validation incomplete")
+                                    
+                                    # Render validated content in the content container
+                                    with content_container.container():
+                                        if val_res and not val_res.get('error'):
+                                            render_batch_results(batch_key, val_res)
+                                        elif val_res and val_res.get('error'):
+                                            st.error(f"Validation Error: {val_res['error']}")
+                                        
+                                        # Show metadata
+                                        st.markdown("---")
+                                        col1, col2 = st.columns(2)
+                                        with col1:
+                                            st.metric("Questions", raw_res.get('question_count', 'N/A'))
+                                        with col2:
+                                            raw_time = raw_res.get('elapsed', 0)
+                                            val_time = val_res.get('elapsed', 0) if val_res else 0
+                                            st.metric("Total Time", f"{raw_time + val_time:.2f}s")
+                                        
+                                        # Expandable raw outputs
+                                        with st.expander("Show Generated Version (Raw Backend Output)"):
+                                            if raw_res.get('error'):
+                                                st.error(f"Generation Error: {raw_res['error']}")
+                                            st.text_area("Raw Generator Output", value=raw_res.get('text', 'No output'), 
+                                                       height=300, disabled=True, key=f"raw_prog_{batch_key}")
+                                        
+                                        with st.expander("Show Validation Response (Raw Backend Output)"):
+                                            if val_res and val_res.get('error'):
+                                                st.error(f"Validation Error: {val_res['error']}")
+                                            st.text_area("Raw Validation Output", 
+                                                       value=val_res.get('text', 'No output') if val_res else 'No output',
+                                                       height=300, disabled=True, key=f"val_prog_{batch_key}")
+                            except Exception as e:
+                                st.error(f"Error updating UI for {batch_key}: {e}")
+                        
+                        # Run async pipeline with callback
+                        with st.spinner("🔄 Starting question generation pipeline..."):
+                            try:
                                 # Import here to avoid circular imports
                                 from batch_processor import process_batches_pipeline
                                 
-                                # Run async pipeline
-                                st.session_state.generated_output = asyncio.run(
+                                # Run async pipeline with callback
+                                final_results = asyncio.run(
                                     process_batches_pipeline(
                                         questions_config=questions_list,
-                                        general_config=config
+                                        general_config=config,
+                                        progress_callback=update_ui
                                     )
                                 )
                                 
-                                st.success("✅ Questions generated and validated successfully!")
-                            else:
-                                st.warning("No questions found to process.")
+                                # Store final results
+                                st.session_state.generated_output = final_results
                                 
-                        except Exception as e:
-                            st.error(f"❌ Error during generation: {str(e)}")
-                            st.exception(e)
-
-        if st.session_state.generated_output:
-            results = st.session_state.generated_output
-            
-            # Show results immediately below
-            st.markdown("---")
-            st.markdown('<div class="section-header">Generated Questions</div>', unsafe_allow_html=True)
-            
-            # Import renderer
-            from result_renderer import render_batch_results
-
-            # Display results for each batch
-            for batch_key, batch_result in results.items():
-                with st.expander(f"📋 {batch_key}", expanded=True):
-                    
-                    # Extract raw and validated results
-                    raw_res = batch_result.get('raw', {})
-                    val_res = batch_result.get('validated', {})
-                    
-                    # Display Validated Content (Default)
-                    if val_res and not val_res.get('error'):
-                         st.markdown("### ✅ Validated Output")
-                         # Use the new renderer
-                         render_batch_results(batch_key, val_res)
-                    elif val_res and val_res.get('error'):
-                         st.error(f"❌ Validation Error: {val_res['error']}")
-                         st.error(val_res.get('text', ''))
+                                st.success("✅ All question types completed!")
+                                
+                                # Add download button
+                                st.markdown("---")
+                                combined_output = ""
+                                for batch_key, batch_result in final_results.items():
+                                    val_res = batch_result.get('validated', {})
+                                    raw_res = batch_result.get('raw', {})
+                                    final_text = val_res.get('text', '') if val_res else raw_res.get('text', 'Error')
+                                    
+                                    combined_output += f"\n\n{'='*80}\n"
+                                    combined_output += f"BATCH: {batch_key}\n"
+                                    combined_output += f"{'='*80}\n\n"
+                                    combined_output += final_text
+                                
+                                st.download_button(
+                                    label="📥 Download All Questions",
+                                    data=combined_output,
+                                    file_name="generated_questions.md",
+                                    mime="text/markdown",
+                                    use_container_width=True,
+                                    key="download_progressive_results"
+                                )
+                                
+                            except Exception as e:
+                                st.error(f"❌ Error during generation: {str(e)}")
+                                st.exception(e)
                     else:
-                         st.warning("⚠️ Validation step missing or failed silently.")
-
-                    # Show Metadata (from validation step or generation step)
-                    st.markdown("---")
-                    col1, col2 = st.columns(2)
-                    with col1:
-                        st.metric("Questions", raw_res.get('question_count', 'N/A'))
-                    with col2:
-                        # Sum times
-                        raw_time = raw_res.get('elapsed', 0)
-                        val_time = val_res.get('elapsed', 0) if val_res else 0
-                        st.metric("Total Time", f"{raw_time + val_time:.2f}s")
-
-                    # Expandable Raw Output
-                    with st.expander("Show Generated Version (Raw Backend Output)"):
-                        if raw_res.get('error'):
-                            st.error(f"Generation Error: {raw_res['error']}")
-                        st.text_area("Raw Generator Output", value=raw_res.get('text', 'No output'), height=300, disabled=True)
-            
-            # Download option
-            st.markdown("---")
-            
-            # Combine all results (Validated preferred)
-            combined_output = ""
-            for batch_key, batch_result in results.items():
-                val_res = batch_result.get('validated', {})
-                raw_res = batch_result.get('raw', {})
-                
-                final_text = val_res.get('text', '') if val_res else raw_res.get('text', 'Error')
-                
-                combined_output += f"\n\n{'='*80}\n"
-                combined_output += f"BATCH: {batch_key}\n"
-                combined_output += f"{'='*80}\n\n"
-                combined_output += final_text
-            
-            st.download_button(
-                label="📥 Download All Questions",
-                data=combined_output,
-                file_name="generated_questions.md",
-                mime="text/markdown",
-                use_container_width=True,
-                key="download_saved_results"
-            )
+                        st.warning("No questions found to process.")
+        # Progressive rendering already displays results during generation
+        # No need to duplicate the display here anymore
 
 
 with tab2:
@@ -1515,6 +1562,11 @@ with tab2:
                 # Expandable Raw Output
                 with st.expander("Show Generated Version (Raw Backend Output)"):
                     st.text_area("Raw Generator Output", value=raw_res.get('text', 'No output'), height=300, disabled=True, key=f"raw_bak_{batch_key}")
+                
+                with st.expander("Show Validation Response (Raw Backend Output)"):
+                    if val_res.get('error'):
+                        st.error(f"Validation Error: {val_res['error']}")
+                    st.text_area("Raw Validation Output", value=val_res.get('text', 'No output'), height=300, disabled=True, key=f"val_bak_{batch_key}")
         
         # Download option
         st.markdown("---")

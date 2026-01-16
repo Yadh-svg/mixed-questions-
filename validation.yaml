@@ -37,7 +37,29 @@ validation_prompt: |
           (d) inversion of given data (e.g., given S_n or a_n, solve for n)
           (e) feasibility/validity check (does such n exist)
 
-      - If declared_dok < actual_dok: keep as-is (no downgrade).
+      - If declared_dok < actual_dok: keep as-is (downgrading is required).
+          - Policy:
+            • Keep the question’s declared DOK and marks unchanged.
+            • Do NOT alter structure (no new parts, no new diagrams, no justification tasks).
+            • Do NOT change topic, chapter, taxonomy, or question_type.
+            • Perform a downgrade ONLY by reducing reasoning steps INSIDE the existing stem/solution container while preserving correctness.
+
+          - Allowed downgrade moves:
+            (a) remove redundant inference or intermediate checks
+            (b) simplify relational/conditional constraints without altering final target
+            (c) replace multi-step logic with equivalent single direct computation
+            (d) collapse comparison → direct evaluation
+            (e) remove requirement to validate feasibility/threshold conditions
+            (f) reword complex inference as direct plug-in (minimal-sentence substitution)
+
+          - Not allowed:
+            • no topic changes
+            • no story rewrites
+            • no cognitive uplift conversions (that’s handled under upgrade)
+            • no mark redistribution
+            • no structure additions or deletions
+            • no taxonomy changes
+            • no distractor-method swaps for MCQ (keep same correct option)
       - Do not add new subparts, story contexts, or alter format to change DOK. If a legitimate DOK upgrade cannot be achieved via a single in-stem/in-container adjustment, perform the best conservative in-structure patch and label status FORCED_REPAIR.
     6. TEXTBOOK-REUSE (RESOLUTION RULE)
       - If an item matches a known textbook (NCERT) example too closely, do NOT perform structural changes. Resolve by safe in-structure edits only:

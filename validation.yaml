@@ -1,7 +1,4 @@
 validation_prompt: |
-  VALIDATION MODE PROMPT
-  ----------------------
-
   SYSTEM: You are a strict Question Validator & Minimal-Repair Agent. You will receive a batch of candidate question items (typically in a list or sequence). Apply the rules below exactly to EACH item, perform minimal permitted edits only, and return a JSON List containing the validation results for all items. No extra text. Do not omit any questions.
 
 
@@ -64,6 +61,7 @@ validation_prompt: |
         C. Communicational Error — correct concept and computation but incorrect notation, units, symbols, or expression format.
         D. Comprehension Error — correct mathematics but misinterpreting the question, instructions, or required outcome.
       - If changes are there after changing output the distractor analysis in table format 
+      - If the distractor analysis is not in table format then change it to table format  
     9. DUPLICATE CHECK — SOLVING-PATTERN DIVERSITY + AUTO-REWRITE
 
     - Duplicate checking applies to both literal duplication and solving-pattern duplication (same reasoning chain, same strategy, same inference route, or same story-template).
@@ -125,23 +123,23 @@ validation_prompt: |
 
         Rules:
         1. Do not rewrite, paraphrase, rephrase, compress, expand, or reorganize the
-        question text or parts.
+           question text or parts.
         2. Do not remove or alter placeholders such as (i), (ii), [DROP n], |TEXT n|
         3. Do not remove or alter metadata sections such as Topic, Marks, DOK Level,
-        Taxonomy, Question Type, Diagram Prompt, or Answer Key.
+           Taxonomy, Question Type, Diagram Prompt, or Answer Key.
         4. Do not change formatting conventions (bold, italics, line breaks,
-        indentation, bulleting, or block labels).
+           indentation, bulleting, or block labels).
         5. Do not introduce new structure types; repair only within existing structure.
         6. Validation may only repair correctness (answers, reasoning, key idea,
-        distractor analysis, and syllabus alignment) without structural edits.
+           distractor analysis, and syllabus alignment) without structural edits.
         7. If repair is necessary, apply minimal repair inside the existing structure,
-        never replacing or rewriting it.
+           never replacing or rewriting it.
         8. If validation detects a structural conflict, reject and request regeneration
-        instead of restructuring the question.
+           instead of restructuring the question.
 
         Enforcement:
-        - Any deviation from formatting constitutes a validation failure.
-        - Validation output must be identical in structure to the input.
+          - Any deviation from formatting constitutes a validation failure.
+          - Validation output must be identical in structure to the input.
         9. Remove all HTML/Markdown image tags, links, and visual annotations from the question and options.
 
     ## GLOBAL MULTI-LINE FORMATTING RULE:

@@ -1397,6 +1397,21 @@ with tab1:
                                     )
                                 )
                                 
+                                # Clear all duplicate-related session state keys before storing new results
+                                # This prevents old duplicates from appearing with new questions
+                                keys_to_remove = [key for key in st.session_state.keys() if key.startswith('duplicates_')]
+                                for key in keys_to_remove:
+                                    del st.session_state[key]
+                                
+                                # Also clear duplicate checkbox states
+                                keys_to_remove = [key for key in st.session_state.keys() if key.startswith('duplicate_results_')]
+                                for key in keys_to_remove:
+                                    del st.session_state[key]
+                                
+                                keys_to_remove = [key for key in st.session_state.keys() if key.startswith('duplicate_count_results_')]
+                                for key in keys_to_remove:
+                                    del st.session_state[key]
+                                
                                 # Store final results
                                 st.session_state.generated_output = final_results
                                 
@@ -1519,9 +1534,14 @@ with tab2:
                             
                             # Check if checkbox is selected
                             if st.session_state.get(checkbox_key, False):
+                                # Create unique question code with batch type prefix
+                                # Extract question number from q_key (e.g., "question1" -> "1")
+                                q_num = q_key.replace("question", "").replace("q", "")
+                                question_code = f"{batch_key}_q{q_num}" if q_num else f"{batch_key}_{q_key}"
+                                
                                 selected_questions[f"{batch_key}_{q_key}"] = {
                                     'question_key': q_key,
-                                    'question_code': q_key.replace("question", "q"),
+                                    'question_code': question_code,
                                     'batch_key': batch_key,
                                     'markdown_content': q_content if isinstance(q_content, str) else str(q_content),
                                     'num_duplicates': st.session_state.get(count_key, 1)
@@ -1552,43 +1572,34 @@ with tab2:
                         
                         # Show grouping info
                         status_text = st.empty()
-                        status_text.info(f"Processing {len(grouped_by_type)} question type(s) in parallel...")
+                        total_questions = len(selected_questions)
+                        status_text.info(f"Processing {total_questions} question(s) in full parallel...")
                         
                         async def generate_all_duplicates_parallel():
-                            """Generate duplicates for all question types in parallel"""
-                            results = {}
+                            """Generate duplicates for ALL questions in parallel"""
                             
-                            # Create tasks for each question type
-                            async def process_question_type(qtype, questions):
-                                """Process all questions of a specific type"""
-                                type_results = {}
-                                
-                                # Process each question of this type sequentially
-                                # (but different types run in parallel)
-                                for data in questions:
-                                    key = f"{data['batch_key']}_{data['question_key']}"
-                                    result = await duplicate_questions_async(
-                                        original_question_markdown=data['markdown_content'],
-                                        question_code=data['question_code'],
-                                        num_duplicates=data['num_duplicates'],
-                                        api_key=api_key
-                                    )
-                                    type_results[key] = result
-                                
-                                return qtype, type_results
+                            # Create a task for each individual question (not grouped by type)
+                            async def process_single_question(key, data):
+                                """Process a single question's duplication"""
+                                result = await duplicate_questions_async(
+                                    original_question_markdown=data['markdown_content'],
+                                    question_code=data['question_code'],
+                                    num_duplicates=data['num_duplicates'],
+                                    api_key=api_key
+                                )
+                                return key, result
                             
-                            # Create parallel tasks for each question type
+                            # Create tasks for ALL questions at once
                             tasks = [
-                                process_question_type(qtype, questions)
-                                for qtype, questions in grouped_by_type.items()
+                                process_single_question(key, data)
+                                for key, data in selected_questions.items()
                             ]
                             
-                            # Run all question types in parallel
-                            type_results_list = await asyncio.gather(*tasks)
+                            # Run ALL questions in parallel
+                            results_list = await asyncio.gather(*tasks)
                             
-                            # Combine results
-                            for qtype, type_results in type_results_list:
-                                results.update(type_results)
+                            # Convert list of tuples to dictionary
+                            results = {key: result for key, result in results_list}
                             
                             return results
                         
@@ -1619,11 +1630,12 @@ with tab2:
                             progress_bar.empty()
                             status_text.empty()
                             
-                            # Show summary by type
-                            st.success(f"🎉 Generated duplicates for {len(grouped_by_type)} question type(s) in parallel!")
+                            # Show summary
+                            st.success(f"🎉 Generated duplicates for {len(selected_questions)} question(s) in full parallel!")
                             with st.expander("📊 Generation Summary", expanded=True):
-                                for qtype, questions in grouped_by_type.items():
-                                    st.write(f"**{qtype}:** {len(questions)} question(s) processed")
+                                for key, data in selected_questions.items():
+                                    num_dups = data['num_duplicates']
+                                    st.write(f"• **{data['question_code']}:** {num_dups} duplicate(s) generated")
                             
                             st.info("Scroll up to view duplicates under each question.")
                             st.rerun()

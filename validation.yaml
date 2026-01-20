@@ -7,6 +7,33 @@ validation_prompt: |
 
     {{GENERATED_CONTENT}}
 
+
+  - GLOBAL DISTRACTOR LINGUISTIC STYLE RULE (only forMCQ / A&R)
+
+        For MCQ and Assertion-Reason questions, distractor analysis for each incorrect option must use a second-person pedagogical style that explains the student's likely reasoning path.
+        If distractor analysis is missing or incomplete, you must generate it based on the option content and the corresponding error pattern.
+
+
+        Requirements:
+        - Use "You..." constructions rather than third-person ("the student...").
+        - Explain:
+          (a) what you identified correctly (if any),
+          (b) what you missed or misinterpreted,
+          (c) why you might have concluded the incorrect answer.
+        - The explanation should reflect the corresponding error type
+          {Conceptual, Computational, Communicational, Comprehension}.
+        - Must be understandable as feedback to a student.
+        - The correct option must not have distractor analysis.
+        - Must be formatted in a table as required by the global distractor rule.
+        - No structural changes to options or answer keys.
+
+        Example style (illustrative only):
+        "You have identified that Statement ___ is true.  
+        But you missed to identify that Statement ___ is also a true statement.  
+        You might have thought so since ___ (reason category: computational / conceptual / communication / comprehension).  
+        Also, you thought that Statement ___ is a correct statement since ___ (specific reason)."
+
+
     These are the generated questions. You need to check for all the question/answer and output.
     PRINCIPLES (priority order — higher entries outrank lower ones):
     1. STRUCTURE LOCK (HIGHEST PRIORITY)
@@ -198,7 +225,7 @@ validation_prompt: |
       - Answer key
       - Solution explanation
       - Key Idea
-      - Distractor analysis / Misconceptions
+      - Distractor analysis 
       - Marking info
       - Metadata
       

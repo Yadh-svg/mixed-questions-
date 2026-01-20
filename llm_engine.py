@@ -205,29 +205,12 @@ async def duplicate_questions_async(
             "duplicates": []
         }
     
-    # Format the prompt with the actual inputs
-    # The prompt will receive:
-    # 1. Original question markdown
-    # 2. Question code
-    # 3. Number of duplicates
-    formatted_prompt = f"""{prompt_template}
-
----
-
-## INPUT DATA
-
-**Original Question Code:** {question_code}
-
-**Number of Duplicates to Generate:** {num_duplicates}
-
-**Original Question (Markdown Format):**
-
-{original_question_markdown}
-
----
-
-Please generate exactly {num_duplicates} duplicate(s) of this question following all the rules specified above.
-"""
+    # Replace template parameters with actual values
+    formatted_prompt = prompt_template.replace("{{QUESTION_CODE}}", question_code)
+    formatted_prompt = formatted_prompt.replace("{{NUM_DUPLICATES}}", str(num_duplicates))
+    formatted_prompt = formatted_prompt.replace("{{ORIGINAL_QUESTION}}", original_question_markdown)
+    
+    # Prompt saving logic removed as per user request
     
     # Call Gemini 2.5 Pro with higher thinking budget for better quality
     logger.info(f"Generating {num_duplicates} duplicate(s) for question {question_code}")

@@ -10143,69 +10143,57 @@ descriptive_subq_pdf: |
 
 
 duplicate_question: |
-  You are an expert question generator tasked with creating duplicate versions of educational questions. Your goal is to generate variations that test the same mathematical concept and solution method but with different numbers and scenarios.
+  You are an expert question generator tasked with creating duplicate versions of educational questions. Your goal is to produce variations that test the same mathematical concept and solution method but with different numbers and scenarios.
 
-  ## INPUT FORMAT
-  You will receive:
-  1. **Original Question JSON**: The complete question structure including all fields as markdown (question text, options, answer, solution, distractor analysis, taxonomy, marks, etc.)
-  2. **Question Code**: The identifier for this question (e.g., "q1", "q2")
-  3. **Number of Duplicates**: How many duplicate versions to create
+  ## INPUT DETAILS
+  - Original Question Code: {{QUESTION_CODE}}
+  - Number of Duplicates to Generate: {{NUM_DUPLICATES}}
+  - Original Question (Markdown Format):
+  
+  {{ORIGINAL_QUESTION}}
 
-  ## DUPLICATION RULES
-  ### MUST PRESERVE (Keep Exactly the Same):
-  - Question type and structure
-  - All JSON fields present in the original
-  - Marks allocation
-  - Taxonomy classification
-  - Difficulty level
-  - Solution methodology and steps
-  - Number of options (for MCQs)
-  - Distractor analysis structure (option labels, error types)
-  - Mathematical concept being tested
-  - Bloom's taxonomy level
-
-  ### MUST CHANGE:
-  - All numerical values (while keeping the problem solvable with similar complexity)
-  - Scenario/context (be creative but appropriate to the topic)
-  - Names of people, places, items, or entities mentioned
-  - Specific details in the story/context
-
-  ### IMPORTANT CONSTRAINTS:
-  - Keep the new numbers within a reasonable range (don't make calculations overly complex)
-  - Ensure the solution remains at the same difficulty level
-  - Maintain the logical structure of the problem
-  - For MCQs, ensure distractors follow the same error patterns as the original
-  - Keep the same relationship between numbers (e.g., if original had 3:2 ratio, maintain similar ratios)
-
-  ## OUTPUT FORMAT
-  Return a JSON array where each element represents one duplicate question. Each duplicate should:
-  1. Include a "question_code" field with format: `<original_code>-dup-<number>` (e.g., "q1-dup-1", "q1-dup-2")
-  2. Contain ALL the same fields as the original question
-  3. Have modified numbers and scenario as per the rules above
-
-  Example output structure:
-  [
-    {
-      "question_code": "q1-dup-1",
-      "question1": "everythin in markdown format as string (no keys and values )"
-    },
-    {
-      "question_code": "q1-dup-2",
-      ...
-    }
-  ]
-
-  ## QUALITY CHECKLIST
-  Before generating output, verify:
-  ✓ All numerical values are different from the original
-  ✓ The scenario/context is different but equally appropriate
-  ✓ The solution method remains identical
-  ✓ All structural fields from the original are present
-  ✓ Distractor options still represent the same types of errors
-  ✓ The difficulty level is maintained
-  ✓ The output is valid JSON
-
-  Now generate the duplicates based on the provided input.
-
-
-
+  ## CORE PRINCIPLES
+  - A duplicate must preserve the exact same key idea and solution method as the parent item.
+  - Duplicates must NOT include the original Key-Idea text. Instead, add a top-line inside the duplicate markdown:
+    **Duplicate built using parent key idea: {{QUESTION_CODE}}**
+  - Preserve all structural fields (question type, parts count, number of options/blanks, marks, taxonomy, distractor analysis structure, difficulty, solution steps).
+  - Change only the scenario/context, proper nouns, and all numeric values while keeping algebraic relationships and difficulty unchanged.
+  - Maintain the same distractor error patterns and labels (A/B/C/D) as in the original.
+  
+  ## DUPLICATION RULES (this should be followed by all the duplicates)
+  1. Identify numeric constants, scenario nouns, named entities, and distractor-error mapping.
+  2. Generate new numeric values that preserve algebraic relationships (ratios, additive patterns, coefficients) and stay within similar range and difficulty.
+  3. Change scenario/context (nouns, items, setting) but keep it plausible and relevant to the same math idea.
+  4. Replace proper nouns with new ones.
+  5. Recompute correct answer and distractors using same mistake types as the original.
+  6. Copy solution steps verbatim except substitute the new numeric values and recomputed results.
+  7. Omit the Key-Idea field in duplicates. Instead insert:
+     **Duplicate built using parent key idea: {{QUESTION_CODE}}**
+     at the start of the markdown body.
+  8. Output must preserve all fields present in the original JSON except Key-Idea.
+  9. Each duplicate JSON element must contain:
+     - "question_code": "{{QUESTION_CODE}}-dup-<n>"
+     - A markdown field (e.g., question1) containing the full duplicate content.
+  10. Duplicates should follow key idea of the parent question.but dont output key idea in the duplicate.
+  ## OUTPUT FORMAT (STRICT)
+  Return a JSON array. Example element signature:
+  {
+    "question_code": "{{QUESTION_CODE}}-dup-1",
+    "question1": "## Duplicate built using parent key idea: {{QUESTION_CODE}}\\n\\n<full markdown question body minus key-idea>"
+  }
+  ## SCENARIO & UNIT CONSTRAINTS
+    - Scenario changes must remain equivalent in unit type (e.g., speed → speed, mass → mass, money → money).
+    - Do not change domain class (e.g., distance-rate-time cannot become percentage-profit-loss).
+    - Do not introduce extra narrative complexity, new sub-conditions, or domain shifts.
+  ## STRUCTURAL SAFETY GUARD
+    - Do not introduce additional symbols, conditions, constraints, or sub-questions.
+    - Do not merge or split steps.
+  ## QUALITY CHECK (MUST PASS)
+  ✓ Scenario/context changed
+  ✓ All numeric values changed and preserve structure
+  ✓ Same algebraic method and solution
+  ✓ Same distractor error patterns and labels
+  ✓ Key-Idea omitted, replaced by parent-key reference
+  ✓ Valid JSON array output
+  ✓ Difficulty unchanged
+  ✓ Same taxonomy and marks

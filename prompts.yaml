@@ -34,6 +34,10 @@ case_study_maths: |
      - Do NOT change or average these values across topics.
      - Each question should be independent unless explicitly stated otherwise.
 
+   Continuity rule: When a question has multiple sub-parts (or when two or more items are grouped as a single set), all sub-parts must belong to one continuous scenario — the same storyline, characters and setting — and one sub-part should logically lead to the next. (Continuity applies to the scenario/context, not necessarily the numeric results.)
+
+   Mathematical Skill Targeting: Ensure that the modified item preserves or strengthens topical relevance. The mathematical idea or technique being assessed should be explicit, required, and central to the solution (e.g., distributive property, number decomposition, factorization, percentage calculation, rate × quantity, etc.). Avoid producing items where the context is realistic but the math skill becomes generic or shallow, as such items are considered weak in topic relevance.
+
   4. Initial Planning Section (REQUIRED)
      Before generating questions, create a clear plan in this format:
 
@@ -661,6 +665,10 @@ case_study_maths_pdf: |
         - DOK level
       - Do NOT change or average these values across topics.
       - Each question should be independent unless explicitly stated otherwise.
+
+   Continuity rule: When a question has multiple sub-parts (or when two or more items are grouped as a single set), all sub-parts must belong to one continuous scenario — the same storyline, characters and setting — and one sub-part should logically lead to the next. (Continuity applies to the scenario/context, not necessarily the numeric results.)
+
+    Mathematical Skill Targeting: Ensure that the modified item preserves or strengthens topical relevance. The mathematical idea or technique being assessed should be explicit, required, and central to the solution (e.g., distributive property, number decomposition, factorization, percentage calculation, rate × quantity, etc.). Avoid producing items where the context is realistic but the math skill becomes generic or shallow, as such items are considered weak in topic relevance.
 
     4. Initial Planning Section (REQUIRED)
       Before generating questions, create a clear plan in this format:
@@ -1318,6 +1326,10 @@ assertion_reasoning: |
      - Do NOT change or average these values across topics.
      - Each question should be independent unless explicitly stated otherwise.
 
+   Continuity rule: When a question has multiple sub-parts (or when two or more items are grouped as a single set), all sub-parts must belong to one continuous scenario — the same storyline, characters and setting — and one sub-part should logically lead to the next. (Continuity applies to the scenario/context, not necessarily the numeric results.)
+
+   Mathematical Skill Targeting: Ensure that the modified item preserves or strengthens topical relevance. The mathematical idea or technique being assessed should be explicit, required, and central to the solution (e.g., distributive property, number decomposition, factorization, percentage calculation, rate × quantity, etc.). Avoid producing items where the context is realistic but the math skill becomes generic or shallow, as such items are considered weak in topic relevance.
+
   4. Initial Planning Section (REQUIRED)
      Before generating questions, create a clear plan in this format:
 
@@ -1852,6 +1864,10 @@ assertion_reasoning_pdf: |
        - DOK level
      - Do NOT change or average these values across topics.
      - Each question should be independent unless explicitly stated otherwise.
+
+   Continuity rule: When a question has multiple sub-parts (or when two or more items are grouped as a single set), all sub-parts must belong to one continuous scenario — the same storyline, characters and setting — and one sub-part should logically lead to the next. (Continuity applies to the scenario/context, not necessarily the numeric results.)
+
+   Mathematical Skill Targeting: Ensure that the modified item preserves or strengthens topical relevance. The mathematical idea or technique being assessed should be explicit, required, and central to the solution (e.g., distributive property, number decomposition, factorization, percentage calculation, rate × quantity, etc.). Avoid producing items where the context is realistic but the math skill becomes generic or shallow, as such items are considered weak in topic relevance.
 
   4. Initial Planning Section (REQUIRED)
      Before generating questions, create a clear plan in this format:
@@ -2405,6 +2421,10 @@ multi_part_maths: |
        - DOK level
      - Do NOT change or average these values across topics.
      - Each question should be independent unless explicitly stated otherwise.
+
+   Continuity rule: When a question has multiple sub-parts (or when two or more items are grouped as a single set), all sub-parts must belong to one continuous scenario — the same storyline, characters and setting — and one sub-part should logically lead to the next. (Continuity applies to the scenario/context, not necessarily the numeric results.)
+
+   Mathematical Skill Targeting: Ensure that the modified item preserves or strengthens topical relevance. The mathematical idea or technique being assessed should be explicit, required, and central to the solution (e.g., distributive property, number decomposition, factorization, percentage calculation, rate × quantity, etc.). Avoid producing items where the context is realistic but the math skill becomes generic or shallow, as such items are considered weak in topic relevance.
 
   4. Initial Planning Section (REQUIRED)
      Before generating questions, create a clear plan in this format:
@@ -3215,6 +3235,10 @@ multi_part_maths_pdf: |
        - DOK level
      - Do NOT change or average these values across topics.
      - Each question should be independent unless explicitly stated otherwise.
+
+   Continuity rule: When a question has multiple sub-parts (or when two or more items are grouped as a single set), all sub-parts must belong to one continuous scenario — the same storyline, characters and setting — and one sub-part should logically lead to the next. (Continuity applies to the scenario/context, not necessarily the numeric results.)
+
+   Mathematical Skill Targeting: Ensure that the modified item preserves or strengthens topical relevance. The mathematical idea or technique being assessed should be explicit, required, and central to the solution (e.g., distributive property, number decomposition, factorization, percentage calculation, rate × quantity, etc.). Avoid producing items where the context is realistic but the math skill becomes generic or shallow, as such items are considered weak in topic relevance.
 
   4. Initial Planning Section (REQUIRED)
      Before generating questions, create a clear plan in this format:
@@ -4063,6 +4087,10 @@ mcq_questions: |
        - DOK level
      - Do NOT change or average these values across topics.
      - Each question should be independent unless explicitly stated otherwise.
+
+   Continuity rule: When a question has multiple sub-parts (or when two or more items are grouped as a single set), all sub-parts must belong to one continuous scenario — the same storyline, characters and setting — and one sub-part should logically lead to the next. (Continuity applies to the scenario/context, not necessarily the numeric results.)
+
+   Mathematical Skill Targeting: Ensure that the modified item preserves or strengthens topical relevance. The mathematical idea or technique being assessed should be explicit, required, and central to the solution (e.g., distributive property, number decomposition, factorization, percentage calculation, rate × quantity, etc.). Avoid producing items where the context is realistic but the math skill becomes generic or shallow, as such items are considered weak in topic relevance.
 
   4. Initial Planning Section (REQUIRED)
      Before generating questions, create a clear plan in this format:
@@ -4950,6 +4978,10 @@ mcq_questions_pdf: |
      - Do NOT change or average these values across topics.
      - Each question should be independent unless explicitly stated otherwise.
 
+   Continuity rule: When a question has multiple sub-parts (or when two or more items are grouped as a single set), all sub-parts must belong to one continuous scenario — the same storyline, characters and setting — and one sub-part should logically lead to the next. (Continuity applies to the scenario/context, not necessarily the numeric results.)
+
+   Mathematical Skill Targeting: Ensure that the modified item preserves or strengthens topical relevance. The mathematical idea or technique being assessed should be explicit, required, and central to the solution (e.g., distributive property, number decomposition, factorization, percentage calculation, rate × quantity, etc.). Avoid producing items where the context is realistic but the math skill becomes generic or shallow, as such items are considered weak in topic relevance.
+
   4. Initial Planning Section (REQUIRED)
      Before generating questions, create a clear plan in this format:
 
@@ -5812,6 +5844,10 @@ FIB: |
      - Do NOT change or average these values across topics.
      - Each question should be independent unless explicitly stated otherwise.
 
+   Continuity rule: When a question has multiple sub-parts (or when two or more items are grouped as a single set), all sub-parts must belong to one continuous scenario — the same storyline, characters and setting — and one sub-part should logically lead to the next. (Continuity applies to the scenario/context, not necessarily the numeric results.)
+
+   Mathematical Skill Targeting: Ensure that the modified item preserves or strengthens topical relevance. The mathematical idea or technique being assessed should be explicit, required, and central to the solution (e.g., distributive property, number decomposition, factorization, percentage calculation, rate × quantity, etc.). Avoid producing items where the context is realistic but the math skill becomes generic or shallow, as such items are considered weak in topic relevance.
+
   4. Initial Planning Section (REQUIRED)
      Before generating questions, create a clear plan in this format:
 
@@ -6637,6 +6673,10 @@ FIB_pdf: |
      - Do NOT change or average these values across topics.
      - Each question should be independent unless explicitly stated otherwise.
 
+   Continuity rule: When a question has multiple sub-parts (or when two or more items are grouped as a single set), all sub-parts must belong to one continuous scenario — the same storyline, characters and setting — and one sub-part should logically lead to the next. (Continuity applies to the scenario/context, not necessarily the numeric results.)
+
+   Mathematical Skill Targeting: Ensure that the modified item preserves or strengthens topical relevance. The mathematical idea or technique being assessed should be explicit, required, and central to the solution (e.g., distributive property, number decomposition, factorization, percentage calculation, rate × quantity, etc.). Avoid producing items where the context is realistic but the math skill becomes generic or shallow, as such items are considered weak in topic relevance.
+
   4. Initial Planning Section (REQUIRED)
      Before generating questions, create a clear plan in this format:
 
@@ -7457,6 +7497,10 @@ descriptive: |
      - Do NOT change or average these values across topics.
      - Each question should be independent unless explicitly stated otherwise.
 
+   Continuity rule: When a question has multiple sub-parts (or when two or more items are grouped as a single set), all sub-parts must belong to one continuous scenario — the same storyline, characters and setting — and one sub-part should logically lead to the next. (Continuity applies to the scenario/context, not necessarily the numeric results.)
+
+   Mathematical Skill Targeting: Ensure that the modified item preserves or strengthens topical relevance. The mathematical idea or technique being assessed should be explicit, required, and central to the solution (e.g., distributive property, number decomposition, factorization, percentage calculation, rate × quantity, etc.). Avoid producing items where the context is realistic but the math skill becomes generic or shallow, as such items are considered weak in topic relevance.
+
   4. Initial Planning Section (REQUIRED)
      Before generating questions, create a clear plan in this format:
 
@@ -8100,6 +8144,10 @@ descriptive_pdf: |
      - Do NOT change or average these values across topics.
      - Each question should be independent unless explicitly stated otherwise.
 
+   Continuity rule: When a question has multiple sub-parts (or when two or more items are grouped as a single set), all sub-parts must belong to one continuous scenario — the same storyline, characters and setting — and one sub-part should logically lead to the next. (Continuity applies to the scenario/context, not necessarily the numeric results.)
+
+   Mathematical Skill Targeting: Ensure that the modified item preserves or strengthens topical relevance. The mathematical idea or technique being assessed should be explicit, required, and central to the solution (e.g., distributive property, number decomposition, factorization, percentage calculation, rate × quantity, etc.). Avoid producing items where the context is realistic but the math skill becomes generic or shallow, as such items are considered weak in topic relevance.
+
   4. Initial Planning Section (REQUIRED)
      Before generating questions, create a clear plan in this format:
 
@@ -8731,6 +8779,10 @@ descriptive_subq: |
        - DOK level
      - Do NOT change or average these values across topics.
      - Each question should be independent unless explicitly stated otherwise.
+
+   Continuity rule: When a question has multiple sub-parts (or when two or more items are grouped as a single set), all sub-parts must belong to one continuous scenario — the same storyline, characters and setting — and one sub-part should logically lead to the next. (Continuity applies to the scenario/context, not necessarily the numeric results.)
+
+   Mathematical Skill Targeting: Ensure that the modified item preserves or strengthens topical relevance. The mathematical idea or technique being assessed should be explicit, required, and central to the solution (e.g., distributive property, number decomposition, factorization, percentage calculation, rate × quantity, etc.). Avoid producing items where the context is realistic but the math skill becomes generic or shallow, as such items are considered weak in topic relevance.
 
   4. Initial Planning Section (REQUIRED)
      Before generating questions, create a clear plan in this format:
@@ -9433,6 +9485,10 @@ descriptive_subq_pdf: |
      - Do NOT change or average these values across topics.
      - Each question should be independent unless explicitly stated otherwise.
 
+   Continuity rule: When a question has multiple sub-parts (or when two or more items are grouped as a single set), all sub-parts must belong to one continuous scenario — the same storyline, characters and setting — and one sub-part should logically lead to the next. (Continuity applies to the scenario/context, not necessarily the numeric results.)
+
+   Mathematical Skill Targeting: Ensure that the modified item preserves or strengthens topical relevance. The mathematical idea or technique being assessed should be explicit, required, and central to the solution (e.g., distributive property, number decomposition, factorization, percentage calculation, rate × quantity, etc.). Avoid producing items where the context is realistic but the math skill becomes generic or shallow, as such items are considered weak in topic relevance.
+
   4. Initial Planning Section (REQUIRED)
      Before generating questions, create a clear plan in this format:
 
@@ -10086,6 +10142,70 @@ descriptive_subq_pdf: |
 
 
 
+duplicate_question: |
+  You are an expert question generator tasked with creating duplicate versions of educational questions. Your goal is to generate variations that test the same mathematical concept and solution method but with different numbers and scenarios.
+
+  ## INPUT FORMAT
+  You will receive:
+  1. **Original Question JSON**: The complete question structure including all fields as markdown (question text, options, answer, solution, distractor analysis, taxonomy, marks, etc.)
+  2. **Question Code**: The identifier for this question (e.g., "q1", "q2")
+  3. **Number of Duplicates**: How many duplicate versions to create
+
+  ## DUPLICATION RULES
+  ### MUST PRESERVE (Keep Exactly the Same):
+  - Question type and structure
+  - All JSON fields present in the original
+  - Marks allocation
+  - Taxonomy classification
+  - Difficulty level
+  - Solution methodology and steps
+  - Number of options (for MCQs)
+  - Distractor analysis structure (option labels, error types)
+  - Mathematical concept being tested
+  - Bloom's taxonomy level
+
+  ### MUST CHANGE:
+  - All numerical values (while keeping the problem solvable with similar complexity)
+  - Scenario/context (be creative but appropriate to the topic)
+  - Names of people, places, items, or entities mentioned
+  - Specific details in the story/context
+
+  ### IMPORTANT CONSTRAINTS:
+  - Keep the new numbers within a reasonable range (don't make calculations overly complex)
+  - Ensure the solution remains at the same difficulty level
+  - Maintain the logical structure of the problem
+  - For MCQs, ensure distractors follow the same error patterns as the original
+  - Keep the same relationship between numbers (e.g., if original had 3:2 ratio, maintain similar ratios)
+
+  ## OUTPUT FORMAT
+  Return a JSON array where each element represents one duplicate question. Each duplicate should:
+  1. Include a "question_code" field with format: `<original_code>-dup-<number>` (e.g., "q1-dup-1", "q1-dup-2")
+  2. Contain ALL the same fields as the original question
+  3. Have modified numbers and scenario as per the rules above
+
+  Example output structure:
+  [
+    {
+      "question_code": "q1-dup-1",
+      "question1": "everythin in markdown format as string (no keys and values )"
+    },
+    {
+      "question_code": "q1-dup-2",
+      ...
+    }
+  ]
+
+  ## QUALITY CHECKLIST
+  Before generating output, verify:
+  ✓ All numerical values are different from the original
+  ✓ The scenario/context is different but equally appropriate
+  ✓ The solution method remains identical
+  ✓ All structural fields from the original are present
+  ✓ Distractor options still represent the same types of errors
+  ✓ The difficulty level is maintained
+  ✓ The output is valid JSON
+
+  Now generate the duplicates based on the provided input.
 
 
 

@@ -1,19 +1,17 @@
+"""
+Simplified Result Renderer for Streamlit Question Display
+Renders questions in the new simplified format: { "question1": "markdown", "question2": "markdown" }
+Question type is inferred from batch_key parameter.
+"""
 import streamlit as st
 import json
 import re
 from typing import Dict, List, Any, Optional
 
+
 def extract_json_objects(text: str) -> List[Dict[str, Any]]:
     """
     Robustly extract JSON objects from text by finding top-level brace pairs.
-    """
-    # Simply use brace matching on the whole text. 
-    # This covers JSONs inside markdown blocks and raw JSONs.
-    return extract_json_by_braces(text)
-
-def extract_json_by_braces(text: str) -> List[Dict[str, Any]]:
-    """
-    Extract JSON objects by finding matching braces.
     """
     objects = []
     stack = []
@@ -35,561 +33,471 @@ def extract_json_by_braces(text: str) -> List[Dict[str, Any]]:
                         if isinstance(obj, dict):
                             objects.append(obj)
                     except json.JSONDecodeError:
-                        pass # Ignore invalid blocks
+                        pass  # Ignore invalid blocks
     return objects
 
 
-
-def normalize_question(q: Dict[str, Any]) -> Dict[str, Any]:
+def extract_question_values_fallback(json_objects: List[Dict[str, Any]]) -> Dict[str, str]:
     """
-    Normalize keys and infer Q_TYPE to handle inconsistent JSON output.
-    Uses regex patterns for flexible key matching.
-    """
-    normalized = {}
+    ERROR HANDLING: Extract values from keys containing "question" (case-insensitive).
+    This acts as a fallback when structural mismatch occurs.
     
-    # Regex-based key patterns (pattern -> standard key)
-    # These patterns are case-insensitive and flexible with spaces/underscores
-    key_patterns = [
-        # Topic variations
-        (r'^topic$', 'TOPIC'),
-        (r'^topic[\s_]*used$', 'TOPIC'),
+    Args:
+        json_objects: List of parsed JSON objects
         
-        # Question variations
-        (r'^question$', 'QUESTION'),
-        
-        # Options variations
-        (r'^options?$', 'OPTION'),
-        
-        # Answer variations
-        (r'^(?:correct[\s_]*)?(?:answer|option)$', 'CORRECT_ANSWER'),
-        (r'^answer[\s_]*key$', 'ANSWER_KEY'),
-        
-        # Solution variations - THIS IS THE KEY FIX
-        (r'^solution(?:[\s_]*explanation)?$', 'SOLUTION'),
-        
-        # Distractor Analysis variations
-        (r'^distractor[\s_]*analysis$', 'DISTRACTOR_ANALYSIS'),
-        
-        # Key Idea variations
-        (r'^key[\s_-]*idea$', 'KEY_IDEA'),
-        
-        # Scenario variations
-        (r'^scenario$', 'SCENARIO'),
-        
-        # Diagram variations
-        (r'^diagram[\s_]*prompt$', 'DIAGRAM_PROMPT'),
-        
-        # DOK variations
-        (r'^dok(?:[\s_]*level)?$', 'DOK'),
-        
-        # Taxonomy variations
-        (r'^taxonomy$', 'TAXONOMY'),
-        
-        # Marks variations
-        (r'^(?:marking[\s_]*scheme|marks?)$', 'MARKS'),
-        
-        # Subquestions variations
-        (r'^(?:sub[\s_]*q(?:uestions)?|parts)$', 'SUBQ'),
-        
-        # Question type variations
-        (r'^(?:q[\s_]*type|question[\s_]*type)$', 'Q_TYPE'),
-        (r'^fib[\s_]*type$', 'FIB_TYPE'),
-        (r'^multipart[\s_]*type$', 'MULTIPART_TYPE'),
-    ]
-
-    for k, v in q.items():
-        # Normalize the key for pattern matching
-        clean_k = str(k).lower().replace('_', ' ').strip()
-        clean_k = re.sub(r'\s+', ' ', clean_k)  # Normalize multiple spaces
-        
-        # Try to match against patterns
-        matched = False
-        for pattern, standard_key in key_patterns:
-            if re.match(pattern, clean_k, re.IGNORECASE):
-                normalized[standard_key] = v
-                matched = True
-                break
-        
-        # If no pattern matched, keep the original key
-        if not matched:
-            normalized[k] = v
+    Returns:
+        Dict mapping question keys to their string values
+    """
+    questions_dict = {}
+    
+    for obj in json_objects:
+        if not isinstance(obj, dict):
+            continue
             
-    # Infer Q_TYPE from specialized type keys if explicit Q_TYPE is missing
-    if 'Q_TYPE' not in normalized:
-        if 'FIB_TYPE' in normalized:
-            normalized['Q_TYPE'] = 'FIB'
-        elif 'MULTIPART_TYPE' in normalized:
-            normalized['Q_TYPE'] = 'MULTIPART'
-
-    # Normalization for FIB and MULTIPART to create SUBQ from ANSWER_KEY if needed
-    q_type_upper = normalized.get('Q_TYPE', '').upper()
-    
-    if q_type_upper in ['FIB', 'MULTIPART'] and 'SUBQ' not in normalized and 'ANSWER_KEY' in normalized:
-        ak = normalized['ANSWER_KEY']
-        subqs = []
-        if isinstance(ak, dict):
-            for key, val in ak.items():
-                # For FIB: key might be "TEXT 1", val might be answer string
-                # For Multipart: key might be "(a)", val might be dict with Solution/Final Answer
-                
-                sq = {'part': key}
-                if isinstance(val, dict):
-                    # Complex answer key (Multipart)
-                    sq['answer'] = val.get('Final Answer', val.get('Solution', ''))
-                    sq['solution'] = val.get('Solution', '') # Store full solution if available
-                    sq['marks'] = val.get('Marking Scheme', '')
+        # Flatten nested structures if needed
+        def flatten_dict(d: Dict[str, Any], parent_key: str = '') -> Dict[str, Any]:
+            """Recursively flatten nested dicts"""
+            items = {}
+            for k, v in d.items():
+                new_key = f"{parent_key}.{k}" if parent_key else k
+                if isinstance(v, dict):
+                    items.update(flatten_dict(v, new_key))
                 else:
-                    # Simple answer (FIB)
-                    sq['answer'] = str(val)
-                
-                # Try to extract question text for this part if possible
-                # (This is harder without a structured question input, but we do what we can)
-                # Maybe the question text is embedded in the main question? 
-                # For Multipart, usually the question has (a)... (b)... 
-                # We can leave 'question' empty in SUBQ and rely on the main text, 
-                # OR try to parse the main text. For now, let's at least populate the answer.
-                
-                subqs.append(sq)
+                    items[new_key] = v
+            return items
         
-        # Sort subqs if possible (by part name)
-        # e.g. (a), (b) or TEXT 1, TEXT 2
-        try:
-            subqs.sort(key=lambda x: x['part'])
-        except:
-            pass
+        flattened = flatten_dict(obj)
+        
+        # Extract any keys containing "question" (case-insensitive)
+        for key, value in flattened.items():
+            # Case-insensitive match for "question"
+            if re.search(r'question', key, re.IGNORECASE):
+                # Only accept string values for rendering
+                if isinstance(value, str):
+                    questions_dict[key] = value
+                elif isinstance(value, dict):
+                    # If it's a dict, try to extract a "question" sub-key
+                    for sub_key, sub_value in value.items():
+                        if re.search(r'question', sub_key, re.IGNORECASE) and isinstance(sub_value, str):
+                            questions_dict[f"{key}.{sub_key}"] = sub_value
+    
+    return questions_dict
+
+
+def render_markdown_question(question_key: str, markdown_content: str, question_type: str, batch_key: str = "", render_context: str = "results"):
+    """
+    Render a single question from its markdown content.
+    
+    Args:
+        question_key: The key (e.g., "question1", "question2")
+        markdown_content: The complete markdown content
+        question_type: The question type from batch_key
+        batch_key: The batch identifier for session state management
+        render_context: Context identifier ("progressive" or "results") to prevent duplicate keys
+    """
+    # Extract question number from key (e.g., "question1" -> "1")
+    q_num = question_key.replace("question", "").replace("q", "")
+    
+    # Create a header with question type and number
+    type_emoji_map = {
+        "MCQ": "☑️",
+        "Fill in the Blanks": "📝",
+        "Case Study": "📚",
+        "Multi-Part": "📋",
+        "Assertion-Reasoning": "🔗",
+        "Descriptive": "✍️",
+        "Descriptive w/ Subquestions": "📄"
+    }
+    
+    emoji = type_emoji_map.get(question_type, "❓")
+    
+    # Create unique session state keys for this question with context namespace
+    checkbox_key = f"duplicate_{render_context}_{batch_key}_{question_key}"
+    count_key = f"duplicate_count_{render_context}_{batch_key}_{question_key}"
+    duplicates_key = f"duplicates_{batch_key}_{question_key}"  # Shared across contexts
+    
+    # Initialize session state for duplicates if not exists
+    if duplicates_key not in st.session_state:
+        st.session_state[duplicates_key] = []
+    
+    # Only show duplication controls in "results" context, not in progressive rendering
+    if render_context == "results":
+        # Question header with checkbox (using Streamlit's built-in state management)
+        col1, col2, col3, col4 = st.columns([0.6, 2.5, 1.5, 0.6])
+        
+        with col1:
+            # Checkbox state is automatically managed by Streamlit via the key parameter
+            duplicate_selected = st.checkbox(
+                "Duplicate",
+                key=checkbox_key,
+                help="Select this question to generate duplicates"
+            )
+        
+        with col2:
+            st.markdown(f"### {emoji} Question {q_num}")
+        
+        with col3:
+            if duplicate_selected:
+                # Number input state is also automatically managed via key parameter
+                st.number_input(
+                    "# Duplicates",
+                    min_value=1,
+                    max_value=5,
+                    value=1,
+                    key=count_key,
+                    help="Number of duplicates to generate"
+                )
+        
+        with col4:
+            # Add copy-to-clipboard button with markdown stripping
+            import streamlit.components.v1 as components
+            import json
             
-        normalized['SUBQ'] = subqs
-    
-    return normalized
-
-def clean_key(key: str) -> str:
-    """Helper to format keys for display."""
-    return key.replace('_', ' ').title()
-
-def format_multiline(text: Any) -> str:
-    """
-    Ensure newlines are rendered correctly in Markdown.
-    Replaces single newlines with double newlines or two spaces for hard breaks.
-    """
-    if not text:
-        return ""
-    
-    # Handle dicts or other types gracefully
-    if isinstance(text, dict):
-        return json.dumps(text, indent=2)
-    
-    text = str(text)
-    
-    # Specific fix for Assertion-Reasoning spacing
-    # Look for "Reason (R):" following an assertion and force a newline
-    text = re.sub(r'(Assertion\s*\(A\):.*?)(\s+Reason\s*\(R\):)', r'\1\n\n\2', text, flags=re.DOTALL)
-    
-    # General structural formatting
-    # Force newlines before common markers if they don't have one
-    patterns = [
-        r'((?:\*\*|__)?\s*Step\s+\d+:)',          # Step 1: or **Step 1:
-        r'((?:\*\*|__)?\s*Statement\s+[IVX0-9]+:)', # Statement I:
-        r'((?:\*\*|__)?\s*Note:)',                # Note:
-        r'((?:\*\*|__)?\s*Conclusion:)',          # Conclusion:
-        r'((?:\*\*|__)?\s*Explanation:)',         # Explanation:
-        r'((?:\*\*|__)?\bPart\s+\([a-zA-Z0-9]+\):)' # Part (a):
-    ]
-    
-    for pattern in patterns:
-        # Replace "match" with "\n\nmatch", avoiding adding extra newlines if already present
-        # The lookbehind (?<!\n\n) is hard to use with variable length, so we substitute and then cleanup
-        text = re.sub(pattern, r'\n\n\1', text)
-
-    # Check for Markdown Tables (lines starting with |)
-    # If it looks like a table, we should likely NOT force double newlines globally
-    stripped_lines = [l.strip() for l in text.split('\n') if l.strip()]
-    if any(l.startswith('|') and '|' in l[1:] for l in stripped_lines):
-         # It has table rows. We should be careful.
-         # For tables, we usually don't want to mess with newlines inside the table structure.
-         # But we might still want the "Section:" headers to break.
-         # Strategy: Apply headers fix, but skip general newline doubling.
-         pass
+            copy_button_key = f"copy_{render_context}_{batch_key}_{question_key}"
+            
+            copy_html = f"""
+            <div style="display: flex; align-items: center; justify-content: center; height: 50px;">
+                <textarea id="text_{copy_button_key}" style="position: absolute; left: -9999px;">{markdown_content}</textarea>
+                <button id="btn_{copy_button_key}" 
+                        style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                               color: white;
+                               border: none;
+                               border-radius: 8px;
+                               padding: 10px 14px;
+                               font-size: 18px;
+                               cursor: pointer;
+                               transition: all 0.3s ease;
+                               box-shadow: 0 2px 4px rgba(0,0,0,0.1);"
+                        title="Copy to clipboard (plain text, tables preserved)">
+                    📋
+                </button>
+            </div>
+            <script>
+                (function() {{
+                    const btn = document.getElementById('btn_{copy_button_key}');
+                    const textarea = document.getElementById('text_{copy_button_key}');
+                    
+                    function stripMarkdownExceptTables(text) {{
+                        const lines = text.split('\\n');
+                        const processedLines = lines.map(line => {{
+                            // Preserve table lines (contain |)
+                            if (line.includes('|')) {{
+                                return line;
+                            }}
+                            
+                            // Remove markdown from other lines
+                            let cleaned = line;
+                            
+                            // Remove headers (# ## ### etc.)
+                            cleaned = cleaned.replace(/^#{1,6}\\s+/g, '');
+                            
+                            // Remove bold (**text** or __text__)
+                            cleaned = cleaned.replace(/\\*\\*(.+?)\\*\\*/g, '$1');
+                            cleaned = cleaned.replace(/__(.+?)__/g, '$1');
+                            
+                            // Remove italic (*text* or _text_)
+                            cleaned = cleaned.replace(/\\*(.+?)\\*/g, '$1');
+                            cleaned = cleaned.replace(/_(.+?)_/g, '$1');
+                            
+                            // Remove inline code (`code`)
+                            cleaned = cleaned.replace(/`([^`]+)`/g, '$1');
+                            
+                            // Remove links [text](url) -> text
+                            cleaned = cleaned.replace(/\\[([^\\]]+)\\]\\([^)]+\\)/g, '$1');
+                            
+                            // Remove images ![alt](url)
+                            cleaned = cleaned.replace(/!\\[([^\\]]+)\\]\\([^)]+\\)/g, '');
+                            
+                            return cleaned;
+                        }});
+                        
+                        return processedLines.join('\\n');
+                    }}
+                    
+                    btn.addEventListener('click', function() {{
+                        try {{
+                            // Get original content
+                            const originalText = textarea.value;
+                            
+                            // Strip markdown except tables
+                            const cleanedText = stripMarkdownExceptTables(originalText);
+                            
+                            // Create temporary textarea with cleaned text
+                            const tempTextarea = document.createElement('textarea');
+                            tempTextarea.value = cleanedText;
+                            tempTextarea.style.position = 'fixed';
+                            tempTextarea.style.left = '-9999px';
+                            document.body.appendChild(tempTextarea);
+                            
+                            // Copy cleaned text
+                            tempTextarea.select();
+                            tempTextarea.setSelectionRange(0, 99999);
+                            document.execCommand('copy');
+                            
+                            // Clean up
+                            document.body.removeChild(tempTextarea);
+                            
+                            // Visual feedback
+                            btn.innerHTML = '✅';
+                            btn.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
+                            
+                            setTimeout(function() {{
+                                btn.innerHTML = '📋';
+                                btn.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+                            }}, 1500);
+                        }} catch(err) {{
+                            btn.innerHTML = '❌';
+                            setTimeout(function() {{
+                                btn.innerHTML = '📋';
+                            }}, 1500);
+                        }}
+                    }});
+                    
+                    btn.addEventListener('mouseover', function() {{
+                        this.style.transform = 'translateY(-2px)';
+                        this.style.boxShadow = '0 4px 12px rgba(102, 126, 234, 0.4)';
+                    }});
+                    
+                    btn.addEventListener('mouseout', function() {{
+                        this.style.transform = 'translateY(0)';
+                        this.style.boxShadow = '0 2px 4px rgba(0,0,0,0.1)';
+                    }});
+                }})();
+            </script>
+            """
+            components.html(copy_html, height=55)
     else:
-        # General text - use soft breaks (two spaces + newline) to preserve bold context
-        # UNLESS it's a structural break we inserted above.
-        # But we already handled structural breaks with \n\n.
-        # So we just want to ensure other single newlines become visible soft breaks.
-        text = text.replace('\n', '  \n')
-
-    return text.strip()
-
-def render_mcq(q: Dict[str, Any], index: int):
-    """Render MCQ Question."""
-    st.markdown(f"#### Q{index}: {q.get('TOPIC', 'MCQ')} ({q.get('TYPE', '')})")
+        # Progressive rendering - no duplication controls
+        st.markdown(f"### {emoji} Question {q_num}")
     
-    # Diagram Prompt
-    if q.get('DIAGRAM_PROMPT'):
-        st.info(f"🖼️ **Diagram Prompt:** {q['DIAGRAM_PROMPT']}")
+    st.caption(f"*Type: {question_type}*")
+    st.markdown("")  # spacing
     
-    # Question
-    st.markdown(format_multiline(q.get('QUESTION', '')))
+    # Render the markdown content directly
+    st.markdown(markdown_content)
     
-    # Options
-    options = q.get('OPTION', {})
-    if options:
-        for key, value in options.items():
-            st.markdown(f"- **{key})** {value}")
-    
-    # Solution & Analysis
-    with st.expander("👁️ View Solution & Analysis"):
-        st.markdown(f"**Correct Answer:** {q.get('CORRECT_ANSWER', '')}")
-        st.markdown(f"**Key Idea:** {q.get('KEY_IDEA', '')}")
+    # Display duplicates if they exist (only in results context)
+    if render_context == "results" and st.session_state[duplicates_key]:
+        st.markdown("")
         st.markdown("---")
-        st.markdown(f"**Solution:**")
-        st.markdown(format_multiline(q.get('SOLUTION', '')))
+        st.markdown(f"**🔄 Duplicates ({len(st.session_state[duplicates_key])})**")
         
-        st.markdown("---")
-        st.markdown("**Distractor Analysis:**")
-        da = q.get('DISTRACTOR_ANALYSIS', '')
-        # If DA is a table string, render it as markdown
-        st.markdown(format_multiline(da))
-        
-        if q.get('validation_report'):
-            st.markdown("---")
-            st.caption(f"Validation Report: {q['validation_report']}")
-
-def render_case_study(q: Dict[str, Any], index: int):
-    """Render Case Study."""
-    # Normalization for Generator Schema (CBS Material X / Item Questions)
-    # If standard keys are missing, try to extract from generator format
-    if not q.get('SCENARIO') and not q.get('SUBQ'):
-        # Attempt to find 'CBS Material' keys
-        cbs_data = None
-        for key in q.keys():
-            if 'CBS Material' in key:
-                cbs_data = q[key]
-                break
-        
-        if cbs_data:
-            q['SCENARIO'] = cbs_data.get('Scenario', '')
-            q['DIAGRAM_PROMPT'] = cbs_data.get('Diagram Prompt', q.get('DIAGRAM_PROMPT'))
+        for i, duplicate in enumerate(st.session_state[duplicates_key], 1):
+            dup_question_key = duplicate.get('question_code', f'{question_key}-dup-{i}')
+            # Get the markdown content from the duplicate (usually second key after question_code)
+            dup_content_key = [k for k in duplicate.keys() if k != 'question_code'][0] if len(duplicate.keys()) > 1 else 'question1'
+            dup_markdown = duplicate.get(dup_content_key, str(duplicate))
             
-            # Normalize Sub-questions
-            item_qs = cbs_data.get('Item Questions', {})
-            answer_key = cbs_data.get('Answer Key', {})
-            subqs = []
+            # Create layout with copy button for duplicate
+            dup_col1, dup_col2 = st.columns([0.9, 0.1])
             
-            for part_key, question_text in item_qs.items():
-                # Clean part key (e.g., "(a)" -> "a")
-                safe_part = part_key.replace('(', '').replace(')', '').strip()
+            with dup_col1:
+                with st.expander(f"Duplicate {i} - {dup_question_key}", expanded=False):
+                    st.markdown(dup_markdown)
+            
+            with dup_col2:
+                # Add copy button for duplicate with markdown stripping
+                import streamlit.components.v1 as components
+                import json
                 
-                # Try to find corresponding answer/solution in Answer Key
-                ans_data = answer_key.get(part_key, {})
-                # It might be a dict or string
-                solution_text = ""
-                marks = ""
+                dup_copy_key = f"copy_dup_{render_context}_{batch_key}_{question_key}_{i}"
                 
-                if isinstance(ans_data, dict):
-                    solution_text = ans_data.get('Solution', '')
-                    marks = ans_data.get('Marking Scheme', '')
-                    # Sometimes answer is explicitly in the dict, or implied in solution
-                    answer_text = solution_text # Fallback
-                else:
-                    answer_text = str(ans_data)
-                
-                subqs.append({
-                    'part': safe_part,
-                    'question': question_text,
-                    'answer': answer_text,
-                    'marks': marks,
-                    'dok': q.get('DOK Level', '') # Fallback to global DOK
-                })
-            q['SUBQ'] = subqs
-            q['KEY_IDEA'] = cbs_data.get('Key Idea', q.get('Key Idea', ''))
-
-    st.markdown(f"#### Q{index}: Case Study - {q.get('TOPIC', q.get('Topic', ''))}")
+                dup_copy_html = f"""
+                <div style="display: flex; align-items: center; justify-content: center; height: 50px; margin-top: 8px;">
+                    <textarea id="text_{dup_copy_key}" style="position: absolute; left: -9999px;">{dup_markdown}</textarea>
+                    <button id="btn_{dup_copy_key}" 
+                            style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                                   color: white;
+                                   border: none;
+                                   border-radius: 8px;
+                                   padding: 10px 14px;
+                                   font-size: 18px;
+                                   cursor: pointer;
+                                   transition: all 0.3s ease;
+                                   box-shadow: 0 2px 4px rgba(0,0,0,0.1);"
+                            title="Copy duplicate {i} to clipboard (plain text, tables preserved)">
+                        📋
+                    </button>
+                </div>
+                <script>
+                    (function() {{
+                        const btn = document.getElementById('btn_{dup_copy_key}');
+                        const textarea = document.getElementById('text_{dup_copy_key}');
+                        
+                        function stripMarkdownExceptTables(text) {{
+                            const lines = text.split('\\n');
+                            const processedLines = lines.map(line => {{
+                                // Preserve table lines (contain |)
+                                if (line.includes('|')) {{
+                                    return line;
+                                }}
+                                
+                                // Remove markdown from other lines
+                                let cleaned = line;
+                                
+                                // Remove headers (# ## ### etc.)
+                                cleaned = cleaned.replace(/^#{'{1,6}'}\\s+/g, '');
+                                
+                                // Remove bold (**text** or __text__)
+                                cleaned = cleaned.replace(/\\*\\*(.+?)\\*\\*/g, '$1');
+                                cleaned = cleaned.replace(/__(.+?)__/g, '$1');
+                                
+                                // Remove italic (*text* or _text_)
+                                cleaned = cleaned.replace(/\\*(.+?)\\*/g, '$1');
+                                cleaned = cleaned.replace(/_(.+?)_/g, '$1');
+                                
+                                // Remove inline code (`code`)
+                                cleaned = cleaned.replace(/`([^`]+)`/g, '$1');
+                                
+                                // Remove links [text](url) -> text
+                                cleaned = cleaned.replace(/\\[([^\\]]+)\\]\\([^)]+\\)/g, '$1');
+                                
+                                // Remove images ![alt](url)
+                                cleaned = cleaned.replace(/!\\[([^\\]]+)\\]\\([^)]+\\)/g, '');
+                                
+                                return cleaned;
+                            }});
+                            
+                            return processedLines.join('\\n');
+                        }}
+                        
+                        btn.addEventListener('click', function() {{
+                            try {{
+                                const originalText = textarea.value;
+                                const cleanedText = stripMarkdownExceptTables(originalText);
+                                
+                                const tempTextarea = document.createElement('textarea');
+                                tempTextarea.value = cleanedText;
+                                tempTextarea.style.position = 'fixed';
+                                tempTextarea.style.left = '-9999px';
+                                document.body.appendChild(tempTextarea);
+                                
+                                tempTextarea.select();
+                                tempTextarea.setSelectionRange(0, 99999);
+                                document.execCommand('copy');
+                                
+                                document.body.removeChild(tempTextarea);
+                                
+                                btn.innerHTML = '✅';
+                                btn.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
+                                
+                                setTimeout(function() {{
+                                    btn.innerHTML = '📋';
+                                    btn.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+                                }}, 1500);
+                            }} catch(err) {{
+                                btn.innerHTML = '❌';
+                                setTimeout(function() {{
+                                    btn.innerHTML = '📋';
+                                }}, 1500);
+                            }}
+                        }});
+                        
+                        btn.addEventListener('mouseover', function() {{
+                            this.style.transform = 'translateY(-2px)';
+                            this.style.boxShadow = '0 4px 12px rgba(102, 126, 234, 0.4)';
+                        }});
+                        
+                        btn.addEventListener('mouseout', function() {{
+                            this.style.transform = 'translateY(0)';
+                            this.style.boxShadow = '0 2px 4px rgba(0,0,0,0.1)';
+                        }});
+                    }})();
+                </script>
+                """
+                components.html(dup_copy_html, height=60)
     
-    st.markdown(f"**Scenario:**")
-    st.markdown(f"> {format_multiline(q.get('SCENARIO', ''))}")
     
-    if q.get('DIAGRAM_PROMPT'):
-        st.info(f"🖼️ **Diagram Prompt:** {q['DIAGRAM_PROMPT']}")
     
-    if q.get('QUESTION'):
-         st.markdown(format_multiline(q.get('QUESTION', '')))
 
-    # Subquestions
-    subqs = q.get('SUBQ', [])
-    if subqs:
-        st.markdown("**Sub-Questions:**")
-        for sq in subqs:
-            part = sq.get('part', '')
-            txt = sq.get('question', '')
-            marks = sq.get('marks', '')
-            dok = sq.get('dok', '')
-            st.markdown(f"- **({part})** {txt} *(Marks: {marks}, DOK: {dok})*")
-    
-    with st.expander("👁️ View Solution"):
-        st.markdown(f"**Correct Answer:** {q.get('CORRECT_ANSWER', '')}")
-        
-        if subqs:
-             st.markdown("**Sub-Question Solutions:**")
-             for sq in subqs:
-                 st.markdown(f"- **({sq.get('part')})** {format_multiline(sq.get('answer', ''))}")
-
-        st.markdown("---")
-        st.markdown("**Detailed Solution:**")
-        st.markdown(format_multiline(q.get('SOLUTION', '')))
-        st.markdown(f"**Key Idea:** {q.get('KEY_IDEA', '')}")
-        
-        if q.get('validation_report'):
-            st.caption(f"Validation Report: {q['validation_report']}")
-
-def render_fib(q: Dict[str, Any], index: int):
-    """Render Fill in the Blanks."""
-    st.markdown(f"#### Q{index}: Fill in the Blanks - {q.get('TOPIC', '')}")
-    
-    if q.get('DIAGRAM_PROMPT'):
-        st.info(f"🖼️ **Diagram Prompt:** {q['DIAGRAM_PROMPT']}")
-        
-    st.markdown(format_multiline(q.get('QUESTION', '')))
-    
-    subqs = q.get('SUBQ', [])
-    if subqs:
-        for sq in subqs:
-             if sq.get('question'):
-                 st.markdown(f"- **({sq.get('part', '')})** {sq.get('question', '')}")
-
-    with st.expander("👁️ View Solution"):
-        st.markdown("**Detailed Solution:**")
-        st.markdown(format_multiline(q.get('SOLUTION', '')))
-        st.markdown(f"**Correct Answer:** {q.get('CORRECT_ANSWER', '')}")
-        st.markdown(f"**Key Idea:** {q.get('KEY_IDEA', '')}")
-        
-        if subqs:
-             st.markdown("**Part Answers:**")
-             for sq in subqs:
-                 st.markdown(f"- **({sq.get('part')})** {format_multiline(sq.get('answer', ''))}")
-        
-        if q.get('validation_report'):
-            st.caption(f"Validation Report: {q['validation_report']}")
-
-def render_multipart(q: Dict[str, Any], index: int):
-    """Render Multi-Part Question."""
-    st.markdown(f"#### Q{index}: Multi-Part - {q.get('TOPIC', '')}")
-    
-    if q.get('DIAGRAM_PROMPT'):
-        st.info(f"🖼️ **Diagram Prompt:** {q['DIAGRAM_PROMPT']}")
-        
-    st.markdown(format_multiline(q.get('QUESTION', '')))
-    
-    subqs = q.get('SUBQ', [])
-    if subqs:
-        for sq in subqs:
-            if sq.get('question'):
-                st.markdown(f"- **({sq.get('part', '')})** {sq.get('question', '')} *(Marks: {sq.get('marks')}, DOK: {sq.get('dok')})*")
-
-    with st.expander("👁️ View Solution"):
-        st.markdown("**Detailed Solution:**")
-        st.markdown(format_multiline(q.get('SOLUTION', '')))
-        
-        st.markdown("**Part Answers:**")
-        if subqs:
-             for sq in subqs:
-                 st.markdown(f"- **({sq.get('part')})** {format_multiline(sq.get('answer', ''))}")
-        
-        if q.get('DISTRACTOR_ANALYSIS'):
-             st.markdown("---")
-             st.markdown("**Distractor Analysis:**")
-             st.markdown(format_multiline(q['DISTRACTOR_ANALYSIS']))
-
-        st.markdown(f"**Key Idea:** {q.get('KEY_IDEA', '')}")
-        if q.get('validation_report'):
-            st.caption(f"Validation Report: {q['validation_report']}")
-
-def render_ar(q: Dict[str, Any], index: int):
-    """Render Assertion-Reasoning."""
-    st.markdown(f"#### Q{index}: Assertion-Reasoning - {q.get('TOPIC', '')}")
-    
-    if q.get('DIAGRAM_PROMPT'):
-        st.info(f"🖼️ **Diagram Prompt:** {q['DIAGRAM_PROMPT']}")
-        
-    st.markdown(format_multiline(q.get('QUESTION', '')))
-    
-    options = q.get('OPTION', {})
-    if options:
-        for key, value in options.items():
-            st.markdown(f"- **{key})** {value}")
-
-    with st.expander("👁️ View Solution"):
-        st.markdown(f"**Correct Answer:** {q.get('CORRECT_ANSWER', '')}")
-        st.markdown("**Reasoning:**")
-        st.markdown(format_multiline(q.get('SOLUTION', '')))
-        
-        if q.get('DISTRACTOR_ANALYSIS'):
-            st.markdown("---")
-            st.markdown("**Distractor Analysis:**")
-            st.markdown(format_multiline(q['DISTRACTOR_ANALYSIS']))
-            
-        st.markdown(f"**Key Idea:** {q.get('KEY_IDEA', '')}")
-        if q.get('validation_report'):
-            st.caption(f"Validation Report: {q['validation_report']}")
-
-def render_descriptive(q: Dict[str, Any], index: int):
-    """Render Descriptive."""
-    st.markdown(f"#### Q{index}: Descriptive - {q.get('TOPIC', '')}")
-    
-    if q.get('SCENARIO'):
-        st.markdown(f"> {q['SCENARIO']}")
-        
-    if q.get('DIAGRAM_PROMPT'):
-        st.info(f"🖼️ **Diagram Prompt:** {q['DIAGRAM_PROMPT']}")
-        
-    st.markdown(format_multiline(q.get('QUESTION', '')))
-
-    with st.expander("👁️ View Solution"):
-        st.markdown(f"**Answer:** {q.get('CORRECT_ANSWER', '')}")
-        st.markdown("**Detailed Solution:**")
-        st.markdown(format_multiline(q.get('SOLUTION', '')))
-        st.markdown(f"**Key Idea:** {q.get('KEY_IDEA', '')}")
-        if q.get('validation_report'):
-            st.caption(f"Validation Report: {q['validation_report']}")
-
-def render_descriptive_subq(q: Dict[str, Any], index: int):
-    """Render Descriptive with Subquestions."""
-    st.markdown(f"#### Q{index}: Descriptive (Sub-Q) - {q.get('TOPIC', '')}")
-    
-    if q.get('SCENARIO'):
-        st.markdown(f"> {q['SCENARIO']}")
-        
-    if q.get('DIAGRAM_PROMPT'):
-        st.info(f"🖼️ **Diagram Prompt:** {q['DIAGRAM_PROMPT']}")
-        
-    st.markdown(format_multiline(q.get('QUESTION', '')))
-    
-    subqs = q.get('SUBQ', [])
-    if subqs:
-        for sq in subqs:
-             st.markdown(f"- **({sq.get('part', '')})** {sq.get('question', '')}")
-
-    with st.expander("👁️ View Solution"):
-        st.markdown(f"**Main Answer:** {q.get('CORRECT_ANSWER', '')}")
-        st.markdown("**Detailed Solution:**")
-        st.markdown(format_multiline(q.get('SOLUTION', '')))
-        
-        if subqs:
-             st.markdown("**Sub-Question Answers:**")
-             for sq in subqs:
-                 st.markdown(f"- **({sq.get('part')})** {format_multiline(sq.get('answer', ''))}")
-                 
-        st.markdown(f"**Key Idea:** {q.get('KEY_IDEA', '')}")
-        if q.get('validation_report'):
-            st.caption(f"Validation Report: {q['validation_report']}")
-
-def render_generic(q: Dict[str, Any], index: int):
-    """Fallback renderer that attempts to display content nicely."""
-    topic = q.get('TOPIC', '')
-    st.markdown(f"#### Q{index}: {topic if topic else 'Question'}")
-    
-    if q.get('SCENARIO'):
-        st.markdown(f"> {format_multiline(q['SCENARIO'])}")
-
-    if q.get('DIAGRAM_PROMPT'):
-        st.info(f"🖼️ **Diagram Prompt:** {q['DIAGRAM_PROMPT']}")
-
-    # Render Question
-    q_text = q.get('QUESTION', '')
-    if q_text:
-        st.markdown(format_multiline(q_text))
-    
-    # Try to render options if present (like MCQ fallback)
-    options = q.get('OPTION', {})
-    if options and isinstance(options, dict):
-        for key, value in options.items():
-            st.markdown(f"- **{key})** {value}")
-
-    # Try to verify if there are subquestions (like Multipart fallback)
-    subqs = q.get('SUBQ', [])
-    if subqs and isinstance(subqs, list):
-        for sq in subqs:
-             part = sq.get('part', '')
-             txt = sq.get('question', '')
-             if txt:
-                 st.markdown(f"- **({part})** {txt} *(Marks: {sq.get('marks', '')})*")
-
-    # Solution Expander
-    with st.expander("👁️ View Solution"):
-        if q.get('CORRECT_ANSWER'):
-             st.markdown(f"**Correct Answer:** {q['CORRECT_ANSWER']}")
-        
-        if q.get('SOLUTION'):
-            st.markdown("**Detailed Solution:**")
-            st.markdown(format_multiline(q['SOLUTION']))
-        
-        # Subquestion answers
-        if subqs and isinstance(subqs, list):
-             st.markdown("**Part Answers:**")
-             for sq in subqs:
-                 ans = sq.get('answer', '')
-                 if ans:
-                     st.markdown(f"- **({sq.get('part', '')})** {format_multiline(ans)}")
-
-        if q.get('KEY_IDEA'):
-            st.markdown(f"**Key Idea:** {q['KEY_IDEA']}")
-            
-        if q.get('validation_report'):
-            st.caption(f"Validation Report: {q['validation_report']}")
-
-def render_batch_results(batch_key: str, result_data: Dict[str, Any]):
+def render_batch_results(batch_key: str, result_data: Dict[str, Any], render_context: str = "results"):
     """
-    Main entry point to render a batch of results.
+    Main entry point to render a batch of results in the new simplified format.
+    
+    Args:
+        batch_key: The question type (e.g., "MCQ", "Case Study", etc.)
+        result_data: Dict containing 'text' with the JSON output
+        render_context: Context identifier ("progressive" or "results") to prevent duplicate keys
     """
-    # Prefer validated text, fallback to raw
+    # Get text content
     text_content = result_data.get('text', '')
     if not text_content:
         st.warning("No content to display.")
         return
-
-    # Extract JSONs
-    questions = extract_json_objects(text_content)
     
-    if not questions:
-        st.warning(f"⚠️ Could not parse structured output for {batch_key}. Showing raw text below.")
-        st.text(text_content)
+    # Extract JSON objects
+    json_objects = extract_json_objects(text_content)
+    
+    if not json_objects:
+        st.warning(f"⚠️ Could not parse JSON output for {batch_key}. Showing raw text below.")
+        with st.expander("Show Raw Output"):
+            st.text(text_content)
         return
-
-    st.success(f"Successfully parsed {len(questions)} questions.")
-
-    for i, q in enumerate(questions, 1):
-        st.markdown("---")
-        
-        # Unwrap validation response if present
-        validation_report = q.get('VALIDATION_REPORT')
-        validation_status = q.get('STATUS')
-        
-        if 'CORRECTED_ITEM' in q:
-            q = q['CORRECTED_ITEM']
-            # Inject validation info back into the unwrapped object so renderers can see it
-            if validation_report:
-                q['validation_report'] = validation_report
-            if validation_status:
-                q['validation_status'] = validation_status
-        
-        # Normalize keys and infer type
-        q = normalize_question(q)
-        
-        # Dispatch based on Q_TYPE or infer from structure keys
-        q_type = q.get('Q_TYPE', '').upper()
-        
-        if q_type == 'MCQ':
-            render_mcq(q, i)
-        elif q_type == 'CASESTUDY':
-            render_case_study(q, i)
-        elif q_type == 'FIB':
-            render_fib(q, i)
-        elif q_type == 'MULTIPART':
-            render_multipart(q, i)
-        elif q_type == 'ASSERTION_REASONING':
-            render_ar(q, i)
-        elif q_type == 'DESCRIPTIVE':
-            render_descriptive(q, i)
-        elif q_type == 'DESCRIPTIVE_SUBQ':
-            render_descriptive_subq(q, i)
+    
+    # The new format should have a single JSON object with question1, question2, etc. keys
+    # But handle both old validation wrapper and new format
+    questions_dict = {}
+    
+    for obj in json_objects:
+        # Check if this is a validation wrapper (old format)
+        if 'CORRECTED_ITEM' in obj or 'corrected_item' in obj:
+            corrected = obj.get('CORRECTED_ITEM') or obj.get('corrected_item')
+            if isinstance(corrected, dict):
+                # Merge corrected items into questions_dict
+                for key, value in corrected.items():
+                    if key.lower().startswith('question') or key.lower().startswith('q'):
+                        questions_dict[key] = value
         else:
-            # Generic fallback - Render decently instead of raw JSON
-            render_generic(q, i)
+            # Direct format - merge all question keys
+            for key, value in obj.items():
+                if key.lower().startswith('question') or key.lower().startswith('q'):
+                    questions_dict[key] = value
+    
+    # ERROR HANDLING: If standard extraction failed, try fallback extraction
+    if not questions_dict:
+        st.info(f"ℹ️ Standard format not detected for {batch_key}. Attempting fallback extraction...")
+        questions_dict = extract_question_values_fallback(json_objects)
+        
+        if questions_dict:
+            st.warning(f"⚠️ Structural mismatch detected! Extracted {len(questions_dict)} questions using fallback mechanism.")
+        else:
+            # Final fallback: show JSON
+            st.error(f"❌ No questions found in output for {batch_key}. Displaying as JSON below.")
+            with st.expander("Show Parsed JSON", expanded=True):
+                st.json(json_objects)
+            return
+    
+    # Success message
+    st.success(f"✅ Successfully parsed {len(questions_dict)} {batch_key} questions")
+    st.markdown("")  # spacing
+    
+    # Sort questions by number (question1, question2, question3, etc.)
+    sorted_keys = sorted(questions_dict.keys(), 
+                        key=lambda x: int(re.search(r'\d+', x).group()) if re.search(r'\d+', x) else 0)
+    
+    # Render each question
+    for i, q_key in enumerate(sorted_keys, 1):
+        # Add prominent separator between questions
+        if i > 1:
+            st.markdown("")
+            st.markdown("")
+            st.markdown("---")
+            st.markdown("---")  # Double divider for prominence
+            st.markdown("")
+        
+        markdown_content = questions_dict[q_key]
+        
+        # Handle both string and dict content
+        if isinstance(markdown_content, dict):
+            # Old format detected - convert to markdown
+            st.warning(f"⚠️ {q_key}: Old format detected. Please update prompts to use new simplified format.")
+            st.json(markdown_content)
+        elif isinstance(markdown_content, str):
+            # New format - render markdown directly
+            render_markdown_question(q_key, markdown_content, batch_key, batch_key, render_context)
+        else:
+            st.error(f"⚠️ {q_key}: Unexpected content type: {type(markdown_content)}")
+    
+    # Add spacing at the end
+    st.markdown("")
+    st.markdown("")

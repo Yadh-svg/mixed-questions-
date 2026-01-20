@@ -1381,136 +1381,26 @@ with tab1:
                             questions_list.append(q)
                     
                     if questions_list:
-                        # Create a section for progressive results
-                        st.markdown("---")
-                        st.markdown('<div class="section-header">Generated Questions (Progressive Updates)</div>', unsafe_allow_html=True)
-                        st.info("💡 Results will appear below as each question type completes validation...")
-                        
-                        # Get unique question types from the batch
-                        from collections import defaultdict
-                        grouped = defaultdict(list)
-                        for q in questions_list:
-                            grouped[q.get('type', 'MCQ')].append(q)
-                        question_types_in_batch = list(grouped.keys())
-                        
-                        # Create placeholder containers for each question type
-                        containers = {}
-                        for qtype in question_types_in_batch:
-                            with st.container():
-                                st.markdown(f"### 📋 {qtype}")
-                                status_placeholder = st.empty()
-                                status_placeholder.info(f"⏳ Generating and validating {qtype} questions...")
-                                content_placeholder = st.empty()
-                                containers[qtype] = {
-                                    'status': status_placeholder,
-                                    'content': content_placeholder
-                                }
-                        
-                        # Initialize session state for progressive results
-                        if 'progressive_results' not in st.session_state:
-                            st.session_state.progressive_results = {}
-                        
-                        # Define callback function for progressive updates
-                        def update_ui(batch_key: str, batch_result: dict):
-                            """Callback triggered when each batch completes"""
-                            try:
-                                # Import renderer
-                                from result_renderer import render_batch_results
-                                
-                                # Store result in session state
-                                st.session_state.progressive_results[batch_key] = batch_result
-                                
-                                # Update the UI container for this batch
-                                if batch_key in containers:
-                                    status_container = containers[batch_key]['status']
-                                    content_container = containers[batch_key]['content']
-                                    
-                                    # Extract results
-                                    raw_res = batch_result.get('raw', {})
-                                    val_res = batch_result.get('validated', {})
-                                    
-                                    # Update status
-                                    if val_res and not val_res.get('error'):
-                                        status_container.success(f"✅ {batch_key} completed successfully!")
-                                    elif val_res and val_res.get('error'):
-                                        status_container.error(f"❌ {batch_key} validation failed")
-                                    else:
-                                        status_container.warning(f"⚠️ {batch_key} validation incomplete")
-                                    
-                                    # Render validated content in the content container
-                                    with content_container.container():
-                                        if val_res and not val_res.get('error'):
-                                            render_batch_results(batch_key, val_res)
-                                        elif val_res and val_res.get('error'):
-                                            st.error(f"Validation Error: {val_res['error']}")
-                                        
-                                        # Show metadata
-                                        st.markdown("---")
-                                        col1, col2 = st.columns(2)
-                                        with col1:
-                                            st.metric("Questions", raw_res.get('question_count', 'N/A'))
-                                        with col2:
-                                            raw_time = raw_res.get('elapsed', 0)
-                                            val_time = val_res.get('elapsed', 0) if val_res else 0
-                                            st.metric("Total Time", f"{raw_time + val_time:.2f}s")
-                                        
-                                        # Expandable raw outputs
-                                        with st.expander("Show Generated Version (Raw Backend Output)"):
-                                            if raw_res.get('error'):
-                                                st.error(f"Generation Error: {raw_res['error']}")
-                                            st.text_area("Raw Generator Output", value=raw_res.get('text', 'No output'), 
-                                                       height=300, disabled=True, key=f"raw_prog_{batch_key}")
-                                        
-                                        with st.expander("Show Validation Response (Raw Backend Output)"):
-                                            if val_res and val_res.get('error'):
-                                                st.error(f"Validation Error: {val_res['error']}")
-                                            st.text_area("Raw Validation Output", 
-                                                       value=val_res.get('text', 'No output') if val_res else 'No output',
-                                                       height=300, disabled=True, key=f"val_prog_{batch_key}")
-                            except Exception as e:
-                                st.error(f"Error updating UI for {batch_key}: {e}")
-                        
-                        # Run async pipeline with callback
+                        # Run async pipeline
                         with st.spinner("🔄 Starting question generation pipeline..."):
                             try:
                                 # Import here to avoid circular imports
                                 from batch_processor import process_batches_pipeline
                                 
-                                # Run async pipeline with callback
+                                # Run async pipeline without progressive UI callback
+                                # Results will be available in Results tab only
                                 final_results = asyncio.run(
                                     process_batches_pipeline(
                                         questions_config=questions_list,
                                         general_config=config,
-                                        progress_callback=update_ui
+                                        progress_callback=None  # Disable progressive rendering
                                     )
                                 )
                                 
                                 # Store final results
                                 st.session_state.generated_output = final_results
                                 
-                                st.success("✅ All question types completed!")
-                                
-                                # Add download button
-                                st.markdown("---")
-                                combined_output = ""
-                                for batch_key, batch_result in final_results.items():
-                                    val_res = batch_result.get('validated', {})
-                                    raw_res = batch_result.get('raw', {})
-                                    final_text = val_res.get('text', '') if val_res else raw_res.get('text', 'Error')
-                                    
-                                    combined_output += f"\n\n{'='*80}\n"
-                                    combined_output += f"BATCH: {batch_key}\n"
-                                    combined_output += f"{'='*80}\n\n"
-                                    combined_output += final_text
-                                
-                                st.download_button(
-                                    label="📥 Download All Questions",
-                                    data=combined_output,
-                                    file_name="generated_questions.md",
-                                    mime="text/markdown",
-                                    use_container_width=True,
-                                    key="download_progressive_results"
-                                )
+                                st.success("✅ All questions generated successfully! Go to the Results tab to view and manage them.")
                                 
                             except Exception as e:
                                 st.error(f"❌ Error during generation: {str(e)}")
@@ -1541,8 +1431,8 @@ with tab2:
                 # Display Validated Content
                 if val_res and not val_res.get('error'):
                         st.markdown("### ✅ Validated Output")
-                        # Use the new renderer
-                        render_batch_results(batch_key, val_res)
+                        # Use the new renderer with "results" context
+                        render_batch_results(batch_key, val_res, render_context="results")
                 elif val_res and val_res.get('error'):
                         st.error(f"❌ Validation Error: {val_res['error']}")
                         st.error(val_res.get('text', ''))
@@ -1591,6 +1481,158 @@ with tab2:
             use_container_width=True,
             key="download_inline_results"
         )
+        
+        # Add Generate Duplicates section
+        st.markdown("---")
+        st.markdown('<div class="section-header">🔄 Generate Question Duplicates</div>', unsafe_allow_html=True)
+        
+        # Collect selected questions from checkbox states
+        # This happens only when rendering, not when clicking checkboxes
+        selected_questions = {}
+        
+        # Iterate through all rendered questions and check their checkbox states
+        for batch_key, batch_result in results.items():
+            val_res = batch_result.get('validated', {})
+            text_content = val_res.get('text', '')
+            
+            if text_content:
+                # Extract JSON to get question keys
+                from result_renderer import extract_json_objects
+                json_objects = extract_json_objects(text_content)
+                
+                for obj in json_objects:
+                    # Handle validation wrapper
+                    questions_to_check = {}
+                    if 'CORRECTED_ITEM' in obj or 'corrected_item' in obj:
+                        corrected = obj.get('CORRECTED_ITEM') or obj.get('corrected_item')
+                        if isinstance(corrected, dict):
+                            questions_to_check = corrected
+                    else:
+                        questions_to_check = obj
+                    
+                    # Check each question
+                    for q_key, q_content in questions_to_check.items():
+                        if q_key.lower().startswith('question') or q_key.lower().startswith('q'):
+                            # Use 'results' context to match the render context
+                            checkbox_key = f"duplicate_results_{batch_key}_{q_key}"
+                            count_key = f"duplicate_count_results_{batch_key}_{q_key}"
+                            
+                            # Check if checkbox is selected
+                            if st.session_state.get(checkbox_key, False):
+                                selected_questions[f"{batch_key}_{q_key}"] = {
+                                    'question_key': q_key,
+                                    'question_code': q_key.replace("question", "q"),
+                                    'batch_key': batch_key,
+                                    'markdown_content': q_content if isinstance(q_content, str) else str(q_content),
+                                    'num_duplicates': st.session_state.get(count_key, 1)
+                                }
+        
+        if selected_questions:
+            st.info(f"✅ {len(selected_questions)} question(s) selected for duplication")
+            
+            # Show which questions are selected
+            with st.expander("View Selected Questions", expanded=False):
+                for key, data in selected_questions.items():
+                    st.write(f"• {data['batch_key']} - {data['question_key']} (x{data['num_duplicates']})")
+            
+            # Generate Duplicates Button
+            if st.button("🚀 Generate Duplicates", type="primary", use_container_width=True):
+                if not api_key:
+                    st.error("❌ Please enter your Gemini API key in the sidebar")
+                else:
+                    with st.spinner("Generating duplicates... This may take a moment."):
+                        import asyncio
+                        from collections import defaultdict
+                        from llm_engine import duplicate_questions_async
+                        
+                        # Group selected questions by batch_key (question type)
+                        grouped_by_type = defaultdict(list)
+                        for key, data in selected_questions.items():
+                            grouped_by_type[data['batch_key']].append(data)
+                        
+                        # Show grouping info
+                        status_text = st.empty()
+                        status_text.info(f"Processing {len(grouped_by_type)} question type(s) in parallel...")
+                        
+                        async def generate_all_duplicates_parallel():
+                            """Generate duplicates for all question types in parallel"""
+                            results = {}
+                            
+                            # Create tasks for each question type
+                            async def process_question_type(qtype, questions):
+                                """Process all questions of a specific type"""
+                                type_results = {}
+                                
+                                # Process each question of this type sequentially
+                                # (but different types run in parallel)
+                                for data in questions:
+                                    key = f"{data['batch_key']}_{data['question_key']}"
+                                    result = await duplicate_questions_async(
+                                        original_question_markdown=data['markdown_content'],
+                                        question_code=data['question_code'],
+                                        num_duplicates=data['num_duplicates'],
+                                        api_key=api_key
+                                    )
+                                    type_results[key] = result
+                                
+                                return qtype, type_results
+                            
+                            # Create parallel tasks for each question type
+                            tasks = [
+                                process_question_type(qtype, questions)
+                                for qtype, questions in grouped_by_type.items()
+                            ]
+                            
+                            # Run all question types in parallel
+                            type_results_list = await asyncio.gather(*tasks)
+                            
+                            # Combine results
+                            for qtype, type_results in type_results_list:
+                                results.update(type_results)
+                            
+                            return results
+                        
+                        # Run async generation
+                        try:
+                            dup_results = asyncio.run(generate_all_duplicates_parallel())
+                            
+                            # Progress tracking
+                            progress_bar = st.progress(0)
+                            total = len(dup_results)
+                            
+                            # Store duplicates in session state
+                            for idx, (key, result) in enumerate(dup_results.items(), 1):
+                                progress_bar.progress(idx / total)
+                                
+                                if result.get('error'):
+                                    st.error(f"❌ Error generating duplicates for {key}: {result['error']}")
+                                else:
+                                    duplicates = result.get('duplicates', [])
+                                    data = selected_questions[key]
+                                    
+                                    # Store in the appropriate session state key
+                                    duplicates_key = f"duplicates_{data['batch_key']}_{data['question_key']}"
+                                    st.session_state[duplicates_key] = duplicates
+                                    
+                                    st.success(f"✅ Generated {len(duplicates)} duplicate(s) for {data['question_key']}")
+                            
+                            progress_bar.empty()
+                            status_text.empty()
+                            
+                            # Show summary by type
+                            st.success(f"🎉 Generated duplicates for {len(grouped_by_type)} question type(s) in parallel!")
+                            with st.expander("📊 Generation Summary", expanded=True):
+                                for qtype, questions in grouped_by_type.items():
+                                    st.write(f"**{qtype}:** {len(questions)} question(s) processed")
+                            
+                            st.info("Scroll up to view duplicates under each question.")
+                            st.rerun()
+                            
+                        except Exception as e:
+                            st.error(f"❌ Error during duplication: {str(e)}")
+                            st.exception(e)
+        else:
+            st.info("ℹ️ Select questions using the checkboxes above to generate duplicates")
     else:
         st.info("👈 Configure and generate questions to see results here")
 

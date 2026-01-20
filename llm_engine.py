@@ -171,6 +171,119 @@ def run_gemini(
     return out
 
 
+async def duplicate_questions_async(
+    original_question_markdown: str,
+    question_code: str,
+    num_duplicates: int,
+    api_key: str
+) -> Dict[str, Any]:
+    """
+    Generate duplicate versions of a question with different numbers and scenarios.
+    
+    Args:
+        original_question_markdown: The complete question in markdown format (as string)
+        question_code: The question identifier (e.g., "q1", "q2")
+        num_duplicates: Number of duplicate versions to create
+        api_key: Gemini API key
+        
+    Returns:
+        Dictionary with 'duplicates' (list of duplicate question objects) and metadata
+    """
+    import yaml
+    from pathlib import Path
+    
+    # Load the duplication prompt template from prompts.yaml
+    prompts_path = Path(__file__).parent / "prompts.yaml"
+    with open(prompts_path, 'r', encoding='utf-8') as f:
+        prompts = yaml.safe_load(f)
+    
+    prompt_template = prompts.get('duplicate_question', '')
+    
+    if not prompt_template:
+        return {
+            "error": "Duplication prompt not found in prompts.yaml",
+            "duplicates": []
+        }
+    
+    # Format the prompt with the actual inputs
+    # The prompt will receive:
+    # 1. Original question markdown
+    # 2. Question code
+    # 3. Number of duplicates
+    formatted_prompt = f"""{prompt_template}
+
+---
+
+## INPUT DATA
+
+**Original Question Code:** {question_code}
+
+**Number of Duplicates to Generate:** {num_duplicates}
+
+**Original Question (Markdown Format):**
+
+{original_question_markdown}
+
+---
+
+Please generate exactly {num_duplicates} duplicate(s) of this question following all the rules specified above.
+"""
+    
+    # Call Gemini 2.5 Pro with higher thinking budget for better quality
+    logger.info(f"Generating {num_duplicates} duplicate(s) for question {question_code}")
+    
+    result = await run_gemini_async(
+        prompt=formatted_prompt,
+        api_key=api_key,
+        files=None,
+        thinking_budget=8000  # Higher budget for quality duplicates
+    )
+    
+    if result.get('error'):
+        logger.error(f"Error generating duplicates: {result['error']}")
+        return {
+            "error": result['error'],
+            "duplicates": [],
+            "elapsed": result.get('elapsed', 0)
+        }
+    
+    # Parse the JSON response
+    import json
+    import re
+    
+    response_text = result.get('text', '')
+    
+    # Try to extract JSON array from response
+    try:
+        # Look for JSON array pattern
+        json_match = re.search(r'\[\s*\{.*?\}\s*\]', response_text, re.DOTALL)
+        if json_match:
+            duplicates_array = json.loads(json_match.group(0))
+            logger.info(f"Successfully parsed {len(duplicates_array)} duplicates")
+            return {
+                "duplicates": duplicates_array,
+                "elapsed": result.get('elapsed', 0),
+                "input_tokens": result.get('input_tokens', 0),
+                "output_tokens": result.get('output_tokens', 0)
+            }
+        else:
+            logger.warning("No JSON array found in response")
+            return {
+                "error": "Could not parse JSON response",
+                "raw_response": response_text[:500],  # First 500 chars for debugging
+                "duplicates": [],
+                "elapsed": result.get('elapsed', 0)
+            }
+    except json.JSONDecodeError as e:
+        logger.error(f"JSON parsing error: {e}")
+        return {
+            "error": f"JSON parsing failed: {str(e)}",
+            "raw_response": response_text[:500],
+            "duplicates": [],
+            "elapsed": result.get('elapsed', 0)
+        }
+
+
 async def run_gemini_async(
     prompt: str,
     api_key: str,

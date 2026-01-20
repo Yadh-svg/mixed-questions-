@@ -168,8 +168,20 @@ async def process_batches_pipeline(
     progress_callback=None
 ) -> Dict[str, Dict[str, Any]]:
     """
-    Process questions in a localized pipeline:
-    Gen(1) -> Start Val(1) & Gen(2) -> Start Val(2) ...
+    Process questions in a FULLY PARALLEL pipeline:
+    All question types (MCQ, FIB, Case Study, etc.) generate simultaneously.
+    Each type's validation starts immediately upon its generation completion.
+    
+    Architecture:
+    ┌─ MCQ Generate ──→ MCQ Validate ─┐
+    ├─ FIB Generate ──→ FIB Validate ─┤
+    ├─ Case Generate ──→ Case Validate┤ → All Complete
+    └─ Multi Generate ─→ Multi Validate┘
+    
+    Benefits:
+    - Massive speed improvement (all types run concurrently)
+    - Better resource utilization
+    - Reduced total wait time
     """
     logger.info(f"Starting pipeline processing for {len(questions_config)} questions")
     
@@ -193,36 +205,30 @@ async def process_batches_pipeline(
         return {'error': "Critical: validation.yaml not found"}
 
     pipeline_results = {}
-    validation_tasks = []
     
-    # Sequential Generation Loop
-    for batch_key, questions in grouped_questions.items():
-        # 1. Generate Raw (Await)
-        logger.info(f">>> Pipeline Stage 1: Generaring {batch_key}")
+    # Helper function: Process a single question type (Generate -> Validate)
+    async def process_one_type(batch_key: str, questions: List[Dict[str, Any]]):
+        """
+        Process a single question type through the full pipeline:
+        1. Generate raw questions
+        2. Validate the generated questions
+        Returns tuple: (batch_key, raw_result, validated_result)
+        """
+        logger.info(f">>> Starting parallel pipeline for: {batch_key}")
+        
+        # 1. Generate Raw Questions
+        logger.info(f">>> [{batch_key}] Stage 1: Generating...")
         raw_result = await generate_raw_batch(batch_key, questions, general_config, type_config=None)
         
-        # Store raw result immediately
-        pipeline_results[batch_key] = {
-            'raw': raw_result,
-            'validated': None  # Placeholder
-        }
-        
+        # If generation failed, return early
         if raw_result.get('error'):
-            logger.warning(f"Skipping validation for {batch_key} due to generation error.")
-            continue
-            
-
-        # 2. Start Validation (Async - Fire and Forget/Collect later)
+            logger.warning(f"[{batch_key}] Skipping validation due to generation error.")
+            return batch_key, raw_result, {'error': 'Skipped due to generation failure', 'text': ''}
         
-        # Collect context and files for validation
-        # file_info = get_files(questions, general_config)
-        # val_files = file_info['files']
-        # val_file_metadata = file_info.get('file_metadata', {
-        #      'source_type': file_info.get('source_type', 'N/A'),
-        #      'filenames': file_info.get('filenames', [])
-        # })
+        # 2. Prepare Validation (happens immediately after generation completes)
+        logger.info(f">>> [{batch_key}] Stage 2: Starting validation...")
         
-        # Validation should NOT receive files (per user request & to fix race condition)
+        # Validation should NOT receive files (per user request)
         val_files = [] 
         val_file_metadata = {'source_type': 'None (Validation)', 'filenames': []}
 
@@ -257,7 +263,6 @@ async def process_batches_pipeline(
         input_context_str = "\n".join(context_lines)
 
         # Determine Output Structure based on Batch Key
-        # Map batch_key to validation.yaml keys
         structure_map = {
             "MCQ": "structure_MCQ",
             "Fill in the Blanks": "structure_FIB",
@@ -274,7 +279,7 @@ async def process_batches_pipeline(
         if structure_key and structure_key in validation_config:
             structure_format = validation_config[structure_key]
         else:
-            logger.warning(f"No specific output structure found for batch '{batch_key}' (mapped to '{structure_key}'). Using default generic JSON instruction.")
+            logger.warning(f"No specific output structure found for batch '{batch_key}'. Using default.")
             structure_format = "Return a valid JSON object suitable for this question type."
 
         # Inject generated content, context, and output structure into validation prompt
@@ -282,39 +287,44 @@ async def process_batches_pipeline(
         val_prompt = val_prompt.replace("{{INPUT_CONTEXT}}", input_context_str)
         val_prompt = val_prompt.replace("{{OUTPUT_FORMAT_RULES}}", structure_format)
         
-        logger.info(f">>> Pipeline Stage 2: Scheduling Validation for {batch_key} with {len(val_files)} files")
-        val_task = asyncio.create_task(
-            validate_batch(batch_key, val_prompt, general_config, files=val_files, file_metadata=val_file_metadata)
-        )
-        validation_tasks.append((batch_key, val_task))
+        # 3. Run Validation
+        val_result = await validate_batch(batch_key, val_prompt, general_config, files=val_files, file_metadata=val_file_metadata)
         
-        # Loop continues immediately to next generation
+        logger.info(f">>> [{batch_key}] Completed! (Gen: {raw_result.get('elapsed', 0):.2f}s, Val: {val_result.get('elapsed', 0):.2f}s)")
+        
+        return batch_key, raw_result, val_result
     
-    # Wait for all validations to complete, but trigger callback as each one finishes
-    if validation_tasks:
-        logger.info(f"Waiting for {len(validation_tasks)} validation tasks to complete...")
+    # Launch ALL question types in parallel
+    logger.info(f"🚀 Launching {len(grouped_questions)} question types in PARALLEL")
+    
+    parallel_tasks = [
+        process_one_type(batch_key, questions)
+        for batch_key, questions in grouped_questions.items()
+    ]
+    
+    # Wait for all to complete (returns in completion order)
+    results = await asyncio.gather(*parallel_tasks, return_exceptions=True)
+    
+    # Process results
+    for result in results:
+        if isinstance(result, Exception):
+            logger.error(f"Pipeline task failed with exception: {result}")
+            continue
         
-        # Process validations as they complete
-        for future in asyncio.as_completed([t[1] for t in validation_tasks]):
+        batch_key, raw_result, val_result = result
+        
+        # Store in pipeline_results
+        pipeline_results[batch_key] = {
+            'raw': raw_result,
+            'validated': val_result
+        }
+        
+        # Trigger callback if provided
+        if progress_callback:
             try:
-                val_res = await future
-                b_key = val_res.get('batch_key', 'unknown')
-                
-                if isinstance(val_res, Exception):
-                    logger.error(f"Validation failed for {b_key}: {val_res}")
-                    pipeline_results[b_key]['validated'] = {'error': str(val_res), 'text': "Validation Exception"}
-                else:
-                    pipeline_results[b_key]['validated'] = val_res
-                
-                # Trigger callback immediately after this batch completes
-                if progress_callback:
-                    try:
-                        progress_callback(b_key, pipeline_results[b_key])
-                    except Exception as callback_error:
-                        logger.error(f"Callback error for {b_key}: {callback_error}")
-                        
-            except Exception as e:
-                logger.error(f"Error processing validation result: {e}")
+                progress_callback(batch_key, pipeline_results[batch_key])
+            except Exception as callback_error:
+                logger.error(f"Callback error for {batch_key}: {callback_error}")
                 
     logger.info("Pipeline processing completed.")
     return pipeline_results

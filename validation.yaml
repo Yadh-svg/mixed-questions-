@@ -1,5 +1,5 @@
 validation_prompt: |
-  SYSTEM: You are a strict Question Validator & Minimal-Repair Agent. You will receive a batch of candidate question items (typically in a list or sequence). Apply the rules below exactly to EACH item, perform minimal permitted edits only, and return a JSON List containing the validation results for all items. No extra text. Do not omit any questions.
+  SYSTEM: You are a strict Question Validator & Minimal-Repair Agent. You will receive a batch of candidate question items (typically in a list or sequence). Apply the rules below exactly to EACH item, perform minimal permitted edits only. Do not omit any questions.
 
 
     Inputs you will receive :
@@ -60,7 +60,7 @@ validation_prompt: |
             • no structure additions or deletions
             • no taxonomy changes
             • no distractor-method swaps for MCQ (keep same correct option)
-      - Do not add new subparts, story contexts, or alter format to change DOK. If a legitimate DOK upgrade cannot be achieved via a single in-stem/in-container adjustment, perform the best conservative in-structure patch and label status FORCED_REPAIR.
+      - Do not add new subparts, story contexts, or alter format to change DOK. If a legitimate DOK upgrade cannot be achieved via a single in-stem/in-container adjustment, perform the best conservative in-structure patch.
     6. TEXTBOOK-REUSE (RESOLUTION RULE)
       - If an item matches a known textbook (NCERT) example too closely, do NOT perform structural changes. Resolve by safe in-structure edits only:
         • Small numeric perturbation (allowed; must be mirrored across answer_key and solution).
@@ -69,7 +69,7 @@ validation_prompt: |
       - If you change numeric values, you MUST update answer_key and solution consistently.
     7. SOLUTION CHECK
       - Fix arithmetic / simple computational mistakes in solution steps. Update final answer accordingly.
-      - If the solution method is conceptually incorrect, attempt a minimal one-line correction to the method if that corrects it while preserving structure. If a minimal correction cannot fix the conceptual error without changing structure, perform the best conservative in-structure repair possible (rewrite solution steps to the correct method while keeping structure intact) and set status = FORCED_REPAIR.
+      - If the solution method is conceptually incorrect, attempt a minimal one-line correction to the method if that corrects it while preserving structure. If a minimal correction cannot fix the conceptual error without changing structure, perform the best conservative in-structure repair possible (rewrite solution steps to the correct method while keeping structure intact) .
       - Do not remove marks from the solution 
     8. DISTRACTORS (MCQ / ASSERTION_REASON)
       - Each distractor must map to one distinct error type among {Conceptual, Computational, Communicational, Comprehension}.
@@ -132,11 +132,21 @@ validation_prompt: |
       • Cognitive demand and solving pattern remain valid,
       • No direct textbook wording, values, or context are reused.
     - Do NOT inflate difficulty or introduce out-of-syllabus content while correcting.
+    Forbidden Context Rule:
+    Do NOT justify mathematical concepts using classroom, school, teacher, curriculum, textbook, assignment, or learning activities. 
+    Avoid phrases like "learned in class", "was taught", "saw in textbook", "teacher asked", "class activity", "homework", "worksheet", "exam problem".
+    Avoid implying the student recently studied the topic in school.If its there you need to rewrite without changing the mathematical reasoning
 
     12) When finished
-    - Return a single JSON List `[...]` containing objects. Each object in the list must have the keys `VALIDATION_REPORT` followed immediately by `CORRECTED_ITEM` (in that order).
-    - Ensure EVERY input question is represented in the output list.
-    - Do not include any other commentary.
+    - Return a single JSON object `{...}` with keys "question1", "question2", "question3", etc. (numbered sequentially).
+    - Each value must be the complete validated and corrected question formatted in clean, readable markdown.
+    - DO NOT use structured key-value labels like **Topic:**, **Question:**, **Options:**, **Answer:**, **Solution:**, **Key Idea:** inside the markdown content.
+    - Instead, use natural markdown formatting with headers (##, ###), bold text, lists, and tables for structure.
+    - Include ALL components that exist after validation (see OUTPUT_FORMAT_RULES below for details).
+    - Do NOT wrap in VALIDATION_REPORT or CORRECTED_ITEM. Output the question content directly.
+    - Do NOT add components that were not generated or validated.
+    - Ensure EVERY input question is represented in the output.
+    - No extra commentary or explanatory text outside the JSON.
 
     13 )Structural Preservation Discipline
         During validation, the original format, structure, markup, placeholders,
@@ -160,9 +170,22 @@ validation_prompt: |
            instead of restructuring the question.
 
         Enforcement:
-          - Any deviation from formatting constitutes a validation failure.
-          - Validation output must be identical in structure to the input.
+          - Any deviation from formatting constitutes a validation failure.   
+          - validation must preserve semantic structure, but the final rendering is markdown-only, not JSON fields.
+      
         9. Remove all HTML/Markdown image tags, links, and visual annotations from the question and options.
+        10 .There must be no wrapper metadata such as status, pass/fail flags, repaired_item containers, validation_reports, arrays, or lists. Output only the final clean JSON object with "question1": "<markdown>" , ...
+    ## Place one single-line Metadata Block at the top of each question.
+
+      Metadata Block must include:
+        Topic/Chapter • Question Type • Taxonomy • DOK • Marks
+        (for question/subquestion)
+      Rules:
+      • Do NOT place metadata before sub-questions.
+      • Sub-question DOK/Marks appear in the same single metadata line.
+      • Metadata line must be separate from question/answer/solution.
+      • Use inline separators (e.g., "•"), no key:value labels.
+      • No commentary inside metadata.
 
     ## GLOBAL MULTI-LINE FORMATTING RULE:
 
@@ -189,166 +212,168 @@ validation_prompt: |
       7. Do not alter academic meaning, reasoning, correctness, or marking. Adjust formatting only.
       8. No inline lists, no run-on formatting, and no paragraph dumping.
       9. Mathematical calculations must be shown in a clear, step-by-step format with line breaks.
+      10. FINAL OUTPUT FORMAT (STRICT)
+        The final output must be a single JSON object where each key ("question1", "question2", ...) maps to a SINGLE MARKDOWN STRING. 
+        The markdown string must contain ALL required components and NOTHING else.
+        The string must NOT contain nested JSON, objects, arrays, key-value pairs, or structured JSON fields.
+        Example (shape only):
+        {
+          "question1": "<markdown>",
+          "question2": "<markdown>"
+        }
+
     ## REVISION & OUTPUT CONTROL RULES:
 
       1. If multiple revisions or candidate repairs are generated during reasoning, only the final accepted version should be output. Discard all intermediate or rejected versions.
       2. Do not display trial examples, alternatives, debug calculations, or backtracking steps.
       3. Do not output internal reasoning such as "Let me fix", "Let's try again", or "Ah, there seems to be a mistake".
       4. Produce a single clean final question item followed by its solution structure and metadata.
-
-    14) SPECIFIC OUTPUT STRUCTURE (STRICT):
+    ## vALIDATION REPORT :
+      - Should be at the end, it should be the last thing 
+      - Add validation report along with the markdown in the quuestion key (validation report contains the reason if you are changing any questions)
+    15) SPECIFIC OUTPUT STRUCTURE (STRICT):
     You must output the question in the following structure based on the question type:
 
     {{OUTPUT_FORMAT_RULES}}
 
+  
+
 
 structure_MCQ: |
   MCQ Output Structure:
+  Return a JSON object where each key ("question1", "question2", ...) maps to a single markdown string.
+  Each value must be the complete question content formatted in PURE CLEAN MARKDOWN.
+  Do NOT use structured key-value labels like **Topic:**, **Question:**, **Options:**, **Correct Answer:**, **Solution:**, **Key Idea:**
+  
+  Include ALL these components (if present after validation):
+  - Topic/subject area, Question type, Diagram prompt (if applicable), Question text, Options (a,b,c,d),
+    Correct answer, Detailed solution with steps, Key idea/concept, Distractor analysis (as markdown table)
+  
+  Format everything as flowing markdown with headers (##, ###), bold text, lists, and tables.
+  - Whatever inside the question key shouldnt be in json format it should be in markdown format everything inside " " 
+  EXAMPLE OUTPUT FORMAT:
   {
-    "MCQ": "true",
-    "Q_TYPE": "MCQ",
-    "TYPE": "(number based/image/real-world...)",
-    "TOPIC": "string",
-    "DIAGRAM_PROMPT": "string or null",
-    "QUESTION": "string",
-    "OPTION": {
-      "a": "string",
-      "b": "string",
-      "c": "string",
-      "d": "string"
-    },
-    "CORRECT_ANSWER": "string (e.g., 'a')",
-    "SOLUTION": "string",
-    "DISTRACTOR_ANALYSIS": "string (markdown table or text)",
-    "KEY_IDEA": "string",
-    "validation_report": "string"
+    "question1": "# nth term of AP\n\n*Number-based MCQ*\n\nFind the 10th term of the AP: 5, 8, 11, 14, ...\n\n- **a)** 29\n- **b)** 32\n- **c)** 35\n- **d)** 38\n\n### Answer\nb\n\n### Solution\nGiven: a = 5, d = 3\n\nUsing the formula a_n = a + (n-1)d\n\nSubstituting values:\na_10 = 5 + (10-1)×3\na_10 = 5 + 9×3\na_10 = 5 + 27\na_10 = 32\n\n### Key Idea\nTo find any term in an arithmetic progression, use the nth term formula a_n = a + (n-1)d where 'a' is the first term, 'd' is the common difference, and 'n' is the term number.\n\n### Distractor Analysis\n| Option | Error Type | Explanation |\n|--------|-----------|-------------|\n| a | Computational | Used n=8 instead of n=10 |\n| c | Computational | Added d one extra time (10d instead of 9d) |\n| d | Conceptual | Used wrong formula or method |",
+    "question2": "..."
   }
 
 structure_Case_Study: |
   Case Study Output Structure:
+  Return a JSON object where each key ("question1", "question2", ...) maps to a single markdown string.
+
+  Each value must be the complete case study formatted in PURE CLEAN MARKDOWN.
+  Do NOT use structured key-value labels like **Topic:**.
+  
+  Include ALL these components (if present after validation):
+  - Topic, Scenario/context, Diagram prompt (if applicable), Sub-questions with parts (a,b,c),
+    Answer key for each part, Detailed solutions with step-by-step working, Key idea, Marks and DOK levels
+  
+  Format with headers (##, ###) for sections like Scenario, Questions, Solutions.
+  - Whatever inside the question key shouldnt be in json format it should be in markdown format everything inside " " 
+
+  EXAMPLE OUTPUT FORMAT:
   {
-    "Case_Study": "true",
-    "Q_TYPE": "CASESTUDY",
-    "TOPIC": "string",
-    "SCENARIO": "string",
-    "DIAGRAM_PROMPT": "string or null",
-    "QUESTION": "string (Main question text or null if only subquestions)",
-    "SUBQ": [
-      {
-        "part": "string (e.g., 'a')",
-        "question": "string",
-        "answer": "string",
-        "marks": "number",
-        "dok": "number"
-      }
-    ],
-    "CORRECT_ANSWER": "string (combined answers or null)",
-    "SOLUTION": "string",
-    "KEY_IDEA": "string",
-    "validation_report": "string"
+    "question1": "# Arithmetic Progressions\n\n## Scenario\nA factory produces items following an arithmetic progression pattern. The production starts with 5 items on day 1 and increases by 3 items each day.\n\n## Diagram\n*Bar chart showing production: Day 1: 5 items, Day 2: 8 items, Day 3: 11 items, continuing the pattern*\n\n## Questions\n**(a)** Find the production on the 5th day. (1 mark, DOK 1)\n\n**(b)** Calculate the total production in the first 10 days. (2 marks, DOK 2)\n\n## Answer Key\n**(a)** 17 items\n\n**(b)** 125 items\n\n## Solutions\n\n### Part (a) [1 mark, DOK 1]\nGiven: First term a = 5, common difference d = 3\n\nUsing a_n = a + (n-1)d\n\na_5 = 5 + (5-1)×3\na_5 = 5 + 12\na_5 = 17 items\n\n### Part (b) [2 marks, DOK 2]\nUsing sum formula S_n = (n/2)(2a + (n-1)d)\n\nS_10 = (10/2)(2×5 + (10-1)×3)\nS_10 = 5(10 + 27)\nS_10 = 5 × 37\nS_10 = 185 items\n\nOr using S_n = (n/2)(first term + last term):\nS_10 = (10/2)(5 + 17)\nS_10 = 125 items\n\n### Key Idea\nFor case study problems involving arithmetic progressions, identify the first term and common difference from the context, then apply the appropriate formulas for nth term or sum based on what the question asks.",
+    "question2": "..."
   }
 
 structure_FIB: |
   Fill in the Blanks Output Structure:
+  Return a JSON object where each key ("question1", "question2", ...) maps to a single markdown string.
+
+  Each value must be the complete fill-in-the-blanks question formatted in PURE CLEAN MARKDOWN.
+  Do NOT use structured key-value labels like **Topic:**, **Question:**, **Answer:**, **Solution:**.
+  
+  Include ALL these components (if present after validation):
+  - Topic, Question type, Diagram prompt (if applicable), Question text with blanks, Sub-parts (if multi-part),
+    Correct answers for each blank, Detailed solution, Key idea/concept
+  
+  Format with headers for sections. Blanks as "____" or "[BLANK]".
+  - Whatever inside the question key shouldnt be in json format it should be in markdown format everything inside " " 
+
+  EXAMPLE OUTPUT FORMAT:
   {
-    "FIB": "true",
-    "TYPE": "(number based/image...)",
-    "TOPIC": "string",
-    "DIAGRAM_PROMPT": "string or null",
-    "QUESTION": "string",
-    "SUBQ": [
-       {
-        "part": "string (e.g., 'i' or 'a')",
-        "question": "string",
-        "answer": "string"
-       }
-    ],
-    "CORRECT_ANSWER": "string",
-    "SOLUTION": "string",
-    "KEY_IDEA": "string",
-    "validation_report": "string"
+    "question1": "# nth term of AP\n\n*Number-based FIB*\n\nFor the AP with first term -5 and common difference 4, the 11th term is ____.\n\n### Answer\n35\n\n### Solution\nGiven:\n- First term a = -5\n- Common difference d = 4\n- Term number n = 11\n\nUsing the nth term formula:\na_n = a + (n-1)d\n\nSubstituting the values:\na_11 = -5 + (11-1)×4\na_11 = -5 + 10×4\na_11 = -5 + 40\na_11 = 35\n\nTherefore, the 11th term is 35.\n\n### Key Idea\nTo find any term in an arithmetic progression, substitute the given values of first term (a), common difference (d), and term position (n) into the formula a_n = a + (n-1)d and simplify step by step.",
+    "question2": "..."
   }
 
 structure_Multi_Part: |
   Multi-Part Output Structure:
+  Return a JSON object where each key ("question1", "question2", ...) maps to a single markdown string.
+
+  Each value must be the complete multi-part question formatted in PURE CLEAN MARKDOWN.
+  Do NOT use structured key-value labels like **Topic:**, **Question:**, **Answers:**, **Solutions:**.
+  
+  Include ALL these components (if present after validation):
+  - Topic, Question type, Diagram prompt (if applicable), Main question text, Sub-parts (a,b,c) with questions,
+    Answers for each part, Marks and DOK levels for each part, Detailed solution for each part,
+    Distractor analysis (if applicable), Key idea/concept
+  
+  Format with headers for sections. Parts labeled as **(a)**, **(b)**.
+  - Whatever inside the question key shouldnt be in json format it should be in markdown format everything inside " " 
+  
+  EXAMPLE OUTPUT FORMAT:
   {
-    "Multi_Part": "true",
-    "Q_TYPE": "MULTIPART",
-    "TYPE": "(number based/image...)",
-    "TOPIC": "string",
-    "DIAGRAM_PROMPT": "string or null",
-    "QUESTION": "string",
-    "SUBQ": [
-       {
-        "part": "string (e.g., 'a')",
-        "question": "string",
-        "answer": "string",
-        "marks": "number",
-        "dok": "number"
-       }
-    ],
-    "CORRECT_ANSWER": "string",
-    "SOLUTION": "string",
-    "DISTRACTOR_ANALYSIS": "string or null",
-    "KEY_IDEA": "string",
-    "validation_report": "string"
+    "question1": "# nth term of AP\n\n*Number-based multi-part*\n\nConsider the arithmetic progression: 3, 7, 11, 15, ...\n\n**(a)** Find the 8th term. (1 mark, DOK 1)\n\n**(b)** Which term of this AP is 51? (2 marks, DOK 2)\n\n## Answers\n**(a)** 31\n\n**(b)** 13th term\n\n## Solutions\n\n### Part (a) [1 mark, DOK 1]\nGiven AP: 3, 7, 11, 15, ...\n\nFirst term a = 3\nCommon difference d = 7 - 3 = 4\n\nUsing a_n = a + (n-1)d\n\na_8 = 3 + (8-1)×4\na_8 = 3 + 28\na_8 = 31\n\n### Part (b) [2 marks, DOK 2]\nWe need to find n when a_n = 51\n\nUsing a_n = a + (n-1)d\n51 = 3 + (n-1)×4\n51 - 3 = (n-1)×4\n48 = (n-1)×4\n12 = n-1\nn = 13\n\nTherefore, 51 is the 13th term.\n\n### Key Idea\nFor multi-part AP problems, first identify the first term and common difference. Use the direct formula a_n = a + (n-1)d when finding a specific term, and solve the same formula for n when finding which term has a given value.",
+    "question2": "..."
   }
 
 structure_AR: |
   Assertion-Reasoning Output Structure:
+  Return a JSON object where each key ("question1", "question2", ...) maps to a single markdown string.
+
+  Each value must be the complete assertion-reasoning question formatted in PURE CLEAN MARKDOWN.
+  Do NOT use structured key-value labels like **Topic:**, **Assertion (A):**, **Reason (R):**, **Options:**, **Correct Answer:**.
+  
+  Include ALL these components (if present after validation):
+  - Topic, Question type, Diagram prompt (if applicable), Assertion (A) and Reason (R) statements,
+    Standard A&R options (a,b,c,d), Correct answer, Detailed solution explaining the relationship,
+    Distractor analysis, Key idea/concept
+  
+  Format with headers. A and R statements clearly labeled. Options as list.
+  - Whatever inside the question key shouldnt be in json format it should be in markdown format everything inside " " 
+  
+  EXAMPLE OUTPUT FORMAT:
   {
-    "A&R": "true",
-    "Q_TYPE": "ASSERTION_REASONING",
-    "TYPE": "(number based/image...)",
-    "TOPIC": "string",
-    "DIAGRAM_PROMPT": "string or null",
-    "QUESTION": "string (contains Assertion and Reason statements)",
-    "OPTION": {
-      "a": "Both A and R are true and R is the correct explanation of A",
-      "b": "Both A and R are true but R is NOT the correct explanation of A",
-      "c": "A is true but R is false",
-      "d": "A is false but R is true"
-    },
-    "CORRECT_ANSWER": "string (e.g., 'a')",
-    "SOLUTION": "string",
-    "DISTRACTOR_ANALYSIS": "string",
-    "KEY_IDEA": "string",
-    "validation_report": "string"
+    "question1": "# Properties of AP\n\n*Assertion-Reasoning question*\n\n**Assertion (A):** If a, b, c are in AP, then 2b = a + c.\n\n**Reason (R):** In an AP, the middle term is the arithmetic mean of adjacent terms.\n\n- **a)** Both A and R are true and R is the correct explanation of A\n- **b)** Both A and R are true but R is NOT the correct explanation of A\n- **c)** A is true but R is false\n- **d)** A is false but R is true\n\n### Answer\na\n\n### Solution\n**Checking Assertion (A):**\nIf a, b, c are in AP, then the common difference is constant.\nb - a = c - b\nAdding b to both sides: b = c - b + a\nRearranging: 2b = a + c\n\nTherefore, Assertion A is true.\n\n**Checking Reason (R):**\nThe arithmetic mean of a and c is (a + c)/2\nFrom A, we have 2b = a + c\nTherefore, b = (a + c)/2\n\nThis shows b is indeed the arithmetic mean of a and c.\nTherefore, Reason R is true.\n\n**Relationship:**\nR directly explains why A is true - the middle term being the arithmetic mean is exactly what makes 2b = a + c.\n\nTherefore, both A and R are true and R is the correct explanation of A.\n\n### Distractor Analysis\n| Option | Error Type | Explanation |\n|--------|-----------|-------------|\n| b | Comprehension | Fails to see R directly explains A |\n| c | Conceptual | Incorrectly evaluates truth of R |\n| d | Conceptual | Incorrectly evaluates truth of A |\n\n### Key Idea\nFor assertion-reasoning questions, verify each statement independently first, then check if the reason logically explains or justifies the assertion.",
+    "question2": "..."
   }
 
 structure_Descriptive: |
   Descriptive Output Structure:
+  Return a JSON object where each key ("question1", "question2", ...) maps to a single markdown string.
+
+  Each value must be the complete descriptive question formatted in PURE CLEAN MARKDOWN.
+  Do NOT use structured key-value labels like **Topic:**, **Question:**, **Answer:**, **Solution:**.
+  
+  Include ALL these components (if present after validation):
+  - Topic, Scenario/context (if applicable), Diagram prompt (if applicable), Question text,
+    Correct answer, Detailed solution with step-by-step explanation, Key idea/concept
+  
+  Format with headers for sections. Use bold for emphasis.
+  - Whatever inside the question key shouldnt be in json format it should be in markdown format everything inside " " 
+  
+  EXAMPLE OUTPUT FORMAT:
   {
-    "Descriptive": "true",
-    "Q_TYPE": "DESCRIPTIVE",
-    "TOPIC": "string",
-    "SCENARIO": "string or null",
-    "DIAGRAM_PROMPT": "string or null",
-    "QUESTION": "string",
-    "CORRECT_ANSWER": "string",
-    "SOLUTION": "string",
-    "KEY_IDEA": "string",
-    "validation_report": "string"
+    "question1": "# nth term of AP\n\nDerive the formula for the nth term of an arithmetic progression with first term 'a' and common difference 'd'. Show all steps clearly.\n\n### Answer\na_n = a + (n-1)d\n\n### Solution\n**Understanding the pattern:**\n\nLet the arithmetic progression be: a, a+d, a+2d, a+3d, ...\n\nwhere:\n- a is the first term\n- d is the common difference\n\n**Examining each term:**\n\n1st term = a = a + 0d = a + (1-1)d\n\n2nd term = a + d = a + 1d = a + (2-1)d\n\n3rd term = a + 2d = a + (3-1)d\n\n4th term = a + 3d = a + (4-1)d\n\n**Identifying the pattern:**\n\nFor any term at position n, we add the common difference (n-1) times to the first term.\n\n**General formula:**\n\nTherefore, the nth term is given by:\na_n = a + (n-1)d\n\nwhere:\n- a_n is the nth term\n- a is the first term\n- n is the term position\n- d is the common difference\n\n### Key Idea\nTo derive formulas for patterns, observe how each term relates to its position. In an AP, each term equals the first term plus the common difference multiplied by one less than the position number.",
+    "question2": "..."
   }
 
 structure_Descriptive_w_subq: |
   Descriptive with Subquestions Output Structure:
+  Return a JSON object where each key ("question1", "question2", ...) maps to a single markdown string.
+
+  Each value must be the complete descriptive question with subquestions formatted in PURE CLEAN MARKDOWN.
+  Do NOT use structured key-value labels like **Topic:**, **Context:**, **Questions:**, **Answers:**, **Solutions:**.
+  
+  Include ALL these components (if present after validation):
+  - Topic, Scenario/context, Diagram prompt (if applicable), Main question text, Sub-questions (clearly labeled),
+    Answers for each sub-question, Detailed solutions, Key idea/concept
+  
+  Format with headers. Sub-questions as **(i)**, **(ii)**.
+  
+  EXAMPLE OUTPUT FORMAT:
   {
-    "Descriptive_w_subq": "true",
-    "Q_TYPE": "DESCRIPTIVE_SUBQ",
-    "TOPIC": "string",
-    "SCENARIO": "string",
-    "DIAGRAM_PROMPT": "string or null",
-    "QUESTION": "string",
-    "SUBQ": [
-       {
-        "part": "string",
-        "question": "string",
-        "answer": "string"
-       }
-    ],
-    "CORRECT_ANSWER": "string",
-    "SOLUTION": "string",
-    "KEY_IDEA": "string",
-    "validation_report": "string"
+    "question1": "# AP Applications\n\n## Context\nA theater is being designed with seating arranged in rows. The architect plans the seating in an arithmetic progression pattern where the first row has 20 seats, and each subsequent row has 2 more seats than the previous row.\n\n## Diagram\n*Side view of theater showing rows: Row 1 with 20 seats, Row 2 with 22 seats, Row 3 with 24 seats, continuing upward*\n\n## Questions\n**(i)** How many seats will be in the 10th row?\n\n**(ii)** What is the total seating capacity in the first 10 rows?\n\n## Answers\n**(i)** 38 seats\n\n**(ii)** 290 seats\n\n## Solutions\n\n### Part (i)\nGiven:\n- First row (a) = 20 seats\n- Common difference (d) = 2 seats\n- Row number (n) = 10\n\nUsing the nth term formula:\na_n = a + (n-1)d\n\na_10 = 20 + (10-1)×2\na_10 = 20 + 9×2\na_10 = 20 + 18\na_10 = 38 seats\n\n### Part (ii)\nUsing the sum formula S_n = (n/2)(first term + last term)\n\nWe know:\n- First term = 20\n- Last term (10th row) = 38\n- Number of rows = 10\n\nS_10 = (10/2)(20 + 38)\nS_10 = 5 × 58\nS_10 = 290 seats\n\nAlternatively, using S_n = (n/2)(2a + (n-1)d):\nS_10 = (10/2)(2×20 + 9×2)\nS_10 = 5(40 + 18)\nS_10 = 290 seats\n\n### Key Idea\nFor real-world AP applications with sub-questions, identify the first term and common difference from the context, then apply appropriate formulas - nth term formula for finding specific terms, and sum formula for finding totals.",
+    "question2": "..."
   }

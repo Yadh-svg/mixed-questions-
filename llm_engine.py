@@ -175,7 +175,9 @@ async def duplicate_questions_async(
     original_question_markdown: str,
     question_code: str,
     num_duplicates: int,
-    api_key: str
+    api_key: str,
+    additional_notes: str = "",
+    pdf_file: Optional[Any] = None
 ) -> Dict[str, Any]:
     """
     Generate duplicate versions of a question with different numbers and scenarios.
@@ -185,6 +187,8 @@ async def duplicate_questions_async(
         question_code: The question identifier (e.g., "q1", "q2")
         num_duplicates: Number of duplicate versions to create
         api_key: Gemini API key
+        additional_notes: Optional additional instructions for duplication
+        pdf_file: Optional file object (PDF/Image) for context
         
     Returns:
         Dictionary with 'duplicates' (list of duplicate question objects) and metadata
@@ -209,8 +213,12 @@ async def duplicate_questions_async(
     formatted_prompt = prompt_template.replace("{{QUESTION_CODE}}", question_code)
     formatted_prompt = formatted_prompt.replace("{{NUM_DUPLICATES}}", str(num_duplicates))
     formatted_prompt = formatted_prompt.replace("{{ORIGINAL_QUESTION}}", original_question_markdown)
+    formatted_prompt = formatted_prompt.replace("{{ADDITIONAL_NOTES}}", additional_notes)
     
     # Prompt saving logic removed as per user request
+    
+    # Prepare files list if PDF is provided
+    files_to_upload = [pdf_file] if pdf_file else None
     
     # Call Gemini 2.5 Pro with higher thinking budget for better quality
     logger.info(f"Generating {num_duplicates} duplicate(s) for question {question_code}")
@@ -218,8 +226,9 @@ async def duplicate_questions_async(
     result = await run_gemini_async(
         prompt=formatted_prompt,
         api_key=api_key,
-        files=None,
-        thinking_budget=8000  # Higher budget for quality duplicates
+        files=files_to_upload,
+        thinking_budget=8000,  # Higher budget for quality duplicates
+        file_metadata={'source_type': 'duplicate_context', 'filenames': [getattr(pdf_file, 'name', 'file')]} if pdf_file else None
     )
     
     if result.get('error'):

@@ -176,6 +176,47 @@ with st.sidebar:
         st.markdown("**Question Types:**")
         for qtype, config in st.session_state.question_types_config.items():
             st.write(f"• {qtype}: {config.get('count', 0)}")
+    
+    st.markdown("---")
+    st.markdown("### 🗑️ Reset Tools")
+    
+    col_clr_in, col_clr_out = st.columns(2)
+    with col_clr_in:
+        if st.button("Clear Inputs", help="Reset all configuration inputs to default"):
+            # Clear session state keys related to inputs
+            # Explicitly set widget keys to empty/default to force UI update
+            st.session_state['question_types_config'] = {}
+            st.session_state['selected_question_types'] = []
+            st.session_state['question_type_selector'] = []
+            
+            # Clear file uploader keys
+            keys_to_del = [
+                'universal_pdf',
+                'universal_new_concept_pdf',
+                'universal_paste_btn'
+            ]
+            
+            # Add dynamic keys
+            for k in list(st.session_state.keys()):
+                if (k.startswith('general_') or 
+                    k.startswith('count_') or 
+                    k.startswith('mcq_') or 
+                    k.startswith('fib_') or 
+                    k.startswith('ar_') or 
+                    k.startswith('cs_') or 
+                    k.startswith('mp_') or 
+                    k.startswith('desc_')):
+                    keys_to_del.append(k)
+            
+            for k in keys_to_del:
+                if k in st.session_state:
+                    del st.session_state[k]
+            st.rerun()
+            
+    with col_clr_out:
+        if st.button("Clear Outputs", help="Clear all generated results"):
+            st.session_state.generated_output = None
+            st.rerun()
 
 # Main content area
 tab1, tab2 = st.tabs(["📝 Configure & Generate", "📄 Results"])
@@ -340,21 +381,45 @@ with tab1:
             else:
                 max_questions = 20
             
-            # Create columns for number input and max button
-            col_input, col_button = st.columns([4, 1])
+            # Create columns for number input, max button, and clear button
+            col_input, col_max, col_clear = st.columns([3, 1, 1])
             
             # Initialize widget key if Max button was clicked
             widget_key = f"count_{qtype}"
             if widget_key not in st.session_state:
                 st.session_state[widget_key] = st.session_state.question_types_config[qtype].get('count', 1)
             
-            with col_button:
+            with col_max:
                 # Add some spacing to align with the input
                 st.markdown("<br>", unsafe_allow_html=True)
                 if st.button("📊 Max", key=f"max_btn_{qtype}", help=f"Set to maximum ({max_questions})"):
                     st.session_state[widget_key] = max_questions
                     st.session_state.question_types_config[qtype]['count'] = max_questions
                     st.rerun()
+
+            with col_clear:
+                st.markdown("<br>", unsafe_allow_html=True)
+                if st.button("🗑️", key=f"clear_btn_{qtype}", help=f"Reset {qtype} configuration"):
+                    # Reset specific config
+                    if qtype in st.session_state.question_types_config:
+                        # Reset to default single question
+                        st.session_state.question_types_config[qtype] = {
+                            'count': 1, 
+                            'questions': [{
+                                'topic': '',
+                                'new_concept_source': 'pdf',
+                                'new_concept_pdf': None,
+                                'additional_notes_source': 'none',
+                                'additional_notes_text': '',
+                                'additional_notes_pdf': None,
+                                'dok': 1,
+                                'marks': 1.0,
+                                'taxonomy': 'Remembering'
+                            }]
+                        }
+                        # Update the number input widget
+                        st.session_state[widget_key] = 1
+                        st.rerun()
             
             with col_input:
                 num_questions = st.number_input(
@@ -1497,6 +1562,157 @@ with tab2:
             key="download_inline_results"
         )
         
+        # Add Regenerate Selected Section
+        st.markdown("---")
+        st.markdown('<div class="section-header">🔄 Regenerate Selected Questions</div>', unsafe_allow_html=True)
+        
+        # Check for regeneration selection
+        regen_selection = st.session_state.get('regen_selection', set())
+        
+        if regen_selection:
+            st.info(f"✅ {len(regen_selection)} question(s) selected for regeneration")
+            
+            # Show selected questions breakdown
+            regen_map = {}
+            for item in regen_selection:
+                # Format: "batch_key:q_num"
+                if ':' in item:
+                    b_key, q_num = item.rsplit(':', 1)
+                    if b_key not in regen_map:
+                        regen_map[b_key] = []
+                    regen_map[b_key].append(int(q_num))
+            
+            for b_key, indices in regen_map.items():
+                st.write(f"• **{b_key}**: Questions {sorted(indices)}")
+                
+            if st.button("♻️ Regenerate Selected", type="primary", use_container_width=True):
+                if not api_key:
+                    st.error("❌ Please enter your Gemini API key in the sidebar")
+                else:
+                    with st.spinner("Regenerating specific questions..."):
+                        from batch_processor import regenerate_specific_questions_pipeline
+                        
+                        # Prepare configurations
+                        general_config = {
+                            'api_key': api_key,
+                            'additional_notes': additional_notes,
+                            'universal_pdf': st.session_state.get('universal_pdf')
+                        }
+                        
+                        # Need to reconstruct the full original config list
+                        full_config_list = []
+                        for q_type, config in st.session_state.question_types_config.items():
+                            for q in config.get('questions', []):
+                                q_copy = q.copy()
+                                q_copy['type'] = q_type
+                                full_config_list.append(q_copy)
+                                
+                        # Run regeneration
+                        import asyncio
+                        try:
+                            regen_results = asyncio.run(regenerate_specific_questions_pipeline(
+                                original_config=full_config_list,
+                                regeneration_map=regen_map,
+                                general_config=general_config
+                            ))
+                            
+                            if regen_results.get('error'):
+                                st.error(f"Regeneration failed: {regen_results['error']}")
+                            else:
+                                # Merge results back into st.session_state.generated_output
+                                # We need to update existing batches with new question content
+                                
+                                for batch_key, batch_res in regen_results.items():
+                                    val_res = batch_res.get('validated', {})
+                                    new_text_content = val_res.get('text', '')
+                                    
+                                    if new_text_content and batch_key in st.session_state.generated_output:
+                                        # Parse the NEW output
+                                        from result_renderer import extract_json_objects
+                                        new_json_objects = extract_json_objects(new_text_content)
+                                        
+                                        # Extract new questions
+                                        new_questions_map = {}
+                                        for obj in new_json_objects:
+                                            # Handle wrappers if any (similar to renderer logic)
+                                            target_obj = obj
+                                            if 'CORRECTED_ITEM' in obj: target_obj = obj['CORRECTED_ITEM']
+                                            elif 'corrected_item' in obj: target_obj = obj['corrected_item']
+                                            
+                                            for k, v in target_obj.items():
+                                                if k.lower().startswith('question') or k.lower().startswith('q'):
+                                                    new_questions_map[k] = v
+                                        
+                                        # Parse the EXISTING output to update it
+                                        existing_text = st.session_state.generated_output[batch_key]['validated']['text']
+                                        existing_json_objects = extract_json_objects(existing_text)
+                                        
+                                        # We assume the existing output is in a single main object or list of objects.
+                                        # We need to act carefully. Best strategy:
+                                        # 1. Load existing questions into a dict map.
+                                        # 2. Update specific keys.
+                                        # 3. Dump back to JSON string.
+                                        
+                                        existing_questions_map = {}
+                                        # Flatten existing
+                                        for obj in existing_json_objects:
+                                             target_obj = obj
+                                             if 'CORRECTED_ITEM' in obj: target_obj = obj['CORRECTED_ITEM']
+                                             elif 'corrected_item' in obj: target_obj = obj['corrected_item']
+                                             for k, v in target_obj.items():
+                                                if k.lower().startswith('question') or k.lower().startswith('q'):
+                                                    existing_questions_map[k] = v
+                                                    
+                                        # NOW REPLACE
+                                        # The new output usually returns "question1", "question2"... 
+                                        # But these "question1" correspond to the 1st, 2nd... question requested in regeneration,
+                                        # NOT necessarily "question3" of the original set if we requested Q3.
+                                        # wait... `batch_processor` usually generates sequential keys question1, question2...
+                                        # WE NEED TO MAP THEM BACK to the requested indices.
+                                        
+                                        requested_indices = sorted(regen_map.get(batch_key, []))
+                                        
+                                        # Sort new keys to align with requested indices
+                                        # e.g. requested [3, 5]. New result has "question1", "question2".
+                                        # new "question1" -> becomes original "question3"
+                                        # new "question2" -> becomes original "question5"
+                                        
+                                        import re
+                                        sorted_new_keys = sorted(new_questions_map.keys(), 
+                                            key=lambda x: int(re.search(r'\d+', x).group()) if re.search(r'\d+', x) else 0)
+                                            
+                                        if len(sorted_new_keys) != len(requested_indices):
+                                            st.warning(f"Mismatch in count for {batch_key}: Requested {len(requested_indices)}, got {len(sorted_new_keys)} new questions. Attempting best fit.")
+                                            
+                                        for i, new_k in enumerate(sorted_new_keys):
+                                            if i < len(requested_indices):
+                                                original_idx = requested_indices[i]
+                                                original_k = f"question{original_idx}"
+                                                
+                                                # Update map with new content AND new flag
+                                                # We store it as a dict now to persist the flag
+                                                existing_questions_map[original_k] = {
+                                                    'content': new_questions_map[new_k],
+                                                    '_is_new': True
+                                                }
+                                        
+                                        # Serialize back to JSON string
+                                        import json
+                                        updated_json_str = json.dumps(existing_questions_map, indent=2)
+                                        
+                                        # Update session state
+                                        st.session_state.generated_output[batch_key]['validated']['text'] = updated_json_str
+                                        
+                                st.success("✅ Regeneration complete!")
+                                # Clear selection
+                                st.session_state.regen_selection = set()
+                                st.rerun()
+                                
+                        except Exception as e:
+                            st.error(f"Error running regeneration: {e}")
+        else:
+            st.info("ℹ️ Select questions above using the checkboxes to regenerate specific items.")
+
         # Add Generate Duplicates section
         st.markdown("---")
         st.markdown('<div class="section-header">🔄 Generate Question Duplicates</div>', unsafe_allow_html=True)
@@ -1544,7 +1760,9 @@ with tab2:
                                     'question_code': question_code,
                                     'batch_key': batch_key,
                                     'markdown_content': q_content if isinstance(q_content, str) else str(q_content),
-                                    'num_duplicates': st.session_state.get(count_key, 1)
+                                    'num_duplicates': st.session_state.get(count_key, 1),
+                                    'additional_notes': st.session_state.get(f"duplicate_notes_{batch_key}_{q_key}", ""),
+                                    'pdf_file': st.session_state.get(f"duplicate_file_{batch_key}_{q_key}", None)
                                 }
         
         if selected_questions:
@@ -1585,7 +1803,9 @@ with tab2:
                                     original_question_markdown=data['markdown_content'],
                                     question_code=data['question_code'],
                                     num_duplicates=data['num_duplicates'],
-                                    api_key=api_key
+                                    api_key=api_key,
+                                    additional_notes=data.get('additional_notes', ""),
+                                    pdf_file=data.get('pdf_file', None)
                                 )
                                 return key, result
                             

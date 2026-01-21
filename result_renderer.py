@@ -135,6 +135,24 @@ def render_markdown_question(question_key: str, markdown_content: str, question_
         
         with col2:
             st.markdown(f"### {emoji} Question {q_num}")
+            
+            # Check for "newly generated" flag
+            # We need to peek at the question data. Since we only have markdown_content here which might be a string,
+            # we rely on the caller to handle this or we inspect the session state if available.
+            # However, for simplicity, if the markdown_content is a dict (which we support), check there.
+            # If it's a string, we can't easily check without extra args.
+            # Let's handle the badge in the loop that calls this function, OR pass a flag.
+            
+            # Add "Select for Regeneration" checkbox
+            regen_key = f"regen_select_{batch_key}_{q_num}"
+            if st.checkbox("Select for Regeneration", key=regen_key, help="Select to regenerate ONLY this question"):
+                # Add to a global set of selected questions for regeneration
+                if 'regen_selection' not in st.session_state:
+                    st.session_state.regen_selection = set()
+                st.session_state.regen_selection.add(f"{batch_key}:{q_num}")
+            else:
+                if 'regen_selection' in st.session_state:
+                    st.session_state.regen_selection.discard(f"{batch_key}:{q_num}")
         
         with col3:
             if duplicate_selected:
@@ -147,6 +165,28 @@ def render_markdown_question(question_key: str, markdown_content: str, question_
                     key=count_key,
                     help="Number of duplicates to generate"
                 )
+                
+                # Additional Notes for Duplicates
+                notes_key = f"duplicate_notes_{batch_key}_{question_key}"
+                file_key = f"duplicate_file_{batch_key}_{question_key}"
+                
+                with st.expander("📝 Duplicate Customization (Text Notes & PDF)", expanded=False):
+                    st.info("💡 You can use both notes and a file together. The AI will synthesize them.")
+                    
+                    st.text_area(
+                        "Additional Instructions",
+                        placeholder="e.g., Use the graph in the uploaded PDF but change values...",
+                        key=notes_key,
+                        height=70,
+                        help="Specific instructions for these duplicates"
+                    )
+                    
+                    st.file_uploader(
+                        "Context File (PDF/Image)",
+                        type=['pdf', 'png', 'jpg', 'jpeg', 'webp'],
+                        key=file_key,
+                        help="Upload a file to provide context. Can be used along with text notes."
+                    )
         
         with col4:
             # Add copy-to-clipboard button with markdown stripping
@@ -177,54 +217,14 @@ def render_markdown_question(question_key: str, markdown_content: str, question_
                     const btn = document.getElementById('btn_{copy_button_key}');
                     const textarea = document.getElementById('text_{copy_button_key}');
                     
-                    function stripMarkdownExceptTables(text) {{
-                        const lines = text.split('\\n');
-                        const processedLines = lines.map(line => {{
-                            // Preserve table lines (contain |)
-                            if (line.includes('|')) {{
-                                return line;
-                            }}
-                            
-                            // Remove markdown from other lines
-                            let cleaned = line;
-                            
-                            // Remove headers (# ## ### etc.)
-                            cleaned = cleaned.replace(/^#{1,6}\\s+/g, '');
-                            
-                            // Remove bold (**text** or __text__)
-                            cleaned = cleaned.replace(/\\*\\*(.+?)\\*\\*/g, '$1');
-                            cleaned = cleaned.replace(/__(.+?)__/g, '$1');
-                            
-                            // Remove italic (*text* or _text_)
-                            cleaned = cleaned.replace(/\\*(.+?)\\*/g, '$1');
-                            cleaned = cleaned.replace(/_(.+?)_/g, '$1');
-                            
-                            // Remove inline code (`code`)
-                            cleaned = cleaned.replace(/`([^`]+)`/g, '$1');
-                            
-                            // Remove links [text](url) -> text
-                            cleaned = cleaned.replace(/\\[([^\\]]+)\\]\\([^)]+\\)/g, '$1');
-                            
-                            // Remove images ![alt](url)
-                            cleaned = cleaned.replace(/!\\[([^\\]]+)\\]\\([^)]+\\)/g, '');
-                            
-                            return cleaned;
-                        }});
-                        
-                        return processedLines.join('\\n');
-                    }}
-                    
                     btn.addEventListener('click', function() {{
                         try {{
                             // Get original content
                             const originalText = textarea.value;
                             
-                            // Strip markdown except tables
-                            const cleanedText = stripMarkdownExceptTables(originalText);
-                            
-                            // Create temporary textarea with cleaned text
+                            // Create temporary textarea with original text
                             const tempTextarea = document.createElement('textarea');
-                            tempTextarea.value = cleanedText;
+                            tempTextarea.value = originalText;
                             tempTextarea.style.position = 'fixed';
                             tempTextarea.style.left = '-9999px';
                             document.body.appendChild(tempTextarea);
@@ -324,50 +324,12 @@ def render_markdown_question(question_key: str, markdown_content: str, question_
                         const btn = document.getElementById('btn_{dup_copy_key}');
                         const textarea = document.getElementById('text_{dup_copy_key}');
                         
-                        function stripMarkdownExceptTables(text) {{
-                            const lines = text.split('\\n');
-                            const processedLines = lines.map(line => {{
-                                // Preserve table lines (contain |)
-                                if (line.includes('|')) {{
-                                    return line;
-                                }}
-                                
-                                // Remove markdown from other lines
-                                let cleaned = line;
-                                
-                                // Remove headers (# ## ### etc.)
-                                cleaned = cleaned.replace(/^#{'{1,6}'}\\s+/g, '');
-                                
-                                // Remove bold (**text** or __text__)
-                                cleaned = cleaned.replace(/\\*\\*(.+?)\\*\\*/g, '$1');
-                                cleaned = cleaned.replace(/__(.+?)__/g, '$1');
-                                
-                                // Remove italic (*text* or _text_)
-                                cleaned = cleaned.replace(/\\*(.+?)\\*/g, '$1');
-                                cleaned = cleaned.replace(/_(.+?)_/g, '$1');
-                                
-                                // Remove inline code (`code`)
-                                cleaned = cleaned.replace(/`([^`]+)`/g, '$1');
-                                
-                                // Remove links [text](url) -> text
-                                cleaned = cleaned.replace(/\\[([^\\]]+)\\]\\([^)]+\\)/g, '$1');
-                                
-                                // Remove images ![alt](url)
-                                cleaned = cleaned.replace(/!\\[([^\\]]+)\\]\\([^)]+\\)/g, '');
-                                
-                                return cleaned;
-                            }});
-                            
-                            return processedLines.join('\\n');
-                        }}
-                        
                         btn.addEventListener('click', function() {{
                             try {{
                                 const originalText = textarea.value;
-                                const cleanedText = stripMarkdownExceptTables(originalText);
                                 
                                 const tempTextarea = document.createElement('textarea');
-                                tempTextarea.value = cleanedText;
+                                tempTextarea.value = originalText;
                                 tempTextarea.style.position = 'fixed';
                                 tempTextarea.style.left = '-9999px';
                                 document.body.appendChild(tempTextarea);
@@ -485,9 +447,32 @@ def render_batch_results(batch_key: str, result_data: Dict[str, Any], render_con
             st.markdown("---")  # Double divider for prominence
             st.markdown("")
         
-        markdown_content = questions_dict[q_key]
+        # Check if this question is marked as new
+        # We need to access the raw dictionary if possible, but questions_dict[q_key] might be just the markdown string.
+        # The 'extract_question_values_fallback' or standard extraction returns strings.
+        # If we modified the storage to be dicts, we need to handle that.
+        
+        content = questions_dict[q_key]
+        is_new = False
+        
+        if isinstance(content, dict):
+            # If it's a dict, it might have metadata
+            markdown_content = content.get('content', '') or content.get('value', '') or str(content)
+            is_new = content.get('_is_new', False)
+        else:
+            markdown_content = content
+            # Try to see if this specific key is marked as new in some side-channel state?
+            # For now, we'll rely on the content being wrapped in a dict if it's new, OR
+            # we can check a separate state.
+            # Let's trust the logic in streamlit_app.py to wrap new questions or rely on the dict structure.
+        
+        if is_new:
+            st.info("🆕 **Newly Generated**")
         
         # Handle both string and dict content
+        if isinstance(content, dict) and not markdown_content:
+             # Fallback if we couldn't find content key above
+             markdown_content = str(content)
         if isinstance(markdown_content, dict):
             # Old format detected - convert to markdown
             st.warning(f"⚠️ {q_key}: Old format detected. Please update prompts to use new simplified format.")

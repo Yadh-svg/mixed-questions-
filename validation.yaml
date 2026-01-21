@@ -199,9 +199,12 @@ validation_prompt: |
         Enforcement:
           - Any deviation from formatting constitutes a validation failure.   
           - validation must preserve semantic structure, but the final rendering is markdown-only, not JSON fields.
-      
+     - For MCQ and Assertion-Reason items, option labels should be uppercase (A, B, C, D). 
+       If lowercase or mixed case is present, convert to uppercase provided it does not conflict with structure or answer key.
+     - There should be heading for options as OPTIONS
         9. Remove all HTML/Markdown image tags, links, and visual annotations from the question and options.
         10 .There must be no wrapper metadata such as status, pass/fail flags, repaired_item containers, validation_reports, arrays, or lists. Output only the final clean JSON object with "question1": "<markdown>" , ...
+        11 . Please remove any mention of mark distributions from the solution.
     ## Place one single-line Metadata Block at the top of each question.
 
       Metadata Block must include:
@@ -248,8 +251,10 @@ validation_prompt: |
           "question1": "<markdown>",
           "question2": "<markdown>"
         }
-
+    ## Distractor analysis table structure :
+      Generate the distractor analysis table using Word-compatible Markdown. Use full column separators, padded cells, and extended dash lines so Word recognizes it as a table. Do not use compact ‘|---|---|’ separators. Each column must have descriptive headers and consistent spacing
     ## REVISION & OUTPUT CONTROL RULES:
+        If the distractor analysis is not already in a Word-compatible Markdown table, convert it. Use padded cells, full-width dash separators, and clear column headers so it renders correctly in Word, Markdown, and Google Docs
 
       1. If multiple revisions or candidate repairs are generated during reasoning, only the final accepted version should be output. Discard all intermediate or rejected versions.
       2. Do not display trial examples, alternatives, debug calculations, or backtracking steps.

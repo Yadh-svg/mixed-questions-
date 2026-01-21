@@ -328,3 +328,69 @@ async def process_batches_pipeline(
                 
     logger.info("Pipeline processing completed.")
     return pipeline_results
+
+
+async def regenerate_specific_questions_pipeline(
+    original_config: List[Dict[str, Any]],
+    regeneration_map: Dict[str, List[int]],
+    general_config: Dict[str, Any],
+    progress_callback=None
+) -> Dict[str, Dict[str, Any]]:
+    """
+    Regenerate SPECIFIC questions based on their original configuration.
+    
+    Args:
+        original_config: The full original configuration list
+        regeneration_map: Dict mapping batch_key (Question Type) to list of INDICES (1-based) to regenerate
+                          e.g., {'MCQ': [1, 3], 'Fill in the Blanks': [2]}
+        general_config: API key and other general settings
+        
+    Returns:
+        Dict returning the NEW questions for those specific slots.
+    """
+    logger.info(f"Regenerating specific questions: {regeneration_map}")
+    
+    # 1. Filter the configuration to ONLY the selected questions
+    filtered_config = []
+    
+    # helper to find config by type and implied index
+    # Since original_config is a flat list of all questions, we need to group them first 
+    # to match the 1-based index within each type.
+    
+    grouped_map = defaultdict(list)
+    for q in original_config:
+        grouped_map[q.get('type', 'MCQ')].append(q)
+        
+    for q_type, indices in regeneration_map.items():
+        if q_type not in grouped_map:
+            logger.warning(f"Type {q_type} not found in original config")
+            continue
+            
+        questions_of_type = grouped_map[q_type]
+        
+        for idx in indices:
+            # indices are 1-based from the UI
+            zero_based_idx = idx - 1
+            if 0 <= zero_based_idx < len(questions_of_type):
+                # Get the original config
+                q_config = questions_of_type[zero_based_idx]
+                
+                # Add a flag to indicate this is a regeneration (optional, for debugging)
+                q_config['_is_being_regenerated'] = True
+                
+                # IMPORTANT: Preserve the 'original_index' or add logic to track where it belongs
+                # The 'batch_processor' usually handles batching by type.
+                # We will just pass this subset to the pipeline.
+                filtered_config.append(q_config)
+            else:
+                logger.warning(f"Index {idx} out of bounds for type {q_type}")
+
+    if not filtered_config:
+        return {'error': "No valid questions selected for regeneration"}
+
+    # 2. Run the standard pipeline with this filtered subset
+    # This will generate new questions using the SAME prompts and inputs as before, just for this subset.
+    logger.info(f"Starting regeneration pipeline for {len(filtered_config)} questions...")
+    results = await process_batches_pipeline(filtered_config, general_config, progress_callback)
+    
+    return results

@@ -10152,6 +10152,9 @@ duplicate_question: |
   
   {{ORIGINAL_QUESTION}}
 
+  **Additional Instructions / Notes (Optional):**
+  {{ADDITIONAL_NOTES}}
+
   ## CORE PRINCIPLES
   - A duplicate must preserve the exact same key idea and solution method as the parent item.
   - Duplicates must NOT include the original Key-Idea text. Instead, add a top-line inside the duplicate markdown:
@@ -10175,6 +10178,35 @@ duplicate_question: |
      - "question_code": "{{QUESTION_CODE}}-dup-<n>"
      - A markdown field (e.g., question1) containing the full duplicate content.
   10. Duplicates should follow key idea of the parent question.but dont output key idea in the duplicate.
+  
+  ## Handling Additional Notes and/or Files
+
+    Additional Notes may be provided as:
+    - Text only, or
+    - PDF/Image only, or
+    - Both together
+
+    These inputs define how the duplicated question should be modified.
+    They may specify numerical constraints (e.g., “use 3-digit numbers”),
+    contextual changes (e.g., “use a market scenario”), or visual context.
+
+    Unless explicitly stated otherwise:
+    - The core mathematical concept and solution logic must remain the same.
+    - The question structure remains unchanged (same type, options/parts).
+
+    If no modification is specified, the duplicate should remain the same
+    except for permissible variation.
+
+    If both a file and notes are provided:
+    - Notes take priority if there is any conflict.
+    - The file provides contextual/visual source material unless overridden.
+
+  ## Correct Answer Rotation Requirement:
+
+    When generating duplicates, the correct option label must not remain the same as the parent item. For regular MCQs, rotate the correct option to a different label and reassign distractors accordingly while preserving the same error-pattern logic.
+    For Assertion-Reason (A&R) items, apply both label rotation and truth-pattern transformation. If the parent item has Assertion = True and Reason = True (with explanation) and the correct label is A, the duplicate must change to a different correct label (e.g., D), which requires altering the truth relationship. In other words, the duplicate must modify Assertion/Reason statements so their truth values and explanatory relationship match the new correct label. This ensures that in duplicates, the Assertion may become false even if in the parent it was true, and vice versa.
+    Goal: duplicates should not preserve parent correct labels, and A&R duplicates must also change the internal Assertion–Reason truth and explanation relationship to match the new correct label.
+
   ## OUTPUT FORMAT (STRICT)
   Return a JSON array. Example element signature:
   {

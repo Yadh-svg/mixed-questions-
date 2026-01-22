@@ -1594,8 +1594,12 @@ assertion_reasoning: |
     - Any violation must be corrected before final output.
   ### Output Format
     - For every question, follow this exact order:
-      1. Solution (complete and student-friendly)
-      2. Distractor Analysis (mandatory)
+      
+      1. Options
+      2. Correct options 
+      3. Solution (complete and student-friendly)
+      4. Distractor Analysis (mandatory)
+      5. Key Idea (mandatory)
 
     ---
 

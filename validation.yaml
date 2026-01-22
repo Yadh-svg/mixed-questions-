@@ -259,6 +259,99 @@ validation_prompt: |
           "question1": "<markdown>",
           "question2": "<markdown>"
         }
+    ### REALISM VALIDATOR + CONTEXT REWRITER (Generic)
+
+      You will receive a math question that may include a real or applied scenario.
+
+      Your task:
+      1. Check if the scenario is realistic, plausible, and context-appropriate for real life.
+      2. If realistic → keep it.
+      3. If unrealistic → rewrite it to a more plausible real-life situation while preserving:
+        - the same mathematical concept
+        - the same numbers (unless the quantity is impossible to justify)
+        - the same difficulty
+
+      WHAT TO CHECK FOR:
+
+      A. Actor–Quantity Fit
+      - Individuals buy small amounts.
+      - Groups, institutions, events, or businesses buy/use large amounts.
+      - Professionals handle specialized materials or tools.
+
+      Examples:
+      - 80 kg bananas → catering/event, not individual.
+      - 200 liters paint → contractor, not student.
+
+      B. Domain–Concept Fit
+      - Match domain with the math concept naturally.
+      - Avoid domains that force math properties with no purpose.
+
+      C. Motivation Fit
+      - The scenario must have a reasonable motivation for the quantity or constraint.
+      - Avoid arbitrary rules (“perfect batch”, “bonus if perfect square”, “certificate awards”).
+
+      D. Physical & Dimensional Fit
+      - Check that the mathematical property aligns with the physics (2D, 3D, volume, area, speed, grid, probability, etc.).
+
+      E. Realism vs Fiction
+      Reject or rewrite scenarios involving:
+      - certification or awards for mathematical properties
+      - magical/sci-fi mechanics
+      - invented rules just to justify math
+      - absurd economic behavior
+      - implausible personal purchases
+
+      REWRITE STRATEGY (if scenario is unrealistic):
+      1. Swap actor → institution/event/business/professional
+      2. Swap context → domain where same quantity makes sense
+      3. If still unrealistic → strip scenario → pure math framing
+
+      ------------------------------------------------------------
+      ### EXAMPLES
+
+      **INPUT (unrealistic actor–quantity):**
+      "A man buys 55 kg of bananas."
+
+      **OUTPUT (realistic):**
+      "For a wedding function, a catering service buys 55 kg of bananas."
+
+      ---
+
+      **INPUT (fake rule):**
+      "A factory certifies a batch as 'perfect' if the number is a perfect square."
+
+      **OUTPUT (realistic domain):**
+      "A packaging unit arranges items in square trays so they form complete grids."
+
+      ---
+
+      **INPUT (dimension conflict):**
+      "A shop stores 4096 oranges in a perfect square box."
+
+      **OUTPUT (dimension-fixed):**
+      "A warehouse arranges 4096 oranges in a square tray layout."
+
+      ---
+
+      **INPUT (already realistic):**
+      "A school bus travels 120 km at a speed of 40 km/h. How long does it take?"
+
+      **OUTPUT:**
+      (same as input)
+
+      ---
+
+      **INPUT (extremely unrealistic):**
+      "A player gets bonus points if their score is a prime number."
+
+      **OUTPUT (pure math fallback):**
+      "Determine if 97 is prime."
+
+      ------------------------------------------------------------
+      ### OUTPUT FORMAT
+      Return only the corrected question without explanations.
+
+
     ## Distractor analysis table structure :
       Generate the distractor analysis table using Word-compatible Markdown. Use full column separators, padded cells, and extended dash lines so Word recognizes it as a table. Do not use compact ‘|---|---|’ separators. Each column must have descriptive headers and consistent spacing
     ## REVISION & OUTPUT CONTROL RULES:

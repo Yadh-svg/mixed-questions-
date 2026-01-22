@@ -535,6 +535,11 @@ case_study_maths: |
         - Which taxonomies were used
         - Confirm they match exactly
 
+  ## STRICT KNOWLEDGE BOUNDARY RULES
+  Treat the uploaded PDFs/images as the only source of knowledge. Do not use any outside syllabus, curriculum, or textbook knowledge. Do not introduce concepts, terminology, skills, or grade-level content that is not explicitly shown in the uploaded material(for question, solution, key-idea for everything. You cant assume if lhs = rhs is not mentioned in the uploaded material but its proving left side = right side, you cant mention lhs = rhs in any part of the generated material). If the material shows addition, subtraction, even/odd numbers, halving, or true/false reasoning, generate new items only using those same concepts. Do not name properties, laws, or theories unless they are explicitly printed in the PDF/image.
+  Generate new/duplicate questions that match the original item structure, same difficulty level, and same style. Do not increase the grade level or add any new concepts. Do not assume hidden mathematical knowledge. Do not infer properties (example: do not mention commutativity unless the PDF/image names it). Do not introduce higher grade concepts.
+  The uploaded content defines a closed knowledge boundary. If a concept, method, property, term, or instruction is not present in the PDF/image, do not include it in the generated items. Stay fully faithful to the language, style, tasks, operations, and reasoning patterns present in the PDF/image.
+
   Output Format:
     Formatting Rules:
       - For better readability, proper spacing and line breaks should be maintained.
@@ -1191,6 +1196,13 @@ case_study_maths_pdf: |
           - Which taxonomies were used
           - Confirm they match exactly
 
+    ## STRICT KNOWLEDGE BOUNDARY RULES
+    Treat the uploaded PDFs/images as the only source of knowledge. Do not use any outside syllabus, curriculum, or textbook knowledge. Do not introduce concepts, terminology, skills, or grade-level content that is not explicitly shown in the uploaded material. If the material shows addition, subtraction, even/odd numbers, halving, or true/false reasoning, generate new items only using those same concepts. Do not name properties, laws, or theories unless they are explicitly printed in the PDF/image.
+
+    Generate new/duplicate questions that match the original item structure, same difficulty level, and same style. Do not increase the grade level or add any new concepts. Do not assume hidden mathematical knowledge. Do not infer properties (example: do not mention commutativity unless the PDF/image names it). Do not introduce higher grade concepts.
+
+    The uploaded content defines a closed knowledge boundary. If a concept, method, property, term, or instruction is not present in the PDF/image, do not include it in the generated items. Stay fully faithful to the language, style, tasks, operations, and reasoning patterns present in the PDF/image.
+
     Output Format:
       Formatting Rules:
         - For better readability, proper spacing and line breaks should be maintained.
@@ -1766,6 +1778,13 @@ assertion_reasoning: |
 
   ---
 
+  ## STRICT KNOWLEDGE BOUNDARY RULES
+  Treat the uploaded PDFs/images as the only source of knowledge. Do not use any outside syllabus, curriculum, or textbook knowledge. Do not introduce concepts, terminology, skills, or grade-level content that is not explicitly shown in the uploaded material. If the material shows addition, subtraction, even/odd numbers, halving, or true/false reasoning, generate new items only using those same concepts. Do not name properties, laws, or theories unless they are explicitly printed in the PDF/image.
+
+  Generate new/duplicate questions that match the original item structure, same difficulty level, and same style. Do not increase the grade level or add any new concepts. Do not assume hidden mathematical knowledge. Do not infer properties (example: do not mention commutativity unless the PDF/image names it). Do not introduce higher grade concepts.
+
+  The uploaded content defines a closed knowledge boundary. If a concept, method, property, term, or instruction is not present in the PDF/image, do not include it in the generated items. Stay fully faithful to the language, style, tasks, operations, and reasoning patterns present in the PDF/image.
+
   ### Final Output Expectations
   - {{TOTAL_QUESTIONS}} well-distributed Assertion–Reason items.  
   - Balanced answer keys.  
@@ -2319,6 +2338,13 @@ assertion_reasoning_pdf: |
   4. Avoid factual recall or purely definitional items.
 
   ---
+
+  ## STRICT KNOWLEDGE BOUNDARY RULES
+  Treat the uploaded PDFs/images as the only source of knowledge. Do not use any outside syllabus, curriculum, or textbook knowledge. Do not introduce concepts, terminology, skills, or grade-level content that is not explicitly shown in the uploaded material. If the material shows addition, subtraction, even/odd numbers, halving, or true/false reasoning, generate new items only using those same concepts. Do not name properties, laws, or theories unless they are explicitly printed in the PDF/image.
+
+  Generate new/duplicate questions that match the original item structure, same difficulty level, and same style. Do not increase the grade level or add any new concepts. Do not assume hidden mathematical knowledge. Do not infer properties (example: do not mention commutativity unless the PDF/image names it). Do not introduce higher grade concepts.
+
+  The uploaded content defines a closed knowledge boundary. If a concept, method, property, term, or instruction is not present in the PDF/image, do not include it in the generated items. Stay fully faithful to the language, style, tasks, operations, and reasoning patterns present in the PDF/image.
 
   ### Final Output Expectations
   - {{TOTAL_QUESTIONS}} well-distributed Assertion–Reason items.  
@@ -3170,6 +3196,13 @@ multi_part_maths: |
       ✔ proper difficulty  
       ✔ structured output format
   
+  ## STRICT KNOWLEDGE BOUNDARY RULES
+  Treat the uploaded PDFs/images as the only source of knowledge. Do not use any outside syllabus, curriculum, or textbook knowledge. Do not introduce concepts, terminology, skills, or grade-level content that is not explicitly shown in the uploaded material. If the material shows addition, subtraction, even/odd numbers, halving, or true/false reasoning, generate new items only using those same concepts. Do not name properties, laws, or theories unless they are explicitly printed in the PDF/image.
+
+  Generate new/duplicate questions that match the original item structure, same difficulty level, and same style. Do not increase the grade level or add any new concepts. Do not assume hidden mathematical knowledge. Do not infer properties (example: do not mention commutativity unless the PDF/image names it). Do not introduce higher grade concepts.
+
+  The uploaded content defines a closed knowledge boundary. If a concept, method, property, term, or instruction is not present in the PDF/image, do not include it in the generated items. Stay fully faithful to the language, style, tasks, operations, and reasoning patterns present in the PDF/image.
+
   ## OUTPUT FORMAT (REQUIRED)
   
   Each question must include:
@@ -4025,6 +4058,13 @@ multi_part_maths_pdf: |
         ✔ structured output format
         ✔(if the topic requires to use the pdf ) PDF content as the source for new concepts
     
+    ## STRICT KNOWLEDGE BOUNDARY RULES
+    Treat the uploaded PDFs/images as the only source of knowledge. Do not use any outside syllabus, curriculum, or textbook knowledge. Do not introduce concepts, terminology, skills, or grade-level content that is not explicitly shown in the uploaded material. If the material shows addition, subtraction, even/odd numbers, halving, or true/false reasoning, generate new items only using those same concepts. Do not name properties, laws, or theories unless they are explicitly printed in the PDF/image.
+
+    Generate new/duplicate questions that match the original item structure, same difficulty level, and same style. Do not increase the grade level or add any new concepts. Do not assume hidden mathematical knowledge. Do not infer properties (example: do not mention commutativity unless the PDF/image names it). Do not introduce higher grade concepts.
+
+    The uploaded content defines a closed knowledge boundary. If a concept, method, property, term, or instruction is not present in the PDF/image, do not include it in the generated items. Stay fully faithful to the language, style, tasks, operations, and reasoning patterns present in the PDF/image.
+
     ## OUTPUT FORMAT (REQUIRED)
     
     Each question must include:
@@ -4832,6 +4872,13 @@ mcq_questions: |
      - Use different subtopics and question types
 
   ---
+
+  ## STRICT KNOWLEDGE BOUNDARY RULES
+  Treat the uploaded PDFs/images as the only source of knowledge. Do not use any outside syllabus, curriculum, or textbook knowledge. Do not introduce concepts, terminology, skills, or grade-level content that is not explicitly shown in the uploaded material. If the material shows addition, subtraction, even/odd numbers, halving, or true/false reasoning, generate new items only using those same concepts. Do not name properties, laws, or theories unless they are explicitly printed in the PDF/image.
+
+  Generate new/duplicate questions that match the original item structure, same difficulty level, and same style. Do not increase the grade level or add any new concepts. Do not assume hidden mathematical knowledge. Do not infer properties (example: do not mention commutativity unless the PDF/image names it). Do not introduce higher grade concepts.
+
+  The uploaded content defines a closed knowledge boundary. If a concept, method, property, term, or instruction is not present in the PDF/image, do not include it in the generated items. Stay fully faithful to the language, style, tasks, operations, and reasoning patterns present in the PDF/image.
 
   ### Output Format
 
@@ -5782,6 +5829,13 @@ mcq_questions_pdf: |
 
   ---
 
+  ## STRICT KNOWLEDGE BOUNDARY RULES
+  Treat the uploaded PDFs/images as the only source of knowledge. Do not use any outside syllabus, curriculum, or textbook knowledge. Do not introduce concepts, terminology, skills, or grade-level content that is not explicitly shown in the uploaded material. If the material shows addition, subtraction, even/odd numbers, halving, or true/false reasoning, generate new items only using those same concepts. Do not name properties, laws, or theories unless they are explicitly printed in the PDF/image.
+
+  Generate new/duplicate questions that match the original item structure, same difficulty level, and same style. Do not increase the grade level or add any new concepts. Do not assume hidden mathematical knowledge. Do not infer properties (example: do not mention commutativity unless the PDF/image names it). Do not introduce higher grade concepts.
+
+  The uploaded content defines a closed knowledge boundary. If a concept, method, property, term, or instruction is not present in the PDF/image, do not include it in the generated items. Stay fully faithful to the language, style, tasks, operations, and reasoning patterns present in the PDF/image.
+
   ### Final Output Expectations
   - Generate {{TOTAL_QUESTIONS}} MCQs following this format exactly
   - Each question should be complete with all sections (Question, Options, Solution, Distractor Analysis, Key Idea)
@@ -6571,6 +6625,13 @@ FIB: |
       - using technique that the student studied in the chapter.
       - Justify the filled answers implicitly through reasoning.
       - Do NOT reference answer placeholders in the explanation.
+
+    ## STRICT KNOWLEDGE BOUNDARY RULES
+    Treat the uploaded PDFs/images as the only source of knowledge. Do not use any outside syllabus, curriculum, or textbook knowledge. Do not introduce concepts, terminology, skills, or grade-level content that is not explicitly shown in the uploaded material. If the material shows addition, subtraction, even/odd numbers, halving, or true/false reasoning, generate new items only using those same concepts. Do not name properties, laws, or theories unless they are explicitly printed in the PDF/image.
+
+    Generate new/duplicate questions that match the original item structure, same difficulty level, and same style. Do not increase the grade level or add any new concepts. Do not assume hidden mathematical knowledge. Do not infer properties (example: do not mention commutativity unless the PDF/image names it). Do not introduce higher grade concepts.
+
+    The uploaded content defines a closed knowledge boundary. If a concept, method, property, term, or instruction is not present in the PDF/image, do not include it in the generated items. Stay fully faithful to the language, style, tasks, operations, and reasoning patterns present in the PDF/image.
 
     FORMAT EXAMPLE (STRUCTURE ONLY):
 
@@ -7409,6 +7470,13 @@ FIB_pdf: |
       - Justify the filled answers implicitly through reasoning.
       - Do NOT reference answer placeholders in the explanation.
 
+    ## STRICT KNOWLEDGE BOUNDARY RULES
+    Treat the uploaded PDFs/images as the only source of knowledge. Do not use any outside syllabus, curriculum, or textbook knowledge. Do not introduce concepts, terminology, skills, or grade-level content that is not explicitly shown in the uploaded material. If the material shows addition, subtraction, even/odd numbers, halving, or true/false reasoning, generate new items only using those same concepts. Do not name properties, laws, or theories unless they are explicitly printed in the PDF/image.
+
+    Generate new/duplicate questions that match the original item structure, same difficulty level, and same style. Do not increase the grade level or add any new concepts. Do not assume hidden mathematical knowledge. Do not infer properties (example: do not mention commutativity unless the PDF/image names it). Do not introduce higher grade concepts.
+
+    The uploaded content defines a closed knowledge boundary. If a concept, method, property, term, or instruction is not present in the PDF/image, do not include it in the generated items. Stay fully faithful to the language, style, tasks, operations, and reasoning patterns present in the PDF/image.
+
     FORMAT EXAMPLE (STRUCTURE ONLY):
 
     Question:
@@ -8042,6 +8110,13 @@ descriptive: |
         - Which taxonomies were used
         - Confirm they match exactly
   =====================================================================================
+  ## STRICT KNOWLEDGE BOUNDARY RULES
+  Treat the uploaded PDFs/images as the only source of knowledge. Do not use any outside syllabus, curriculum, or textbook knowledge. Do not introduce concepts, terminology, skills, or grade-level content that is not explicitly shown in the uploaded material. If the material shows addition, subtraction, even/odd numbers, halving, or true/false reasoning, generate new items only using those same concepts. Do not name properties, laws, or theories unless they are explicitly printed in the PDF/image.
+
+  Generate new/duplicate questions that match the original item structure, same difficulty level, and same style. Do not increase the grade level or add any new concepts. Do not assume hidden mathematical knowledge. Do not infer properties (example: do not mention commutativity unless the PDF/image names it). Do not introduce higher grade concepts.
+
+  The uploaded content defines a closed knowledge boundary. If a concept, method, property, term, or instruction is not present in the PDF/image, do not include it in the generated items. Stay fully faithful to the language, style, tasks, operations, and reasoning patterns present in the PDF/image.
+
   ## OUTPUT FORMAT
   
   Generate exactly {{TOTAL_QUESTIONS}} questions. For each question, output:
@@ -8691,6 +8766,13 @@ descriptive_pdf: |
         - Confirm they match exactly
 
   =====================================================================================
+  ## STRICT KNOWLEDGE BOUNDARY RULES
+  Treat the uploaded PDFs/images as the only source of knowledge. Do not use any outside syllabus, curriculum, or textbook knowledge. Do not introduce concepts, terminology, skills, or grade-level content that is not explicitly shown in the uploaded material. If the material shows addition, subtraction, even/odd numbers, halving, or true/false reasoning, generate new items only using those same concepts. Do not name properties, laws, or theories unless they are explicitly printed in the PDF/image.
+
+  Generate new/duplicate questions that match the original item structure, same difficulty level, and same style. Do not increase the grade level or add any new concepts. Do not assume hidden mathematical knowledge. Do not infer properties (example: do not mention commutativity unless the PDF/image names it). Do not introduce higher grade concepts.
+
+  The uploaded content defines a closed knowledge boundary. If a concept, method, property, term, or instruction is not present in the PDF/image, do not include it in the generated items. Stay fully faithful to the language, style, tasks, operations, and reasoning patterns present in the PDF/image.
+
   ## OUTPUT FORMAT
   
   Generate exactly {{TOTAL_QUESTIONS}} questions. For each question, output:
@@ -9363,6 +9445,13 @@ descriptive_subq: |
         - Which taxonomies were used
         - Confirm they match exactly
   =====================================================================================
+  ## STRICT KNOWLEDGE BOUNDARY RULES
+  Treat the uploaded PDFs/images as the only source of knowledge. Do not use any outside syllabus, curriculum, or textbook knowledge. Do not introduce concepts, terminology, skills, or grade-level content that is not explicitly shown in the uploaded material. If the material shows addition, subtraction, even/odd numbers, halving, or true/false reasoning, generate new items only using those same concepts. Do not name properties, laws, or theories unless they are explicitly printed in the PDF/image.
+
+  Generate new/duplicate questions that match the original item structure, same difficulty level, and same style. Do not increase the grade level or add any new concepts. Do not assume hidden mathematical knowledge. Do not infer properties (example: do not mention commutativity unless the PDF/image names it). Do not introduce higher grade concepts.
+
+  The uploaded content defines a closed knowledge boundary. If a concept, method, property, term, or instruction is not present in the PDF/image, do not include it in the generated items. Stay fully faithful to the language, style, tasks, operations, and reasoning patterns present in the PDF/image.
+
   ## OUTPUT FORMAT
   
   Generate exactly {{TOTAL_QUESTIONS}} questions. For each question, output:
@@ -10079,6 +10168,13 @@ descriptive_subq_pdf: |
         - Confirm they match exactly
 
   =====================================================================================
+  ## STRICT KNOWLEDGE BOUNDARY RULES
+  Treat the uploaded PDFs/images as the only source of knowledge. Do not use any outside syllabus, curriculum, or textbook knowledge. Do not introduce concepts, terminology, skills, or grade-level content that is not explicitly shown in the uploaded material. If the material shows addition, subtraction, even/odd numbers, halving, or true/false reasoning, generate new items only using those same concepts. Do not name properties, laws, or theories unless they are explicitly printed in the PDF/image.
+
+  Generate new/duplicate questions that match the original item structure, same difficulty level, and same style. Do not increase the grade level or add any new concepts. Do not assume hidden mathematical knowledge. Do not infer properties (example: do not mention commutativity unless the PDF/image names it). Do not introduce higher grade concepts.
+
+  The uploaded content defines a closed knowledge boundary. If a concept, method, property, term, or instruction is not present in the PDF/image, do not include it in the generated items. Stay fully faithful to the language, style, tasks, operations, and reasoning patterns present in the PDF/image.
+
   ## OUTPUT FORMAT
   
   Generate exactly {{TOTAL_QUESTIONS}} questions. For each question, output:

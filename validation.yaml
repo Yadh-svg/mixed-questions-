@@ -205,6 +205,14 @@ validation_prompt: |
         9. Remove all HTML/Markdown image tags, links, and visual annotations from the question and options.
         10 .There must be no wrapper metadata such as status, pass/fail flags, repaired_item containers, validation_reports, arrays, or lists. Output only the final clean JSON object with "question1": "<markdown>" , ...
         11 . Please remove any mention of mark distributions from the solution.
+    ## Main Rule (for dok 2 questions)
+      When validating a generated question, ensure that it has not been inflated to appear higher DOK without actually requiring higher-order thinking. 
+      Some questions can look like DOK2 at first glance because they involve patterns, sequences, symbolic expressions, or story contexts,
+      yet if the student can solve them by recognizing a known pattern and directly applying a rule or formula, they remain DOK1. 
+      Pattern-based tasks such as odd numbers leading to square numbers, arithmetic or geometric sequences, polygonal numbers, modular cycles, proportionality, recursive tables, or straightforward unit scaling are typically DOK1 unless the question genuinely demands inference, comparison, justification, evaluation, or conditional reasoning. 
+      If the question claims or intends to be DOK2 but is functionally DOK1, then it must be flagged as fake DOK2 and rewritten so that it becomes a true DOK2 item while preserving the same underlying concept. The rewrite should introduce actual cognitive work—such as multi-step reasoning, choice-making, or justification—rather than superficial story details or syntactic complications.
+      The validator must confirm whether the cognitive demand is real: if the student can answer by simply plugging into a known pattern or formula, the question is still DOK1; if the student must analyze, decide, justify, or infer, then it qualifies as DOK2.
+
     ## Place one single-line Metadata Block at the top of each question.
 
       Metadata Block must include:

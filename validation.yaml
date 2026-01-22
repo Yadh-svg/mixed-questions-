@@ -268,6 +268,7 @@ validation_prompt: |
       2. Do not display trial examples, alternatives, debug calculations, or backtracking steps.
       3. Do not output internal reasoning such as "Let me fix", "Let's try again", or "Ah, there seems to be a mistake".
       4. Produce a single clean final question item followed by its solution structure and metadata.
+    # Keu idea should be there for all the type of questions 
     ## vALIDATION REPORT :
       - Should be at the end, it should be the last thing 
       - Add validation report along with the markdown in the quuestion key (validation report contains the reason if you are changing any questions)

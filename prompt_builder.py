@@ -119,11 +119,15 @@ def build_topics_section(questions: List[Dict[str, Any]], batch_key: str = "") -
             mcq_type = q.get('mcq_type', 'Auto')
             mcq_type_str = f", MCQ Type: {mcq_type}" if mcq_type != 'Auto' else ""
             
+            # Handle Statement Based
+            statement_based = q.get('statement_based', False)
+            sb_str = ", Statement Based: YES" if statement_based else ", Statement Based: NO"
+            
             if batch_key == "Assertion-Reasoning":
                 # For Assertion-Reasoning, exclude DOK and Taxonomy, but KEEP Marks
                 line = f'    - Topic: "{topic}" → Questions: 1, Marks: {marks} | New Concept Source: {new_concept_label} | Additional Notes Source: {additional_notes_label}'
             else:
-                line = f'    - Topic: "{topic}" → Questions: 1{mcq_type_str}{fib_type_str}{descriptive_type_str}, DOK: {dok}, Marks: {marks}, Taxonomy: {taxonomy} | New Concept Source: {new_concept_label} | Additional Notes Source: {additional_notes_label}'
+                line = f'    - Topic: "{topic}" → Questions: 1{mcq_type_str}{sb_str}{fib_type_str}{descriptive_type_str}, DOK: {dok}, Marks: {marks}, Taxonomy: {taxonomy} | New Concept Source: {new_concept_label} | Additional Notes Source: {additional_notes_label}'
         
         # Add per-question additional notes if present
         if additional_notes_text:

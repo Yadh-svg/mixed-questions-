@@ -541,6 +541,7 @@ case_study_maths: |
   The uploaded content defines a closed knowledge boundary. If a concept, method, property, term, or instruction is not present in the PDF/image, do not include it in the generated items. Stay fully faithful to the language, style, tasks, operations, and reasoning patterns present in the PDF/image.
 
   Output Format:
+    SEPARATE EACH QUESTION ITEM WITH THE DELIMITER: `|||QUESTION_START|||` (only at the start of the question)
     Formatting Rules:
       - For better readability, proper spacing and line breaks should be maintained.
       - Avoid merging unrelated content into a single line.
@@ -1204,12 +1205,13 @@ case_study_maths_pdf: |
     The uploaded content defines a closed knowledge boundary. If a concept, method, property, term, or instruction is not present in the PDF/image, do not include it in the generated items. Stay fully faithful to the language, style, tasks, operations, and reasoning patterns present in the PDF/image.
 
     Output Format:
-      Formatting Rules:
-        - For better readability, proper spacing and line breaks should be maintained.
-        - Avoid merging unrelated content into a single line.
-        - Clear separation of ideas makes the text easier to follow and improves overall presentation.
+      SEPARATE EACH QUESTION ITEM WITH THE DELIMITER: `|||QUESTION_START|||` (only at the start of the question)
+    Formatting Rules:
+      - For better readability, proper spacing and line breaks should be maintained.
+      - Avoid merging unrelated content into a single line.
+      - Clear separation of ideas makes the text easier to follow and improves overall presentation.
 
-      Output language :  English 
+    Output language :  English 
       Do NOT generate questions that are only numerical variations of a previous question. 
       The logic, formula application, or method of calculation **must differ** across questions.
 
@@ -1593,6 +1595,7 @@ assertion_reasoning: |
     - These rules apply to the question, solution, distractor analysis, and key idea.
     - Any violation must be corrected before final output.
   ### Output Format
+      SEPARATE EACH QUESTION ITEM WITH THE DELIMITER: `|||QUESTION_START|||` (only at the start of the question)
     - For every question, follow this exact order:
       
       1. Options
@@ -2160,11 +2163,14 @@ assertion_reasoning_pdf: |
     - These rules apply to the question, solution, distractor analysis, and key idea.
     - Any violation must be corrected before final output.
   ### Output Format
-
-    ### Output Format
+    SEPARATE EACH QUESTION ITEM WITH THE DELIMITER: `|||QUESTION_START|||` (only at the start of the question)
     - For every question, follow this exact order:
-      1. Solution (complete and student-friendly)
-      2. Distractor Analysis (mandatory)
+      
+      1. Options
+      2. Correct options 
+      3. Solution (complete and student-friendly)
+      4. Distractor Analysis (mandatory)
+      5. Key Idea (mandatory)
 
     ---
 
@@ -3109,7 +3115,8 @@ multi_part_maths: |
     -- **CRITICAL**: The generated "Final Answer" must be concise (number, word, or short phrase). Do NOT write full sentences like "The shape is called a square." -> Write "Square".
 
   ## OUTPUT FORMAT (REQUIRED)
-  
+    SEPARATE EACH QUESTION ITEM WITH THE DELIMITER: `|||QUESTION_START|||` (only at the start of the question)
+
   ### 1. **Overall Taxonomy**
      - Combine all unique taxonomy labels selected across all sub-parts.
      - Display once at the top.
@@ -3952,7 +3959,8 @@ multi_part_maths_pdf: |
     -- **CRITICAL**: The generated "Final Answer" must be concise (number, word, or short phrase). Do NOT write full sentences like "The shape is called a square." -> Write "Square".
 
     ## OUTPUT FORMAT (REQUIRED)
-    
+    SEPARATE EACH QUESTION ITEM WITH THE DELIMITER: `|||QUESTION_START|||` (only at the start of the question)
+
     ### 1. **Overall Taxonomy**
       - Combine all unique taxonomy labels selected across all sub-parts.
       - Display once at the top.
@@ -4252,6 +4260,7 @@ mcq_questions: |
     - **Mark of question**: {{Marks}}
     - **DOK level of question**: {{DOK_Level}}
     - **Taxonomy of question**: {{Taxonomy}}
+    - **Statement Based**: (YES/NO)
   - This section should be different from question 
   ### What are DOK Levels?
 
@@ -4267,9 +4276,14 @@ mcq_questions: |
     - Requires at least two linked operations or inferences
     - Focus/Skill Area: Apply, Classify, Organize, Estimate, Compare
     
+    ## Statement-Based Question Control (CRITICAL)
+    - You must check the "Statement Based" status for each topic in the TOPICS_SECTION.
+    - **If "Statement Based: NO" (or unspecified)**: YOU MUST NOT GENERATE STATEMENT-TYPE QUESTIONS (e.g., Statement I/II). All questions must be standard MCQs (Question + Options).
+    - **If "Statement Based: YES"**: You are allowed to generate Statement-Based MCQs (Statement I/II type) following the DOK 2 guidelines below.
+
     -For statement based question's
-      Up to grade 5, Identifying correct statement falls under DOK level 2.
-      From grade 6 onwards, identifying the combination of correct statement falls under DOK level 2.
+       Up to grade 5, Identifying correct statement falls under DOK level 2.
+       From grade 6 onwards, identifying the combination of correct statement falls under DOK level 2.
   
 
 
@@ -4885,6 +4899,7 @@ mcq_questions: |
   The uploaded content defines a closed knowledge boundary. If a concept, method, property, term, or instruction is not present in the PDF/image, do not include it in the generated items. Stay fully faithful to the language, style, tasks, operations, and reasoning patterns present in the PDF/image.
 
   ### Output Format
+    SEPARATE EACH QUESTION ITEM WITH THE DELIMITER: `|||QUESTION_START|||` (only at the start of the question)
 
   For each question, provide the following in this exact order:
 
@@ -5154,6 +5169,7 @@ mcq_questions_pdf: |
     - **Mark of question**: {{Marks}}
     - **DOK level of question**: {{DOK_Level}}
     - **Taxonomy of question**: {{Taxonomy}}
+    - **Statement Based**: (YES/NO)
 
   ### What are DOK Levels?
 
@@ -5168,6 +5184,11 @@ mcq_questions_pdf: |
     - Application of concepts to new situations
     - Requires at least two linked operations or inferences
     - Focus/Skill Area: Apply, Classify, Organize, Estimate, Compare
+
+    ## Statement-Based Question Control (CRITICAL)
+    - You must check the "Statement Based" status for each topic in the TOPICS_SECTION.
+    - **If "Statement Based: NO" (or unspecified)**: YOU MUST NOT GENERATE STATEMENT-TYPE QUESTIONS (e.g., Statement I/II). All questions must be standard MCQs (Question + Options).
+    - **If "Statement Based: YES"**: You are allowed to generate Statement-Based MCQs (Statement I/II type).
 
     **DOK 3 (Strategic Thinking and Reasoning)**: 
     - Complex reasoning with multiple steps
@@ -5658,9 +5679,6 @@ mcq_questions_pdf: |
 
     For each incorrect option (3 distractors), follow this exact explanation structure:
 
-  **OUTPUT FORMAT: The distractor analysis MUST be presented as a markdown table with two columns: "Option" and "Misconception"**
-
-  For each incorrect option (3 distractors), follow this exact explanation structure:
 
   **Option [X]: [The incorrect answer]**
 
@@ -5768,6 +5786,7 @@ mcq_questions_pdf: |
   ---
 
   ### Output Format
+    SEPARATE EACH QUESTION ITEM WITH THE DELIMITER: `|||QUESTION_START|||` (only at the start of the question)
 
   For each question, provide the following in this exact order:
 
@@ -6431,6 +6450,8 @@ FIB: |
 
     - It is allowed to include **multiple blanks and/or dropdowns** as appropriate to the question type, provided the above marking rules are satisfied.
     - Each blank should carry marks in proportion to its allotted value.
+    - Wherever 0.5 mark is possible, it should be used.
+
   5. Diagram Prompt (for visualization purposes only) 
     ## DIAGRAM RULES
         - Diagram is optional (unless the topic inherently requires visual representation).
@@ -6589,6 +6610,8 @@ FIB: |
   OUTPUT FORMAT — FILL IN THE BLANKS (FIB)
 
     Generate Fill in the Blanks questions strictly in the following format.
+
+    SEPARATE EACH QUESTION ITEM WITH THE DELIMITER: `|||QUESTION_START|||` (only at the start of the question)
 
     Each question must include:
 
@@ -7269,7 +7292,7 @@ FIB_pdf: |
     - It is allowed to include **multiple blanks and/or dropdowns** as appropriate to the question type, provided the above marking rules are satisfied.
     - the mark inputted by the user and the mark calculated by the system should be same.
     - Each blank should carry marks in proportion to its allotted value.
-
+    - Wherever 0.5 mark is possible, it should be used.
   5. Diagram Prompt (for visualization purposes only) 
     ## DIAGRAM RULES
         - Diagram is optional (unless the topic inherently requires visual representation).
@@ -7434,6 +7457,8 @@ FIB_pdf: |
   OUTPUT FORMAT — FILL IN THE BLANKS (FIB)
 
     Generate Fill in the Blanks questions strictly in the following format.
+
+    SEPARATE EACH QUESTION ITEM WITH THE DELIMITER: `|||QUESTION_START|||` (only at the start of the question)
 
     Each question must include:
 
@@ -8122,7 +8147,8 @@ descriptive: |
   The uploaded content defines a closed knowledge boundary. If a concept, method, property, term, or instruction is not present in the PDF/image, do not include it in the generated items. Stay fully faithful to the language, style, tasks, operations, and reasoning patterns present in the PDF/image.
 
   ## OUTPUT FORMAT
-  
+    SEPARATE EACH QUESTION ITEM WITH THE DELIMITER: `|||QUESTION_START|||` (only at the start of the question)
+
   Generate exactly {{TOTAL_QUESTIONS}} questions. For each question, output:
 
   ### Question [N]
@@ -8778,7 +8804,8 @@ descriptive_pdf: |
   The uploaded content defines a closed knowledge boundary. If a concept, method, property, term, or instruction is not present in the PDF/image, do not include it in the generated items. Stay fully faithful to the language, style, tasks, operations, and reasoning patterns present in the PDF/image.
 
   ## OUTPUT FORMAT
-  
+    SEPARATE EACH QUESTION ITEM WITH THE DELIMITER: `|||QUESTION_START|||` (only at the start of the question)
+
   Generate exactly {{TOTAL_QUESTIONS}} questions. For each question, output:
 
   ### Question [N]
@@ -9457,7 +9484,8 @@ descriptive_subq: |
   The uploaded content defines a closed knowledge boundary. If a concept, method, property, term, or instruction is not present in the PDF/image, do not include it in the generated items. Stay fully faithful to the language, style, tasks, operations, and reasoning patterns present in the PDF/image.
 
   ## OUTPUT FORMAT
-  
+    SEPARATE EACH QUESTION ITEM WITH THE DELIMITER: `|||QUESTION_START|||` (only at the start of the question)
+
   Generate exactly {{TOTAL_QUESTIONS}} questions. For each question, output:
 
   ### Question [N]
@@ -10180,7 +10208,8 @@ descriptive_subq_pdf: |
   The uploaded content defines a closed knowledge boundary. If a concept, method, property, term, or instruction is not present in the PDF/image, do not include it in the generated items. Stay fully faithful to the language, style, tasks, operations, and reasoning patterns present in the PDF/image.
 
   ## OUTPUT FORMAT
-  
+    SEPARATE EACH QUESTION ITEM WITH THE DELIMITER: `|||QUESTION_START|||` (only at the start of the question)
+
   Generate exactly {{TOTAL_QUESTIONS}} questions. For each question, output:
 
   ### Question [N]
@@ -10308,7 +10337,8 @@ duplicate_question: |
     Goal: duplicates should not preserve parent correct labels, and A&R duplicates must also change the internal Assertion–Reason truth and explanation relationship to match the new correct label.
 
   ## OUTPUT FORMAT (STRICT)
-  Return a JSON array. Example element signature:
+  Return a RAW JSON array. Do NOT wrap the output in markdown code blocks (e.g., ```json ... ```) or any other text. Output ONLY the JSON string.
+  Example element signature:
   {
     "question_code": "{{QUESTION_CODE}}-dup-1",
     "question1": "## Duplicate built using parent key idea: {{QUESTION_CODE}}\\n\\n<full markdown question body minus key-idea>"

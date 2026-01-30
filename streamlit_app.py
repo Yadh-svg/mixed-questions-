@@ -193,7 +193,8 @@ with st.sidebar:
             keys_to_del = [
                 'universal_pdf',
                 'universal_new_concept_pdf',
-                'universal_paste_btn'
+                'universal_paste_btn',
+                'universal_source'
             ]
             
             # Add dynamic keys
@@ -268,32 +269,49 @@ with tab1:
     
     col_upload, col_paste = st.columns([3, 1])
     
+    # Callback for uploader
+    def on_uploader_change():
+        if st.session_state.universal_new_concept_pdf:
+            st.session_state.universal_pdf = st.session_state.universal_new_concept_pdf
+            st.session_state.universal_source = 'upload'
+            # Clear paste if upload happens
+            # But we can't clear paste button visual state easily, but we update our source of truth.
+        else:
+            # Explicitly cleared via X
+            st.session_state.universal_pdf = None
+            st.session_state.universal_source = None
+
     with col_upload:
         universal_pdf_upload = st.file_uploader(
             "Upload Universal New Concept File (PDF/Image)",
             type=['pdf', 'png', 'jpg', 'jpeg', 'gif', 'webp'],
             key="universal_new_concept_pdf",
-            help="This file will be used for all questions that select 'pdf' as their new concept source"
+            help="This file will be used for all questions that select 'pdf' as their new concept source",
+            on_change=on_uploader_change
         )
 
     with col_paste:
         st.markdown("<br>", unsafe_allow_html=True)  # Align with uploader
         pasted_content = paste(label="📋 Paste Image", key="universal_paste_btn")
     
-    # Logic to handle both upload and paste
-    universal_pdf = None
-    
-    if universal_pdf_upload:
-        universal_pdf = universal_pdf_upload
-    elif pasted_content:
+    # Initialize source if needed
+    if 'universal_source' not in st.session_state:
+        st.session_state.universal_source = None
+
+    # Logic to handle paste (upload handled by callback)
+    if pasted_content:
         # Convert pasted bytes to file-like object
-        universal_pdf = PastedFile(pasted_content, name="pasted_universal_image.png")
+        st.session_state.universal_pdf = PastedFile(pasted_content, name="pasted_universal_image.png")
+        st.session_state.universal_source = 'paste'
     
-    # Store in session state
+    # Check if we have a valid file now
+    universal_pdf = st.session_state.get('universal_pdf')
+
+    # Store/Update session state (redundant but safe)
     if universal_pdf:
-        st.session_state.universal_pdf = universal_pdf
         st.success(f"✅ Universal file ready: {universal_pdf.name}")
     else:
+        # Ensure consistent state
         st.session_state.universal_pdf = None
     
     additional_notes = st.text_area(
@@ -561,6 +579,16 @@ with tab1:
                         st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_text'] = additional_notes_text
                     else:
                         st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_text'] = ''
+                        
+                    with cols[0]:
+                         # Add Statement Based Checkbox below Topic
+                         is_statement = st.checkbox(
+                             "Statement Based", 
+                             key=f"mcq_statement_{i}",
+                             value=st.session_state.question_types_config[qtype]['questions'][i].get('statement_based', False),
+                             help="Check to allow Statement I / Statement II type questions"
+                         )
+                         st.session_state.question_types_config[qtype]['questions'][i]['statement_based'] = is_statement
                         
                     # Handle File Note
                     if has_file_note:
@@ -1493,6 +1521,27 @@ with tab1:
 
 with tab2:
     st.markdown('<div class="section-header">Previously Generated Questions</div>', unsafe_allow_html=True)
+
+    # Display Persistent Generation Report (if any)
+    if 'duplicate_generation_report' in st.session_state and st.session_state.duplicate_generation_report:
+        report = st.session_state.duplicate_generation_report
+        
+        # Display summary
+        st.markdown("### 📊 Generation Report")
+        if report.get('success'):
+            st.success(f"✅ Successfully generated duplicates for {report['success_count']} question(s).")
+        
+        if report.get('errors'):
+            st.error(f"❌ Failed to generate duplicates for {len(report['errors'])} question(s).")
+            for err in report['errors']:
+                st.warning(f"• **{err['key']}**: {err['error']}")
+        
+        # Clear report button
+        if st.button("Clear Report", key="clear_dup_report"):
+            del st.session_state.duplicate_generation_report
+            st.rerun()
+        st.markdown("---")
+
     
     if st.session_state.generated_output:
         results = st.session_state.generated_output
@@ -1827,42 +1876,47 @@ with tab2:
                         try:
                             dup_results = asyncio.run(generate_all_duplicates_parallel())
                             
-                            # Progress tracking
-                            progress_bar = st.progress(0)
-                            total = len(dup_results)
+                            # Prepare persistent report
+                            report = {
+                                'success': False,
+                                'success_count': 0,
+                                'errors': []
+                            }
                             
                             # Store duplicates in session state
-                            for idx, (key, result) in enumerate(dup_results.items(), 1):
-                                progress_bar.progress(idx / total)
-                                
+                            for key, result in dup_results.items():
                                 if result.get('error'):
-                                    st.error(f"❌ Error generating duplicates for {key}: {result['error']}")
+                                    report['errors'].append({
+                                        'key': selected_questions[key]['question_code'],
+                                        'error': result['error']
+                                    })
                                 else:
                                     duplicates = result.get('duplicates', [])
-                                    data = selected_questions[key]
-                                    
-                                    # Store in the appropriate session state key
-                                    duplicates_key = f"duplicates_{data['batch_key']}_{data['question_key']}"
-                                    st.session_state[duplicates_key] = duplicates
-                                    
-                                    st.success(f"✅ Generated {len(duplicates)} duplicate(s) for {data['question_key']}")
+                                    # Handle empty duplicates list as an error or warning
+                                    if not duplicates:
+                                        report['errors'].append({
+                                            'key': selected_questions[key]['question_code'],
+                                            'error': "AI returned no duplicates (empty list). Try adjusting the prompt or notes."
+                                        })
+                                    else:
+                                        data = selected_questions[key]
+                                        duplicates_key = f"duplicates_{data['batch_key']}_{data['question_key']}"
+                                        st.session_state[duplicates_key] = duplicates
+                                        report['success_count'] += 1
                             
-                            progress_bar.empty()
-                            status_text.empty()
+                            report['success'] = report['success_count'] > 0
                             
-                            # Show summary
-                            st.success(f"🎉 Generated duplicates for {len(selected_questions)} question(s) in full parallel!")
-                            with st.expander("📊 Generation Summary", expanded=True):
-                                for key, data in selected_questions.items():
-                                    num_dups = data['num_duplicates']
-                                    st.write(f"• **{data['question_code']}:** {num_dups} duplicate(s) generated")
+                            # Save report to session state for persistence across rerun
+                            st.session_state.duplicate_generation_report = report
                             
-                            st.info("Scroll up to view duplicates under each question.")
+                            st.info("Generation complete. Reloading...")
                             st.rerun()
                             
                         except Exception as e:
                             st.error(f"❌ Error during duplication: {str(e)}")
                             st.exception(e)
+                            
+
         else:
             st.info("ℹ️ Select questions using the checkboxes above to generate duplicates")
     else:

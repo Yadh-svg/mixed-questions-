@@ -7,7 +7,7 @@ validation_prompt: |
 
     {{GENERATED_CONTENT}}
 
-
+  - YOU MAIN AIM IS TO VALIDATE THE DOK LEVEL AND CORRECT IT WHILE THE OTHER THINGS ARE ALSO IMPORTANT.
   - GLOBAL DISTRACTOR LINGUISTIC STYLE RULE (only forMCQ / A&R)
 
         For MCQ and Assertion-Reason questions, distractor analysis for each incorrect option must use a second-person pedagogical style that explains the student's likely reasoning path.
@@ -33,12 +33,13 @@ validation_prompt: |
         You might have thought so since ___ (reason category: computational / conceptual / communication / comprehension).  
         Also, you thought that Statement ___ is a correct statement since ___ (specific reason)."
 
-
+      - All distractor analysis must be independent statements, it shouldnt be referring  to the previous one like "This is incorrect for the same reason as above/option b" . Because students will see only one analysis at a time .If its mentioned like this then remove it and make it independent.
     These are the generated questions. You need to check for all the question/answer and output.
     PRINCIPLES (priority order — higher entries outrank lower ones):
     1. STRUCTURE LOCK (HIGHEST PRIORITY)
-      - Do NOT change: question_type, parts count, number of options/blanks, diagram presence/absence, or marks.
-      - These structural fields are immutable. Any repair must preserve them exactly.
+      - Do NOT change: question_type, parts count, number of options/blanks, diagram presence/absence, marks, Topic/Chapter metadata, DOK Level metadata, or Taxonomy metadata.
+      - Metadata fields (including DOK Level and Taxonomy) are strictly immutable. Any attempted change to these metadata fields is a validation error — do NOT modify them.
+      - Minor formatting fixes within content are allowed only where explicitly permitted by other rules; any change to content that would alter metadata must be done via an in-stem insertion (see DOK handling).
     2. DO NOT INVENT
       - Use only the explicit input data and the rules in this prompt. Do not invent external taxonomies, syllabus rules, or arbitrary rewrite policies.
     3. PERMITTED MINIMAL EDITS ONLY
@@ -47,22 +48,32 @@ validation_prompt: |
     4. MARKS IMMUTABLE
       - Never change the 'marks' field.
     5. DOK HANDLING — FORCED IN-STRUCTURE REPAIR (POLICY)
+      - Do not modify the declared DOK level to fit the question; instead, minimally edit the question text (in-structure) so that its cognitive demand matches the declared DOK level.
       - Evaluate whether the declared_dok matches the item's cognitive demand.
-      - If declared_dok > actual_dok:
-        ### DOK UPGRADE (IN-STRUCTURE)
         - If declared_dok > actual_dok, increase reasoning demand WITHOUT:
           • adding parts
           • changing marks
           • changing question_type
           • adding diagrams
-          • turning into justification/explanation tasks
-
-        Valid math DOK upgrades must use one of:
-          (a) parameter inference (solve for n, a, or d instead of direct plug-in)
-          (b) relational condition (e.g., find term exceeding a threshold)
-          (c) comparison/ordering of mathematical outcomes
-          (d) inversion of given data (e.g., given S_n or a_n, solve for n)
-          (e) feasibility/validity check (does such n exist)
+        - The validator MAY insert at most one **brief embedded evaluation or feasibility clause** inside the existing stem when performing a DOK upgrade. Example allowed insertions:
+          • "Determine whether either design can be painted for less than ₹X."  
+          • "Is it feasible to meet condition Y? (use existing formulas to decide)."  
+          • "Which design meets the constraint Z (if any)?"
+        - Such an insertion:
+          • must be a single sentence inside the same stem (not a new subpart),  
+          • must not add marks or new subparts,  
+          • must require only evaluation/comparison/feasibility using existing curriculum formulas (no new theory), and  
+          • may require minimal, consistent wording updates to options or numerical values so the answer key and solution remain correct.
+        - Valid math DOK upgrades should prefer one of these moves (in order of preference):
+          (a) parameter inference (solve for a parameter instead of direct plug-in)  
+          (b) relational condition (find term or result exceeding a threshold)  
+          (c) comparison/ordering of mathematical outcomes (interpret multiple computed results)  
+          (d) inversion of given data (solve for n given S_n or a_n)  
+          (e) feasibility/validity check (does such n/design/condition exist?)
+        - When applying an in-stem evaluation insertion, the validator must:
+          • keep edits minimal,  
+          • ensure the correct option remains accurate (update option wording or numeric values only if necessary and do so consistently in the solution), and  
+          • include a one-line note in the validation report explaining the exact minimal edit made to enable the DOK upgrade.
 
       - If declared_dok < actual_dok: keep as-is (downgrading is required).
           - Policy:
@@ -111,6 +122,7 @@ validation_prompt: |
         D. Comprehension Error — correct mathematics but misinterpreting the question, instructions, or required outcome.
       - If changes are there after changing output the distractor analysis in table format 
       - If the distractor analysis is not in table format then change it to table format  
+      - You need to 
     9. DUPLICATE CHECK — SOLVING-PATTERN DIVERSITY + AUTO-REWRITE
 
     - Duplicate checking applies to both literal duplication and solving-pattern duplication (same reasoning chain, same strategy, same inference route, or same story-template).
@@ -206,13 +218,10 @@ validation_prompt: |
         10 .There must be no wrapper metadata such as status, pass/fail flags, repaired_item containers, validation_reports, arrays, or lists. Output only the final clean JSON object with "question1": "<markdown>" , ...
         11 . Please remove any mention of mark distributions from the solution.
     ## Main Rule (for dok 2 questions)
-      When validating a generated question, ensure that it has not been inflated to appear higher DOK without actually requiring higher-order thinking. 
-      Some questions can look like DOK2 at first glance because they involve patterns, sequences, symbolic expressions, or story contexts,
-      yet if the student can solve them by recognizing a known pattern and directly applying a rule or formula, they remain DOK1. 
-      Pattern-based tasks such as odd numbers leading to square numbers, arithmetic or geometric sequences, polygonal numbers, modular cycles, proportionality, recursive tables, or straightforward unit scaling are typically DOK1 unless the question genuinely demands inference, comparison, justification, evaluation, or conditional reasoning. 
-      If the question claims or intends to be DOK2 but is functionally DOK1, then it must be flagged as fake DOK2 and rewritten so that it becomes a true DOK2 item while preserving the same underlying concept. The rewrite should introduce actual cognitive work—such as multi-step reasoning, choice-making, or justification—rather than superficial story details or syntactic complications.
-      The validator must confirm whether the cognitive demand is real: if the student can answer by simply plugging into a known pattern or formula, the question is still DOK1; if the student must analyze, decide, justify, or infer, then it qualifies as DOK2.
-
+      Refined DOK-1 vs DOK-2 discriminator:
+        A question is DOK-1 only if it can be solved by a single, direct procedural step using one fact or formula, with no selection among quantities, no inclusion/exclusion decision, no multi-step computation, and no comparison or ordering of results. 
+        If the student must (any of): select which measures to use, decide what to include or exclude, perform more than one computation step, or compare/interpret multiple numerical outcomes, classify the item as DOK-2 — even when familiar formulas or patterns are used. 
+        If the question claims or intends to be DOK2 but is functionally DOK1, then it must be as DOK2 and rewritten so that it becomes a true DOK2 item while preserving the same underlying concept. The rewrite should introduce actual cognitive work—such as multi-step reasoning, choice-making, or justification—rather than superficial story details or syntactic complications.
     ## Place one single-line Metadata Block at the top of each question.
 
       Metadata Block must include:
@@ -357,17 +366,24 @@ validation_prompt: |
     ## REVISION & OUTPUT CONTROL RULES:
         If the distractor analysis is not already in a Word-compatible Markdown table, convert it. Use padded cells, full-width dash separators, and clear column headers so it renders correctly in Word, Markdown, and Google Docs
 
-      1. If multiple revisions or candidate repairs are generated during reasoning, only the final accepted version should be output. Discard all intermediate or rejected versions.
-      2. Do not display trial examples, alternatives, debug calculations, or backtracking steps.
-      3. Do not output internal reasoning such as "Let me fix", "Let's try again", or "Ah, there seems to be a mistake".
-      4. Produce a single clean final question item followed by its solution structure and metadata.
+      1. You have access to a thinking process. Use it to rigorously check every question against the rules (DOK, taxonomy, duplication, formatting) BEFORE generating the final Output.
+      2. Use your thinking space to verify logic, checking solutions, and refining the markdown structure.
+      3. Produce a single clean final question item followed by its solution structure and metadata in the final response.
     # Keu idea should be there for all the type of questions 
     ## vALIDATION REPORT :
       - Should be at the end, it should be the last thing 
       - Add validation report along with the markdown in the quuestion key (validation report contains the reason if you are changing any questions)
     15) SPECIFIC OUTPUT STRUCTURE (STRICT):
     You must output the question in the following structure based on the question type:
+      MANDATORY — OUTPUT LANGUAGE: ENGLISH.
+      All assistant output must be in English only. Do NOT produce headings, option labels, table headers, or UI labels in any other language. Convert any non-English input text to English, but always use the exact ASCII headings below (uppercase):
+      OPTIONS
+      ANSWER KEY
+      SOLUTION
+      KEY IDEA
+      etc ...
 
+      POST-GENERATION NORMALIZATION: If any of the above headings appear in another language (for example 'ऑप्शंस' or 'विकल्प'), replace them with the exact English heading before returning output.
     {{OUTPUT_FORMAT_RULES}}
 
   

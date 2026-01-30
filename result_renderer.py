@@ -6,34 +6,46 @@ Question type is inferred from batch_key parameter.
 import streamlit as st
 import json
 import re
+import html
 from typing import Dict, List, Any, Optional
 
 
 def extract_json_objects(text: str) -> List[Dict[str, Any]]:
     """
-    Robustly extract JSON objects from text by finding top-level brace pairs.
+    Robustly extract JSON objects from text using json.JSONDecoder.
+    This handles braces inside strings correctly, unlike simple stack counting.
     """
     objects = []
-    stack = []
-    start_index = -1
+    decoder = json.JSONDecoder()
+    pos = 0
+    length = len(text)
     
-    for i, char in enumerate(text):
-        if char == '{':
-            if not stack:
-                start_index = i
-            stack.append(char)
-        elif char == '}':
-            if stack:
-                stack.pop()
-                if not stack:
-                    # Found a complete block
-                    json_str = text[start_index:i+1]
-                    try:
-                        obj = json.loads(json_str)
-                        if isinstance(obj, dict):
-                            objects.append(obj)
-                    except json.JSONDecodeError:
-                        pass  # Ignore invalid blocks
+    while pos < length:
+        # Find the next opening brace
+        try:
+            # Skip whitespace
+            while pos < length and text[pos].isspace():
+                pos += 1
+            if pos >= length:
+                break
+                
+            if text[pos] != '{':
+                # Skip until next brace
+                pos = text.find('{', pos)
+                if pos == -1:
+                    break
+            
+            # Attempt to decode from this position
+            obj, end_pos = decoder.raw_decode(text, idx=pos)
+            if isinstance(obj, dict):
+                objects.append(obj)
+            pos = end_pos
+            
+        except json.JSONDecodeError:
+            # If decoding failed, advance past the current '{' and try again
+            # efficiently advance to next '{'
+            pos += 1
+            
     return objects
 
 
@@ -84,6 +96,124 @@ def extract_question_values_fallback(json_objects: List[Dict[str, Any]]) -> Dict
     return questions_dict
 
 
+
+def unescape_json_string(s: str) -> str:
+    """Safely unescape JSON-escaped strings (convert \\n to real newlines, etc.)"""
+    try:
+        # Use json.loads to properly unescape the string
+        escaped = s.replace('"', '\\"')
+        return json.loads(f'"{escaped}"')
+    except Exception:
+        # Fallback: manual replacement of common escapes
+        return s.replace("\\n", "\n").replace("\\t", "\t").replace("\\r", "\r")
+
+
+def normalize_llm_output_to_questions(text: str) -> Dict[str, str]:
+    """
+    SINGLE NORMALIZATION BOUNDARY: Converts ANY LLM validator output into:
+    { "question1": "<markdown>", "question2": "<markdown>", ... }
+    
+    Handles all known LLM output variants:
+    1. Correct: { "question1": "markdown..." }
+    2. JSON string instead of object
+    3. Wrapped/double-encoded JSON: { "question1": "{ \"question1\": \"...\" }" }
+    4. Validation wrapper format: { "CORRECTED_ITEM": { "question1": "..." } }
+    
+    This is the ONLY place where LLM output parsing/normalization happens.
+    After this function, we guarantee: Dict[str, str] where values are pure markdown.
+    """
+    # -------------------------------------------------------
+    # STRIP MARKDOWN CODE FENCES (LLM often emits ```json)
+    # -------------------------------------------------------
+    if isinstance(text, str):
+        text = text.strip()
+        text = re.sub(r"^```(?:json)?\s*\n?", "", text, flags=re.IGNORECASE)
+        text = re.sub(r"\n?\s*```$", "", text)
+    
+    questions = {}
+    
+    # Step 1: Extract JSON objects from text
+    json_objects = extract_json_objects(text)
+    
+    if not json_objects:
+        # If no JSON found, try treating entire text as a question (rare fallback)
+        return {"question1": text} if text.strip() else {}
+    
+    for obj in json_objects:
+        if not isinstance(obj, dict):
+            continue
+        
+        # Handle validation wrapper format (old format)
+        if 'CORRECTED_ITEM' in obj or 'corrected_item' in obj:
+            obj = obj.get('CORRECTED_ITEM') or obj.get('corrected_item')
+        
+        if not isinstance(obj, dict):
+            continue
+        
+        for k, v in obj.items():
+            # Only process keys matching question pattern
+            if not re.match(r'^(question|q)\d+$', k, re.IGNORECASE):
+                continue
+            
+            # Normalize the key to consistent questionX format
+            num = re.search(r"\d+", k)
+            if not num:
+                continue
+            normalized_key = f"question{num.group()}"
+            
+            # ---- VALUE NORMALIZATION ----
+            if isinstance(v, str):
+                s = v.strip()
+                
+                # Strip fences inside values (LLM may emit fenced JSON as value)
+                if s.startswith("```"):
+                    s = re.sub(r"^```(?:json)?\s*\n?", "", s, flags=re.IGNORECASE)
+                    s = re.sub(r"\n?\s*```$", "", s)
+                
+                # Handle double-encoded JSON: value is a JSON string containing the actual question
+                if s.startswith("{"):
+                    try:
+                        parsed = json.loads(s)
+                        if isinstance(parsed, dict):
+                            # Extract the first string value from the nested JSON
+                            for inner_key, inner_v in parsed.items():
+                                if isinstance(inner_v, str):
+                                    questions[normalized_key] = unescape_json_string(inner_v)
+                                    break
+                            else:
+                                # No string value found, use the original string
+                                questions[normalized_key] = unescape_json_string(s)
+                        else:
+                            questions[normalized_key] = unescape_json_string(s)
+                    except json.JSONDecodeError:
+                        # Not valid JSON, treat as markdown (might just start with {)
+                        questions[normalized_key] = unescape_json_string(s)
+                else:
+                    # Normal markdown string
+                    questions[normalized_key] = unescape_json_string(s)
+            
+            elif isinstance(v, dict):
+                # Value is a dict - try to extract markdown from known keys
+                extracted = v.get('content') or v.get('value') or v.get('markdown') or v.get('text')
+                if isinstance(extracted, str):
+                    questions[normalized_key] = unescape_json_string(extracted)
+                else:
+                    # Fallback: take first string value
+                    for inner_v in v.values():
+                        if isinstance(inner_v, str):
+                            questions[normalized_key] = unescape_json_string(inner_v)
+                            break
+                    else:
+                        # Convert dict to JSON for debugging
+                        questions[normalized_key] = json.dumps(v, indent=2)
+    
+    # Apply text replacements for Hindi to English
+    for key in questions:
+        questions[key] = questions[key].replace("ऑप्शंस", "OPTIONS")
+    
+    return questions
+
+
 def render_markdown_question(question_key: str, markdown_content: str, question_type: str, batch_key: str = "", render_context: str = "results"):
     """
     Render a single question from its markdown content.
@@ -109,7 +239,9 @@ def render_markdown_question(question_key: str, markdown_content: str, question_
         "Descriptive w/ Subquestions": "📄"
     }
     
-    emoji = type_emoji_map.get(question_type, "❓")
+    # Extract base type for emoji lookup
+    base_type = question_type.split(' - Batch ')[0] if question_type else ""
+    emoji = type_emoji_map.get(base_type, "❓")
     
     # Create unique session state keys for this question with context namespace
     checkbox_key = f"duplicate_{render_context}_{batch_key}_{question_key}"
@@ -195,9 +327,12 @@ def render_markdown_question(question_key: str, markdown_content: str, question_
             
             copy_button_key = f"copy_{render_context}_{batch_key}_{question_key}"
             
+            # HTML-escape the content to prevent breaking the HTML structure
+            escaped_content = html.escape(markdown_content)
+            
             copy_html = f"""
             <div style="display: flex; align-items: center; justify-content: center; height: 50px;">
-                <textarea id="text_{copy_button_key}" style="position: absolute; left: -9999px;">{markdown_content}</textarea>
+                <textarea id="text_{copy_button_key}" style="position: absolute; left: -9999px;">{escaped_content}</textarea>
                 <button id="btn_{copy_button_key}" 
                         style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
                                color: white;
@@ -302,9 +437,12 @@ def render_markdown_question(question_key: str, markdown_content: str, question_
                 
                 dup_copy_key = f"copy_dup_{render_context}_{batch_key}_{question_key}_{i}"
                 
+                # HTML-escape the duplicate content as well
+                escaped_dup_markdown = html.escape(dup_markdown)
+                
                 dup_copy_html = f"""
                 <div style="display: flex; align-items: center; justify-content: center; height: 50px; margin-top: 8px;">
-                    <textarea id="text_{dup_copy_key}" style="position: absolute; left: -9999px;">{dup_markdown}</textarea>
+                    <textarea id="text_{dup_copy_key}" style="position: absolute; left: -9999px;">{escaped_dup_markdown}</textarea>
                     <button id="btn_{dup_copy_key}" 
                             style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
                                    color: white;
@@ -374,7 +512,10 @@ def render_markdown_question(question_key: str, markdown_content: str, question_
 
 def render_batch_results(batch_key: str, result_data: Dict[str, Any], render_context: str = "results"):
     """
-    Main entry point to render a batch of results in the new simplified format.
+    Main entry point to render a batch of results.
+    
+    Uses the single normalization boundary to convert ANY LLM output to clean markdown.
+    After normalization, this function only deals with {questionX: markdown_string}.
     
     Args:
         batch_key: The question type (e.g., "MCQ", "Case Study", etc.)
@@ -387,47 +528,17 @@ def render_batch_results(batch_key: str, result_data: Dict[str, Any], render_con
         st.warning("No content to display.")
         return
     
-    # Extract JSON objects
-    json_objects = extract_json_objects(text_content)
+    # =======================================================================
+    # SINGLE NORMALIZATION BOUNDARY - All LLM output parsing happens here
+    # =======================================================================
+    questions_dict = normalize_llm_output_to_questions(text_content)
     
-    if not json_objects:
-        st.warning(f"⚠️ Could not parse JSON output for {batch_key}. Showing raw text below.")
-        with st.expander("Show Raw Output"):
+    # Handle normalization failure
+    if not questions_dict:
+        st.error(f"❌ Validator output could not be normalized for {batch_key}")
+        with st.expander("Raw Output"):
             st.text(text_content)
         return
-    
-    # The new format should have a single JSON object with question1, question2, etc. keys
-    # But handle both old validation wrapper and new format
-    questions_dict = {}
-    
-    for obj in json_objects:
-        # Check if this is a validation wrapper (old format)
-        if 'CORRECTED_ITEM' in obj or 'corrected_item' in obj:
-            corrected = obj.get('CORRECTED_ITEM') or obj.get('corrected_item')
-            if isinstance(corrected, dict):
-                # Merge corrected items into questions_dict
-                for key, value in corrected.items():
-                    if key.lower().startswith('question') or key.lower().startswith('q'):
-                        questions_dict[key] = value
-        else:
-            # Direct format - merge all question keys
-            for key, value in obj.items():
-                if key.lower().startswith('question') or key.lower().startswith('q'):
-                    questions_dict[key] = value
-    
-    # ERROR HANDLING: If standard extraction failed, try fallback extraction
-    if not questions_dict:
-        st.info(f"ℹ️ Standard format not detected for {batch_key}. Attempting fallback extraction...")
-        questions_dict = extract_question_values_fallback(json_objects)
-        
-        if questions_dict:
-            st.warning(f"⚠️ Structural mismatch detected! Extracted {len(questions_dict)} questions using fallback mechanism.")
-        else:
-            # Final fallback: show JSON
-            st.error(f"❌ No questions found in output for {batch_key}. Displaying as JSON below.")
-            with st.expander("Show Parsed JSON", expanded=True):
-                st.json(json_objects)
-            return
     
     # Success message
     st.success(f"✅ Successfully parsed {len(questions_dict)} {batch_key} questions")
@@ -437,7 +548,9 @@ def render_batch_results(batch_key: str, result_data: Dict[str, Any], render_con
     sorted_keys = sorted(questions_dict.keys(), 
                         key=lambda x: int(re.search(r'\d+', x).group()) if re.search(r'\d+', x) else 0)
     
-    # Render each question
+    # =======================================================================
+    # RENDER - After normalization, we ONLY have markdown strings
+    # =======================================================================
     for i, q_key in enumerate(sorted_keys, 1):
         # Add prominent separator between questions
         if i > 1:
@@ -447,42 +560,16 @@ def render_batch_results(batch_key: str, result_data: Dict[str, Any], render_con
             st.markdown("---")  # Double divider for prominence
             st.markdown("")
         
-        # Check if this question is marked as new
-        # We need to access the raw dictionary if possible, but questions_dict[q_key] might be just the markdown string.
-        # The 'extract_question_values_fallback' or standard extraction returns strings.
-        # If we modified the storage to be dicts, we need to handle that.
+        # After normalization, content is GUARANTEED to be a string
+        markdown_content = questions_dict[q_key]
         
-        content = questions_dict[q_key]
-        is_new = False
+        # Invariant check (should never fail after normalization)
+        assert isinstance(markdown_content, str), f"Normalization failed: {q_key} is not a string"
         
-        if isinstance(content, dict):
-            # If it's a dict, it might have metadata
-            markdown_content = content.get('content', '') or content.get('value', '') or str(content)
-            is_new = content.get('_is_new', False)
-        else:
-            markdown_content = content
-            # Try to see if this specific key is marked as new in some side-channel state?
-            # For now, we'll rely on the content being wrapped in a dict if it's new, OR
-            # we can check a separate state.
-            # Let's trust the logic in streamlit_app.py to wrap new questions or rely on the dict structure.
-        
-        if is_new:
-            st.info("🆕 **Newly Generated**")
-        
-        # Handle both string and dict content
-        if isinstance(content, dict) and not markdown_content:
-             # Fallback if we couldn't find content key above
-             markdown_content = str(content)
-        if isinstance(markdown_content, dict):
-            # Old format detected - convert to markdown
-            st.warning(f"⚠️ {q_key}: Old format detected. Please update prompts to use new simplified format.")
-            st.json(markdown_content)
-        elif isinstance(markdown_content, str):
-            # New format - render markdown directly
-            render_markdown_question(q_key, markdown_content, batch_key, batch_key, render_context)
-        else:
-            st.error(f"⚠️ {q_key}: Unexpected content type: {type(markdown_content)}")
+        # Render markdown directly - no JSON parsing, no guessing
+        render_markdown_question(q_key, markdown_content, batch_key, batch_key, render_context)
     
     # Add spacing at the end
     st.markdown("")
     st.markdown("")
+

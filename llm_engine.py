@@ -17,6 +17,11 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
+import threading
+
+# Global lock for file reading to prevent race conditions during parallel batches
+file_read_lock = threading.Lock()
+
 def upload_files_to_gemini(files: List, api_key: str) -> List:
     """
     Upload multiple PDF and image files to Gemini File API and return file objects.
@@ -31,24 +36,29 @@ def upload_files_to_gemini(files: List, api_key: str) -> List:
     if not files:
         return []
     
-    client = genai.Client(api_key=api_key)
+    client = genai.Client(api_key=api_key, http_options={'timeout': 600000})
     uploaded_files = []
     
     for file in files:
+        tmp_path = None
         try:
-            # Reset file pointer to beginning
-            file.seek(0)
+            # Thread-safe file reading
+            # We must lock because multiple parallel batches might try to seek/read 
+            # the SAME shared file object (universal_pdf) simultaneously.
+            with file_read_lock:
+                # Reset file pointer to beginning
+                file.seek(0)
+                
+                # Get file extension from filename
+                filename = getattr(file, 'name', 'uploaded_file')
+                file_ext = Path(filename).suffix if '.' in filename else '.pdf'
+                
+                # Create a temporary file (File API needs file path)
+                with tempfile.NamedTemporaryFile(delete=False, suffix=file_ext) as tmp_file:
+                    tmp_file.write(file.read())
+                    tmp_path = tmp_file.name
             
-            # Get file extension from filename
-            filename = getattr(file, 'name', 'uploaded_file')
-            file_ext = Path(filename).suffix if '.' in filename else '.pdf'
-            
-            # Create a temporary file (File API needs file path)
-            with tempfile.NamedTemporaryFile(delete=False, suffix=file_ext) as tmp_file:
-                tmp_file.write(file.read())
-                tmp_path = tmp_file.name
-            
-            # Upload to Gemini File API
+            # Upload to Gemini File API (OUTSIDE the lock for parallelism)
             logger.info(f"Uploading file to Gemini File API: {filename}")
             
             uploaded = client.files.upload(file=tmp_path)
@@ -56,12 +66,17 @@ def upload_files_to_gemini(files: List, api_key: str) -> List:
             
             logger.info(f"Successfully uploaded: {filename} (URI: {uploaded.name})")
             
-            # Clean up temp file
-            os.remove(tmp_path)
-            
         except Exception as e:
             logger.error(f"Failed to upload file {getattr(file, 'name', 'unknown')}: {e}")
             # Continue with other files even if one fails
+            
+        finally:
+            # Clean up temp file
+            if tmp_path and os.path.exists(tmp_path):
+                try:
+                    os.remove(tmp_path)
+                except Exception as cleanup_error:
+                   logger.warning(f"Failed to cleanup temp file {tmp_path}: {cleanup_error}")
     
     return uploaded_files
 
@@ -90,7 +105,10 @@ def run_gemini(
     start = time.time()
     
     try:
-        client = genai.Client(api_key=api_key)
+        # Initialize client with extended timeout (10 minutes) to accommodate thinking models
+        # Initialize client with extended timeout (10 minutes = 600,000ms if units are ms, or long duration if seconds)
+        # The API requires a deadline >= 10s for thinking models.
+        client = genai.Client(api_key=api_key, http_options={'timeout': 600000})
         
         # Log execution start with file info
         if file_metadata and files:

@@ -28,6 +28,51 @@ QUESTION_TYPE_MAPPING = {
     "Descriptive w/ Subquestions": "descriptive_subq"
 }
 
+# Core Skill Extraction Instructions (appended to prompts when enabled)
+CORE_SKILL_EXTRACTION = """
+
+## CORE SKILL METADATA EXTRACTION (MANDATORY)
+
+Finally, verify the global list of generated questions.
+Ouput a JSON block containing the **CUMULATIVE** metadata (The "Existing Knowledge Base" provided above PLUS the metadata for the NEW questions you just generated).
+
+Structure:
+- Return a JSON object where each key maps to a SINGLE STRING containing comma-separated values.
+- The order must follow the sequence of generation (Old questions first, then New questions).
+
+```json
+{
+  "core_equation": "old_eq1, old_eq2, ..., new_eq1, new_eq2",
+  "solution_pattern": "old_pat1, old_pat2, ..., new_pat1, new_pat2",
+  "scenario_signature": "old_sig1, old_sig2, ..., new_sig1, new_sig2",
+  "context_domain": "old_dom1, old_dom2, ..., new_dom1, new_dom2",
+  "answer_form": "old_form1, old_form2, ..., new_form1, new_form2"
+}
+```
+
+Rules:
+1. **Concatenate**: Take the "Existing Knowledge Base" values and append your new values (comma-separated).
+2. Format: lowercase snake_case only.
+3. No numbers in values.
+4. Values must be short (1–3 words).
+5. Ensure the list grows with each batch.
+"""
+
+
+# Previous Batch Metadata Template (injected when previous batch metadata exists)
+PREVIOUS_BATCH_METADATA_TEMPLATE = """
+
+## PREVIOUS BATCH METADATA (CUMULATIVE CONTEXT)
+
+The following represents the metadata for ALL questions generated so far in this sequence.
+You must APPEND your new questions' metadata to this list.
+
+Existing Knowledge Base:
+{previous_metadata}
+
+Generate NEW questions that are distinct from the above.
+"""
+
 
 def build_topics_section(questions: List[Dict[str, Any]], batch_key: str = "") -> str:
     """
@@ -129,6 +174,23 @@ def build_topics_section(questions: List[Dict[str, Any]], batch_key: str = "") -
             else:
                 line = f'    - Topic: "{topic}" → Questions: 1{mcq_type_str}{sb_str}{fib_type_str}{descriptive_type_str}, DOK: {dok}, Marks: {marks}, Taxonomy: {taxonomy} | New Concept Source: {new_concept_label} | Additional Notes Source: {additional_notes_label}'
         
+        
+        # Add regeneration reason if present (shown before original content)
+        regeneration_reason = q.get('regeneration_reason', '')
+        if regeneration_reason:
+            lines.append(f'      [USER FEEDBACK / REGENERATION REASON]:')
+            lines.append(f'      "{regeneration_reason}"')
+            lines.append('')
+        
+        # Add original text if present (Regeneration Context)
+        original_text = q.get('original_text', '')
+        if original_text:
+            lines.append(f'      [ORIGINAL QUESTION CONTENT for Context]:')
+            # Indent the original text for clarity
+            indented_text = '\n'.join([f'      {l}' for l in original_text.split('\n')])
+            lines.append(indented_text)
+            lines.append(f'      [END ORIGINAL CONTENT]')
+            lines.append('')
         # Add per-question additional notes if present
         if additional_notes_text:
             # For questions with subparts (compact mode), add notes inline
@@ -203,7 +265,8 @@ def build_prompt_for_batch(
     batch_key: str,
     questions: List[Dict[str, Any]],
     general_config: Dict[str, Any],
-    type_config: Dict[str, Any] = None
+    type_config: Dict[str, Any] = None,
+    previous_batch_metadata: Dict[str, Any] = None
 ) -> Dict[str, Any]:
     """
     Build a complete prompt for a batch of questions.
@@ -213,6 +276,7 @@ def build_prompt_for_batch(
         questions: List of question configurations (all same type)
         general_config: General configuration
         type_config: Type-specific configuration (e.g., subparts for Multi-Part)
+        previous_batch_metadata: Metadata from previous batches for core skill extraction
     
     Returns:
         Dictionary with 'prompt' (str), 'files' (list), and 'file_metadata' (dict)
@@ -452,6 +516,30 @@ def build_prompt_for_batch(
     
     for placeholder, value in replacements.items():
         prompt = prompt.replace(placeholder, value)
+    
+    # Core Skill Extraction: Append instructions if enabled
+    core_skill_enabled = general_config.get('core_skill_enabled', False)
+    if core_skill_enabled:
+        # Inject previous batch metadata if available
+        if previous_batch_metadata:
+            # Format metadata as cleanly as possible (comma separated lines)
+            # Input: {"key": "val1, val2", "key2": "v1, v2"} or {"key": ["v1", "v2"]}
+            # We standardize to comma separated string
+            formatted_lines = []
+            for k, v in previous_batch_metadata.items():
+                val_str = ""
+                if isinstance(v, list):
+                    val_str = ", ".join(str(x) for x in v)
+                else:
+                    val_str = str(v)
+                formatted_lines.append(f"{k}: {val_str}")
+            
+            metadata_str = "\n".join(formatted_lines)
+            prompt += PREVIOUS_BATCH_METADATA_TEMPLATE.format(previous_metadata=metadata_str)
+        
+        # Append core skill extraction instructions
+        prompt += CORE_SKILL_EXTRACTION
+        logger.info(f"Core skill extraction enabled for batch: {batch_key}")
     
     logger.info(f"Prompt built: {len(prompt)} characters, Files: {len(files) > 0}")
     

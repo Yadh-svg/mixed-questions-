@@ -93,7 +93,7 @@ case_study_maths: |
           
     5. Scenario Flow and Realism:
       - The scenario must be realistic, logically consistent, and contextually appropriate for Indian settings (names, ₹, metric units, etc.).
-      - Names should be simple and commonly used  (eg : Jack	Anna  Ryan	Emily	Sam	Maria	John	Maya	Anand	)
+      - Names should be simple and commonly used  (eg : Jack	Anna  Ryan	Emily	Sam	Maria	John	Maya	.	)
       - It should be at least four lines long and flow smoothly with clear connections between sentences.
       - Avoid abrupt or mechanical data statements — the narrative must feel natural and meaningful.
 
@@ -747,7 +747,7 @@ case_study_maths_pdf: |
             
       5. Scenario Flow and Realism:
         - The scenario must be realistic, logically consistent, and contextually appropriate for Indian settings (names, ₹, metric units, etc.).
-        - Names should be simple and commonly used  (eg : Jack	Anna  Ryan	Emily	Sam	Maria	John	Maya	Anand	)
+        - Names should be simple and commonly used  (eg : Jack	Anna  Ryan	Emily	Sam	Maria	John	Maya	.	)
         - It should be at least four lines long and flow smoothly with clear connections between sentences.
         - Avoid abrupt or mechanical data statements — the narrative must feel natural and meaningful.
 
@@ -1642,7 +1642,7 @@ assertion_reasoning: |
       - Clear justification for why the correct option is correct
     - Use equations, examples, or properties where needed.
     - Keep the language student-friendly and clear.
-    - Names should be simple and commonly used  (eg : Jack	Anna  Ryan	Emily	Sam	Maria	John	Maya	Anand	)
+    - Names should be simple and commonly used  (eg : Jack	Anna  Ryan	Emily	Sam	Maria	John	Maya	.	)
 
     ---
 
@@ -2208,7 +2208,7 @@ assertion_reasoning_pdf: |
       - Clear justification for why the correct option is correct
     - Use equations, examples, or properties where needed.
     - Keep the language student-friendly and clear.
-    - Names should be simple and commonly used  (eg : Jack	Anna  Ryan	Emily	Sam	Maria	John	Maya	Anand	)
+    - Names should be simple and commonly used  (eg : Jack	Anna  Ryan	Emily	Sam	Maria	John	Maya	.	)
 
     ---
 
@@ -2850,7 +2850,7 @@ multi_part_maths: |
   =====================================================================================
 
   ## CONTEXT RULE (DIRECT & CONCISE)
-    - Names should be simple and commonly used  (eg : Jack	Anna  Ryan	Emily	Sam	Maria	John	Maya	Anand	)
+    - Names should be simple and commonly used  (eg : Jack	Anna  Ryan	Emily	Sam	Maria	John	Maya	.	)
     - A small 1–2 line direct context MAY be used to introduce the object or situation.
     - **STRICTLY FORBIDDEN**: Classroom scenarios, student/teacher interactions, or "observer" narratives.
       - ❌ "A student is learning about triangles..."
@@ -3032,7 +3032,8 @@ multi_part_maths: |
       - Avoid illogical or exaggerated data (e.g., “a 1.2 m hallway” or “a 10 kg paper sheet”).
       - Keep the scenario mathematically sound and error-free.
       - The scenario must naturally arise from the given values, rather than creating a story first and then fitting numbers into it.
-
+      - In multi-part questions, do not use prompts like “state with a reason”, “explain”, or any instruction that allows open-ended justification; each subpart must be strictly objective and well-defined.
+      - Example: Instead of “State with a reason whether the five most challenging puzzles form a set”, use “Identify whether the collection of puzzles numbered 1 to 5 in a contest is well-defined as a set based on the definition of a set.”
    ## Topic & Subtopic Usage Rule (STRICT)
 
     ### 1. Handling Topics and Subtopics
@@ -3693,7 +3694,7 @@ multi_part_maths_pdf: |
     =====================================================================================
 
     ## CONTEXT RULE (DIRECT & CONCISE)
-      - Names should be simple and commonly used  (eg : Jack	Anna  Ryan	Emily	Sam	Maria	John	Maya	Anand	)
+      - Names should be simple and commonly used  (eg : Jack	Anna  Ryan	Emily	Sam	Maria	John	Maya	.	)
       - A small 1–2 line direct context MAY be used to introduce the object or situation.
       - **STRICTLY FORBIDDEN**: Classroom scenarios, student/teacher interactions, or "observer" narratives.
         - ❌ "A student is learning about triangles..."
@@ -3876,7 +3877,8 @@ multi_part_maths_pdf: |
         - Avoid illogical or exaggerated data (e.g., "a 1.2 m hallway" or "a 10 kg paper sheet").
         - Keep the scenario mathematically sound and error-free.
         - The scenario must naturally arise from the given values, rather than creating a story first and then fitting numbers into it.
-
+        - In multi-part questions, do not use prompts like “state with a reason”, “explain”, or any instruction that allows open-ended justification; each subpart must be strictly objective and well-defined.
+        - Example: Instead of “State with a reason whether the five most challenging puzzles form a set”, use “Identify whether the collection of puzzles numbered 1 to 5 in a contest is well-defined as a set based on the definition of a set.”
     ## Topic & Subtopic Usage Rule (STRICT)
 
       ### 1. Handling Topics and Subtopics
@@ -4384,7 +4386,7 @@ mcq_questions: |
 
   1. **Question**: A clear, well-formulated question that tests the specified concept
      - Use student-friendly language appropriate for {{Grade}}
-     - Names should be simple and commonly used  (eg : Jack	Anna  Ryan	Emily	Sam	Maria	John	Maya	Anand	)
+     - Names should be simple and commonly used  (eg : Jack	Anna  Ryan	Emily	Sam	Maria	John	Maya	.	)
      - Avoid ambiguous wording
      - Include all necessary information
      - Use correct mathematical notation
@@ -5289,7 +5291,7 @@ mcq_questions_pdf: |
 
   1. **Question**: A clear, well-formulated question that tests the specified concept
      - Use student-friendly language appropriate for {{Grade}}
-     - Names should be simple and commonly used  (eg : Jack	Anna  Ryan	Emily	Sam	Maria	John	Maya	Anand	)
+     - Names should be simple and commonly used  (eg : Jack	Anna  Ryan	Emily	Sam	Maria	John	Maya	.	)
      - Avoid ambiguous wording
      - Include all necessary information
      - Use correct mathematical notation
@@ -6083,7 +6085,7 @@ FIB: |
     Topic Used: Calendar Reading
     
     Question:
-    The manufacturing details of moisturizer which Anandi uses is as given in the image.
+    The manufacturing details of moisturizer which .i uses is as given in the image.
     i) If it expired 2 months ago, then the current month is |TEXT 1|.
     ii) She restocked with another moisturizer of the same brand 4 months before the expiry of the first moisturizer.
     It was manufactured on the same month of purchasing.
@@ -6097,14 +6099,14 @@ FIB: |
     
     **INCORRECT Example (Missing roman numerals when required)**:
     ```
-    ❌ The manufacturing details of moisturizer which Anandi uses is as given in the image.
+    ❌ The manufacturing details of moisturizer which .i uses is as given in the image.
     If it expired 2 months ago, then the current month is |TEXT 1|.
     She restocked with another moisturizer... will expire on |TEXT 2| / |TEXT 3|.
     ```
     ☝️ This is WRONG because it doesn't use i), ii) labels when subparts are specified!
     
     Instructions for generating questions:
-    - Names should be simple and commonly used  (eg : Jack	Anna  Ryan	Emily	Sam	Maria	John	Maya	Anand	)
+    - Names should be simple and commonly used  (eg : Jack	Anna  Ryan	Emily	Sam	Maria	John	Maya	.	)
   - THE QUESTION SHOULD BE STRICTLY FRON THE TOPIC AND SHOULD USE ALL ITS CORRECT SUB TOPIC FOR EACH QUESTIONS 
     1. UNIQUE FIB QUESTION DESIGN — CORE UNIQUENESS RULES
 
@@ -6924,7 +6926,7 @@ FIB_pdf: |
     Topic Used: Calendar Reading
     
     Question:
-    The manufacturing details of moisturizer which Anandi uses is as given in the image.
+    The manufacturing details of moisturizer which .i uses is as given in the image.
     i) If it expired 2 months ago, then the current month is |TEXT 1|.
     ii) She restocked with another moisturizer of the same brand 4 months before the expiry of the first moisturizer.
     It was manufactured on the same month of purchasing.
@@ -6938,14 +6940,14 @@ FIB_pdf: |
     
     **INCORRECT Example (Missing roman numerals when required)**:
     ```
-    ❌ The manufacturing details of moisturizer which Anandi uses is as given in the image.
+    ❌ The manufacturing details of moisturizer which .i uses is as given in the image.
     If it expired 2 months ago, then the current month is |TEXT 1|.
     She restocked with another moisturizer... will expire on |TEXT 2| / |TEXT 3|.
     ```
     ☝️ This is WRONG because it doesn't use i), ii) labels when subparts are specified!
     
     Instructions for generating questions:
-    - Names should be simple and commonly used  (eg : Jack	Anna  Ryan	Emily	Sam	Maria	John	Maya	Anand	)
+    - Names should be simple and commonly used  (eg : Jack	Anna  Ryan	Emily	Sam	Maria	John	Maya	.	)
   - THE QUESTION SHOULD BE STRICTLY FRON THE TOPIC AND SHOULD USE ALL ITS CORRECT SUB TOPIC FOR EACH QUESTIONS 
     1. UNIQUE FIB QUESTION DESIGN — CORE UNIQUENESS RULES
 
@@ -7552,7 +7554,7 @@ FIB_pdf: |
 descriptive: |
   You are a mathematics teacher who creates clear, grade-appropriate descriptive questions and detailed solutions for NCERT GRADE 1-12. The questions as well as the solution should be of higher quality(For Final exams).
   use Indian cultural names and contexts.
-  - Names should be simple and commonly used  (eg : Jack	Anna  Ryan	Emily	Sam	Maria	John	Maya	Anand	)
+  - Names should be simple and commonly used  (eg : Jack	Anna  Ryan	Emily	Sam	Maria	John	Maya	.	)
 
   Strictly follow the provided Concepts and Resource Material.
 
@@ -7647,7 +7649,7 @@ descriptive: |
         - If generating multiple questions, vary the context, numbers, and reasoning path.
         - "Like should be unique".
     - **Context**: Use Indian cultural names (e.g., Aarav, Diya, Raju, Priya), locations, and currency (₹) where applicable.
-    - **Context**: - Names should be simple and commonly used  (eg : Jack	Anna  Ryan	Emily	Sam	Maria	John	Maya	Anand	)
+    - **Context**: - Names should be simple and commonly used  (eg : Jack	Anna  Ryan	Emily	Sam	Maria	John	Maya	.	)
     - **Age Appropriateness**: 
         - Ensure DOK level and language are suitable for {{Grade}}.
         - Do not use vocabulary solely to increase difficulty. Difficulty must come from mathematical reasoning.
@@ -8191,7 +8193,7 @@ descriptive: |
 descriptive_pdf: |
   You are a mathematics teacher who creates clear, grade-appropriate descriptive questions and detailed solutions for NCERT GRADE 1-12. The questions as well as the solution should be of higher quality(For Final exams).
   use Indian cultural names and contexts.
-  - Names should be simple and commonly used  (eg : Jack	Anna  Ryan	Emily	Sam	Maria	John	Maya	Anand	)
+  - Names should be simple and commonly used  (eg : Jack	Anna  Ryan	Emily	Sam	Maria	John	Maya	.	)
   Strictly follow the provided Concepts and Resource Material.
 
    ## INPUT DETAILS:
@@ -8299,7 +8301,7 @@ descriptive_pdf: |
         - If generating multiple questions, vary the context, numbers, and reasoning path.
         - "Like should be unique".
     - **Context**: Use Indian cultural names (e.g., Aarav, Diya, Raju, Priya), locations, and currency (₹) where applicable.
-    - Names should be simple and commonly used  (eg : Jack	Anna  Ryan	Emily	Sam	Maria	John	Maya	Anand	)
+    - Names should be simple and commonly used  (eg : Jack	Anna  Ryan	Emily	Sam	Maria	John	Maya	.	)
 
     - **Age Appropriateness**: 
         - Ensure DOK level and language are suitable for {{Grade}}.
@@ -8852,7 +8854,7 @@ descriptive_pdf: |
 descriptive_subq: |
   You are a mathematics teacher who creates clear, grade-appropriate descriptive questions with sub-parts. The questions as well as the solution should be of higher quality(For Final exams).
   use Indian cultural names and contexts.
-  - Names should be simple and commonly used  (eg : Jack	Anna  Ryan	Emily	Sam	Maria	John	Maya	Anand	)
+  - Names should be simple and commonly used  (eg : Jack	Anna  Ryan	Emily	Sam	Maria	John	Maya	.	)
   Strictly follow the provided Concepts and Resource Material.
 
    ## INPUT DETAILS:
@@ -8991,7 +8993,7 @@ descriptive_subq: |
         - If generating multiple questions, vary the context, numbers, and reasoning path.
     
     - **Context**: Use Indian cultural names (e.g., Aarav, Diya, Raju, Priya), locations, and currency (₹) where applicable.
-    - Names should be simple and commonly used  (eg : Jack	Anna  Ryan	Emily	Sam	Maria	John	Maya	Anand	)
+    - Names should be simple and commonly used  (eg : Jack	Anna  Ryan	Emily	Sam	Maria	John	Maya	.	)
 
     - **Age Appropriateness**: 
         - Ensure DOK level and language are suitable for {{Grade}}.
@@ -9548,7 +9550,7 @@ descriptive_subq: |
 descriptive_subq_pdf: |
   You are a mathematics teacher who creates clear, grade-appropriate descriptive questions with sub-parts. The questions as well as the solution should be of higher quality(For Final exams).
   use Indian cultural names and contexts.
-  - Names should be simple and commonly used  (eg : Jack	Anna  Ryan	Emily	Sam	Maria	John	Maya	Anand	)
+  - Names should be simple and commonly used  (eg : Jack	Anna  Ryan	Emily	Sam	Maria	John	Maya	.	)
   Strictly follow the provided Concepts and Resource Material.
 
    ## INPUT DETAILS:
@@ -9709,7 +9711,7 @@ descriptive_subq_pdf: |
         - If generating multiple questions, vary the context, numbers, and reasoning path.
     
     - **Context**: Use Indian cultural names (e.g., Aarav, Diya, Raju, Priya), locations, and currency (₹) where applicable.
-    - Names should be simple and commonly used  (eg : Jack	Anna  Ryan	Emily	Sam	Maria	John	Maya	Anand	)
+    - Names should be simple and commonly used  (eg : Jack	Anna  Ryan	Emily	Sam	Maria	John	Maya	.	)
 
     - **Age Appropriateness**: 
         - Ensure DOK level and language are suitable for {{Grade}}.

@@ -363,6 +363,15 @@ validation_prompt: |
 
     ## Distractor analysis table structure :
       Generate the distractor analysis table using Word-compatible Markdown. Use full column separators, padded cells, and extended dash lines so Word recognizes it as a table. Do not use compact ‘|---|---|’ separators. Each column must have descriptive headers and consistent spacing
+      Given below is the distractor analysis table with proper spacing and Word recognizable format, Make sure the table format will be like this
+      ### DISTRACTOR ANALYSIS
+
+      | Option | Misconception |
+      |--------|---------------|
+      | **A – Comprehension Error** | You likely chose the value of the 20th term given in the question (80) instead of calculating the **sum of all 20 terms**. The question asks for the total sum, not just the value of the last term. |
+      | **B – Conceptual Error** | You may have used the correct values but misremembered the formula, **subtracting the first term from the last term instead of adding them**. This leads to the calculation 10 × (80 − 4) = 10 × 76 = 760. The formula requires the sum of the first and last terms. |
+      | **C – Computational Error** | You identified the correct formula and values but made a **calculation error**. You may have rounded (4 + 80) to 80, leading to 10 × 80 = 800. Precision in substitution and arithmetic is essential. |
+
     ## REVISION & OUTPUT CONTROL RULES:
         If the distractor analysis is not already in a Word-compatible Markdown table, convert it. Use padded cells, full-width dash separators, and clear column headers so it renders correctly in Word, Markdown, and Google Docs
 

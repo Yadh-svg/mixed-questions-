@@ -157,6 +157,17 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
+# Core Skill Extraction Toggle
+st.markdown("### 🔧 Core Skill Extraction")
+core_skill_enabled = st.checkbox(
+    "Enable Core Skill Extraction",
+    key="core_skill_enabled",
+    help="When enabled, extracts metadata (core_equation, solution_pattern, scenario_signature, etc.) from each batch of questions and passes it to subsequent batches to ensure uniqueness and avoid duplicate scenarios."
+)
+if core_skill_enabled:
+    st.info("✅ Core Skill enabled. Sequential processing will be used for batches of the same type to pass metadata between them.")
+st.markdown("---")
+
 # Sidebar for API configuration
 with st.sidebar:
     st.markdown("### ⚙️ Configuration")
@@ -303,6 +314,12 @@ with tab1:
         # Convert pasted bytes to file-like object
         st.session_state.universal_pdf = PastedFile(pasted_content, name="pasted_universal_image.png")
         st.session_state.universal_source = 'paste'
+    
+    # Also sync immediately if uploader has a file (callback runs on next rerun)
+    # This ensures the session state is updated in the same script run
+    if universal_pdf_upload and not st.session_state.get('universal_pdf'):
+        st.session_state.universal_pdf = universal_pdf_upload
+        st.session_state.universal_source = 'upload'
     
     # Check if we have a valid file now
     universal_pdf = st.session_state.get('universal_pdf')
@@ -1461,7 +1478,8 @@ with tab1:
                         'new_concept': new_concept,
                         'additional_notes': additional_notes,
                         'api_key': api_key,
-                        'universal_pdf': st.session_state.get('universal_pdf')  # Pass universal PDF
+                        'universal_pdf': st.session_state.get('universal_pdf'),  # Pass universal PDF
+                        'core_skill_enabled': st.session_state.get('core_skill_enabled', False)  # Core skill extraction
                     }
                     
                     # Process each question type
@@ -1635,7 +1653,24 @@ with tab2:
                 st.write(f"• **{b_key}**: Questions {sorted(indices)}")
                 
             if st.button("♻️ Regenerate Selected", type="primary", use_container_width=True):
-                if not api_key:
+                # Collect reasons for each selected question
+                regeneration_reasons_map = {}
+                missing_reasons = []
+                
+                for item in regen_selection:
+                    if ':' in item:
+                        b_key, q_num = item.rsplit(':', 1)
+                        regen_reason_key = f"regen_reason_{b_key}_{q_num}"
+                        reason = st.session_state.get(regen_reason_key, "").strip()
+                        
+                        if not reason:
+                            missing_reasons.append(f"Question {q_num} in {b_key}")
+                        else:
+                            regeneration_reasons_map[item] = reason
+                
+                if missing_reasons:
+                    st.error(f"❌ Please provide a reason for: {', '.join(missing_reasons)}")
+                elif not api_key:
                     st.error("❌ Please enter your Gemini API key in the sidebar")
                 else:
                     with st.spinner("Regenerating specific questions..."):
@@ -1649,13 +1684,53 @@ with tab2:
                         }
                         
                         # Need to reconstruct the full original config list
+                        # AND attach the original text for context
+                        
+                        # Helper to get original text
+                        from result_renderer import extract_json_objects, normalize_llm_output_to_questions
+                        
                         full_config_list = []
+                        
+                        # Pre-parse all existing outputs into a lookup map: map[batch_key][question_idx] = text
+                        # question_idx is 1-based index in the batch
+                        existing_content_map = {}
+                        
+                        if st.session_state.generated_output:
+                            for b_key, b_res in st.session_state.generated_output.items():
+                                val_res = b_res.get('validated', {})
+                                text = val_res.get('text', '')
+                                if text:
+                                    # Normalize to get clear {question1: "content"} map
+                                    q_map = normalize_llm_output_to_questions(text)
+                                    existing_content_map[b_key] = q_map
+                        
                         for q_type, config in st.session_state.question_types_config.items():
-                            for q in config.get('questions', []):
+                            for i, q in enumerate(config.get('questions', []), 1):
                                 q_copy = q.copy()
                                 q_copy['type'] = q_type
+                                
+                                # Check if this question is in the regeneration map
+                                # regeneration_map keys are batch_keys (e.g. "MCQ - Batch 1")
+                                # We need to match q_type (e.g. "MCQ") to the batch key? 
+                                # NO, the regeneration map has specific batch keys.
+                                # The `regenerate_specific_questions_pipeline` logic filters by matching base type.
+                                # But we need to know WHICH specific question this is to attach the text.
+                                
+                                # The validation loop in `regenerate_specific_questions_pipeline` calculates global index.
+                                # We can do the reverse here or just attach if we can identify it.
+                                # But simpler: `regenerate_specific_questions_pipeline` has the logic to find the specific config.
+                                # We should pass the LOOKUP MAP to the pipeline or general_config?
+                                # No, we are building `full_config_list`.
+                                # We don't validly know which batch this `q` belongs to easily without re-simulating the batching logic.
+                                
+                                # ALTERNATIVE: Use `general_config` to pass the `existing_content_map`.
+                                # The pipeline can then look it up when it identifies the question.
+                                
                                 full_config_list.append(q_copy)
                                 
+                        general_config['existing_content_map'] = existing_content_map
+                        general_config['regeneration_reasons_map'] = regeneration_reasons_map
+
                         # Run regeneration
                         import asyncio
                         try:
@@ -1669,93 +1744,55 @@ with tab2:
                                 st.error(f"Regeneration failed: {regen_results['error']}")
                             else:
                                 # Merge results back into st.session_state.generated_output
-                                # We need to update existing batches with new question content
+                                merged_count = 0
                                 
                                 for batch_key, batch_res in regen_results.items():
                                     val_res = batch_res.get('validated', {})
                                     new_text_content = val_res.get('text', '')
                                     
                                     if new_text_content and batch_key in st.session_state.generated_output:
-                                        # Parse the NEW output
-                                        from result_renderer import extract_json_objects
-                                        new_json_objects = extract_json_objects(new_text_content)
+                                        from result_renderer import normalize_llm_output_to_questions
                                         
-                                        # Extract new questions
-                                        new_questions_map = {}
-                                        for obj in new_json_objects:
-                                            # Handle wrappers if any (similar to renderer logic)
-                                            target_obj = obj
-                                            if 'CORRECTED_ITEM' in obj: target_obj = obj['CORRECTED_ITEM']
-                                            elif 'corrected_item' in obj: target_obj = obj['corrected_item']
-                                            
-                                            for k, v in target_obj.items():
-                                                if k.lower().startswith('question') or k.lower().startswith('q'):
-                                                    new_questions_map[k] = v
-                                        
-                                        # Parse the EXISTING output to update it
+                                        # Parse new and existing content using normalize function
+                                        new_questions_map = normalize_llm_output_to_questions(new_text_content)
                                         existing_text = st.session_state.generated_output[batch_key]['validated']['text']
-                                        existing_json_objects = extract_json_objects(existing_text)
+                                        existing_questions_map = normalize_llm_output_to_questions(existing_text)
                                         
-                                        # We assume the existing output is in a single main object or list of objects.
-                                        # We need to act carefully. Best strategy:
-                                        # 1. Load existing questions into a dict map.
-                                        # 2. Update specific keys.
-                                        # 3. Dump back to JSON string.
-                                        
-                                        existing_questions_map = {}
-                                        # Flatten existing
-                                        for obj in existing_json_objects:
-                                             target_obj = obj
-                                             if 'CORRECTED_ITEM' in obj: target_obj = obj['CORRECTED_ITEM']
-                                             elif 'corrected_item' in obj: target_obj = obj['corrected_item']
-                                             for k, v in target_obj.items():
-                                                if k.lower().startswith('question') or k.lower().startswith('q'):
-                                                    existing_questions_map[k] = v
-                                                    
-                                        # NOW REPLACE
-                                        # The new output usually returns "question1", "question2"... 
-                                        # But these "question1" correspond to the 1st, 2nd... question requested in regeneration,
-                                        # NOT necessarily "question3" of the original set if we requested Q3.
-                                        # wait... `batch_processor` usually generates sequential keys question1, question2...
-                                        # WE NEED TO MAP THEM BACK to the requested indices.
-                                        
+                                        # Get requested indices for this batch
                                         requested_indices = sorted(regen_map.get(batch_key, []))
                                         
                                         # Sort new keys to align with requested indices
-                                        # e.g. requested [3, 5]. New result has "question1", "question2".
-                                        # new "question1" -> becomes original "question3"
-                                        # new "question2" -> becomes original "question5"
-                                        
                                         import re
                                         sorted_new_keys = sorted(new_questions_map.keys(), 
                                             key=lambda x: int(re.search(r'\d+', x).group()) if re.search(r'\d+', x) else 0)
                                             
                                         if len(sorted_new_keys) != len(requested_indices):
-                                            st.warning(f"Mismatch in count for {batch_key}: Requested {len(requested_indices)}, got {len(sorted_new_keys)} new questions. Attempting best fit.")
-                                            
+                                            st.warning(f"⚠️ Expected {len(requested_indices)} questions but got {len(sorted_new_keys)}. Attempting best fit.")
+                                        
+                                        # Replace questions at requested indices
                                         for i, new_k in enumerate(sorted_new_keys):
                                             if i < len(requested_indices):
                                                 original_idx = requested_indices[i]
                                                 original_k = f"question{original_idx}"
-                                                
-                                                # Update map with new content AND new flag
-                                                # We store it as a dict now to persist the flag
-                                                existing_questions_map[original_k] = {
-                                                    'content': new_questions_map[new_k],
-                                                    '_is_new': True
-                                                }
+                                                existing_questions_map[original_k] = new_questions_map[new_k]
+                                                merged_count += 1
                                         
-                                        # Serialize back to JSON string
+                                        # Serialize and update session state
                                         import json
                                         updated_json_str = json.dumps(existing_questions_map, indent=2)
-                                        
-                                        # Update session state
                                         st.session_state.generated_output[batch_key]['validated']['text'] = updated_json_str
                                         
-                                st.success("✅ Regeneration complete!")
-                                # Clear selection
-                                st.session_state.regen_selection = set()
-                                st.rerun()
+                                    elif not new_text_content:
+                                        st.error(f"❌ No new content generated for {batch_key}")
+                                    elif batch_key not in st.session_state.generated_output:
+                                        st.error(f"❌ Batch key '{batch_key}' not found in session state!")
+                                
+                                if merged_count > 0:
+                                    st.success(f"✅ Regenerated {merged_count} question(s) successfully!")
+                                    st.session_state.regen_selection = set()
+                                    st.rerun()  # Instant reload with updated questions
+                                else:
+                                    st.error("❌ Regeneration failed. Please try again.")
                                 
                         except Exception as e:
                             st.error(f"Error running regeneration: {e}")

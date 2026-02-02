@@ -277,11 +277,22 @@ def render_markdown_question(question_key: str, markdown_content: str, question_
             
             # Add "Select for Regeneration" checkbox
             regen_key = f"regen_select_{batch_key}_{q_num}"
-            if st.checkbox("Select for Regeneration", key=regen_key, help="Select to regenerate ONLY this question"):
+            regen_selected = st.checkbox("Select for Regeneration", key=regen_key, help="Select to regenerate ONLY this question")
+            
+            if regen_selected:
                 # Add to a global set of selected questions for regeneration
                 if 'regen_selection' not in st.session_state:
                     st.session_state.regen_selection = set()
                 st.session_state.regen_selection.add(f"{batch_key}:{q_num}")
+                
+                # Show reason input field when checkbox is selected
+                regen_reason_key = f"regen_reason_{batch_key}_{q_num}"
+                st.text_input(
+                    "Reason for Regeneration (Mandatory)",
+                    placeholder="e.g., Options are incorrect, off-topic, needs clarity...",
+                    key=regen_reason_key,
+                    help="Explain what needs to be fixed or changed in this question"
+                )
             else:
                 if 'regen_selection' in st.session_state:
                     st.session_state.regen_selection.discard(f"{batch_key}:{q_num}")

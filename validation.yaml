@@ -360,6 +360,27 @@ validation_prompt: |
       ### OUTPUT FORMAT
       Return only the corrected question without explanations.
 
+      ## FORBIDDEN QUESTION / ANSWER LANGUAGE (STRICT):
+
+        The question, options, solution, key idea, and distractor analysis
+        MUST NOT contain any meta-references to a 
+        textbook, PDF, or provided material.
+
+        This includes (but is not limited to):
+
+        ❌ "According to the textbook..."
+        ❌ "According to the definition provided in the chapter..."
+        ❌ "The story on page 13 mentions..."
+        ❌ "The definition on page X specifically states..."
+        ❌ "Based on the passage/story/definition provided..."
+        ❌ "As described in the concept/chapter..."
+        ❌ "As stated in the text"
+    
+
+        REQUIRED STYLE:
+        All references must be explicit and self-contained.
+        Remove any of the reference to the textbook if found
+
 
     ## Distractor analysis table structure :
       Generate the distractor analysis table using Word-compatible Markdown. Use full column separators, padded cells, and extended dash lines so Word recognizes it as a table. Do not use compact ‘|---|---|’ separators. Each column must have descriptive headers and consistent spacing

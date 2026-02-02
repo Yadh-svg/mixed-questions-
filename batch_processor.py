@@ -8,6 +8,8 @@ from typing import List, Dict, Any
 from collections import defaultdict
 import logging
 
+import os
+
 from llm_engine import run_gemini_async
 from prompt_builder import build_prompt_for_batch, get_files
 
@@ -17,6 +19,57 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 DEFAULT_BATCH_SIZE = 4
+
+
+def extract_first_json_match(text: str) -> Dict[str, Any]:
+    """
+    Helper to find first valid JSON object using raw_decode.
+    Handles trailing text (like '```') automatically.
+    """
+    import json
+    try:
+        # Find closest opening brace
+        start_idx = text.find('{')
+        if start_idx == -1:
+            return None 
+        
+        # Use raw_decode which returns (obj, end_index) and ignores trailing text
+        decoder = json.JSONDecoder()
+        obj, _ = decoder.raw_decode(text, idx=start_idx)
+        return obj
+    except Exception:
+        return None
+
+
+
+def extract_core_skill_metadata(response_text: str) -> Dict[str, Any]:
+    """
+    Extract the core skill JSON metadata from LLM response.
+    
+    Expected format: JSON object where values are comma-separated strings.
+    Example: {"core_equation": "eq1, eq2, eq3", ...}
+    """
+    # Use robust JSON extractor (no regex dependency)
+    metadata = extract_first_json_match(response_text)
+    
+    if metadata:
+        # Validate structure - one of the required keys must be present
+        required_keys = ['core_equation', 'solution_pattern', 'scenario_signature', 'context_domain', 'answer_form']
+        if any(key in metadata for key in required_keys):
+             # Ensure values are strings (not lists) for consistency, though LLM should output strings
+             clean_metadata = {}
+             for k, v in metadata.items():
+                 if isinstance(v, list):
+                     clean_metadata[k] = ", ".join(str(x) for x in v)
+                 else:
+                     clean_metadata[k] = str(v)
+             
+             count = len(clean_metadata.get('core_equation', '').split(',')) if clean_metadata.get('core_equation') else 0
+             logger.info(f"Extracted cumulative metadata with approx {count} entries")
+             return clean_metadata
+
+    logger.warning("Could not extract core skill metadata from response")
+    return {}
 
 
 
@@ -180,7 +233,8 @@ async def generate_raw_batch(
     batch_key: str,
     questions: List[Dict[str, Any]],
     general_config: Dict[str, Any],
-    type_config: Dict[str, Any] = None
+    type_config: Dict[str, Any] = None,
+    previous_batch_metadata: Dict[str, Any] = None
 ) -> Dict[str, Any]:
     """
     Generate raw questions for a single batch (Stage 1).
@@ -191,14 +245,15 @@ async def generate_raw_batch(
         # Build the prompt for this batch
         # Extract base type key (remove " - Batch X" suffix) for template lookup
         base_key = batch_key.split(' - Batch ')[0]
-        prompt_data = build_prompt_for_batch(base_key, questions, general_config, type_config)
+        prompt_data = build_prompt_for_batch(base_key, questions, general_config, type_config, previous_batch_metadata)
         
         prompt_text = prompt_data['prompt']
+
+
+
         files = prompt_data.get('files', [])
         file_metadata = prompt_data.get('file_metadata', {})
         api_key = general_config['api_key']
-        
-
         
         # Call Gemini API for generation
         result = await run_gemini_async(
@@ -208,6 +263,8 @@ async def generate_raw_batch(
             thinking_budget=5000,
             file_metadata=file_metadata
         )
+
+
         
         # Add metadata
         result['question_count'] = len(questions)
@@ -406,24 +463,35 @@ async def process_single_batch_flow(
     general_config: Dict[str, Any],
     type_config: Dict[str, Any] = None,
     validation_prompt_template: str = "",
-    progress_callback=None
+    progress_callback=None,
+    previous_batch_metadata: Dict[str, Any] = None
 ) -> Dict[str, Any]:
     """
     Process a SINGLE batch through the full Generation -> Split -> Parallel Validation flow.
+    
+    Returns:
+        Dict containing batch results and optionally 'core_skill_metadata' if extraction is enabled.
     """
     logger.info(f"[{batch_key}] Starting Parallel Flow")
     
     # --- STAGE 1: GENERATION ---
-    raw_result = await generate_raw_batch(batch_key, questions, general_config, type_config)
+    raw_result = await generate_raw_batch(batch_key, questions, general_config, type_config, previous_batch_metadata)
+    
+    # Extract core skill metadata if enabled
+    core_skill_metadata = {}
+    if general_config.get('core_skill_enabled', False) and not raw_result.get('error'):
+        core_skill_metadata = extract_core_skill_metadata(raw_result.get('text', ''))
+        logger.info(f"[{batch_key}] Extracted core skill metadata: {len(core_skill_metadata.get('core_equation', []))} entries")
     
     if raw_result.get('error'):
         logger.warning(f"[{batch_key}] Generation failed. Skipping validation.")
         result_payload = {
             'raw': raw_result,
-            'validated': {'error': 'Skipped due to generation failure', 'text': ''}
+            'validated': {'error': 'Skipped due to generation failure', 'text': ''},
+            'core_skill_metadata': core_skill_metadata
         }
         if progress_callback: progress_callback(batch_key, result_payload)
-        return {batch_key: result_payload}
+        return {batch_key: result_payload, '_metadata': core_skill_metadata}
 
     # --- STAGE 2: SPLIT ---
     split_questions = split_generated_content(raw_result['text'])
@@ -589,11 +657,12 @@ async def process_single_batch_flow(
     
     result_payload = {
         'raw': raw_result,
-        'validated': final_validation_payload
+        'validated': final_validation_payload,
+        'core_skill_metadata': core_skill_metadata
     }
     
     if progress_callback: progress_callback(batch_key, result_payload)
-    return {batch_key: result_payload}
+    return {batch_key: result_payload, '_metadata': core_skill_metadata}
 
 
 async def process_batches_pipeline(
@@ -602,9 +671,12 @@ async def process_batches_pipeline(
     progress_callback=None
 ) -> Dict[str, Dict[str, Any]]:
     """
-    Process ALL batches in separate PARALLEL flows.
+    Process ALL batches. Uses PARALLEL flows by default, or SEQUENTIAL per-type
+    when core_skill_enabled is True (to pass metadata between batches).
     """
-    logger.info(f"Starting PARALLEL pipeline for {len(questions_config)} questions")
+    core_skill_enabled = general_config.get('core_skill_enabled', False)
+    mode = "SEQUENTIAL (Core Skill)" if core_skill_enabled else "PARALLEL"
+    logger.info(f"Starting {mode} pipeline for {len(questions_config)} questions")
     
     # Group questions by type
     grouped_questions = group_questions_by_type_and_topic(questions_config)
@@ -619,39 +691,80 @@ async def process_batches_pipeline(
         logger.error(f"Failed to load validation.yaml: {e}")
         return {'error': "Critical: validation.yaml not found"}
 
-    # Prepare all batch tasks
-    all_batch_tasks = []
-    
-    for base_type_key, all_type_questions in grouped_questions.items():
-        BATCH_SIZE = DEFAULT_BATCH_SIZE
-        batches = [all_type_questions[i:i + BATCH_SIZE] for i in range(0, len(all_type_questions), BATCH_SIZE)]
-        
-        for i, batch_questions in enumerate(batches):
-            batch_key = f"{base_type_key} - Batch {i + 1}"
-            
-            # Create a task for this batch
-            task = process_single_batch_flow(
-                batch_key=batch_key,
-                questions=batch_questions,
-                general_config=general_config,
-                type_config=None,
-                validation_prompt_template=validation_prompt_template,
-                progress_callback=progress_callback
-            )
-            all_batch_tasks.append(task)
-            
-    logger.info(f"🚀 Launching {len(all_batch_tasks)} batch flows in PARALLEL")
-    
-    # Run everything
-    all_results_list = await asyncio.gather(*all_batch_tasks, return_exceptions=True)
-    
-    # Aggregate results
     pipeline_results = {}
-    for res in all_results_list:
-        if isinstance(res, dict):
-            pipeline_results.update(res)
-        elif isinstance(res, Exception):
-            logger.error(f"Batch flow failed: {res}")
+    
+    if core_skill_enabled:
+        # SEQUENTIAL PROCESSING: Process each type's batches sequentially to pass metadata
+        logger.info("🔧 Core Skill enabled: Processing batches SEQUENTIALLY per type")
+        
+        for base_type_key, all_type_questions in grouped_questions.items():
+            BATCH_SIZE = DEFAULT_BATCH_SIZE
+            batches = [all_type_questions[i:i + BATCH_SIZE] for i in range(0, len(all_type_questions), BATCH_SIZE)]
+            
+            # Accumulated metadata for this type
+            accumulated_metadata = {}
+            
+            for i, batch_questions in enumerate(batches):
+                batch_key = f"{base_type_key} - Batch {i + 1}"
+                
+                logger.info(f"[Core Skill] Processing {batch_key} with {len(accumulated_metadata.get('core_equation', []))} prior metadata entries")
+                
+                # Process this batch with previous metadata
+                result = await process_single_batch_flow(
+                    batch_key=batch_key,
+                    questions=batch_questions,
+                    general_config=general_config,
+                    type_config=None,
+                    validation_prompt_template=validation_prompt_template,
+                    progress_callback=progress_callback,
+                    previous_batch_metadata=accumulated_metadata if accumulated_metadata else None
+                )
+                
+                # Extract metadata from result
+                # Since LLM provides cumulative metadata now, we just update our tracker
+                batch_metadata = result.pop('_metadata', {})
+                if batch_metadata:
+                    accumulated_metadata = batch_metadata
+                    logger.info(f"[Core Skill] Updated cumulative metadata after {batch_key}")
+                
+                # Add batch results to pipeline results
+                pipeline_results.update(result)
+    else:
+        # PARALLEL PROCESSING: Original behavior
+        all_batch_tasks = []
+        
+        for base_type_key, all_type_questions in grouped_questions.items():
+            BATCH_SIZE = DEFAULT_BATCH_SIZE
+            batches = [all_type_questions[i:i + BATCH_SIZE] for i in range(0, len(all_type_questions), BATCH_SIZE)]
+            
+            for i, batch_questions in enumerate(batches):
+                batch_key = f"{base_type_key} - Batch {i + 1}"
+                
+                # Create a task for this batch
+                task = process_single_batch_flow(
+                    batch_key=batch_key,
+                    questions=batch_questions,
+                    general_config=general_config,
+                    type_config=None,
+                    validation_prompt_template=validation_prompt_template,
+                    progress_callback=progress_callback,
+                    previous_batch_metadata=None
+                )
+                all_batch_tasks.append(task)
+                
+        logger.info(f"🚀 Launching {len(all_batch_tasks)} batch flows in PARALLEL")
+        
+        # Run everything
+        all_results_list = await asyncio.gather(*all_batch_tasks, return_exceptions=True)
+        
+        # Aggregate results
+        for res in all_results_list:
+            if isinstance(res, dict):
+                # Remove internal _metadata key before adding to results
+                res.pop('_metadata', None)
+                pipeline_results.update(res)
+            elif isinstance(res, Exception):
+                logger.error(f"Batch flow failed: {res}")
             
     logger.info("Pipeline processing completed.")
     return pipeline_results
@@ -724,48 +837,24 @@ async def regenerate_specific_questions_pipeline(
                 q_config = questions_of_type[target_global_idx]
                 q_config['_is_being_regenerated'] = True
                 
-                # IMPORTANT: We need to pass the proper TYPE that leads to the same batching?
-                # If we just pass 'MCQ', the pipeline will batch them again.
-                # If we have only 2 questions, they will fit in one batch 'MCQ - Batch 1'.
-                # This changes the key name returned!
-                # If UI expects 'MCQ - Batch 2', but we return 'MCQ - Batch 1' (because only 2 items), UI won't match.
+                # Attach original text if available
+                existing_content_map = general_config.get('existing_content_map', {})
+                if q_type in existing_content_map:
+                    # q_type is the batch key e.g. "MCQ - Batch 1"
+                    # idx is the 1-based index in that batch
+                    q_key = f"question{idx}"
+                    original_text = existing_content_map[q_type].get(q_key, "")
+                    if original_text:
+                        q_config['original_text'] = original_text
+                        logger.info(f"Attached original text for regeneration of {q_type} {q_key}")
                 
-                # FIX: We should force the batch key name in the result? 
-                # Or just update `streamlit_app.py` to handle the mismatch?
-                # The user requirement was about architecture.
-                # For regeneration, we just want new content.
-                # Use a specific batch key override if possible? 
-                # Our new `process_batches_pipeline` calculates batch names automatically.
-                # If we pass a custom 'type' like 'MCQ - Batch 2', `group_questions_by_type` will group them under that key.
-                # `process_batches_pipeline` will then see 'MCQ - Batch 2' as the type.
-                # It will then create batches: 'MCQ - Batch 2 - Batch 1'. This is double suffix.
-                
-                # To avoid complex refactoring of regeneration right now, let's just use the BASE TYPE.
-                # The UI logic for regeneration (handling the return) likely needs to be robust enough 
-                # to map whatever comes back.
-                # Actually, `streamlit_app.py` logic:
-                # `original_idx = requested_indices[i]`
-                # `existing_questions_map[original_k] = ...`
-                # It maps sequential new questions to the requested slots.
-                # So if we return "MCQ - Batch 1" with 2 questions, the UI app logic 
-                # (which iterates `regen_map`) should be able to map them if it matches the batch key.
-                
-                # Hack: We can temporarily change the 'type' in config to be the Batch Key (e.g. "MCQ - Batch 2").
-                # This way the pipeline groups them as "MCQ - Batch 2".
-                # The pipeline will then produce "MCQ - Batch 2 - Batch 1".
-                # The UI expects "MCQ - Batch 2". 
-                # This mismatch ("... - Batch 1") might break the UI update loop which looks for exact key match.
-                
-                # Wait, if I change the pipeline to produce "MCQ - Batch 1", 
-                # the UI logic in `streamlit_app.py` line 1625 iterates `regen_results`.
-                # Checks `if batch_key in st.session_state.generated_output`.
-                # If I generate "MCQ - Batch 2", result has "MCQ - Batch 2 - Batch 1".
-                # This key won't exist in `generated_output` (which has "MCQ - Batch 2").
-                
-                # SOLUTION: We should strip the suffixes in `streamlit_app.py` OR 
-                # Modify pipeline locally to return exact keys for regeneration?
-                # Simpler: Modify `regenerate_specific_questions_pipeline` to UNPACK the results 
-                # and fix the keys before returning.
+                # Attach per-question regeneration reason if available
+                regeneration_reasons_map = general_config.get('regeneration_reasons_map', {})
+                question_identifier = f"{q_type}:{idx}"  # Format: "MCQ - Batch 1:3"
+                reason = regeneration_reasons_map.get(question_identifier, "")
+                if reason:
+                    q_config['regeneration_reason'] = reason
+                    logger.info(f"Attached regeneration reason for {question_identifier}: {reason[:50]}...")
                 
                 q_config_copy = q_config.copy()
                 q_config_copy['type'] = q_type # "MCQ - Batch 2"
@@ -785,13 +874,23 @@ async def regenerate_specific_questions_pipeline(
     # We want "MCQ - Batch 2".
     fixed_results = {}
     for k, v in results.items():
-        # Remove the last " - Batch 1" derived from the single batch of regeneration
-        # We assume regeneration is small and fits in one batch usually.
-        # If it doesn't, we might have issues, but user regenerates selected items (usually < 5).
+        # Remove ONLY the LAST " - Batch 1" suffix added by the regeneration pipeline
+        # Use rsplit to split from the right and only remove the last occurrence
         if ' - Batch 1' in k:
-            original_key = k.replace(' - Batch 1', '')
+            # Split from right, max 1 split, then rejoin
+            # "MCQ - Batch 1 - Batch 1" -> splits to ["MCQ - Batch 1", ""] -> "MCQ - Batch 1"
+            # "MCQ - Batch 1" -> splits to ["MCQ", ""] -> "MCQ" (wrong!)
+            # Better: Use rsplit with maxsplit and count occurrences
+            parts = k.rsplit(' - Batch 1', 1)
+            if len(parts) == 2:
+                # Successfully split, use the left part
+                original_key = parts[0]
+            else:
+                # Couldn't split (shouldn't happen), keep original
+                original_key = k
             fixed_results[original_key] = v
         else:
             fixed_results[k] = v
             
+    logger.info(f"Post-processed regeneration results keys: {list(results.keys())} -> {list(fixed_results.keys())}")
     return fixed_results

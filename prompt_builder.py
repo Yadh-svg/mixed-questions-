@@ -31,31 +31,79 @@ QUESTION_TYPE_MAPPING = {
 # Core Skill Extraction Instructions (appended to prompts when enabled)
 CORE_SKILL_EXTRACTION = """
 
-## CORE SKILL METADATA EXTRACTION (MANDATORY)
+## BATCH SUMMARY (MANDATORY)
 
-Finally, verify the global list of generated questions.
-Ouput a JSON block containing the **CUMULATIVE** metadata (The "Existing Knowledge Base" provided above PLUS the metadata for the NEW questions you just generated).
+After generating all questions in the current batch, produce a single
+batch_summary that lists each question's core mathematical idea individually
+AND the scenario used for that question.
 
-Structure:
-- Return a JSON object where each key maps to a SINGLE STRING containing comma-separated values.
-- The order must follow the sequence of generation (Old questions first, then New questions).
+**DUPLICATE PREVENTION RULE:**
+1. Before generating each question, you MUST check the "Existing Knowledge Base" (if provided below).
+2. If a mathematical idea or solution pattern is already in the list, you MUST change the logic, reasoning twist, or mathematical technique for your new question.
+3. Changing names, numbers, or stories is NOT enough. The core mathematical idea must be distinct.
+
+4. Before checking for duplicates, normalize each question to its abstract mathematical form
+   (operation + structure). Ignore story context, objects, and surface wording.
+
+5. Questions using the same operation with the same fixed divisor (e.g., division by 100)
+   are considered duplicates unless they require a fundamentally different reasoning method.
+
+6. A question is considered distinct ONLY if it introduces at least one of the following:
+   - a different mathematical operation
+   - a different direction of reasoning
+   - a different representational domain
+   - a different constraint or logical structure
+
+7. If no non-duplicate mathematical idea can be generated after checking the Existing Knowledge Base,
+   DO NOT generate a question and explicitly state that no valid new question is possible.
+
+---
+
+### SCENARIO UNIQUENESS RULE (NEW – MANDATORY)
+1. Every generated question MUST use a clearly identifiable real-world or conceptual scenario.
+2. Each scenario MUST be unique across all questions in the current batch.
+3. Reusing the same situation with different numbers, names, or objects counts as a duplicate scenario.
+4. Abstract or generic scenarios (e.g., "a number", "some objects") are NOT allowed.
+5. Scenario uniqueness is checked independently of mathematical idea uniqueness.
+
+---
+
+### CRITICAL RULES
+1. ONE ENTRY PER QUESTION.
+3. If you generate N questions, there must be exactly N entries.
+4. Each entry MUST include:
+   - the mathematical idea used
+   - the unique scenario used
+   - htey must be seperated with ,
+
+---
+
+### OUTPUT FORMAT (STRICT)
 
 ```json
 {
-  "core_equation": "old_eq1, old_eq2, ..., new_eq1, new_eq2",
-  "solution_pattern": "old_pat1, old_pat2, ..., new_pat1, new_pat2",
-  "scenario_signature": "old_sig1, old_sig2, ..., new_sig1, new_sig2",
-  "context_domain": "old_dom1, old_dom2, ..., new_dom1, new_dom2",
-  "answer_form": "old_form1, old_form2, ..., new_form1, new_form2"
+  "batch_summary": "description of the specific mathematical technique",
+  "scenario_used": "unique scenario description should be short"
 }
 ```
 
+Example (for 3 questions):
+Question 1: A calculator displays the result of dividing a number equally among 100 parts. If the number shown is 500, what value does each part represent?
+Question 2: A warehouse packs 1200 bottles into boxes, with exactly 100 bottles in each box. How many boxes are needed?
+Question 3: A cashier converts old coins into rupees. If a customer has 400 paise, how many rupees is that worth?
+```json
+{
+  "batch_summary": "1. direct numerical division by 100 to find the value of one equal part, 2. finding the number of equal groups by dividing a total quantity by group size, 3. converting a smaller currency unit to a larger unit using a base-100 relationship",
+  "scenario_used": "calculator, packing bottles, converting paise to rupees"
+}
+```
+
+
 Rules:
-1. **Concatenate**: Take the "Existing Knowledge Base" values and append your new values (comma-separated).
-2. Format: lowercase snake_case only.
-3. No numbers in values.
-4. Values must be short (1–3 words).
-5. Ensure the list grows with each batch.
+1. **CURRENT BATCH ONLY**: Output metadata ONLY for the questions generated in the CURRENT batch. DO NOT include or repeat the "Existing Knowledge Base" items.
+2. Ensure the list has exactly one entry per question generated in this batch.
+
+
 """
 
 
@@ -522,9 +570,7 @@ def build_prompt_for_batch(
     if core_skill_enabled:
         # Inject previous batch metadata if available
         if previous_batch_metadata:
-            # Format metadata as cleanly as possible (comma separated lines)
-            # Input: {"key": "val1, val2", "key2": "v1, v2"} or {"key": ["v1", "v2"]}
-            # We standardize to comma separated string
+            # Format metadata (usually just batch_summary)
             formatted_lines = []
             for k, v in previous_batch_metadata.items():
                 val_str = ""
@@ -532,7 +578,10 @@ def build_prompt_for_batch(
                     val_str = ", ".join(str(x) for x in v)
                 else:
                     val_str = str(v)
-                formatted_lines.append(f"{k}: {val_str}")
+                
+                # If it's batch_summary, we can label it clearly
+                label = "Existing Knowledge Base" if k == 'batch_summary' else k
+                formatted_lines.append(f"{label}: {val_str}")
             
             metadata_str = "\n".join(formatted_lines)
             prompt += PREVIOUS_BATCH_METADATA_TEMPLATE.format(previous_metadata=metadata_str)

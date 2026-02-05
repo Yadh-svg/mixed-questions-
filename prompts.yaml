@@ -15,6 +15,13 @@ case_study_maths: |
       - Process each topic independently.
       - Ensure clear separation of questions by topic.
       - Follow the exact number of questions,DOK level and Marks specified for each topic.
+    
+
+    ## SINGLE TOPIC HANDLING (SAME TOPIC FOR MULTIPLE QUESTIONS):
+      When multiple questions share the same topic number, analyze the PDF to understand the topic and infer its distinct subtopics.  
+      For each existing question, identify its subtopic and core reasoning, and treat any new question as a duplicate if it repeats the same subtopic with the same logic, even if numbers or context change.  
+      Generate new questions only from unused subtopics or by applying a clearly different reasoning pattern, and summarize covered subtopics to prevent repetition.
+
   ## TOPIC COVERAGE AND TRACEABILITY (MANDATORY)
 
   1. Coverage Rule (MANDATORY)
@@ -653,6 +660,12 @@ case_study_maths_pdf: |
       - Process each topic independently.
       - Ensure clear separation of questions by topic.
       - Follow the exact number of questions,DOK level and Marks specified for each topic.
+
+    ## SINGLE TOPIC HANDLING (SAME TOPIC FOR MULTIPLE QUESTIONS):
+      When multiple questions share the same topic number, analyze the PDF to understand the topic and infer its distinct subtopics.  
+      For each existing question, identify its subtopic and core reasoning, and treat any new question as a duplicate if it repeats the same subtopic with the same logic, even if numbers or context change.  
+      Generate new questions only from unused subtopics or by applying a clearly different reasoning pattern, and summarize covered subtopics to prevent repetition.
+
     ## TOPIC COVERAGE AND TRACEABILITY (MANDATORY)
 
     1. Coverage Rule (MANDATORY)
@@ -1321,6 +1334,12 @@ assertion_reasoning: |
       - Process each topic independently.
       - Ensure clear separation of questions by topic.
       - Follow the exact number of questions specified for each topic.
+
+    ## SINGLE TOPIC HANDLING (SAME TOPIC FOR MULTIPLE QUESTIONS):
+      When multiple questions share the same topic number, analyze the PDF to understand the topic and infer its distinct subtopics.  
+      For each existing question, identify its subtopic and core reasoning, and treat any new question as a duplicate if it repeats the same subtopic with the same logic, even if numbers or context change.  
+      Generate new questions only from unused subtopics or by applying a clearly different reasoning pattern, and summarize covered subtopics to prevent repetition.
+
   ## TOPIC COVERAGE AND TRACEABILITY (MANDATORY)
 
   1. Coverage Rule (MANDATORY)
@@ -1872,6 +1891,12 @@ assertion_reasoning_pdf: |
       - Process each topic independently.
       - Ensure clear separation of questions by topic.
       - Follow the exact number of questions specified for each topic.
+
+    ## SINGLE TOPIC HANDLING (SAME TOPIC FOR MULTIPLE QUESTIONS):
+      When multiple questions share the same topic number, analyze the PDF to understand the topic and infer its distinct subtopics.  
+      For each existing question, identify its subtopic and core reasoning, and treat any new question as a duplicate if it repeats the same subtopic with the same logic, even if numbers or context change.  
+      Generate new questions only from unused subtopics or by applying a clearly different reasoning pattern, and summarize covered subtopics to prevent repetition.
+
   ## TOPIC COVERAGE AND TRACEABILITY (MANDATORY)
 
   1. Coverage Rule (MANDATORY)
@@ -2438,6 +2463,12 @@ multi_part_maths: |
       - Process each topic independently.
       - Ensure clear separation of questions by topic.
       - Follow the exact number of questions specified for each topic.
+
+    ## SINGLE TOPIC HANDLING (SAME TOPIC FOR MULTIPLE QUESTIONS):
+      When multiple questions share the same topic number, analyze the PDF to understand the topic and infer its distinct subtopics.  
+      For each existing question, identify its subtopic and core reasoning, and treat any new question as a duplicate if it repeats the same subtopic with the same logic, even if numbers or context change.  
+      Generate new questions only from unused subtopics or by applying a clearly different reasoning pattern, and summarize covered subtopics to prevent repetition.
+
   ## TOPIC COVERAGE AND TRACEABILITY (MANDATORY)
 
   1. Coverage Rule (MANDATORY)
@@ -3261,6 +3292,12 @@ multi_part_maths_pdf: |
         - Process each topic independently.
         - Ensure clear separation of questions by topic.
         - Follow the exact number of questions specified for each topic.
+
+      ## SINGLE TOPIC HANDLING (SAME TOPIC FOR MULTIPLE QUESTIONS):
+        When multiple questions share the same topic number, analyze the PDF to understand the topic and infer its distinct subtopics.  
+        For each existing question, identify its subtopic and core reasoning, and treat any new question as a duplicate if it repeats the same subtopic with the same logic, even if numbers or context change.  
+        Generate new questions only from unused subtopics or by applying a clearly different reasoning pattern, and summarize covered subtopics to prevent repetition.
+
   ## TOPIC COVERAGE AND TRACEABILITY (MANDATORY)
 
   1. Coverage Rule (MANDATORY)
@@ -4122,7 +4159,11 @@ mcq_questions: |
       - Process each topic independently.
       - Ensure clear separation of questions by topic.
       - Follow the exact number of questions specified for each topic.
-  
+    ## SINGLE TOPIC HANDLING (SAME TOPIC FOR MULTIPLE QUESTIONS):
+      When multiple questions share the same topic number, analyze the PDF to understand the topic and infer its distinct subtopics.  
+      For each existing question, identify its subtopic and core reasoning, and treat any new question as a duplicate if it repeats the same subtopic with the same logic, even if numbers or context change.  
+      Generate new questions only from unused subtopics or by applying a clearly different reasoning pattern, and summarize covered subtopics to prevent repetition.
+
   ## TOPIC COVERAGE AND TRACEABILITY (MANDATORY)
 
   1. Coverage Rule (MANDATORY)
@@ -5027,6 +5068,11 @@ mcq_questions_pdf: |
       - Process each topic independently.
       - Ensure clear separation of questions by topic.
       - Follow the exact number of questions specified for each topic.
+      
+    ## SINGLE TOPIC HANDLING (SAME TOPIC FOR MULTIPLE QUESTIONS):
+      When multiple questions share the same topic number, analyze the PDF to understand the topic and infer its distinct subtopics.  
+      For each existing question, identify its subtopic and core reasoning, and treat any new question as a duplicate if it repeats the same subtopic with the same logic, even if numbers or context change.  
+      Generate new questions only from unused subtopics or by applying a clearly different reasoning pattern, and summarize covered subtopics to prevent repetition.
   ## TOPIC COVERAGE AND TRACEABILITY (MANDATORY)
 
   1. Coverage Rule (MANDATORY)
@@ -5903,6 +5949,11 @@ FIB: |
       - Process each topic independently.
       - Ensure clear separation of questions by topic.
       - Follow the exact number of questions specified for each topic.
+      
+    ## SINGLE TOPIC HANDLING (SAME TOPIC FOR MULTIPLE QUESTIONS):
+      When multiple questions share the same topic number, analyze the PDF to understand the topic and infer its distinct subtopics.  
+      For each existing question, identify its subtopic and core reasoning, and treat any new question as a duplicate if it repeats the same subtopic with the same logic, even if numbers or context change.  
+      Generate new questions only from unused subtopics or by applying a clearly different reasoning pattern, and summarize covered subtopics to prevent repetition.
   ## TOPIC COVERAGE AND TRACEABILITY (MANDATORY)
 
   1. Coverage Rule (MANDATORY)
@@ -6733,7 +6784,13 @@ FIB_pdf: |
       and exercise patterns contained within that boundary. Do not mix or leak concepts from earlier or later topics. Do not introduce ideas from other sections unless the exercises of that subtopic explicitly require them.
       Study how the exercises for that subtopic/topic are built to understand the style of questioning and the concept being tested. Do not copy or rephrase those exercises. Instead, generate new, concept-aligned questions modeled on the same idea. 
       The user will always give a topic/subtopic; use only that subtopic’s/topic's boundary to make the questions.Never address the pdf as textbook, pdf or any other thing in the questions
-
+        
+    ## PDF Magnitude rule 
+        Strictly adhere to the number range and magnitude specified in the pdf or concepts provided, ensuring that all numerical values, unit conversions, 
+        and intermediate calculations remain within the scope of numbers introduced in the chapter. Do not introduce larger units, extended conversions, 
+        or numbers that exceed the expected level of rigor
+          - Do not copy or reuse any figures or images from the provided PDF or uploaded materials. Do not include actual diagrams. Only generate an original diagram prompt as a text description,
+    All distractors must be plausible, curriculum-aligned, and should effectively test conceptual understanding without violating the prescribed numeric range.
    
     - IMPORTANT → Total Questions to Generate: {{TOTAL_QUESTIONS}} (Sum of all questions across topics)
       (Generate the specified number of unique Fill in the Blanks questions for each topic as per the list above.)
@@ -6743,6 +6800,11 @@ FIB_pdf: |
       - Process each topic independently.
       - Ensure clear separation of questions by topic.
       - Follow the exact number of questions specified for each topic.
+      
+    ## SINGLE TOPIC HANDLING (SAME TOPIC FOR MULTIPLE QUESTIONS):
+      When multiple questions share the same topic number, analyze the PDF to understand the topic and infer its distinct subtopics.  
+      For each existing question, identify its subtopic and core reasoning, and treat any new question as a duplicate if it repeats the same subtopic with the same logic, even if numbers or context change.  
+      Generate new questions only from unused subtopics or by applying a clearly different reasoning pattern, and summarize covered subtopics to prevent repetition.
   ## TOPIC COVERAGE AND TRACEABILITY (MANDATORY)
 
   1. Coverage Rule (MANDATORY)
@@ -7576,6 +7638,11 @@ descriptive: |
       - Process each topic independently.
       - Ensure clear separation of questions by topic.
       - Follow the exact number of questions specified for each topic.
+      
+    ## SINGLE TOPIC HANDLING (SAME TOPIC FOR MULTIPLE QUESTIONS):
+      When multiple questions share the same topic number, analyze the PDF to understand the topic and infer its distinct subtopics.  
+      For each existing question, identify its subtopic and core reasoning, and treat any new question as a duplicate if it repeats the same subtopic with the same logic, even if numbers or context change.  
+      Generate new questions only from unused subtopics or by applying a clearly different reasoning pattern, and summarize covered subtopics to prevent repetition.
   ## TOPIC COVERAGE AND TRACEABILITY (MANDATORY)
 
   1. Coverage Rule (MANDATORY)
@@ -8231,6 +8298,12 @@ descriptive_pdf: |
       - Process each topic independently.
       - Ensure clear separation of questions by topic.
       - Follow the exact number of questions specified for each topic.
+      
+    ## SINGLE TOPIC HANDLING (SAME TOPIC FOR MULTIPLE QUESTIONS):
+      When multiple questions share the same topic number, analyze the PDF to understand the topic and infer its distinct subtopics.  
+      For each existing question, identify its subtopic and core reasoning, and treat any new question as a duplicate if it repeats the same subtopic with the same logic, even if numbers or context change.  
+      Generate new questions only from unused subtopics or by applying a clearly different reasoning pattern, and summarize covered subtopics to prevent repetition.
+
   ## TOPIC COVERAGE AND TRACEABILITY (MANDATORY)
 
   1. Coverage Rule (MANDATORY)
@@ -8875,6 +8948,11 @@ descriptive_subq: |
       - Process each topic independently.
       - Ensure clear separation of questions by topic.
       - Follow the exact number of questions specified for each topic.
+      
+    ## SINGLE TOPIC HANDLING (SAME TOPIC FOR MULTIPLE QUESTIONS):
+      When multiple questions share the same topic number, analyze the PDF to understand the topic and infer its distinct subtopics.  
+      For each existing question, identify its subtopic and core reasoning, and treat any new question as a duplicate if it repeats the same subtopic with the same logic, even if numbers or context change.  
+      Generate new questions only from unused subtopics or by applying a clearly different reasoning pattern, and summarize covered subtopics to prevent repetition.
   ## TOPIC COVERAGE AND TRACEABILITY (MANDATORY)
 
   1. Coverage Rule (MANDATORY)
@@ -9588,6 +9666,11 @@ descriptive_subq_pdf: |
       - Process each topic independently.
       - Ensure clear separation of questions by topic.
       - Follow the exact number of questions specified for each topic.
+    
+    ## SINGLE TOPIC HANDLING (SAME TOPIC FOR MULTIPLE QUESTIONS):
+      When multiple questions share the same topic number, analyze the PDF to understand the topic and infer its distinct subtopics.  
+      For each existing question, identify its subtopic and core reasoning, and treat any new question as a duplicate if it repeats the same subtopic with the same logic, even if numbers or context change.  
+      Generate new questions only from unused subtopics or by applying a clearly different reasoning pattern, and summarize covered subtopics to prevent repetition.
   ## TOPIC COVERAGE AND TRACEABILITY (MANDATORY)
 
   1. Coverage Rule (MANDATORY)

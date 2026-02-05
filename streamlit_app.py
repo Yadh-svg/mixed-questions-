@@ -12,6 +12,10 @@ from dotenv import load_dotenv
 
 # Load environment variables
 load_dotenv()
+try:
+    gemini_api_key = st.secrets["GEMINI_API_KEY"]
+except Exception:
+    gemini_api_key = os.getenv("GEMINI_API_KEY", "")
 from st_img_pastebutton import paste
 import io
 import base64
@@ -171,12 +175,7 @@ st.markdown("---")
 # Sidebar for API configuration
 with st.sidebar:
     st.markdown("### ⚙️ Configuration")
-    api_key = st.text_input(
-        "Gemini API Key",
-        type="password",
-        value=os.getenv("GEMINI_API_KEY", ""),
-        help="Enter your Gemini API key"
-    )
+    # API Key is now handled via st.secrets
     
     st.markdown("---")
     st.markdown("### 📊 Statistics")
@@ -1447,8 +1446,8 @@ with tab1:
     # Generate button at the bottom of configuration
     st.markdown('<div class="section-header">Generate Questions</div>', unsafe_allow_html=True)
     
-    if not api_key:
-        st.warning("⚠️ Please enter your Gemini API key in the sidebar to continue.")
+    if not gemini_api_key:
+        st.warning("⚠️ Please provide a GEMINI_API_KEY in .streamlit/secrets.toml to continue.")
     else:
         
         if st.button("🚀 Generate All Questions", type="primary", use_container_width=True):
@@ -1477,7 +1476,7 @@ with tab1:
                         'old_concept': old_concept,
                         'new_concept': new_concept,
                         'additional_notes': additional_notes,
-                        'api_key': api_key,
+                        'api_key': gemini_api_key,
                         'universal_pdf': st.session_state.get('universal_pdf'),  # Pass universal PDF
                         'core_skill_enabled': st.session_state.get('core_skill_enabled', False)  # Core skill extraction
                     }
@@ -1547,7 +1546,12 @@ with tab2:
         # Display summary
         st.markdown("### 📊 Generation Report")
         if report.get('success'):
-            st.success(f"✅ Successfully generated duplicates for {report['success_count']} question(s).")
+            col1, col2 = st.columns(2)
+            with col1:
+                st.success(f"✅ Successfully generated duplicates for {report['success_count']} question(s).")
+            # with col2:
+            #     if 'total_cost' in report:
+            #         st.info(f"💰 **Cost:** ${report['total_cost']:.4f}")
         
         if report.get('errors'):
             st.error(f"❌ Failed to generate duplicates for {len(report['errors'])} question(s).")
@@ -1564,11 +1568,18 @@ with tab2:
     if st.session_state.generated_output:
         results = st.session_state.generated_output
         
-        # Import renderer (if not already imported in scope, but safest to import here too if needed or rely on top level if used)
-        from result_renderer import render_batch_results # Safe re-import inside function/block
+        # Display Total Cost if available
+        # total_cost = results.get('_total_cost')
+        # if total_cost is not None:
+        #     st.info(f"💰 **Total Pipeline Cost:** ${total_cost:.4f}")
+
+        # Import renderer
+        from result_renderer import render_batch_results 
 
         # Display results for each batch
         for batch_key, batch_result in results.items():
+            if batch_key.startswith('_') or not isinstance(batch_result, dict):
+                continue
             with st.expander(f"📋 {batch_key}", expanded=True):
                 
                 # Extract raw and validated results
@@ -1588,13 +1599,16 @@ with tab2:
 
                 # Show Metadata
                 st.markdown("---")
-                col1, col2 = st.columns(2)
+                col1, col2, col3 = st.columns(3)
                 with col1:
                     st.metric("Questions", raw_res.get('question_count', 'N/A'))
                 with col2:
                     raw_time = raw_res.get('elapsed', 0)
                     val_time = val_res.get('elapsed', 0) if val_res else 0
                     st.metric("Total Time", f"{raw_time + val_time:.2f}s")
+                # with col3:
+                #     batch_cost = batch_result.get('batch_cost', 0.0)
+                #     st.metric("Cost", f"${batch_cost:.4f}")
 
                 # Expandable Raw Output
                 with st.expander("Show Generated Version (Raw Backend Output)"):
@@ -1611,6 +1625,8 @@ with tab2:
         # Combine all results
         combined_output = ""
         for batch_key, batch_result in results.items():
+            if batch_key.startswith('_') or not isinstance(batch_result, dict):
+                continue
             val_res = batch_result.get('validated', {})
             raw_res = batch_result.get('raw', {})
             final_text = val_res.get('text', '') if val_res else raw_res.get('text', 'Error')
@@ -1670,7 +1686,7 @@ with tab2:
                 
                 if missing_reasons:
                     st.error(f"❌ Please provide a reason for: {', '.join(missing_reasons)}")
-                elif not api_key:
+                elif not gemini_api_key:
                     st.error("❌ Please enter your Gemini API key in the sidebar")
                 else:
                     with st.spinner("Regenerating specific questions..."):
@@ -1678,7 +1694,7 @@ with tab2:
                         
                         # Prepare configurations
                         general_config = {
-                            'api_key': api_key,
+                            'api_key': gemini_api_key,
                             'additional_notes': additional_notes,
                             'universal_pdf': st.session_state.get('universal_pdf')
                         }
@@ -1697,6 +1713,8 @@ with tab2:
                         
                         if st.session_state.generated_output:
                             for b_key, b_res in st.session_state.generated_output.items():
+                                if b_key.startswith('_') or not isinstance(b_res, dict):
+                                    continue
                                 val_res = b_res.get('validated', {})
                                 text = val_res.get('text', '')
                                 if text:
@@ -1747,6 +1765,8 @@ with tab2:
                                 merged_count = 0
                                 
                                 for batch_key, batch_res in regen_results.items():
+                                    if batch_key.startswith('_') or not isinstance(batch_res, dict):
+                                        continue
                                     val_res = batch_res.get('validated', {})
                                     new_text_content = val_res.get('text', '')
                                     
@@ -1782,6 +1802,19 @@ with tab2:
                                         updated_json_str = json.dumps(existing_questions_map, indent=2)
                                         st.session_state.generated_output[batch_key]['validated']['text'] = updated_json_str
                                         
+                                        # Update costs
+                                        batch_regen_cost = batch_res.get('batch_cost', 0.0)
+                                        if 'batch_cost' in st.session_state.generated_output[batch_key]:
+                                            st.session_state.generated_output[batch_key]['batch_cost'] += batch_regen_cost
+                                        else:
+                                            st.session_state.generated_output[batch_key]['batch_cost'] = batch_regen_cost
+                                        
+                                        # Update total cost
+                                        if '_total_cost' in st.session_state.generated_output:
+                                            st.session_state.generated_output['_total_cost'] += batch_regen_cost
+                                        else:
+                                            st.session_state.generated_output['_total_cost'] = batch_regen_cost
+                                        
                                     elif not new_text_content:
                                         st.error(f"❌ No new content generated for {batch_key}")
                                     elif batch_key not in st.session_state.generated_output:
@@ -1809,6 +1842,8 @@ with tab2:
         
         # Iterate through all rendered questions and check their checkbox states
         for batch_key, batch_result in results.items():
+            if batch_key.startswith('_') or not isinstance(batch_result, dict):
+                continue
             val_res = batch_result.get('validated', {})
             text_content = val_res.get('text', '')
             
@@ -1861,7 +1896,7 @@ with tab2:
             
             # Generate Duplicates Button
             if st.button("🚀 Generate Duplicates", type="primary", use_container_width=True):
-                if not api_key:
+                if not gemini_api_key:
                     st.error("❌ Please enter your Gemini API key in the sidebar")
                 else:
                     with st.spinner("Generating duplicates... This may take a moment."):
@@ -1889,7 +1924,7 @@ with tab2:
                                     original_question_markdown=data['markdown_content'],
                                     question_code=data['question_code'],
                                     num_duplicates=data['num_duplicates'],
-                                    api_key=api_key,
+                                    api_key=gemini_api_key,
                                     additional_notes=data.get('additional_notes', ""),
                                     pdf_file=data.get('pdf_file', None)
                                 )
@@ -1917,6 +1952,7 @@ with tab2:
                             report = {
                                 'success': False,
                                 'success_count': 0,
+                                'total_cost': 0.0,
                                 'errors': []
                             }
                             
@@ -1940,6 +1976,11 @@ with tab2:
                                         duplicates_key = f"duplicates_{data['batch_key']}_{data['question_key']}"
                                         st.session_state[duplicates_key] = duplicates
                                         report['success_count'] += 1
+                                        
+                                        # Track cost
+                                        from batch_processor import calculate_cost
+                                        q_cost = calculate_cost(result.get('input_tokens', 0), result.get('billed_output_tokens', 0))
+                                        report['total_cost'] += q_cost
                             
                             report['success'] = report['success_count'] > 0
                             

@@ -22,6 +22,44 @@ import threading
 # Global lock for file reading to prevent race conditions during parallel batches
 file_read_lock = threading.Lock()
 
+def save_prompt(prompt: str, prompt_type: str, identifier: str):
+    """
+    Save the final prompt to a file in prompt_logs directory.
+    """
+    try:
+        log_dir = Path("prompt_logs")
+        log_dir.mkdir(exist_ok=True)
+        
+        timestamp = time.strftime("%Y%m%d_%H%M%S")
+        filename = f"{timestamp}_{prompt_type}_{identifier.replace(' ', '_')}.txt"
+        file_path = log_dir / filename
+        
+        with open(file_path, "w", encoding="utf-8") as f:
+            f.write(prompt)
+        
+        logger.info(f"Saved {prompt_type} prompt to {file_path}")
+    except Exception as e:
+        logger.error(f"Failed to save prompt: {e}")
+
+def save_response(response_text: str, response_type: str, identifier: str):
+    """
+    Save the raw LLM response to a file in response_logs directory.
+    """
+    try:
+        log_dir = Path("response_logs")
+        log_dir.mkdir(exist_ok=True)
+        
+        timestamp = time.strftime("%Y%m%d_%H%M%S")
+        filename = f"{timestamp}_{response_type}_{identifier.replace(' ', '_')}.txt"
+        file_path = log_dir / filename
+        
+        with open(file_path, "w", encoding="utf-8") as f:
+            f.write(response_text)
+        
+        logger.info(f"Saved {response_type} response to {file_path}")
+    except Exception as e:
+        logger.error(f"Failed to save response: {e}")
+
 def upload_files_to_gemini(files: List, api_key: str) -> List:
     """
     Upload multiple PDF and image files to Gemini File API and return file objects.
@@ -85,7 +123,7 @@ def run_gemini(
     prompt: str,
     api_key: str,
     files: Optional[List] = None,
-    thinking_budget: int = 10000,
+    thinking_budget: int = 4000,  # Kept for backward compatibility but not used
     file_metadata: Optional[Dict[str, Any]] = None
 ) -> Dict[str, Any]:
     """
@@ -95,7 +133,7 @@ def run_gemini(
         prompt: The text prompt to send
         api_key: Gemini API key
         files: List of file-like objects to upload (PDFs or images)
-        thinking_budget: Thinking budget tokens
+        thinking_budget: Deprecated - gemini-3-flash-preview uses thinking_level="medium"
         file_metadata: Metadata about files (source_type, filenames)
         
     Returns:
@@ -115,9 +153,9 @@ def run_gemini(
             source_type = file_metadata.get('source_type', 'Unknown')
             filenames = file_metadata.get('filenames', [])
             logger.info(f"Starting Gemini | Files: {len(files)} files ({source_type}) | "
-                       f"Files: {', '.join(filenames)} | Thinking budget: {thinking_budget}")
+                       f"Files: {', '.join(filenames)} | Model: gemini-3-flash-preview")
         else:
-            logger.info(f"Starting Gemini | Files: None | Thinking budget: {thinking_budget}")
+            logger.info(f"Starting Gemini | Files: None | Model: gemini-3-flash-preview")
         
         # Build contents list
         contents = []
@@ -137,14 +175,13 @@ def run_gemini(
         
         config = types.GenerateContentConfig(
             thinking_config=types.ThinkingConfig(
-                include_thoughts=False,
-                thinking_budget=thinking_budget
+                thinking_level="medium"
             )
         )
         
         # Using stream=True to be consistent with previous implementation
         stream = client.models.generate_content_stream(
-            model="gemini-2.5-pro",
+            model="gemini-3-flash-preview",
             contents=contents,
             config=config
         )
@@ -169,11 +206,23 @@ def run_gemini(
         if usage_metadata:
             out["input_tokens"] = getattr(usage_metadata, 'prompt_token_count', 0)
             out["output_tokens"] = getattr(usage_metadata, 'candidates_token_count', 0)
+            # Handle possible pluralization variations in different SDK versions
+            out["thought_tokens"] = getattr(usage_metadata, 'thought_token_count', 
+                                   getattr(usage_metadata, 'thoughts_token_count', 0))
             out["total_tokens"] = getattr(usage_metadata, 'total_token_count', 0)
-            logger.info(f"Gemini completed | Chunks: {chunk_count} | Tokens: {out['total_tokens']} (in: {out['input_tokens']}, out: {out['output_tokens']}) | Time: {time.time() - start:.2f}s")
+            
+            # User wants to treat thinking tokens as output tokens
+            # Total Billed Output Tokens = candidates + thought
+            out["billed_output_tokens"] = out["output_tokens"] + out["thought_tokens"]
+            
+            logger.info(f"Gemini completed | Chunks: {chunk_count} | Tokens: {out['total_tokens']} "
+                       f"(in: {out['input_tokens']}, out: {out['output_tokens']}, thought: {out['thought_tokens']}) | "
+                       f"Time: {time.time() - start:.2f}s")
         else:
             out["input_tokens"] = 0
             out["output_tokens"] = 0
+            out["thought_tokens"] = 0
+            out["billed_output_tokens"] = 0
             out["total_tokens"] = 0
             logger.info(f"Gemini completed | Chunks: {chunk_count} | Output length: {len(agg)} chars | Time: {time.time() - start:.2f}s")
         
@@ -233,7 +282,8 @@ async def duplicate_questions_async(
     formatted_prompt = formatted_prompt.replace("{{ORIGINAL_QUESTION}}", original_question_markdown)
     formatted_prompt = formatted_prompt.replace("{{ADDITIONAL_NOTES}}", additional_notes)
     
-    # Prompt saving logic removed as per user request
+    # Save prompt for debugging
+    # save_prompt(formatted_prompt, "duplication", question_code)
     
     # Prepare files list if PDF is provided
     files_to_upload = [pdf_file] if pdf_file else None
@@ -245,7 +295,7 @@ async def duplicate_questions_async(
         prompt=formatted_prompt,
         api_key=api_key,
         files=files_to_upload,
-        thinking_budget=8000,  # Higher budget for quality duplicates
+        thinking_budget=3000,  # Higher budget for quality duplicates
         file_metadata={'source_type': 'duplicate_context', 'filenames': [getattr(pdf_file, 'name', 'file')]} if pdf_file else None
     )
     
@@ -274,7 +324,9 @@ async def duplicate_questions_async(
                 "duplicates": duplicates_array,
                 "elapsed": result.get('elapsed', 0),
                 "input_tokens": result.get('input_tokens', 0),
-                "output_tokens": result.get('output_tokens', 0)
+                "output_tokens": result.get('output_tokens', 0),
+                "thought_tokens": result.get('thought_tokens', 0),
+                "billed_output_tokens": result.get('billed_output_tokens', 0)
             }
         else:
             logger.warning("No JSON array found in response")
@@ -298,10 +350,11 @@ async def run_gemini_async(
     prompt: str,
     api_key: str,
     files: Optional[List] = None,
-    thinking_budget: int = 5000,
+    thinking_budget: int = 4000,  # Kept for backward compatibility but not used
     file_metadata: Optional[Dict[str, Any]] = None
 ) -> Dict[str, Any]:
     """
     Async wrapper for run_gemini.
+    Note: thinking_budget parameter is deprecated for gemini-3-flash-preview.
     """
     return await asyncio.to_thread(run_gemini, prompt, api_key, files, thinking_budget, file_metadata)

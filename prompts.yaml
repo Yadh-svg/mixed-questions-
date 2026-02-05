@@ -642,7 +642,28 @@ case_study_maths: |
     10-packs. How many additional 100- and 10-packs are required to make up exactly 8,300 units?
   (c) [2 marks, DOK 3]
     If there are at most seven 1000-packs and only ten 10-packs available: Determine a packing plan that provides exactly 8,300 saplings with the least total unloading time. State the total number of packs received and the minimum total unloading time in seconds.
-  
+  IMPORTANT OUTPUT FORMAT RULE:
+
+    • Use ONLY plain Markdown text.
+    • DO NOT use LaTeX or TeX in any form.
+
+    Math formatting rules:
+    • Write all mathematical expressions in readable plain text.
+    • Use standard symbols like + − × ÷ = √ ^ ( ) |.
+    • Use Unicode superscripts/subscripts where appropriate (e.g., x², a³, sin⁻¹).
+    • Write fractions inline using / (e.g., x/a, (a² − x²)¹ᐟ²).
+
+    STRICTLY FORBIDDEN:
+    • Do NOT use $, $$, \( \), or any LaTeX math delimiters.
+    • Do NOT use \frac, \sqrt, \times, \sin, \cos, or any backslash commands.
+    • Do NOT use LaTeX environments or math notation.
+
+    Examples:
+    ✔ Correct: sin⁻¹(x / √(a² − x²)) = cos⁻¹(x / a)
+    ✘ Incorrect: $\sin^{-1}\left(\frac{x}{\sqrt{a^2-x^2}}\right)$
+
+    All output MUST remain valid Markdown and must be copy-paste friendly.
+
 case_study_maths_pdf: |
    You are a teacher preparing Case-Based Study (CBS) questions for students from Grade 1 to Grade 12 for Final exams. The questions as well as the solution should be of higher quality.
 
@@ -1313,7 +1334,27 @@ case_study_maths_pdf: |
     (c) [2 marks, DOK 3]
       If there are at most seven 1000-packs and only ten 10-packs available: Determine a packing plan that provides exactly 8,300 saplings with the least total unloading time. State the total number of packs received and the minimum total unloading time in seconds.
 
+    IMPORTANT OUTPUT FORMAT RULE:
 
+      • Use ONLY plain Markdown text.
+      • DO NOT use LaTeX or TeX in any form.
+
+      Math formatting rules:
+      • Write all mathematical expressions in readable plain text.
+      • Use standard symbols like + − × ÷ = √ ^ ( ) |.
+      • Use Unicode superscripts/subscripts where appropriate (e.g., x², a³, sin⁻¹).
+      • Write fractions inline using / (e.g., x/a, (a² − x²)¹ᐟ²).
+
+      STRICTLY FORBIDDEN:
+      • Do NOT use $, $$, \( \), or any LaTeX math delimiters.
+      • Do NOT use \frac, \sqrt, \times, \sin, \cos, or any backslash commands.
+      • Do NOT use LaTeX environments or math notation.
+
+      Examples:
+      ✔ Correct: sin⁻¹(x / √(a² − x²)) = cos⁻¹(x / a)
+      ✘ Incorrect: $\sin^{-1}\left(\frac{x}{\sqrt{a^2-x^2}}\right)$
+
+      All output MUST remain valid Markdown and must be copy-paste friendly.
 assertion_reasoning: |
 
 
@@ -1870,6 +1911,28 @@ assertion_reasoning: |
 
 
   OUTPUT SHOULD BE IN MARKDOWN FORMAT
+
+  IMPORTANT OUTPUT FORMAT RULE:
+
+    • Use ONLY plain Markdown text.
+    • DO NOT use LaTeX or TeX in any form.
+
+    Math formatting rules:
+    • Write all mathematical expressions in readable plain text.
+    • Use standard symbols like + − × ÷ = √ ^ ( ) |.
+    • Use Unicode superscripts/subscripts where appropriate (e.g., x², a³, sin⁻¹).
+    • Write fractions inline using / (e.g., x/a, (a² − x²)¹ᐟ²).
+
+    STRICTLY FORBIDDEN:
+    • Do NOT use $, $$, \( \), or any LaTeX math delimiters.
+    • Do NOT use \frac, \sqrt, \times, \sin, \cos, or any backslash commands.
+    • Do NOT use LaTeX environments or math notation.
+
+    Examples:
+    ✔ Correct: sin⁻¹(x / √(a² − x²)) = cos⁻¹(x / a)
+    ✘ Incorrect: $\sin^{-1}\left(\frac{x}{\sqrt{a^2-x^2}}\right)$
+
+    All output MUST remain valid Markdown and must be copy-paste friendly.
 
 assertion_reasoning_pdf: |
 
@@ -2440,6 +2503,28 @@ assertion_reasoning_pdf: |
       It should help students understand how to use the concept to evaluate Assertion–Reason statements in future questions.
 
   OUTPUT SHOULD BE IN MARKDOWN FORMAT
+
+  IMPORTANT OUTPUT FORMAT RULE:
+
+    • Use ONLY plain Markdown text.
+    • DO NOT use LaTeX or TeX in any form.
+
+    Math formatting rules:
+    • Write all mathematical expressions in readable plain text.
+    • Use standard symbols like + − × ÷ = √ ^ ( ) |.
+    • Use Unicode superscripts/subscripts where appropriate (e.g., x², a³, sin⁻¹).
+    • Write fractions inline using / (e.g., x/a, (a² − x²)¹ᐟ²).
+
+    STRICTLY FORBIDDEN:
+    • Do NOT use $, $$, \( \), or any LaTeX math delimiters.
+    • Do NOT use \frac, \sqrt, \times, \sin, \cos, or any backslash commands.
+    • Do NOT use LaTeX environments or math notation.
+
+    Examples:
+    ✔ Correct: sin⁻¹(x / √(a² − x²)) = cos⁻¹(x / a)
+    ✘ Incorrect: $\sin^{-1}\left(\frac{x}{\sqrt{a^2-x^2}}\right)$
+
+    All output MUST remain valid Markdown and must be copy-paste friendly.
 multi_part_maths: |
   You are a mathematics teacher who creates clear, grade-appropriate multi-part questions and solutions for NCERT GRADE 1- 12  strictly using the provided concepts and resource material. The questions as well as the solution should be of higher quality (THIS IS FOR FINAL EXAMS).
 
@@ -3269,6 +3354,28 @@ multi_part_maths: |
     **Important**: The Key Idea is NOT the solution to this specific question, but a GENERAL GUIDE for solving similar questions.
   
   ## Output should be in the markdown format not in json format.
+
+  IMPORTANT OUTPUT FORMAT RULE:
+
+    • Use ONLY plain Markdown text.
+    • DO NOT use LaTeX or TeX in any form.
+
+    Math formatting rules:
+    • Write all mathematical expressions in readable plain text.
+    • Use standard symbols like + − × ÷ = √ ^ ( ) |.
+    • Use Unicode superscripts/subscripts where appropriate (e.g., x², a³, sin⁻¹).
+    • Write fractions inline using / (e.g., x/a, (a² − x²)¹ᐟ²).
+
+    STRICTLY FORBIDDEN:
+    • Do NOT use $, $$, \( \), or any LaTeX math delimiters.
+    • Do NOT use \frac, \sqrt, \times, \sin, \cos, or any backslash commands.
+    • Do NOT use LaTeX environments or math notation.
+
+    Examples:
+    ✔ Correct: sin⁻¹(x / √(a² − x²)) = cos⁻¹(x / a)
+    ✘ Incorrect: $\sin^{-1}\left(\frac{x}{\sqrt{a^2-x^2}}\right)$
+
+    All output MUST remain valid Markdown and must be copy-paste friendly.
 
 multi_part_maths_pdf: |
   You are a mathematics teacher who creates clear, grade-appropriate multi-part questions and solutions for NCERT GRADE 1- 12  strictly using the provided concepts and resource material. The questions as well as the solution should be of higher quality (THIS IS FOR FINAL EXAMS).
@@ -4139,7 +4246,28 @@ multi_part_maths_pdf: |
       **Important**: The Key Idea is NOT the solution to this specific question, but a GENERAL GUIDE for solving similar questions.
     
     ## Output should be in the markdown format not in json format.
-  
+
+    IMPORTANT OUTPUT FORMAT RULE:
+
+      • Use ONLY plain Markdown text.
+      • DO NOT use LaTeX or TeX in any form.
+
+      Math formatting rules:
+      • Write all mathematical expressions in readable plain text.
+      • Use standard symbols like + − × ÷ = √ ^ ( ) |.
+      • Use Unicode superscripts/subscripts where appropriate (e.g., x², a³, sin⁻¹).
+      • Write fractions inline using / (e.g., x/a, (a² − x²)¹ᐟ²).
+
+      STRICTLY FORBIDDEN:
+      • Do NOT use $, $$, \( \), or any LaTeX math delimiters.
+      • Do NOT use \frac, \sqrt, \times, \sin, \cos, or any backslash commands.
+      • Do NOT use LaTeX environments or math notation.
+
+      Examples:
+      ✔ Correct: sin⁻¹(x / √(a² − x²)) = cos⁻¹(x / a)
+      ✘ Incorrect: $\sin^{-1}\left(\frac{x}{\sqrt{a^2-x^2}}\right)$
+
+      All output MUST remain valid Markdown and must be copy-paste friendly.
 
 mcq_questions: |
 
@@ -5029,6 +5157,28 @@ mcq_questions: |
       D. I, II, III, and IV only
   
   OUTPUT SHOULD BE IN MARKDOWN FORMAT
+
+  IMPORTANT OUTPUT FORMAT RULE:
+
+    • Use ONLY plain Markdown text.
+    • DO NOT use LaTeX or TeX in any form.
+
+    Math formatting rules:
+    • Write all mathematical expressions in readable plain text.
+    • Use standard symbols like + − × ÷ = √ ^ ( ) |.
+    • Use Unicode superscripts/subscripts where appropriate (e.g., x², a³, sin⁻¹).
+    • Write fractions inline using / (e.g., x/a, (a² − x²)¹ᐟ²).
+
+    STRICTLY FORBIDDEN:
+    • Do NOT use $, $$, \( \), or any LaTeX math delimiters.
+    • Do NOT use \frac, \sqrt, \times, \sin, \cos, or any backslash commands.
+    • Do NOT use LaTeX environments or math notation.
+
+    Examples:
+    ✔ Correct: sin⁻¹(x / √(a² − x²)) = cos⁻¹(x / a)
+    ✘ Incorrect: $\sin^{-1}\left(\frac{x}{\sqrt{a^2-x^2}}\right)$
+
+    All output MUST remain valid Markdown and must be copy-paste friendly.
 
 mcq_questions_pdf: |
 
@@ -5929,6 +6079,28 @@ mcq_questions_pdf: |
  
   OUTPUT SHOULD BE IN MARKDOWN FORMAT
 
+  IMPORTANT OUTPUT FORMAT RULE:
+
+    • Use ONLY plain Markdown text.
+    • DO NOT use LaTeX or TeX in any form.
+
+    Math formatting rules:
+    • Write all mathematical expressions in readable plain text.
+    • Use standard symbols like + − × ÷ = √ ^ ( ) |.
+    • Use Unicode superscripts/subscripts where appropriate (e.g., x², a³, sin⁻¹).
+    • Write fractions inline using / (e.g., x/a, (a² − x²)¹ᐟ²).
+
+    STRICTLY FORBIDDEN:
+    • Do NOT use $, $$, \( \), or any LaTeX math delimiters.
+    • Do NOT use \frac, \sqrt, \times, \sin, \cos, or any backslash commands.
+    • Do NOT use LaTeX environments or math notation.
+
+    Examples:
+    ✔ Correct: sin⁻¹(x / √(a² − x²)) = cos⁻¹(x / a)
+    ✘ Incorrect: $\sin^{-1}\left(\frac{x}{\sqrt{a^2-x^2}}\right)$
+
+    All output MUST remain valid Markdown and must be copy-paste friendly.
+
 FIB: |
   You are a teacher preparing Fill in the Blanks questions in Mathematics for students from Grade 1 to Grade 12, strictly aligned with the NCERT syllabus, intended for final examinations.
 
@@ -6754,6 +6926,28 @@ FIB: |
     - Do not include unnecessary variations in probable answers.
     - Ensure every blank tests understanding, not guessing.
     - Output language must be English.
+
+  IMPORTANT OUTPUT FORMAT RULE:
+
+    • Use ONLY plain Markdown text.
+    • DO NOT use LaTeX or TeX in any form.
+
+    Math formatting rules:
+    • Write all mathematical expressions in readable plain text.
+    • Use standard symbols like + − × ÷ = √ ^ ( ) |.
+    • Use Unicode superscripts/subscripts where appropriate (e.g., x², a³, sin⁻¹).
+    • Write fractions inline using / (e.g., x/a, (a² − x²)¹ᐟ²).
+
+    STRICTLY FORBIDDEN:
+    • Do NOT use $, $$, \( \), or any LaTeX math delimiters.
+    • Do NOT use \frac, \sqrt, \times, \sin, \cos, or any backslash commands.
+    • Do NOT use LaTeX environments or math notation.
+
+    Examples:
+    ✔ Correct: sin⁻¹(x / √(a² − x²)) = cos⁻¹(x / a)
+    ✘ Incorrect: \$\sin^{-1}\left(\frac{x}{\sqrt{a^2-x^2}}\right)$
+
+    All output MUST remain valid Markdown and must be copy-paste friendly.
     
 FIB_pdf: |
   You are a teacher preparing Fill in the Blanks questions in Mathematics for students from Grade 1 to Grade 12, strictly aligned with the NCERT syllabus, intended for final examinations.
@@ -7613,6 +7807,28 @@ FIB_pdf: |
     - Ensure every blank tests understanding, not guessing.
     - Output language must be English.
 
+    IMPORTANT OUTPUT FORMAT RULE:
+
+      • Use ONLY plain Markdown text.
+      • DO NOT use LaTeX or TeX in any form.
+
+      Math formatting rules:
+      • Write all mathematical expressions in readable plain text.
+      • Use standard symbols like + − × ÷ = √ ^ ( ) |.
+      • Use Unicode superscripts/subscripts where appropriate (e.g., x², a³, sin⁻¹).
+      • Write fractions inline using / (e.g., x/a, (a² − x²)¹ᐟ²).
+
+      STRICTLY FORBIDDEN:
+      • Do NOT use $, $$, \( \), or any LaTeX math delimiters.
+      • Do NOT use \frac, \sqrt, \times, \sin, \cos, or any backslash commands.
+      • Do NOT use LaTeX environments or math notation.
+
+      Examples:
+      ✔ Correct: sin⁻¹(x / √(a² − x²)) = cos⁻¹(x / a)
+      ✘ Incorrect: \$\sin^{-1}\left(\frac{x}{\sqrt{a^2-x^2}}\right)$
+
+      All output MUST remain valid Markdown and must be copy-paste friendly.
+
 descriptive: |
   You are a mathematics teacher who creates clear, grade-appropriate descriptive questions and detailed solutions for NCERT GRADE 1-12. The questions as well as the solution should be of higher quality(For Final exams).
   use Indian cultural names and contexts.
@@ -8256,6 +8472,27 @@ descriptive: |
   **Important**: The Key Idea is NOT the solution to this specific question, but a GENERAL GUIDE for solving similar questions.
   -------------------------------------------------------------------------------------
 
+  IMPORTANT OUTPUT FORMAT RULE:
+
+    • Use ONLY plain Markdown text.
+    • DO NOT use LaTeX or TeX in any form.
+
+    Math formatting rules:
+    • Write all mathematical expressions in readable plain text.
+    • Use standard symbols like + − × ÷ = √ ^ ( ) |.
+    • Use Unicode superscripts/subscripts where appropriate (e.g., x², a³, sin⁻¹).
+    • Write fractions inline using / (e.g., x/a, (a² − x²)¹ᐟ²).
+
+    STRICTLY FORBIDDEN:
+    • Do NOT use $, $$, \( \), or any LaTeX math delimiters.
+    • Do NOT use \frac, \sqrt, \times, \sin, \cos, or any backslash commands.
+    • Do NOT use LaTeX environments or math notation.
+
+    Examples:
+    ✔ Correct: sin⁻¹(x / √(a² − x²)) = cos⁻¹(x / a)
+    ✘ Incorrect: \$\sin^{-1}\left(\frac{x}{\sqrt{a^2-x^2}}\right)$
+
+    All output MUST remain valid Markdown and must be copy-paste friendly.
 
 descriptive_pdf: |
   You are a mathematics teacher who creates clear, grade-appropriate descriptive questions and detailed solutions for NCERT GRADE 1-12. The questions as well as the solution should be of higher quality(For Final exams).
@@ -8923,6 +9160,27 @@ descriptive_pdf: |
 
   -------------------------------------------------------------------------------------
 
+  IMPORTANT OUTPUT FORMAT RULE:
+
+    • Use ONLY plain Markdown text.
+    • DO NOT use LaTeX or TeX in any form.
+
+    Math formatting rules:
+    • Write all mathematical expressions in readable plain text.
+    • Use standard symbols like + − × ÷ = √ ^ ( ) |.
+    • Use Unicode superscripts/subscripts where appropriate (e.g., x², a³, sin⁻¹).
+    • Write fractions inline using / (e.g., x/a, (a² − x²)¹ᐟ²).
+
+    STRICTLY FORBIDDEN:
+    • Do NOT use $, $$, \( \), or any LaTeX math delimiters.
+    • Do NOT use \frac, \sqrt, \times, \sin, \cos, or any backslash commands.
+    • Do NOT use LaTeX environments or math notation.
+
+    Examples:
+    ✔ Correct: sin⁻¹(x / √(a² − x²)) = cos⁻¹(x / a)
+    ✘ Incorrect: \$\sin^{-1}\left(\frac{x}{\sqrt{a^2-x^2}}\right)$
+
+    All output MUST remain valid Markdown and must be copy-paste friendly.
 
 descriptive_subq: |
   You are a mathematics teacher who creates clear, grade-appropriate descriptive questions with sub-parts. The questions as well as the solution should be of higher quality(For Final exams).
@@ -9624,6 +9882,27 @@ descriptive_subq: |
 
   -------------------------------------------------------------------------------------
 
+  IMPORTANT OUTPUT FORMAT RULE:
+
+    • Use ONLY plain Markdown text.
+    • DO NOT use LaTeX or TeX in any form.
+
+    Math formatting rules:
+    • Write all mathematical expressions in readable plain text.
+    • Use standard symbols like + − × ÷ = √ ^ ( ) |.
+    • Use Unicode superscripts/subscripts where appropriate (e.g., x², a³, sin⁻¹).
+    • Write fractions inline using / (e.g., x/a, (a² − x²)¹ᐟ²).
+
+    STRICTLY FORBIDDEN:
+    • Do NOT use $, $$, \( \), or any LaTeX math delimiters.
+    • Do NOT use \frac, \sqrt, \times, \sin, \cos, or any backslash commands.
+    • Do NOT use LaTeX environments or math notation.
+
+    Examples:
+    ✔ Correct: sin⁻¹(x / √(a² − x²)) = cos⁻¹(x / a)
+    ✘ Incorrect: \$\sin^{-1}\left(\frac{x}{\sqrt{a^2-x^2}}\right)$
+
+    All output MUST remain valid Markdown and must be copy-paste friendly.
 
 descriptive_subq_pdf: |
   You are a mathematics teacher who creates clear, grade-appropriate descriptive questions with sub-parts. The questions as well as the solution should be of higher quality(For Final exams).
@@ -10353,7 +10632,27 @@ descriptive_subq_pdf: |
 
   -------------------------------------------------------------------------------------
 
+  IMPORTANT OUTPUT FORMAT RULE:
 
+    • Use ONLY plain Markdown text.
+    • DO NOT use LaTeX or TeX in any form.
+
+    Math formatting rules:
+    • Write all mathematical expressions in readable plain text.
+    • Use standard symbols like + − × ÷ = √ ^ ( ) |.
+    • Use Unicode superscripts/subscripts where appropriate (e.g., x², a³, sin⁻¹).
+    • Write fractions inline using / (e.g., x/a, (a² − x²)¹ᐟ²).
+
+    STRICTLY FORBIDDEN:
+    • Do NOT use $, $$, \( \), or any LaTeX math delimiters.
+    • Do NOT use \frac, \sqrt, \times, \sin, \cos, or any backslash commands.
+    • Do NOT use LaTeX environments or math notation.
+
+    Examples:
+    ✔ Correct: sin⁻¹(x / √(a² − x²)) = cos⁻¹(x / a)
+    ✘ Incorrect: \$\sin^{-1}\left(\frac{x}{\sqrt{a^2-x^2}}\right)\$
+
+    All output MUST remain valid Markdown and must be copy-paste friendly.
 
 
 duplicate_question: |
@@ -10444,3 +10743,25 @@ duplicate_question: |
   ✓ Valid JSON array output
   ✓ Difficulty unchanged
   ✓ Same taxonomy and marks
+
+  IMPORTANT OUTPUT FORMAT RULE:
+
+    • Use ONLY plain Markdown text.
+    • DO NOT use LaTeX or TeX in any form.
+
+    Math formatting rules:
+    • Write all mathematical expressions in readable plain text.
+    • Use standard symbols like + − × ÷ = √ ^ ( ) |.
+    • Use Unicode superscripts/subscripts where appropriate (e.g., x², a³, sin⁻¹).
+    • Write fractions inline using / (e.g., x/a, (a² − x²)¹ᐟ²).
+
+    STRICTLY FORBIDDEN:
+    • Do NOT use $, $$, \( \), or any LaTeX math delimiters.
+    • Do NOT use \frac, \sqrt, \times, \sin, \cos, or any backslash commands.
+    • Do NOT use LaTeX environments or math notation.
+
+    Examples:
+    ✔ Correct: sin⁻¹(x / √(a² − x²)) = cos⁻¹(x / a)
+    ✘ Incorrect: \$\sin^{-1}\left(\frac{x}{\sqrt{a^2-x^2}}\right)\$
+
+    All output MUST remain valid Markdown and must be copy-paste friendly.

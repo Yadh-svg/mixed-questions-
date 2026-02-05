@@ -7,10 +7,13 @@ import asyncio
 from typing import List, Dict, Any
 from collections import defaultdict
 import logging
+import json
+import time
+from pathlib import Path
 
 import os
 
-from llm_engine import run_gemini_async
+from llm_engine import run_gemini_async, save_prompt, save_response
 from prompt_builder import build_prompt_for_batch, get_files
 
 # ... (imports)
@@ -20,43 +23,105 @@ logger = logging.getLogger(__name__)
 
 DEFAULT_BATCH_SIZE = 4
 
+# Gemini 3 Flash Preview Pricing (per 1M tokens)
+INPUT_PRICE_PER_1M = 0.50  # $0.50 per 1M input tokens
+OUTPUT_PRICE_PER_1M = 3.00  # $3.00 per 1M output tokens (includes thought tokens)
+
+def calculate_cost(input_tokens: int, output_tokens: int) -> float:
+    """
+    Calculate the cost of a Gemini API call based on token usage.
+    
+    Args:
+        input_tokens: Number of input tokens
+        output_tokens: Number of output tokens (includes thought tokens)
+    
+    Returns:
+        Total cost in USD
+    """
+    input_cost = (input_tokens / 1_000_000) * INPUT_PRICE_PER_1M
+    output_cost = (output_tokens / 1_000_000) * OUTPUT_PRICE_PER_1M
+    return input_cost + output_cost
+
+def save_batch_metadata(metadata: Dict[str, Any], batch_key: str):
+    """
+    Save extracted metadata to a dedicated folder.
+    """
+    if not metadata:
+        return
+        
+    try:
+        log_dir = Path("metadata_logs")
+        log_dir.mkdir(exist_ok=True)
+        
+        timestamp = time.strftime("%Y%m%d_%H%M%S")
+        filename = f"{timestamp}_metadata_{batch_key.replace(' ', '_')}.txt"
+        file_path = log_dir / filename
+        
+        with open(file_path, "w", encoding="utf-8") as f:
+            json.dump(metadata, f, indent=4)
+            
+        logger.info(f"Saved batch metadata to {file_path}")
+    except Exception as e:
+        logger.error(f"Failed to save batch metadata: {e}")
+
 
 def extract_first_json_match(text: str) -> Dict[str, Any]:
     """
-    Helper to find first valid JSON object using raw_decode.
-    Handles trailing text (like '```') automatically.
+    Robustly find the first valid JSON object in the text.
+    Iterates through all '{' occurrences to handle cases where 
+    LaTeX braces (e.g. \cancel{0}) appear before the actual JSON.
     """
     import json
-    try:
-        # Find closest opening brace
-        start_idx = text.find('{')
+    
+    start_idx = -1
+    while True:
+        # Find next opening brace
+        start_idx = text.find('{', start_idx + 1)
         if start_idx == -1:
             return None 
         
-        # Use raw_decode which returns (obj, end_index) and ignores trailing text
-        decoder = json.JSONDecoder()
-        obj, _ = decoder.raw_decode(text, idx=start_idx)
-        return obj
-    except Exception:
-        return None
+        # Try to parse JSON starting from this brace
+        try:
+            decoder = json.JSONDecoder()
+            obj, _ = decoder.raw_decode(text, idx=start_idx)
+            # Basic validation: ensure it's a dict and not just a single value
+            if isinstance(obj, dict):
+                return obj
+        except Exception:
+            # Continue searching if this brace wasn't the start of invalid JSON
+            continue
+            
+    return None
 
-
-
-def extract_core_skill_metadata(response_text: str) -> Dict[str, Any]:
+def extract_core_skill_metadata(response_text: str, expected_count: int = 0) -> Dict[str, Any]:
     """
     Extract the core skill JSON metadata from LLM response.
-    
-    Expected format: JSON object where values are comma-separated strings.
-    Example: {"core_equation": "eq1, eq2, eq3", ...}
+    Prioritizes ```json ... ``` blocks, then falls back to raw search.
     """
-    # Use robust JSON extractor (no regex dependency)
-    metadata = extract_first_json_match(response_text)
+    import re
+    import json
     
+    metadata = None
+    
+    # 1. Try to find JSON code block first (Most reliable)
+    code_block_pattern = r'```json\s*(\{.*?\})\s*```'
+    match = re.search(code_block_pattern, response_text, re.DOTALL)
+    if match:
+        try:
+            metadata = json.loads(match.group(1))
+            logger.info("Extracted metadata from markdown code block.")
+        except Exception as e:
+            logger.warning(f"Found JSON code block but failed to parse: {e}")
+            
+    # 2. Fallback to robust raw search
+    if not metadata:
+        metadata = extract_first_json_match(response_text)
+        if metadata:
+            logger.info("Extracted metadata using raw search fallback.")
+            
     if metadata:
-        # Validate structure - one of the required keys must be present
-        required_keys = ['core_equation', 'solution_pattern', 'scenario_signature', 'context_domain', 'answer_form']
-        if any(key in metadata for key in required_keys):
-             # Ensure values are strings (not lists) for consistency, though LLM should output strings
+        # Validate structure - check for 'batch_summary'
+        if 'batch_summary' in metadata:
              clean_metadata = {}
              for k, v in metadata.items():
                  if isinstance(v, list):
@@ -64,11 +129,22 @@ def extract_core_skill_metadata(response_text: str) -> Dict[str, Any]:
                  else:
                      clean_metadata[k] = str(v)
              
-             count = len(clean_metadata.get('core_equation', '').split(',')) if clean_metadata.get('core_equation') else 0
-             logger.info(f"Extracted cumulative metadata with approx {count} entries")
+             summary = clean_metadata.get('batch_summary', '')
+             # Split by comma but handle potential numbered list "1. idea, 2. idea"
+             items = [s.strip() for s in re.split(r',\s*(?=\d+\.|\w+)', summary) if s.strip()]
+             actual_count = len(items)
+             
+             if expected_count > 0:
+                 if actual_count == expected_count:
+                     logger.info(f"Metadata verification PASSED: Found {actual_count} entries for {expected_count} questions.")
+                 else:
+                     logger.warning(f"Metadata verification FAILED: Found {actual_count} entries but expected {expected_count} (one per question).")
+             else:
+                 logger.info(f"Extracted cumulative batch_summary with approx {actual_count} entries")
+                 
              return clean_metadata
 
-    logger.warning("Could not extract core skill metadata from response")
+    logger.warning("Could not extract batch_summary from response")
     return {}
 
 
@@ -135,7 +211,7 @@ def group_questions_by_type_and_topic(questions_config: List[Dict[str, Any]]) ->
             # We check if the topic count in any batch is partial (< 4) AND there are more of that topic elsewhere.
             # Actually, "Priority Packing" puts 4s together.
             # So if we see a topic with total count >= 4, but it never forms a chunk of 4 in input -> INEFFICIENT.
-            # Or if total count < 4, but it is split (e.g. 1 in B1, 1 in B2) -> INEFFICIENT.
+            # Or if total count < 4, but it is split (e.g. 1 in B1, 1 in B2) -> Inefficient.
             
             total_count = len(batch_indices)
             
@@ -248,8 +324,9 @@ async def generate_raw_batch(
         prompt_data = build_prompt_for_batch(base_key, questions, general_config, type_config, previous_batch_metadata)
         
         prompt_text = prompt_data['prompt']
-
-
+        
+        # Save prompt for debugging
+        # save_prompt(prompt_text, "generation", batch_key)
 
         files = prompt_data.get('files', [])
         file_metadata = prompt_data.get('file_metadata', {})
@@ -260,11 +337,13 @@ async def generate_raw_batch(
             prompt=prompt_text,
             api_key=api_key,
             files=files,
-            thinking_budget=5000,
+            thinking_budget=4000,
             file_metadata=file_metadata
         )
 
-
+        # Save raw response for debugging
+        # if 'text' in result and result['text']:
+        #     save_response(result['text'], "generation", batch_key)
         
         # Add metadata
         result['question_count'] = len(questions)
@@ -307,7 +386,7 @@ async def validate_batch(
             prompt=validation_prompt_text,
             api_key=api_key,
             files=files,
-            thinking_budget=5000,
+            thinking_budget=4000,
             file_metadata=file_metadata
         )
         
@@ -449,6 +528,20 @@ def split_generated_content(text: str) -> Dict[str, str]:
         content = parts[i].strip()
         if not content: continue
         
+        # Strip potential JSON metadata from the end of the last question
+        if i == len(parts) - 1:
+            # Look for JSON block at the end
+            import re
+            content = re.sub(r'```json\s*\{.*?\s*\}\s*```', '', content, flags=re.DOTALL).strip()
+            # Also catch JSON if not wrapped in code blocks
+            if content.endswith('}'):
+                # Try to find the last occurrence of '{' and see if it's a JSON block
+                last_brace = content.rfind('{')
+                if last_brace != -1:
+                    potential_json = content[last_brace:]
+                    if extract_first_json_match(potential_json):
+                        content = content[:last_brace].strip()
+
         key = f"question{q_index}"
         questions[key] = content
         q_index += 1
@@ -462,17 +555,14 @@ async def process_single_batch_flow(
     questions: List[Dict[str, Any]],
     general_config: Dict[str, Any],
     type_config: Dict[str, Any] = None,
-    validation_prompt_template: str = "",
+    validation_prompt_template: Any = "",
     progress_callback=None,
     previous_batch_metadata: Dict[str, Any] = None
 ) -> Dict[str, Any]:
     """
-    Process a SINGLE batch through the full Generation -> Split -> Parallel Validation flow.
-    
-    Returns:
-        Dict containing batch results and optionally 'core_skill_metadata' if extraction is enabled.
+    Process a SINGLE batch through the full Generation -> Split -> Batched Validation flow.
     """
-    logger.info(f"[{batch_key}] Starting Parallel Flow")
+    logger.info(f"[{batch_key}] Starting Batched Flow")
     
     # --- STAGE 1: GENERATION ---
     raw_result = await generate_raw_batch(batch_key, questions, general_config, type_config, previous_batch_metadata)
@@ -480,8 +570,16 @@ async def process_single_batch_flow(
     # Extract core skill metadata if enabled
     core_skill_metadata = {}
     if general_config.get('core_skill_enabled', False) and not raw_result.get('error'):
-        core_skill_metadata = extract_core_skill_metadata(raw_result.get('text', ''))
-        logger.info(f"[{batch_key}] Extracted core skill metadata: {len(core_skill_metadata.get('core_equation', []))} entries")
+        # Pass number of questions to verify 1:1 mapping
+        core_skill_metadata = extract_core_skill_metadata(raw_result.get('text', ''), expected_count=len(questions))
+        if core_skill_metadata:
+            # Standardize count log
+            summary = core_skill_metadata.get('batch_summary', '')
+            import re
+            count = len([s for s in re.split(r',\s*(?=\d+\.|\w+)', summary) if s.strip()])
+            logger.info(f"[{batch_key}] Extracted core skill metadata with {count} items.")
+            # Save metadata to separate folder
+            # save_batch_metadata(core_skill_metadata, batch_key)
     
     if raw_result.get('error'):
         logger.warning(f"[{batch_key}] Generation failed. Skipping validation.")
@@ -495,17 +593,32 @@ async def process_single_batch_flow(
 
     # --- STAGE 2: SPLIT ---
     split_questions = split_generated_content(raw_result['text'])
-    
 
+    # --- STAGE 3: BATCHED VALIDATION ---
+    logger.info(f"[{batch_key}] Validating {len(split_questions)} items in ONE HIT.")
     
-    # --- STAGE 3: PARALLEL VALIDATION ---
-    logger.info(f"[{batch_key}] Validating {len(split_questions)} items in PARALLEL. Keys: {list(split_questions.keys())}")
+    # 1. Prepare combined content with clear labels
+    combined_questions_text = ""
+    for q_key, q_text in split_questions.items():
+        q_label = q_key.upper() # "QUESTION1", "QUESTION2", ...
+        combined_questions_text += f"\n\n### {q_label}\n{q_text}\n"
+
+    # 2. Prepare combined context for all questions
+    context_lines = []
+    for i, q_config in enumerate(questions):
+        q_label = f"QUESTION{i+1}"
+        topic_str = q_config.get('topic', 'Unknown')
+        q_notes = q_config.get('additional_notes_text', '')
+        # Specifier
+        spec = q_config.get('mcq_type') or q_config.get('fib_type') or q_config.get('descriptive_type') or "Standard"
+        
+        ctx = f"- {q_label}: Topic='{topic_str}', Type='{spec}'"
+        if q_notes: ctx += f", Notes='{q_notes}'"
+        context_lines.append(ctx)
     
-    # Prepare common validation resources
-    val_files = [] 
-    val_file_metadata = {'source_type': 'None (Validation)', 'filenames': []}
+    combined_context = "\n".join(context_lines)
     
-    # Base Type Key for Structure Map lookup
+    # 3. Get structure format rule from config
     base_type_key = batch_key.split(' - Batch ')[0]
     structure_map = {
         "MCQ": "structure_MCQ",
@@ -516,149 +629,81 @@ async def process_single_batch_flow(
         "Descriptive": "structure_Descriptive",
         "Descriptive w/ Subquestions": "structure_Descriptive_w_subq"
     }
-    structure_key = structure_map.get(base_type_key)
-    # Load validation.yaml config locally inside function or pass it? 
-    # We passed the template string. We need structure format rule.
-    # Assuming standard structure rule for now or extracting from template if possible.
-    # Actually, let's use a generic instruction if we can't load the file here easily.
-    # BETTER: Pass the validation_config or load it once in the pipeline.
-    # For now, let's assume the strict JSON structure rule is embedded or we use a default.
-    structure_format = "Return a valid JSON object." 
-    # Try to extract from globals/pipeline if passed, but simpler to default or refine later.
+    struct_rule_key = structure_map.get(base_type_key)
     
-    
-    async def validate_single_item(q_key, q_text):
-        """Helper to validate one specific question chunk"""
-        try:
-            # Build Context for THIS question only
-            # We need to map q_key (question1) back to the config? 
-            # The split gave us numbers based on the generated text headers.
-            # Ideally "Question [1]" corresponds to index 0 in questions list.
-            try:
-                idx = int(q_key.replace("question", "")) - 1
-            except:
-                idx = 0
-            
-            # Formatting context safely
-            q_config = questions[idx] if 0 <= idx < len(questions) else {}
-            topic_str = q_config.get('topic', 'Unknown')
-            q_notes = q_config.get('additional_notes_text', '')
-            
-            # Specifier
-            spec = q_config.get('mcq_type') or q_config.get('fib_type') or q_config.get('descriptive_type') or "Standard"
-            
-            context_line = f"Question Context: Topic='{topic_str}', Type='{spec}'"
-            if q_notes: context_line += f", Notes='{q_notes}'"
-                
-            # Construct Prompt
-            val_prompt = validation_prompt_template.replace("{{GENERATED_CONTENT}}", q_text)
-            val_prompt = val_prompt.replace("{{INPUT_CONTEXT}}", context_line)
-            # Use structure map if available (passed or hardcoded knowns)
-            val_prompt = val_prompt.replace("{{OUTPUT_FORMAT_RULES}}", structure_format)
-            
-            # Call API
-            v_res = await validate_batch(f"{batch_key}_{q_key}", val_prompt, general_config, val_files, val_file_metadata)
-            
-            logger.info(f"[{batch_key}_{q_key}] Validation finished. Result keys: {list(v_res.keys()) if v_res else 'None'}")
-            
-            # Return tuple of (key, result)
-            return q_key, v_res
-            
-        except Exception as e:
-            logger.error(f"Item validation failed for {q_key}: {e}")
-            return q_key, {'error': str(e), 'text': ''}
+    # Handle validation_config passing
+    if isinstance(validation_prompt_template, dict):
+        validation_config = validation_prompt_template
+        prompt_template = validation_config.get('validation_prompt', '')
+    else:
+        # Fallback if only template string was passed
+        prompt_template = validation_prompt_template
+        validation_config = {}
 
-    # Launch all validation tasks
-    validation_tasks = [
-        validate_single_item(k, v) for k, v in split_questions.items()
-    ]
+    structure_format = validation_config.get(struct_rule_key, "Return a valid JSON object.")
     
-    validation_results = await asyncio.gather(*validation_tasks)
+    # 4. Construct Batched Validation Prompt
+    val_prompt = prompt_template.replace("{{GENERATED_CONTENT}}", combined_questions_text)
+    val_prompt = val_prompt.replace("{{INPUT_CONTEXT}}", combined_context)
+    val_prompt = val_prompt.replace("{{OUTPUT_FORMAT_RULES}}", structure_format)
     
-    # --- STAGE 4: AGGREGATE ---
-    # We need to combine the results into a single "validated" dictionary 
-    # that looks like the result of a batch validation (text field containing JSON).
-    # OR we construct the final object that the Renderer expects.
-    # The renderer typically parses `validated['text']` as JSON.
-    # So we should reconstruct a JSON string from our individual results.
+    # 5. Call API for the whole batch
+    val_files = [] 
+    val_file_metadata = {'source_type': 'None (Validation)', 'filenames': []}
     
-    import json
-    aggregated_json = {}
-    total_val_time = 0
-    
-    # Define helper locally or at module level (doing locally to minimize diff scope but module level is cleaner. 
-    # I'll add the helper at module level in a separate edit or just inline a simple one here if short.
-    # Actually, let's look for braces.
-    
-    def extract_first_json_match(text: str) -> Dict[str, Any]:
-        """
-        Helper to find first valid JSON object using raw_decode.
-        This handles trailing text automatically and is more robust than manual brace counting.
-        """
-        try:
-            # Find closest opening brace
-            start_idx = text.find('{')
-            if start_idx == -1:
-                return None 
-            
-            # Use raw_decode which returns (obj, end_index) and ignores trailing text
-            decoder = json.JSONDecoder()
-            obj, _ = decoder.raw_decode(text, idx=start_idx)
-            return obj
-        except Exception:
-            return None
-
-    for q_key, v_res in validation_results:
-        # v_res['text'] should be the JSON for that question (e.g. {"question1": "markdown"})
-        total_val_time += v_res.get('elapsed', 0)
+    validated_payload = {}
+    try:
+        v_res = await validate_batch(batch_key, val_prompt, general_config, val_files, val_file_metadata)
+        logger.info(f"[{batch_key}] Batched validation finished. Time: {v_res.get('elapsed', 0):.2f}s")
         
-        # Robust extraction
-        raw_text = v_res.get('text', '')
+        # --- STAGE 4: AGGREGATE & PARSE ---
+        raw_val_text = v_res.get('text', '')
         
-        # First try to strip code blocks as they are most common source of noise
-        cleaner_text = raw_text.replace('```json', '').replace('```', '').strip()
+        # Robust extraction of the JSON object containing results
+        data = extract_first_json_match(raw_val_text)
         
-        # Try extraction on cleaned text first (best chance)
-        data = extract_first_json_match(cleaner_text)
-        
-        # If valid data found
         if data:
-            try:
-                # Take the first value found (assuming one question per validation call)
-                if data:
-                    content = next(iter(data.values()))
-                    aggregated_json[q_key] = content
-                else:
-                    aggregated_json[q_key] = raw_text
-            except Exception as e:
-                logger.warning(f"Extracted JSON but failed to get value for {q_key}: {e}")
-                aggregated_json[q_key] = raw_text
+            validated_payload = {
+                'text': json.dumps(data),
+                'elapsed': v_res.get('elapsed', 0),
+                'batch_key': batch_key,
+                'input_tokens': v_res.get('input_tokens', 0),
+                'output_tokens': v_res.get('output_tokens', 0),
+                'thought_tokens': v_res.get('thought_tokens', 0),
+                'billed_output_tokens': v_res.get('billed_output_tokens', 0)
+            }
         else:
-            # If failed, try on original raw text (in case code block stripping removed something vital? Unlikely but safe)
-            data_retry = extract_first_json_match(raw_text)
-            if data_retry:
-                try:
-                    content = next(iter(data_retry.values()))
-                    aggregated_json[q_key] = content
-                except:
-                    aggregated_json[q_key] = raw_text
-            else:
-                logger.warning(f"Failed to parse validation output for {q_key}. Using raw text.")
-                aggregated_json[q_key] = raw_text
+            logger.warning(f"[{batch_key}] Failed to parse batched validation response as JSON.")
+            validated_payload = {
+                'text': raw_val_text,
+                'error': 'Failed to parse JSON',
+                'elapsed': v_res.get('elapsed', 0),
+                'batch_key': batch_key,
+                'input_tokens': v_res.get('input_tokens', 0),
+                'output_tokens': v_res.get('output_tokens', 0),
+                'thought_tokens': v_res.get('thought_tokens', 0),
+                'billed_output_tokens': v_res.get('billed_output_tokens', 0)
+            }
             
-    # Create the virtual "batch validation result"
-    final_validation_payload = {
-        'text': json.dumps(aggregated_json),
-        'elapsed': total_val_time / max(len(validation_results), 1), # Approx avg time or max? 
-        'batch_key': batch_key
-    }
+    except Exception as e:
+        logger.error(f"[{batch_key}] Batched validation failed: {e}")
+        validated_payload = {'error': str(e), 'text': '', 'elapsed': 0}
+
+    # --- STAGE 5: COST CALCULATION ---
+    # Calculate costs for Generation and Validation
+    gen_cost = calculate_cost(raw_result.get('input_tokens', 0), raw_result.get('billed_output_tokens', 0))
+    val_cost = calculate_cost(validated_payload.get('input_tokens', 0), validated_payload.get('billed_output_tokens', 0))
+    batch_total_cost = gen_cost + val_cost
     
-    logger.info(f"[{batch_key}] Flow Complete. Aggregated {len(aggregated_json)} items.")
+    # Attach costs to result
+    raw_result['cost'] = gen_cost
+    validated_payload['cost'] = val_cost
     
     result_payload = {
         'raw': raw_result,
-        'validated': final_validation_payload,
-        'core_skill_metadata': core_skill_metadata
+        'validated': validated_payload,
+        'core_skill_metadata': core_skill_metadata,
+        'batch_cost': batch_total_cost
     }
     
     if progress_callback: progress_callback(batch_key, result_payload)
@@ -686,12 +731,14 @@ async def process_batches_pipeline(
         import yaml
         with open('validation.yaml', 'r', encoding='utf-8') as f:
             validation_config = yaml.safe_load(f)
-            validation_prompt_template = validation_config.get('validation_prompt', '')
+            # Pass the WHOLE config to flow handler
+            validation_resource = validation_config
     except Exception as e:
         logger.error(f"Failed to load validation.yaml: {e}")
         return {'error': "Critical: validation.yaml not found"}
 
     pipeline_results = {}
+    total_cost = 0.0
     
     if core_skill_enabled:
         # SEQUENTIAL PROCESSING: Process each type's batches sequentially to pass metadata
@@ -715,19 +762,36 @@ async def process_batches_pipeline(
                     questions=batch_questions,
                     general_config=general_config,
                     type_config=None,
-                    validation_prompt_template=validation_prompt_template,
+                    validation_prompt_template=validation_resource,
                     progress_callback=progress_callback,
                     previous_batch_metadata=accumulated_metadata if accumulated_metadata else None
                 )
                 
                 # Extract metadata from result
-                # Since LLM provides cumulative metadata now, we just update our tracker
+                # LOGIC UPDATE: We now accumulate metadata in Python, 
+                # instead of expecting the LLM to pass back the full list.
                 batch_metadata = result.pop('_metadata', {})
                 if batch_metadata:
-                    accumulated_metadata = batch_metadata
-                    logger.info(f"[Core Skill] Updated cumulative metadata after {batch_key}")
+                    # Initialize if empty
+                    if not accumulated_metadata:
+                        accumulated_metadata = batch_metadata.copy()
+                        logger.info(f"[Core Skill] Initialized metadata with {len(batch_metadata.get('batch_summary', '').split(','))} items")
+                    else:
+                        # Append new values to existing strings
+                        for key, new_val in batch_metadata.items():
+                            if key in accumulated_metadata:
+                                # Append with comma
+                                current_val = accumulated_metadata[key]
+                                if new_val.strip():
+                                    accumulated_metadata[key] = f"{current_val}, {new_val}"
+                            else:
+                                # New key, just add it
+                                accumulated_metadata[key] = new_val
+                                
+                        logger.info(f"[Core Skill] Updated cumulative metadata. Total summary items: {len(accumulated_metadata.get('batch_summary', '').split(','))}")
                 
                 # Add batch results to pipeline results
+                total_cost += result[batch_key].get('batch_cost', 0.0)
                 pipeline_results.update(result)
     else:
         # PARALLEL PROCESSING: Original behavior
@@ -746,7 +810,7 @@ async def process_batches_pipeline(
                     questions=batch_questions,
                     general_config=general_config,
                     type_config=None,
-                    validation_prompt_template=validation_prompt_template,
+                    validation_prompt_template=validation_resource,
                     progress_callback=progress_callback,
                     previous_batch_metadata=None
                 )
@@ -762,11 +826,15 @@ async def process_batches_pipeline(
             if isinstance(res, dict):
                 # Remove internal _metadata key before adding to results
                 res.pop('_metadata', None)
+                # Aggregate cost from first key (should only be one batch key in res)
+                for b_key, b_val in res.items():
+                    total_cost += b_val.get('batch_cost', 0.0)
                 pipeline_results.update(res)
             elif isinstance(res, Exception):
                 logger.error(f"Batch flow failed: {res}")
             
-    logger.info("Pipeline processing completed.")
+    logger.info(f"Pipeline processing completed. Total Cost: ${total_cost:.4f}")
+    pipeline_results['_total_cost'] = total_cost
     return pipeline_results
 
 

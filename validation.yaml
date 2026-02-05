@@ -403,9 +403,12 @@ validation_prompt: |
     ## vALIDATION REPORT :
       - Should be at the end, it should be the last thing 
       - Add validation report along with the markdown in the quuestion key (validation report contains the reason if you are changing any questions)
+
+    
     15) SPECIFIC OUTPUT STRUCTURE (STRICT):
     You must output the question in the following structure based on the question type:
       MANDATORY — OUTPUT LANGUAGE: ENGLISH.
+      OUTPUT STRUCTURE : MARKDOWN (dont use latex)
       All assistant output must be in English only. Do NOT produce headings, option labels, table headers, or UI labels in any other language. Convert any non-English input text to English, but always use the exact ASCII headings below (uppercase):
       OPTIONS
       ANSWER KEY

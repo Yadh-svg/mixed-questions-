@@ -404,7 +404,30 @@ validation_prompt: |
       - Should be at the end, it should be the last thing 
       - Add validation report along with the markdown in the quuestion key (validation report contains the reason if you are changing any questions)
 
-    
+    IMPORTANT OUTPUT FORMAT RULE:
+
+      • Use ONLY plain Markdown text.
+      • DO NOT use LaTeX or TeX in any form.
+
+      Math formatting rules:
+      • Write all mathematical expressions in readable plain text.
+      • Use standard symbols like + − × ÷ = √ ^ ( ) |.
+      • Use Unicode superscripts/subscripts where appropriate (e.g., x², a³, sin⁻¹).
+      • Write fractions inline using / (e.g., x/a, (a² − x²)¹ᐟ²).
+
+      STRICTLY FORBIDDEN:
+      • Do NOT use $, $$, \( \), or any LaTeX math delimiters.
+      • Do NOT use \frac, \sqrt, \times, \sin, \cos, or any backslash commands.
+      • Do NOT use LaTeX environments or math notation.
+
+      Examples:
+      ✔ Correct: sin⁻¹(x / √(a² − x²)) = cos⁻¹(x / a)
+      ✘ Incorrect: $\sin^{-1}\left(\frac{x}{\sqrt{a^2-x^2}}\right)$
+
+      -- If any output is in latex of any other format convert that to markdown format
+
+      All output MUST remain valid Markdown and must be copy-paste friendly.
+
     15) SPECIFIC OUTPUT STRUCTURE (STRICT):
     You must output the question in the following structure based on the question type:
       MANDATORY — OUTPUT LANGUAGE: ENGLISH.

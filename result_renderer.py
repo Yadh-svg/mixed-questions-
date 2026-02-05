@@ -535,6 +535,13 @@ def render_batch_results(batch_key: str, result_data: Dict[str, Any], render_con
     """
     # Get text content
     text_content = result_data.get('text', '')
+    
+    # DEBUG: Log what we received
+    print(f"\n=== DEBUG render_batch_results for {batch_key} ===")
+    print(f"result_data keys: {result_data.keys()}")
+    print(f"text_content length: {len(text_content) if text_content else 0}")
+    print(f"text_content preview (first 200 chars): {text_content[:200] if text_content else 'EMPTY'}")
+    
     if not text_content:
         st.warning("No content to display.")
         return
@@ -543,6 +550,11 @@ def render_batch_results(batch_key: str, result_data: Dict[str, Any], render_con
     # SINGLE NORMALIZATION BOUNDARY - All LLM output parsing happens here
     # =======================================================================
     questions_dict = normalize_llm_output_to_questions(text_content)
+    
+    # DEBUG: Log normalization results
+    print(f"questions_dict keys: {list(questions_dict.keys())}")
+    for k, v in questions_dict.items():
+        print(f"  {k}: length={len(v)}, preview={v[:100] if v else 'EMPTY'}...")
     
     # Handle normalization failure
     if not questions_dict:
@@ -573,6 +585,9 @@ def render_batch_results(batch_key: str, result_data: Dict[str, Any], render_con
         
         # After normalization, content is GUARANTEED to be a string
         markdown_content = questions_dict[q_key]
+        
+        # DEBUG: Log what we're about to render
+        print(f"Rendering {q_key}: markdown_content length={len(markdown_content)}, preview={markdown_content[:100]}...")
         
         # Invariant check (should never fail after normalization)
         assert isinstance(markdown_content, str), f"Normalization failed: {q_key} is not a string"

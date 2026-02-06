@@ -217,6 +217,8 @@ validation_prompt: |
         9. Remove all HTML/Markdown image tags, links, and visual annotations from the question and options.
         10 .There must be no wrapper metadata such as status, pass/fail flags, repaired_item containers, validation_reports, arrays, or lists. Output only the final clean JSON object with "question1": "<markdown>" , ...
         11 . Please remove any mention of mark distributions from the solution.
+
+    ## Names used for characters should be indian names mostly easy names (dont include textbook names like maya and rohan),If found change them
     ## Main Rule (for dok 2 questions)
       Refined DOK-1 vs DOK-2 discriminator:
         A question is DOK-1 only if it can be solved by a single, direct procedural step using one fact or formula, with no selection among quantities, no inclusion/exclusion decision, no multi-step computation, and no comparison or ordering of results. 
@@ -381,6 +383,64 @@ validation_prompt: |
         All references must be explicit and self-contained.
         Remove any of the reference to the textbook if found
 
+    ## KEY IDEA RULES (MANDATORY – EDUCATIONAL, STRICT FORMAT)
+
+          You must write a KEY IDEA meant for a weak or struggling student.
+
+          ASSUME:
+          - The student has NEVER seen this topic before.
+          - The student does NOT know any technical or mathematical terminology.
+
+          HARD RULES (DO NOT VIOLATE):
+          - Do NOT mention any numbers, symbols, variables, equations, diagrams, or values from the question.
+          - Do NOT use advanced or textbook-style language.
+          - Do NOT write in a single flowing paragraph.
+          - Do NOT skip or merge sections.
+          - The explanation must work for ANY similar question of this type.
+
+          LANGUAGE RULES:
+          - Use very simple, school-level English.
+          - Prefer short sentences.
+          - If a word sounds technical, explain it immediately or avoid it.
+          - Write as if you are teaching a confused student one-on-one.
+
+          --------------------------------------------------
+
+          REQUIRED STRUCTURE (WRITE EXACTLY IN THIS ORDER):
+
+          KEY IDEA
+
+          1. What kind of problems these are  
+          Explain in simple words what these questions are generally asking the student to understand or find.
+
+          2. Core idea behind these problems  
+          Explain the main idea from the beginning, as if the student has zero background knowledge.
+
+          3. Why this idea works  
+          Explain logically why this method makes sense in real understanding, not just as a rule to memorize.
+        
+          4. General step-by-step method  
+          Write this as clearly numbered steps:
+          Step 1:  
+          Step 2:  
+          Step 3:  
+          Step 4:  
+
+          Each step must describe ONE clear action the student should take.
+
+          5. Common mistakes students make  
+          Mention at least two common mistakes and explain why students make them.
+
+          6. Tips to avoid these mistakes  
+          Give simple, practical tips written directly for a student.
+          **- Do NOT explicitly break the explanation into “What kind of problems”, “Core idea”,"Common mistakes students make  " or “Why this works”.
+            Do NOT restate or refer to the given question (Why this idea works .. etc ). **
+          --------------------------------------------------
+
+          QUALITY CHECK (MANDATORY):
+          - Minimum length: 6–8 full sentences.
+          - The explanation must be reusable for any similar problem.
+          - If the explanation sounds suitable for a strong student, rewrite it to be simpler.
 
     ## Distractor analysis table structure :
       Generate the distractor analysis table using Word-compatible Markdown. Use full column separators, padded cells, and extended dash lines so Word recognizes it as a table. Do not use compact ‘|---|---|’ separators. Each column must have descriptive headers and consistent spacing

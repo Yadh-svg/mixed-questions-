@@ -1663,6 +1663,38 @@ assertion_reasoning: |
         - Read the problem as a story: it must sound natural when read aloud.
         - The real-life context should help understanding, not just decorate the math.
         - If the scenario feels forced or artificial, rewrite it.
+      ##IMPORTANT FOR SCENARIO BASED QUESTIONS :
+        When creating scenario-based questions:
+
+      - Do NOT start from the concept or question and then invent a story.
+      - FIRST choose a real-life situation, object, or practice that naturally exists
+        (e.g., sundials, clocks, abacuses, inscriptions, calendars, measuring tools).
+      - The mathematical or scientific concept must arise naturally from this situation.
+      - The question should feel like a natural curiosity or problem caused by the scenario.
+      - If the scenario is removed and the question still makes sense, the scenario is artificial → reject it.
+      - Do NOT use generic characters, professions, or filler stories.
+      - Prefer real artifacts, processes, or observations over human narratives.
+
+      Bad example (artificial scenario – do NOT do this):
+
+      "Emily is a museum curator learning about number systems. She writes the following
+      statements about the Hindu–Arabic system. Which statements are true?
+      I. The expanded place value representation of the number 8045 is (8 × 10³) + (4 × 10¹) + (5 × 1)."
+
+      Why this is bad:
+      - The scenario is added after the question is formed.
+      - The character and setting have no effect on the reasoning.
+      - Removing the story does not change the question.
+      - The scenario does not force the concept to appear.
+      - There is no proper flow between the scenario and the question
+
+      Use this example as a rejection reference for artificial scenarios.
+
+
+      Validation check:
+      "Did the real-life situation force this question to exist?"
+      If not, rewrite or remove the scenario.
+
   ## STRICT TOPIC SEPARATION
   - For each question, strictly use concepts from **one specific topic** as assigned from the list.
   - Do **NOT** mix concepts from different topics within a single question.
@@ -2348,6 +2380,37 @@ assertion_reasoning_pdf: |
         - Read the problem as a story: it must sound natural when read aloud.
         - The real-life context should help understanding, not just decorate the math.
         - If the scenario feels forced or artificial, rewrite it.
+      ##IMPORTANT FOR SCENARIO BASED QUESTIONS :
+        When creating scenario-based questions:
+
+      - Do NOT start from the concept or question and then invent a story.
+      - FIRST choose a real-life situation, object, or practice that naturally exists
+        (e.g., sundials, clocks, abacuses, inscriptions, calendars, measuring tools).
+      - The mathematical or scientific concept must arise naturally from this situation.
+      - The question should feel like a natural curiosity or problem caused by the scenario.
+      - If the scenario is removed and the question still makes sense, the scenario is artificial → reject it.
+      - Do NOT use generic characters, professions, or filler stories.
+      - Prefer real artifacts, processes, or observations over human narratives.
+
+      Bad example (artificial scenario – do NOT do this):
+
+      "Emily is a museum curator learning about number systems. She writes the following
+      statements about the Hindu–Arabic system. Which statements are true?
+      I. The expanded place value representation of the number 8045 is (8 × 10³) + (4 × 10¹) + (5 × 1)."
+
+      Why this is bad:
+      - The scenario is added after the question is formed.
+      - The character and setting have no effect on the reasoning.
+      - Removing the story does not change the question.
+      - The scenario does not force the concept to appear.
+      - There is no proper flow between the scenario and the question
+
+      Use this example as a rejection reference for artificial scenarios.
+
+
+      Validation check:
+      "Did the real-life situation force this question to exist?"
+      If not, rewrite or remove the scenario.
   ## STRICT TOPIC SEPARATION
   - For each question, strictly use concepts from **one specific topic** as assigned from the list.
   - Do **NOT** mix concepts from different topics within a single question.
@@ -2978,6 +3041,37 @@ multi_part_maths: |
         - Read the problem as a story: it must sound natural when read aloud.
         - The real-life context should help understanding, not just decorate the math.
         - If the scenario feels forced or artificial, rewrite it.
+      ##IMPORTANT FOR SCENARIO BASED QUESTIONS :
+        When creating scenario-based questions:
+
+      - Do NOT start from the concept or question and then invent a story.
+      - FIRST choose a real-life situation, object, or practice that naturally exists
+        (e.g., sundials, clocks, abacuses, inscriptions, calendars, measuring tools).
+      - The mathematical or scientific concept must arise naturally from this situation.
+      - The question should feel like a natural curiosity or problem caused by the scenario.
+      - If the scenario is removed and the question still makes sense, the scenario is artificial → reject it.
+      - Do NOT use generic characters, professions, or filler stories.
+      - Prefer real artifacts, processes, or observations over human narratives.
+
+      Bad example (artificial scenario – do NOT do this):
+
+      "Emily is a museum curator learning about number systems. She writes the following
+      statements about the Hindu–Arabic system. Which statements are true?
+      I. The expanded place value representation of the number 8045 is (8 × 10³) + (4 × 10¹) + (5 × 1)."
+
+      Why this is bad:
+      - The scenario is added after the question is formed.
+      - The character and setting have no effect on the reasoning.
+      - Removing the story does not change the question.
+      - The scenario does not force the concept to appear.
+      - There is no proper flow between the scenario and the question
+
+      Use this example as a rejection reference for artificial scenarios.
+
+
+      Validation check:
+      "Did the real-life situation force this question to exist?"
+      If not, rewrite or remove the scenario.
   ## CORE RULES OF MULTI-PART QUESTIONS
     - This is NOT a Case Study.
     - There is NO detailed scenario paragraph.
@@ -3926,6 +4020,37 @@ multi_part_maths_pdf: |
         - Read the problem as a story: it must sound natural when read aloud.
         - The real-life context should help understanding, not just decorate the math.
         - If the scenario feels forced or artificial, rewrite it.
+      ##IMPORTANT FOR SCENARIO BASED QUESTIONS :
+        When creating scenario-based questions:
+
+      - Do NOT start from the concept or question and then invent a story.
+      - FIRST choose a real-life situation, object, or practice that naturally exists
+        (e.g., sundials, clocks, abacuses, inscriptions, calendars, measuring tools).
+      - The mathematical or scientific concept must arise naturally from this situation.
+      - The question should feel like a natural curiosity or problem caused by the scenario.
+      - If the scenario is removed and the question still makes sense, the scenario is artificial → reject it.
+      - Do NOT use generic characters, professions, or filler stories.
+      - Prefer real artifacts, processes, or observations over human narratives.
+
+      Bad example (artificial scenario – do NOT do this):
+
+      "Emily is a museum curator learning about number systems. She writes the following
+      statements about the Hindu–Arabic system. Which statements are true?
+      I. The expanded place value representation of the number 8045 is (8 × 10³) + (4 × 10¹) + (5 × 1)."
+
+      Why this is bad:
+      - The scenario is added after the question is formed.
+      - The character and setting have no effect on the reasoning.
+      - Removing the story does not change the question.
+      - The scenario does not force the concept to appear.
+      - There is no proper flow between the scenario and the question
+
+      Use this example as a rejection reference for artificial scenarios.
+
+
+      Validation check:
+      "Did the real-life situation force this question to exist?"
+      If not, rewrite or remove the scenario.
     ## CORE RULES OF MULTI-PART QUESTIONS
       - This is NOT a Case Study.
       - There is NO detailed scenario paragraph.
@@ -4836,6 +4961,37 @@ mcq_questions: |
         - Read the problem as a story: it must sound natural when read aloud.
         - The real-life context should help understanding, not just decorate the math.
         - If the scenario feels forced or artificial, rewrite it.
+      ##IMPORTANT FOR SCENARIO BASED QUESTIONS :
+        When creating scenario-based questions:
+
+      - Do NOT start from the concept or question and then invent a story.
+      - FIRST choose a real-life situation, object, or practice that naturally exists
+        (e.g., sundials, clocks, abacuses, inscriptions, calendars, measuring tools).
+      - The mathematical or scientific concept must arise naturally from this situation.
+      - The question should feel like a natural curiosity or problem caused by the scenario.
+      - If the scenario is removed and the question still makes sense, the scenario is artificial → reject it.
+      - Do NOT use generic characters, professions, or filler stories.
+      - Prefer real artifacts, processes, or observations over human narratives.
+
+      Bad example (artificial scenario – do NOT do this):
+
+      "Emily is a museum curator learning about number systems. She writes the following
+      statements about the Hindu–Arabic system. Which statements are true?
+      I. The expanded place value representation of the number 8045 is (8 × 10³) + (4 × 10¹) + (5 × 1)."
+
+      Why this is bad:
+      - The scenario is added after the question is formed.
+      - The character and setting have no effect on the reasoning.
+      - Removing the story does not change the question.
+      - The scenario does not force the concept to appear.
+      - There is no proper flow between the scenario and the question
+
+      Use this example as a rejection reference for artificial scenarios.
+
+
+      Validation check:
+      "Did the real-life situation force this question to exist?"
+      If not, rewrite or remove the scenario.
 
   ### Question Requirements
   
@@ -5844,6 +6000,37 @@ mcq_questions_pdf: |
         - Read the problem as a story: it must sound natural when read aloud.
         - The real-life context should help understanding, not just decorate the math.
         - If the scenario feels forced or artificial, rewrite it.
+      ##IMPORTANT FOR SCENARIO BASED QUESTIONS :
+        When creating scenario-based questions:
+
+      - Do NOT start from the concept or question and then invent a story.
+      - FIRST choose a real-life situation, object, or practice that naturally exists
+        (e.g., sundials, clocks, abacuses, inscriptions, calendars, measuring tools).
+      - The mathematical or scientific concept must arise naturally from this situation.
+      - The question should feel like a natural curiosity or problem caused by the scenario.
+      - If the scenario is removed and the question still makes sense, the scenario is artificial → reject it.
+      - Do NOT use generic characters, professions, or filler stories.
+      - Prefer real artifacts, processes, or observations over human narratives.
+
+      Bad example (artificial scenario – do NOT do this):
+
+      "Emily is a museum curator learning about number systems. She writes the following
+      statements about the Hindu–Arabic system. Which statements are true?
+      I. The expanded place value representation of the number 8045 is (8 × 10³) + (4 × 10¹) + (5 × 1)."
+
+      Why this is bad:
+      - The scenario is added after the question is formed.
+      - The character and setting have no effect on the reasoning.
+      - Removing the story does not change the question.
+      - The scenario does not force the concept to appear.
+      - There is no proper flow between the scenario and the question
+
+      Use this example as a rejection reference for artificial scenarios.
+
+
+      Validation check:
+      "Did the real-life situation force this question to exist?"
+      If not, rewrite or remove the scenario.
 
   ### Question Requirements
   
@@ -6812,6 +6999,37 @@ FIB: |
         - Read the problem as a story: it must sound natural when read aloud.
         - The real-life context should help understanding, not just decorate the math.
         - If the scenario feels forced or artificial, rewrite it.
+      ##IMPORTANT FOR SCENARIO BASED QUESTIONS :
+        When creating scenario-based questions:
+
+      - Do NOT start from the concept or question and then invent a story.
+      - FIRST choose a real-life situation, object, or practice that naturally exists
+        (e.g., sundials, clocks, abacuses, inscriptions, calendars, measuring tools).
+      - The mathematical or scientific concept must arise naturally from this situation.
+      - The question should feel like a natural curiosity or problem caused by the scenario.
+      - If the scenario is removed and the question still makes sense, the scenario is artificial → reject it.
+      - Do NOT use generic characters, professions, or filler stories.
+      - Prefer real artifacts, processes, or observations over human narratives.
+
+      Bad example (artificial scenario – do NOT do this):
+
+      "Emily is a museum curator learning about number systems. She writes the following
+      statements about the Hindu–Arabic system. Which statements are true?
+      I. The expanded place value representation of the number 8045 is (8 × 10³) + (4 × 10¹) + (5 × 1)."
+
+      Why this is bad:
+      - The scenario is added after the question is formed.
+      - The character and setting have no effect on the reasoning.
+      - Removing the story does not change the question.
+      - The scenario does not force the concept to appear.
+      - There is no proper flow between the scenario and the question
+
+      Use this example as a rejection reference for artificial scenarios.
+
+
+      Validation check:
+      "Did the real-life situation force this question to exist?"
+      If not, rewrite or remove the scenario.
   ### Question Requirements
   
   ## FIB Question Types (Definitions)
@@ -7759,6 +7977,37 @@ FIB_pdf: |
         - Read the problem as a story: it must sound natural when read aloud.
         - The real-life context should help understanding, not just decorate the math.
         - If the scenario feels forced or artificial, rewrite it.
+      ##IMPORTANT FOR SCENARIO BASED QUESTIONS :
+        When creating scenario-based questions:
+
+      - Do NOT start from the concept or question and then invent a story.
+      - FIRST choose a real-life situation, object, or practice that naturally exists
+        (e.g., sundials, clocks, abacuses, inscriptions, calendars, measuring tools).
+      - The mathematical or scientific concept must arise naturally from this situation.
+      - The question should feel like a natural curiosity or problem caused by the scenario.
+      - If the scenario is removed and the question still makes sense, the scenario is artificial → reject it.
+      - Do NOT use generic characters, professions, or filler stories.
+      - Prefer real artifacts, processes, or observations over human narratives.
+
+      Bad example (artificial scenario – do NOT do this):
+
+      "Emily is a museum curator learning about number systems. She writes the following
+      statements about the Hindu–Arabic system. Which statements are true?
+      I. The expanded place value representation of the number 8045 is (8 × 10³) + (4 × 10¹) + (5 × 1)."
+
+      Why this is bad:
+      - The scenario is added after the question is formed.
+      - The character and setting have no effect on the reasoning.
+      - Removing the story does not change the question.
+      - The scenario does not force the concept to appear.
+      - There is no proper flow between the scenario and the question
+
+      Use this example as a rejection reference for artificial scenarios.
+
+
+      Validation check:
+      "Did the real-life situation force this question to exist?"
+      If not, rewrite or remove the scenario.
   ### Question Requirements
   
   ## FIB Question Types (Definitions)
@@ -8793,6 +9042,37 @@ descriptive: |
         - Read the problem as a story: it must sound natural when read aloud.
         - The real-life context should help understanding, not just decorate the math.
         - If the scenario feels forced or artificial, rewrite it.
+      ##IMPORTANT FOR SCENARIO BASED QUESTIONS :
+        When creating scenario-based questions:
+
+      - Do NOT start from the concept or question and then invent a story.
+      - FIRST choose a real-life situation, object, or practice that naturally exists
+        (e.g., sundials, clocks, abacuses, inscriptions, calendars, measuring tools).
+      - The mathematical or scientific concept must arise naturally from this situation.
+      - The question should feel like a natural curiosity or problem caused by the scenario.
+      - If the scenario is removed and the question still makes sense, the scenario is artificial → reject it.
+      - Do NOT use generic characters, professions, or filler stories.
+      - Prefer real artifacts, processes, or observations over human narratives.
+
+      Bad example (artificial scenario – do NOT do this):
+
+      "Emily is a museum curator learning about number systems. She writes the following
+      statements about the Hindu–Arabic system. Which statements are true?
+      I. The expanded place value representation of the number 8045 is (8 × 10³) + (4 × 10¹) + (5 × 1)."
+
+      Why this is bad:
+      - The scenario is added after the question is formed.
+      - The character and setting have no effect on the reasoning.
+      - Removing the story does not change the question.
+      - The scenario does not force the concept to appear.
+      - There is no proper flow between the scenario and the question
+
+      Use this example as a rejection reference for artificial scenarios.
+
+
+      Validation check:
+      "Did the real-life situation force this question to exist?"
+      If not, rewrite or remove the scenario.
   ## DIAGRAM RULES
     - Diagram is optional (unless the topic inherently requires visual representation).
     - If included, give a **diagram prompt** (NOT the actual image).
@@ -9453,6 +9733,37 @@ descriptive_pdf: |
         - Read the problem as a story: it must sound natural when read aloud.
         - The real-life context should help understanding, not just decorate the math.
         - If the scenario feels forced or artificial, rewrite it.
+      ##IMPORTANT FOR SCENARIO BASED QUESTIONS :
+        When creating scenario-based questions:
+
+      - Do NOT start from the concept or question and then invent a story.
+      - FIRST choose a real-life situation, object, or practice that naturally exists
+        (e.g., sundials, clocks, abacuses, inscriptions, calendars, measuring tools).
+      - The mathematical or scientific concept must arise naturally from this situation.
+      - The question should feel like a natural curiosity or problem caused by the scenario.
+      - If the scenario is removed and the question still makes sense, the scenario is artificial → reject it.
+      - Do NOT use generic characters, professions, or filler stories.
+      - Prefer real artifacts, processes, or observations over human narratives.
+
+      Bad example (artificial scenario – do NOT do this):
+
+      "Emily is a museum curator learning about number systems. She writes the following
+      statements about the Hindu–Arabic system. Which statements are true?
+      I. The expanded place value representation of the number 8045 is (8 × 10³) + (4 × 10¹) + (5 × 1)."
+
+      Why this is bad:
+      - The scenario is added after the question is formed.
+      - The character and setting have no effect on the reasoning.
+      - Removing the story does not change the question.
+      - The scenario does not force the concept to appear.
+      - There is no proper flow between the scenario and the question
+
+      Use this example as a rejection reference for artificial scenarios.
+
+
+      Validation check:
+      "Did the real-life situation force this question to exist?"
+      If not, rewrite or remove the scenario.
   ## CORE RULES FOR DESCRIPTIVE QUESTIONS
     - This is **NOT** a Case Study (CBS) question.
     - This is a **Descriptive Question** type.
@@ -9552,35 +9863,7 @@ descriptive_pdf: |
    - If "Descriptive Type" is specified, you **MUST STRICTLY** generate a question that fits that specific definition and style.
    - If "Descriptive Type" is "Auto" or NOT specified, you must choose the most appropriate type based on the topic and grade level, ensuring variety across the set.
   =====================================================================================
-   ## REAL-LIFE WORD PROBLEM (QUALITY & REALISM ENFORCED)
-
-        Generate a real-life mathematics word problem.
-
-        HARD SCENARIO RULES:
-        - Use ONE clear, continuous scenario only.
-        - The situation must naturally require the mathematical method being tested.
-        - Do NOT introduce a second, unrelated idea or purpose.
-        - The question must feel like something a real person would actually do.
-
-        REALISM RULES:
-        - Use quantities that are believable in real life.
-        - Avoid exaggerated or impractical counts unless clearly justified.
-        - Prefer situations where exact counting or equal grouping is realistic and meaningful.
-
-        FLOW & PURPOSE RULES:
-        - The story should clearly explain WHY the calculation is needed.
-        - If the question has subparts, each subpart must directly follow from the same situation.
-        - Do NOT test abstract method knowledge unless the scenario logically demands it.
-
-        SCENARIO VARIETY RULES:
-        - Do NOT repeat similar scenarios across questions (e.g., farmer/gardener/planting).
-        - Rotate contexts meaningfully (shopping, packing, classroom, transport, sports, etc.).
-        - Changing only object names is NOT considered variety.
-
-        QUESTION QUALITY CHECK (MANDATORY):
-        - Read the problem as a story: it must sound natural when read aloud.
-        - The real-life context should help understanding, not just decorate the math.
-        - If the scenario feels forced or artificial, rewrite it.
+  
   ## DIAGRAM RULES
     - Diagram is optional (unless the topic inherently requires visual representation).
     - If included, give a **diagram prompt** (NOT the actual image).
@@ -10237,6 +10520,37 @@ descriptive_subq: |
         - Read the problem as a story: it must sound natural when read aloud.
         - The real-life context should help understanding, not just decorate the math.
         - If the scenario feels forced or artificial, rewrite it.
+      ##IMPORTANT FOR SCENARIO BASED QUESTIONS :
+        When creating scenario-based questions:
+
+      - Do NOT start from the concept or question and then invent a story.
+      - FIRST choose a real-life situation, object, or practice that naturally exists
+        (e.g., sundials, clocks, abacuses, inscriptions, calendars, measuring tools).
+      - The mathematical or scientific concept must arise naturally from this situation.
+      - The question should feel like a natural curiosity or problem caused by the scenario.
+      - If the scenario is removed and the question still makes sense, the scenario is artificial → reject it.
+      - Do NOT use generic characters, professions, or filler stories.
+      - Prefer real artifacts, processes, or observations over human narratives.
+
+      Bad example (artificial scenario – do NOT do this):
+
+      "Emily is a museum curator learning about number systems. She writes the following
+      statements about the Hindu–Arabic system. Which statements are true?
+      I. The expanded place value representation of the number 8045 is (8 × 10³) + (4 × 10¹) + (5 × 1)."
+
+      Why this is bad:
+      - The scenario is added after the question is formed.
+      - The character and setting have no effect on the reasoning.
+      - Removing the story does not change the question.
+      - The scenario does not force the concept to appear.
+      - There is no proper flow between the scenario and the question
+
+      Use this example as a rejection reference for artificial scenarios.
+
+
+      Validation check:
+      "Did the real-life situation force this question to exist?"
+      If not, rewrite or remove the scenario.
   ## CORE RULES FOR DESCRIPTIVE WITH SUBQUESTIONS
     - This is a **Descriptive Question with Sub-parts** type.
     - **NOT a Case Study**: There is no detailed scenario paragraph. Keep context minimal and mathematical.
@@ -11417,6 +11731,37 @@ descriptive_subq_pdf: |
         - Read the problem as a story: it must sound natural when read aloud.
         - The real-life context should help understanding, not just decorate the math.
         - If the scenario feels forced or artificial, rewrite it.
+      ##IMPORTANT FOR SCENARIO BASED QUESTIONS :
+        When creating scenario-based questions:
+
+      - Do NOT start from the concept or question and then invent a story.
+      - FIRST choose a real-life situation, object, or practice that naturally exists
+        (e.g., sundials, clocks, abacuses, inscriptions, calendars, measuring tools).
+      - The mathematical or scientific concept must arise naturally from this situation.
+      - The question should feel like a natural curiosity or problem caused by the scenario.
+      - If the scenario is removed and the question still makes sense, the scenario is artificial → reject it.
+      - Do NOT use generic characters, professions, or filler stories.
+      - Prefer real artifacts, processes, or observations over human narratives.
+
+      Bad example (artificial scenario – do NOT do this):
+
+      "Emily is a museum curator learning about number systems. She writes the following
+      statements about the Hindu–Arabic system. Which statements are true?
+      I. The expanded place value representation of the number 8045 is (8 × 10³) + (4 × 10¹) + (5 × 1)."
+
+      Why this is bad:
+      - The scenario is added after the question is formed.
+      - The character and setting have no effect on the reasoning.
+      - Removing the story does not change the question.
+      - The scenario does not force the concept to appear.
+      - There is no proper flow between the scenario and the question
+
+      Use this example as a rejection reference for artificial scenarios.
+
+
+      Validation check:
+      "Did the real-life situation force this question to exist?"
+      If not, rewrite or remove the scenario.
   ====================================================================================
   ## DOK RULES (FULL DIFFICULTY APPLIES)
     ### DOK 1 

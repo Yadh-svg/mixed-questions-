@@ -337,7 +337,7 @@ async def generate_raw_batch(
             prompt=prompt_text,
             api_key=api_key,
             files=files,
-            thinking_budget=4000,
+            thinking_level="medium",
             file_metadata=file_metadata
         )
 
@@ -386,7 +386,7 @@ async def validate_batch(
             prompt=validation_prompt_text,
             api_key=api_key,
             files=files,
-            thinking_budget=4000,
+            thinking_level="medium",
             file_metadata=file_metadata
         )
         
@@ -853,52 +853,36 @@ async def regenerate_specific_questions_pipeline(
     # 1. Filter the configuration to ONLY the selected questions
     filtered_config = []
     
-    grouped_map = defaultdict(list)
-    for q in original_config:
-        grouped_map[q.get('type', 'MCQ')].append(q)
-        
+    # 1. Group the original configuration using the SAME logic as the main pipeline
+    # This ensures that reordering (Priority Packing) is accounted for
+    grouped_questions_map = group_questions_by_type_and_topic(original_config)
+    
     for q_type, indices in regeneration_map.items():
-        # Handle new Batch Key format in regeneration map (e.g., "MCQ - Batch 1")
-        # EXTRACT BASE TYPE from keys if they contain " - Batch "
+        # q_type is the full batch key, e.g., "MCQ - Batch 1"
+        # Extract base type (e.g., "MCQ")
         base_type = q_type.split(' - Batch ')[0]
         
-        if base_type not in grouped_map:
-            logger.warning(f"Type {base_type} (from {q_type}) not found in original config")
+        if base_type not in grouped_questions_map:
+            logger.warning(f"Type {base_type} (from {q_type}) not found in grouped map")
             continue
             
-        questions_of_type = grouped_map[base_type]
+        questions_of_type = grouped_questions_map[base_type]
+        
+        # Parse batch number from key
+        batch_num = 1
+        if ' - Batch ' in q_type:
+            try:
+                batch_num = int(q_type.split(' - Batch ')[1])
+            except:
+                batch_num = 1
+        
+        # Calculate offset within the grouped list for this type
+        BATCH_SIZE = DEFAULT_BATCH_SIZE
+        offset = (batch_num - 1) * BATCH_SIZE
         
         for idx in indices:
-            # indices are 1-based from the layout, but they refer to the GLOBAL index within that type 
-            # across all batches? Or batch-local?
-            # In result_renderer, we construct keys like "question1", "question2". 
-            # If we split into batches, the renderer outputs indices 1..5 for Batch 1, 1..5 for Batch 2?
-            # NO. The prompt builder usually receives 5 questions. The generated output will say question1..question5.
-            # So the UI indices for Batch 2 will likely be 1..5 as well?
-            # IF SO, the regeneration map coming from UI will be { "MCQ - Batch 2": [1, 3] }.
-            # This [1, 3] means 1st and 3rd question WITHIN Batch 2.
-            # We need to map this back to the global list if we want to grab settings,
-            # OR just grab the settings for the corresponding items in that batch.
-            
-            # Since we don't have the batch definitions persisted explicitly, we must reconstruct them.
-            # questions_of_type has ALL generic MCQs.
-            # "MCQ - Batch 1" -> indices 0-4
-            # "MCQ - Batch 2" -> indices 5-9
-            
-            # Parse batch number
-            batch_num = 1
-            if ' - Batch ' in q_type:
-                try:
-                    batch_num = int(q_type.split(' - Batch ')[1])
-                except:
-                    batch_num = 1
-            
-            # Calculate offset
-            BATCH_SIZE = DEFAULT_BATCH_SIZE
-            offset = (batch_num - 1) * BATCH_SIZE
-            
-            # Target index in the global list for this type
             # idx is 1-based index within the batch prompt result
+            # Target index in the global list for this type after Priority Packing
             target_global_idx = offset + (idx - 1)
             
             if 0 <= target_global_idx < len(questions_of_type):
@@ -908,8 +892,6 @@ async def regenerate_specific_questions_pipeline(
                 # Attach original text if available
                 existing_content_map = general_config.get('existing_content_map', {})
                 if q_type in existing_content_map:
-                    # q_type is the batch key e.g. "MCQ - Batch 1"
-                    # idx is the 1-based index in that batch
                     q_key = f"question{idx}"
                     original_text = existing_content_map[q_type].get(q_key, "")
                     if original_text:
@@ -918,18 +900,17 @@ async def regenerate_specific_questions_pipeline(
                 
                 # Attach per-question regeneration reason if available
                 regeneration_reasons_map = general_config.get('regeneration_reasons_map', {})
-                question_identifier = f"{q_type}:{idx}"  # Format: "MCQ - Batch 1:3"
+                question_identifier = f"{q_type}:{idx}"
                 reason = regeneration_reasons_map.get(question_identifier, "")
                 if reason:
                     q_config['regeneration_reason'] = reason
                     logger.info(f"Attached regeneration reason for {question_identifier}: {reason[:50]}...")
                 
                 q_config_copy = q_config.copy()
-                q_config_copy['type'] = q_type # "MCQ - Batch 2"
+                q_config_copy['type'] = q_type # Keep the specific batch key for return tracking
                 filtered_config.append(q_config_copy)
-                
             else:
-                logger.warning(f"Index {idx} out of bounds for type {base_type} (Global idx {target_global_idx})")
+                logger.warning(f"Index {idx} out of bounds for {q_type} (Global idx {target_global_idx})")
 
     if not filtered_config:
         return {'error': "No valid questions selected for regeneration"}

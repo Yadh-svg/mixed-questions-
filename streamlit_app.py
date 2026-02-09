@@ -1694,6 +1694,12 @@ with tab2:
                         
                         # Prepare configurations
                         general_config = {
+                            'curriculum': curriculum,
+                            'grade': grade,
+                            'subject': subject,
+                            'chapter': chapter,
+                            'old_concept': old_concept,
+                            'new_concept': new_concept,
                             'api_key': gemini_api_key,
                             'additional_notes': additional_notes,
                             'universal_pdf': st.session_state.get('universal_pdf')

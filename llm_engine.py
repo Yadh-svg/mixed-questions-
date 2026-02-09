@@ -123,7 +123,7 @@ def run_gemini(
     prompt: str,
     api_key: str,
     files: Optional[List] = None,
-    thinking_budget: int = 4000,  # Kept for backward compatibility but not used
+    thinking_level: str = "medium",
     file_metadata: Optional[Dict[str, Any]] = None
 ) -> Dict[str, Any]:
     """
@@ -133,7 +133,7 @@ def run_gemini(
         prompt: The text prompt to send
         api_key: Gemini API key
         files: List of file-like objects to upload (PDFs or images)
-        thinking_budget: Deprecated - gemini-3-flash-preview uses thinking_level="medium"
+        thinking_level: Level of reasoning for Gemini 3 models (e.g., "medium")
         file_metadata: Metadata about files (source_type, filenames)
         
     Returns:
@@ -175,7 +175,7 @@ def run_gemini(
         
         config = types.GenerateContentConfig(
             thinking_config=types.ThinkingConfig(
-                thinking_level="medium"
+                thinking_level=thinking_level
             )
         )
         
@@ -295,7 +295,7 @@ async def duplicate_questions_async(
         prompt=formatted_prompt,
         api_key=api_key,
         files=files_to_upload,
-        thinking_budget=3000,  # Higher budget for quality duplicates
+        thinking_level="medium",
         file_metadata={'source_type': 'duplicate_context', 'filenames': [getattr(pdf_file, 'name', 'file')]} if pdf_file else None
     )
     
@@ -350,11 +350,10 @@ async def run_gemini_async(
     prompt: str,
     api_key: str,
     files: Optional[List] = None,
-    thinking_budget: int = 4000,  # Kept for backward compatibility but not used
+    thinking_level: str = "medium",
     file_metadata: Optional[Dict[str, Any]] = None
 ) -> Dict[str, Any]:
     """
     Async wrapper for run_gemini.
-    Note: thinking_budget parameter is deprecated for gemini-3-flash-preview.
     """
-    return await asyncio.to_thread(run_gemini, prompt, api_key, files, thinking_budget, file_metadata)
+    return await asyncio.to_thread(run_gemini, prompt, api_key, files, thinking_level, file_metadata)

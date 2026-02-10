@@ -152,6 +152,8 @@ if 'generated_output' not in st.session_state:
     st.session_state.generated_output = None
 if 'universal_pdf' not in st.session_state:
     st.session_state.universal_pdf = None
+if 'regen_selection' not in st.session_state:
+    st.session_state.regen_selection = set()
 
 # Header
 st.markdown("""
@@ -198,6 +200,7 @@ with st.sidebar:
             st.session_state['question_types_config'] = {}
             st.session_state['selected_question_types'] = []
             st.session_state['question_type_selector'] = []
+            st.session_state['regen_selection'] = set()
             
             # Clear file uploader keys
             keys_to_del = [
@@ -227,6 +230,7 @@ with st.sidebar:
     with col_clr_out:
         if st.button("Clear Outputs", help="Clear all generated results"):
             st.session_state.generated_output = None
+            st.session_state.regen_selection = set()
             st.rerun()
 
 # Main content area
@@ -1537,6 +1541,11 @@ with tab1:
 
 
 with tab2:
+    # AUTOMATIC SYNC: Reset regeneration selection every time Results tab is rendered.
+    # The selection set will be rebuilt by result_renderer as it renders each question.
+    # This ensures "ghost" questions (that are no longer rendered) are automatically removed.
+    st.session_state.regen_selection = set()
+
     st.markdown('<div class="section-header">Previously Generated Questions</div>', unsafe_allow_html=True)
 
     # Display Persistent Generation Report (if any)
@@ -1671,7 +1680,6 @@ with tab2:
             if st.button("♻️ Regenerate Selected", type="primary", use_container_width=True):
                 # Collect reasons for each selected question
                 regeneration_reasons_map = {}
-                missing_reasons = []
                 
                 for item in regen_selection:
                     if ':' in item:
@@ -1679,14 +1687,13 @@ with tab2:
                         regen_reason_key = f"regen_reason_{b_key}_{q_num}"
                         reason = st.session_state.get(regen_reason_key, "").strip()
                         
-                        if not reason:
-                            missing_reasons.append(f"Question {q_num} in {b_key}")
-                        else:
+                        # Reason is now optional
+                        if reason:
                             regeneration_reasons_map[item] = reason
+                        else:
+                            regeneration_reasons_map[item] = "No reason provided"
                 
-                if missing_reasons:
-                    st.error(f"❌ Please provide a reason for: {', '.join(missing_reasons)}")
-                elif not gemini_api_key:
+                if not gemini_api_key:
                     st.error("❌ Please enter your Gemini API key in the sidebar")
                 else:
                     with st.spinner("Regenerating specific questions..."):

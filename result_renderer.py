@@ -288,7 +288,7 @@ def render_markdown_question(question_key: str, markdown_content: str, question_
                 # Show reason input field when checkbox is selected
                 regen_reason_key = f"regen_reason_{batch_key}_{q_num}"
                 st.text_input(
-                    "Reason for Regeneration (Mandatory)",
+                    "Reason for Regeneration (Optional)",
                     placeholder="e.g., Options are incorrect, off-topic, needs clarity...",
                     key=regen_reason_key,
                     help="Explain what needs to be fixed or changed in this question"

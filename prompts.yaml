@@ -1507,7 +1507,6 @@ case_study_maths_pdf: |
       All output MUST remain valid Markdown and must be copy-paste friendly.
 assertion_reasoning: |
 
-
   You are a teacher preparing Assertion–Reason–type higher-order questions for Mathematicsfor Final exams. The questions as well as the solution should be of higher quality.
   Follow all the rules and structure precisely.
 
@@ -1634,36 +1633,6 @@ assertion_reasoning: |
     - Despite using unique expressions, the language and notation must remain
       academically correct and aligned with standard mathematics.
 
-   ## REAL-LIFE WORD PROBLEM (QUALITY & REALISM ENFORCED)
-
-        Generate a real-life mathematics word problem.
-
-        HARD SCENARIO RULES:
-        - Use ONE clear, continuous scenario only.
-        - The situation must naturally require the mathematical method being tested.
-        - Do NOT introduce a second, unrelated idea or purpose.
-        - The question must feel like something a real person would actually do.
-
-        REALISM RULES:
-        - Use quantities that are believable in real life.
-        - Avoid exaggerated or impractical counts unless clearly justified.
-        - Prefer situations where exact counting or equal grouping is realistic and meaningful.
-
-        FLOW & PURPOSE RULES:
-        - The story should clearly explain WHY the calculation is needed.
-        - If the question has subparts, each subpart must directly follow from the same situation.
-        - Do NOT test abstract method knowledge unless the scenario logically demands it.
-
-        SCENARIO VARIETY RULES:
-        - Do NOT repeat similar scenarios across questions (e.g., farmer/gardener/planting).
-        - Rotate contexts meaningfully (shopping, packing, classroom, transport, sports, etc.).
-        - Changing only object names is NOT considered variety.
-
-        QUESTION QUALITY CHECK (MANDATORY):
-        - Read the problem as a story: it must sound natural when read aloud.
-        - The real-life context should help understanding, not just decorate the math.
-        - If the scenario feels forced or artificial, rewrite it.
-      
 
   ## STRICT TOPIC SEPARATION
   - For each question, strictly use concepts from **one specific topic** as assigned from the list.
@@ -2321,36 +2290,6 @@ assertion_reasoning_pdf: |
     - Despite using unique expressions, the language and notation must remain
       academically correct and aligned with standard mathematics.
 
-   ## REAL-LIFE WORD PROBLEM (QUALITY & REALISM ENFORCED)
-
-        Generate a real-life mathematics word problem.
-
-        HARD SCENARIO RULES:
-        - Use ONE clear, continuous scenario only.
-        - The situation must naturally require the mathematical method being tested.
-        - Do NOT introduce a second, unrelated idea or purpose.
-        - The question must feel like something a real person would actually do.
-
-        REALISM RULES:
-        - Use quantities that are believable in real life.
-        - Avoid exaggerated or impractical counts unless clearly justified.
-        - Prefer situations where exact counting or equal grouping is realistic and meaningful.
-
-        FLOW & PURPOSE RULES:
-        - The story should clearly explain WHY the calculation is needed.
-        - If the question has subparts, each subpart must directly follow from the same situation.
-        - Do NOT test abstract method knowledge unless the scenario logically demands it.
-
-        SCENARIO VARIETY RULES:
-        - Do NOT repeat similar scenarios across questions (e.g., farmer/gardener/planting).
-        - Rotate contexts meaningfully (shopping, packing, classroom, transport, sports, etc.).
-        - Changing only object names is NOT considered variety.
-
-        QUESTION QUALITY CHECK (MANDATORY):
-        - Read the problem as a story: it must sound natural when read aloud.
-        - The real-life context should help understanding, not just decorate the math.
-        - If the scenario feels forced or artificial, rewrite it.
-      
   ## STRICT TOPIC SEPARATION
   - For each question, strictly use concepts from **one specific topic** as assigned from the list.
   - Do **NOT** mix concepts from different topics within a single question.

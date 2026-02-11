@@ -325,8 +325,12 @@ async def generate_raw_batch(
         
         prompt_text = prompt_data['prompt']
         
-        # Save prompt for debugging
-        # save_prompt(prompt_text, "generation", batch_key)
+        # Determine if this is a regeneration batch
+        is_regeneration = any(q.get('_is_being_regenerated') for q in questions)
+        prompt_type = "regeneration" if is_regeneration else "generation"
+        
+        # Save prompt for debugging/record
+        # save_prompt(prompt_text, prompt_type, batch_key)
 
         files = prompt_data.get('files', [])
         file_metadata = prompt_data.get('file_metadata', {})
@@ -341,9 +345,9 @@ async def generate_raw_batch(
             file_metadata=file_metadata
         )
 
-        # Save raw response for debugging
+        # Save raw response for debugging/record
         # if 'text' in result and result['text']:
-        #     save_response(result['text'], "generation", batch_key)
+        #     save_response(result['text'], prompt_type, batch_key)
         
         # Add metadata
         result['question_count'] = len(questions)
@@ -379,7 +383,8 @@ async def validate_batch(
     try:
         api_key = general_config['api_key']
         
-
+        # Save validation prompt for debugging/record
+        # save_prompt(validation_prompt_text, "validation", batch_key)
         
         # Call Gemini API for validation with files if available
         result = await run_gemini_async(
@@ -389,6 +394,10 @@ async def validate_batch(
             thinking_level="medium",
             file_metadata=file_metadata
         )
+        
+        # Save validation response for debugging/record
+        # if 'text' in result and result['text']:
+        #     save_response(result['text'], "validation", batch_key)
         
         result['batch_key'] = batch_key
         return result
@@ -557,10 +566,12 @@ async def process_single_batch_flow(
     type_config: Dict[str, Any] = None,
     validation_prompt_template: Any = "",
     progress_callback=None,
-    previous_batch_metadata: Dict[str, Any] = None
+    previous_batch_metadata: Dict[str, Any] = None,
+    skip_validation: bool = False
 ) -> Dict[str, Any]:
     """
     Process a SINGLE batch through the full Generation -> Split -> Batched Validation flow.
+    If skip_validation=True (for regeneration), validation is bypassed and generation output is used directly.
     """
     logger.info(f"[{batch_key}] Starting Batched Flow")
     
@@ -594,100 +605,117 @@ async def process_single_batch_flow(
     # --- STAGE 2: SPLIT ---
     split_questions = split_generated_content(raw_result['text'])
 
-    # --- STAGE 3: BATCHED VALIDATION ---
-    logger.info(f"[{batch_key}] Validating {len(split_questions)} items in ONE HIT.")
-    
-    # 1. Prepare combined content with clear labels
-    combined_questions_text = ""
-    for q_key, q_text in split_questions.items():
-        q_label = q_key.upper() # "QUESTION1", "QUESTION2", ...
-        combined_questions_text += f"\n\n### {q_label}\n{q_text}\n"
-
-    # 2. Prepare combined context for all questions
-    context_lines = []
-    for i, q_config in enumerate(questions):
-        q_label = f"QUESTION{i+1}"
-        topic_str = q_config.get('topic', 'Unknown')
-        q_notes = q_config.get('additional_notes_text', '')
-        # Specifier
-        spec = q_config.get('mcq_type') or q_config.get('fib_type') or q_config.get('descriptive_type') or "Standard"
-        
-        ctx = f"- {q_label}: Topic='{topic_str}', Type='{spec}'"
-        if q_notes: ctx += f", Notes='{q_notes}'"
-        context_lines.append(ctx)
-    
-    combined_context = "\n".join(context_lines)
-    
-    # 3. Get structure format rule from config
-    base_type_key = batch_key.split(' - Batch ')[0]
-    structure_map = {
-        "MCQ": "structure_MCQ",
-        "Fill in the Blanks": "structure_FIB",
-        "Case Study": "structure_Case_Study",
-        "Multi-Part": "structure_Multi_Part",
-        "Assertion-Reasoning": "structure_AR",
-        "Descriptive": "structure_Descriptive",
-        "Descriptive w/ Subquestions": "structure_Descriptive_w_subq"
-    }
-    struct_rule_key = structure_map.get(base_type_key)
-    
-    # Handle validation_config passing
-    if isinstance(validation_prompt_template, dict):
-        validation_config = validation_prompt_template
-        prompt_template = validation_config.get('validation_prompt', '')
-    else:
-        # Fallback if only template string was passed
-        prompt_template = validation_prompt_template
-        validation_config = {}
-
-    structure_format = validation_config.get(struct_rule_key, "Return a valid JSON object.")
-    
-    # 4. Construct Batched Validation Prompt
-    val_prompt = prompt_template.replace("{{GENERATED_CONTENT}}", combined_questions_text)
-    val_prompt = val_prompt.replace("{{INPUT_CONTEXT}}", combined_context)
-    val_prompt = val_prompt.replace("{{OUTPUT_FORMAT_RULES}}", structure_format)
-    
-    # 5. Call API for the whole batch
-    val_files = [] 
-    val_file_metadata = {'source_type': 'None (Validation)', 'filenames': []}
-    
+    # --- STAGE 3: BATCHED VALIDATION (or skip for regeneration) ---
     validated_payload = {}
-    try:
-        v_res = await validate_batch(batch_key, val_prompt, general_config, val_files, val_file_metadata)
-        logger.info(f"[{batch_key}] Batched validation finished. Time: {v_res.get('elapsed', 0):.2f}s")
+    
+    if skip_validation:
+        # For regeneration: Skip validation and use generation output directly
+        logger.info(f"[{batch_key}] Skipping validation (regeneration mode). Using generation output directly.")
         
-        # --- STAGE 4: AGGREGATE & PARSE ---
-        raw_val_text = v_res.get('text', '')
+        # Convert split_questions dict directly to JSON format for rendering
+        validated_payload = {
+            'text': json.dumps(split_questions),
+            'elapsed': 0,
+            'batch_key': batch_key,
+            'input_tokens': 0,
+            'output_tokens': 0,
+            'thought_tokens': 0,
+            'billed_output_tokens': 0
+        }
+    else:
+        # Normal flow: Run validation
+        logger.info(f"[{batch_key}] Validating {len(split_questions)} items in ONE HIT.")
         
-        # Robust extraction of the JSON object containing results
-        data = extract_first_json_match(raw_val_text)
-        
-        if data:
-            validated_payload = {
-                'text': json.dumps(data),
-                'elapsed': v_res.get('elapsed', 0),
-                'batch_key': batch_key,
-                'input_tokens': v_res.get('input_tokens', 0),
-                'output_tokens': v_res.get('output_tokens', 0),
-                'thought_tokens': v_res.get('thought_tokens', 0),
-                'billed_output_tokens': v_res.get('billed_output_tokens', 0)
-            }
-        else:
-            logger.warning(f"[{batch_key}] Failed to parse batched validation response as JSON.")
-            validated_payload = {
-                'text': raw_val_text,
-                'error': 'Failed to parse JSON',
-                'elapsed': v_res.get('elapsed', 0),
-                'batch_key': batch_key,
-                'input_tokens': v_res.get('input_tokens', 0),
-                'output_tokens': v_res.get('output_tokens', 0),
-                'thought_tokens': v_res.get('thought_tokens', 0),
-                'billed_output_tokens': v_res.get('billed_output_tokens', 0)
-            }
+        # 1. Prepare combined content with clear labels
+        combined_questions_text = ""
+        for q_key, q_text in split_questions.items():
+            q_label = q_key.upper() # "QUESTION1", "QUESTION2", ...
+            combined_questions_text += f"\n\n### {q_label}\n{q_text}\n"
+
+        # 2. Prepare combined context for all questions
+        context_lines = []
+        for i, q_config in enumerate(questions):
+            q_label = f"QUESTION{i+1}"
+            topic_str = q_config.get('topic', 'Unknown')
+            q_notes = q_config.get('additional_notes_text', '')
+            # Specifier
+            spec = q_config.get('mcq_type') or q_config.get('fib_type') or q_config.get('descriptive_type') or "Standard"
             
-    except Exception as e:
-        logger.error(f"[{batch_key}] Batched validation failed: {e}")
-        validated_payload = {'error': str(e), 'text': '', 'elapsed': 0}
+            ctx = f"- {q_label}: Topic='{topic_str}', Type='{spec}'"
+            if q_notes: ctx += f", Notes='{q_notes}'"
+            context_lines.append(ctx)
+        
+        combined_context = "\n".join(context_lines)
+        
+        # 3. Get structure format rule from config
+        base_type_key = batch_key.split(' - Batch ')[0]
+        structure_map = {
+            "MCQ": "structure_MCQ",
+            "Fill in the Blanks": "structure_FIB",
+            "Case Study": "structure_Case_Study",
+            "Multi-Part": "structure_Multi_Part",
+            "Assertion-Reasoning": "structure_AR",
+            "Descriptive": "structure_Descriptive",
+            "Descriptive w/ Subquestions": "structure_Descriptive_w_subq"
+        }
+        struct_rule_key = structure_map.get(base_type_key)
+        
+        # Handle validation_config passing
+        if isinstance(validation_prompt_template, dict):
+            validation_config = validation_prompt_template
+            prompt_template = validation_config.get('validation_prompt', '')
+        else:
+            # Fallback if only template string was passed
+            prompt_template = validation_prompt_template
+            validation_config = {}
+
+        structure_format = validation_config.get(struct_rule_key, "Return a valid JSON object.")
+        
+        # 4. Construct Batched Validation Prompt
+        val_prompt = prompt_template.replace("{{GENERATED_CONTENT}}", combined_questions_text)
+        val_prompt = val_prompt.replace("{{INPUT_CONTEXT}}", combined_context)
+        val_prompt = val_prompt.replace("{{OUTPUT_FORMAT_RULES}}", structure_format)
+        
+        # 5. Call API for the whole batch
+        val_files = [] 
+        val_file_metadata = {'source_type': 'None (Validation)', 'filenames': []}
+        
+        try:
+            v_res = await validate_batch(batch_key, val_prompt, general_config, val_files, val_file_metadata)
+            logger.info(f"[{batch_key}] Batched validation finished. Time: {v_res.get('elapsed', 0):.2f}s")
+            
+            # --- STAGE 4: AGGREGATE & PARSE ---
+            raw_val_text = v_res.get('text', '')
+            
+            # Robust extraction of the JSON object containing results
+            data = extract_first_json_match(raw_val_text)
+            
+            if data:
+                validated_payload = {
+                    'text': json.dumps(data),
+                    'elapsed': v_res.get('elapsed', 0),
+                    'batch_key': batch_key,
+                    'input_tokens': v_res.get('input_tokens', 0),
+                    'output_tokens': v_res.get('output_tokens', 0),
+                    'thought_tokens': v_res.get('thought_tokens', 0),
+                    'billed_output_tokens': v_res.get('billed_output_tokens', 0)
+                }
+            else:
+                logger.warning(f"[{batch_key}] Failed to parse batched validation response as JSON.")
+                validated_payload = {
+                    'text': raw_val_text,
+                    'error': 'Failed to parse JSON',
+                    'elapsed': v_res.get('elapsed', 0),
+                    'batch_key': batch_key,
+                    'input_tokens': v_res.get('input_tokens', 0),
+                    'output_tokens': v_res.get('output_tokens', 0),
+                    'thought_tokens': v_res.get('thought_tokens', 0),
+                    'billed_output_tokens': v_res.get('billed_output_tokens', 0)
+                }
+                
+        except Exception as e:
+            logger.error(f"[{batch_key}] Batched validation failed: {e}")
+            validated_payload = {'error': str(e), 'text': '', 'elapsed': 0}
 
     # --- STAGE 5: COST CALCULATION ---
     # Calculate costs for Generation and Validation
@@ -713,11 +741,13 @@ async def process_single_batch_flow(
 async def process_batches_pipeline(
     questions_config: List[Dict[str, Any]],
     general_config: Dict[str, Any],
-    progress_callback=None
+    progress_callback=None,
+    skip_validation: bool = False
 ) -> Dict[str, Dict[str, Any]]:
     """
     Process ALL batches. Uses PARALLEL flows by default, or SEQUENTIAL per-type
     when core_skill_enabled is True (to pass metadata between batches).
+    If skip_validation=True, skips validation step (used for regeneration).
     """
     core_skill_enabled = general_config.get('core_skill_enabled', False)
     mode = "SEQUENTIAL (Core Skill)" if core_skill_enabled else "PARALLEL"
@@ -764,7 +794,8 @@ async def process_batches_pipeline(
                     type_config=None,
                     validation_prompt_template=validation_resource,
                     progress_callback=progress_callback,
-                    previous_batch_metadata=accumulated_metadata if accumulated_metadata else None
+                    previous_batch_metadata=accumulated_metadata if accumulated_metadata else None,
+                    skip_validation=skip_validation
                 )
                 
                 # Extract metadata from result
@@ -812,7 +843,8 @@ async def process_batches_pipeline(
                     type_config=None,
                     validation_prompt_template=validation_resource,
                     progress_callback=progress_callback,
-                    previous_batch_metadata=None
+                    previous_batch_metadata=None,
+                    skip_validation=skip_validation
                 )
                 all_batch_tasks.append(task)
                 
@@ -916,7 +948,7 @@ async def regenerate_specific_questions_pipeline(
         return {'error': "No valid questions selected for regeneration"}
 
     logger.info(f"Starting regeneration pipeline for {len(filtered_config)} questions...")
-    results = await process_batches_pipeline(filtered_config, general_config, progress_callback)
+    results = await process_batches_pipeline(filtered_config, general_config, progress_callback, skip_validation=True)
     
     # POST-PROCESS RESULTS TO FIX KEYS
     # Results will have keys like "MCQ - Batch 2 - Batch 1".

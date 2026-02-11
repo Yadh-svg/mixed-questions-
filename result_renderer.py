@@ -420,7 +420,10 @@ def render_markdown_question(question_key: str, markdown_content: str, question_
     st.markdown("")  # spacing
     
     # Render the markdown content directly
-    st.markdown(markdown_content)
+    # Fix: Replace single newlines with double newlines for proper markdown rendering
+    # This ensures OPTIONS and other sections render with proper line breaks
+    rendered_content = markdown_content.replace('\n', '  \n')
+    st.markdown(rendered_content)
     
     # Display duplicates if they exist (only in results context)
     if render_context == "results" and st.session_state[duplicates_key]:

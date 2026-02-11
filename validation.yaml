@@ -114,7 +114,7 @@ validation_prompt: |
       - You may rewrite distractor wording or apply small numeric perturbations (<20% change) to achieve distinct error types, but you MUST NOT change the correct option or the number of options.
       - Distractor edits must not introduce new solution methods or require different curriculum knowledge.
       - you can change the value of the incorrect option of needed so that you can achieve the required error type.
-
+    - If the name used is Anand or maya change that to an indian name.
       ERROR TYPE DEFINITIONS:
         A. Conceptual Error — misunderstanding the concept, rule, or property; wrong method or idea.
         B. Computational Error — correct method but incorrect arithmetic or algebraic computation.
@@ -156,7 +156,6 @@ validation_prompt: |
     - If question_bank is provided:
          → Also compare against the bank for pattern-duplicates
          → If duplicate found against the bank: FLAG-DUPLICATE (do NOT rewrite solely to avoid bank-duplication).
-    - If Names are used then Names should be simple and commonly used  (eg : Jack	Anna  Ryan	Emily	Sam	Maria	John	Maya	Anand	)
 
     - If no question_bank and no batch: duplicate-check = SKIPPED.
 
@@ -218,7 +217,6 @@ validation_prompt: |
         10 .There must be no wrapper metadata such as status, pass/fail flags, repaired_item containers, validation_reports, arrays, or lists. Output only the final clean JSON object with "question1": "<markdown>" , ...
         11 . Please remove any mention of mark distributions from the solution.
 
-    ## Names used for characters should be indian names mostly easy names (dont include textbook names like maya and rohan),If found change them
     ## Main Rule (for dok 2 questions)
       Refined DOK-1 vs DOK-2 discriminator:
         A question is DOK-1 only if it can be solved by a single, direct procedural step using one fact or formula, with no selection among quantities, no inclusion/exclusion decision, no multi-step computation, and no comparison or ordering of results. 
@@ -382,7 +380,28 @@ validation_prompt: |
         REQUIRED STYLE:
         All references must be explicit and self-contained.
         Remove any of the reference to the textbook if found
+    
+    ##CRITICAL FORMATTING RULE (NON-NEGOTIABLE):
 
+      If the output contains answer options anywhere (in Question or Solution):
+
+      1. Each option MUST be on a separate line.
+      2. It is STRICTLY FORBIDDEN to place more than one option on the same line.
+      3. Do NOT separate options using spaces, commas, or inline formatting.
+      4. After writing one option, insert a line break immediately.
+      5. This rule overrides all other formatting instructions.
+
+      Correct format example:
+
+      OPTIONS:
+
+      A) 57 km
+      B) 7.5 km
+      C) 54 km
+      D) 57 km²
+
+ 
+    
     ## KEY IDEA RULES (MANDATORY – EDUCATIONAL, STRICT FORMAT)
 
           You must write a KEY IDEA meant for a weak or struggling student.

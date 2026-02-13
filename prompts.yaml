@@ -575,6 +575,11 @@ case_study_maths: |
         - Which taxonomies were requested
         - Which taxonomies were used
         - Confirm they match exactly
+  ## Important Question Rules:
+    - Do NOT include any open-ended questions.
+    - Avoid words like: explain, describe, justify, discuss, why, how.
+    - Each question must have exactly one correct answer.
+    - Ensure answers can be derived directly from the case study.
 
   ## STRICT KNOWLEDGE BOUNDARY RULES
   Treat the uploaded PDFs/images as the only source of knowledge. Do not use any outside syllabus, curriculum, or textbook knowledge. Do not introduce concepts, terminology, skills, or grade-level content that is not explicitly shown in the uploaded material(for question, solution, key-idea for everything. You cant assume if lhs = rhs is not mentioned in the uploaded material but its proving left side = right side, you cant mention lhs = rhs in any part of the generated material). If the material shows addition, subtraction, even/odd numbers, halving, or true/false reasoning, generate new items only using those same concepts. Do not name properties, laws, or theories unless they are explicitly printed in the PDF/image.
@@ -661,10 +666,15 @@ case_study_maths: |
           Give simple, practical tips written directly for a student.
           **- Do NOT explicitly break the explanation into “What kind of problems”, “Core idea”,"Common mistakes students make  " or “Why this works”.
             Do NOT restate or refer to the given question (Why this idea works .. etc ). **
+          7. The KEY IDEA must naturally include the rule or principle
+              used in solving. The explanation must clearly show what the
+              rule says and how it changes the solution process.
+              Do not separate it into a special section. Blend it into the teaching.
+
           --------------------------------------------------
 
           QUALITY CHECK (MANDATORY):
-          - Minimum length: 6–8 full sentences.
+          - Minimum length: 4-5 full sentences.
           - The explanation must be reusable for any similar problem.
           - If the explanation sounds suitable for a strong student, rewrite it to be simpler.
 
@@ -1338,6 +1348,11 @@ case_study_maths_pdf: |
           - Which taxonomies were requested
           - Which taxonomies were used
           - Confirm they match exactly
+    ## Important Question Rules:
+      - Do NOT include any open-ended questions.
+      - Avoid words like: explain, describe, justify, discuss, why, how.
+      - Each question must have exactly one correct answer.
+      - Ensure answers can be derived directly from the case study.
 
     ## STRICT KNOWLEDGE BOUNDARY RULES
     Treat the uploaded PDFs/images as the only source of knowledge. Do not use any outside syllabus, curriculum, or textbook knowledge. Do not introduce concepts, terminology, skills, or grade-level content that is not explicitly shown in the uploaded material. If the material shows addition, subtraction, even/odd numbers, halving, or true/false reasoning, generate new items only using those same concepts. Do not name properties, laws, or theories unless they are explicitly printed in the PDF/image.
@@ -1426,10 +1441,16 @@ case_study_maths_pdf: |
           Give simple, practical tips written directly for a student.
           **- Do NOT explicitly break the explanation into “What kind of problems”, “Core idea”,"Common mistakes students make  " or “Why this works”.
             Do NOT restate or refer to the given question (Why this idea works .. etc ). **
+
+          7. The KEY IDEA must naturally include the rule or principle
+            used in solving. The explanation must clearly show what the
+            rule says and how it changes the solution process.
+            Do not separate it into a special section. Blend it into the teaching.
+
           --------------------------------------------------
 
           QUALITY CHECK (MANDATORY):
-          - Minimum length: 6–8 full sentences.
+          - Minimum length: 4-5 full sentences.
           - The explanation must be reusable for any similar problem.
           - If the explanation sounds suitable for a strong student, rewrite it to be simpler.
 
@@ -2085,10 +2106,16 @@ assertion_reasoning: |
         Give simple, practical tips written directly for a student.
         **- Do NOT explicitly break the explanation into “What kind of problems”, “Core idea”,"Common mistakes students make  " or “Why this works”.
       Do NOT restate or refer to the given question (Why this idea works .. etc ). **
+
+        7. The KEY IDEA must naturally include the rule or principle
+        used in solving. The explanation must clearly show what the
+        rule says and how it changes the solution process.
+        Do not separate it into a special section. Blend it into the teaching.
+
         --------------------------------------------------
 
         QUALITY CHECK (MANDATORY):
-        - Minimum length: 6–8 full sentences.
+        - Minimum length: 4-5 full sentences.
         - The explanation must be reusable for any similar problem.
         - If the explanation sounds suitable for a strong student, rewrite it to be simpler.
         
@@ -2738,10 +2765,16 @@ assertion_reasoning_pdf: |
       Give simple, practical tips written directly for a student.
       **- Do NOT explicitly break the explanation into “What kind of problems”, “Core idea”,"Common mistakes students make  " or “Why this works”.
       Do NOT restate or refer to the given question (Why this idea works .. etc ). **
+
+      7. The KEY IDEA must naturally include the rule or principle
+      used in solving. The explanation must clearly show what the
+      rule says and how it changes the solution process.
+      Do not separate it into a special section. Blend it into the teaching.
+
       --------------------------------------------------
 
       QUALITY CHECK (MANDATORY):
-      - Minimum length: 6–8 full sentences.
+      - Minimum length: 4-5 full sentences.
       - The explanation must be reusable for any similar problem.
       - If the explanation sounds suitable for a strong student, rewrite it to be simpler.
 
@@ -3721,10 +3754,16 @@ multi_part_maths: |
       Give simple, practical tips written directly for a student.
       **- Do NOT explicitly break the explanation into “What kind of problems”, “Core idea”,"Common mistakes students make  " or “Why this works”.
       Do NOT restate or refer to the given question (Why this idea works .. etc ). **
+
+      7. The KEY IDEA must naturally include the rule or principle
+      used in solving. The explanation must clearly show what the
+      rule says and how it changes the solution process.
+      Do not separate it into a special section. Blend it into the teaching.
+
       --------------------------------------------------
 
       QUALITY CHECK (MANDATORY):
-      - Minimum length: 6–8 full sentences.
+      - Minimum length: 4-5 full sentences.
       - The explanation must be reusable for any similar problem.
       - If the explanation sounds suitable for a strong student, rewrite it to be simpler.
 
@@ -4620,11 +4659,17 @@ multi_part_maths_pdf: |
         6. Tips to avoid these mistakes  
         Give simple, practical tips written directly for a student.
         **- Do NOT explicitly break the explanation into “What kind of problems”, “Core idea”,"Common mistakes students make  " or “Why this works”.
-      Do NOT restate or refer to the given question (Why this idea works .. etc ). **
+         Do NOT restate or refer to the given question (Why this idea works .. etc ). **
+      
+        7. The KEY IDEA must naturally include the rule or principle
+        used in solving. The explanation must clearly show what the
+        rule says and how it changes the solution process.
+        Do not separate it into a special section. Blend it into the teaching.
+
         --------------------------------------------------
 
         QUALITY CHECK (MANDATORY):
-        - Minimum length: 6–8 full sentences.
+        - Minimum length: 4-5 full sentences.
         - The explanation must be reusable for any similar problem.
         - If the explanation sounds suitable for a strong student, rewrite it to be simpler.
 
@@ -5692,10 +5737,16 @@ mcq_questions: |
     Give simple, practical tips written directly for a student.
     **- Do NOT explicitly break the explanation into “What kind of problems”, “Core idea”,"Common mistakes students make  " or “Why this works”.
       Do NOT restate or refer to the given question (Why this idea works .. etc ). **
+
+    7. The KEY IDEA must naturally include the rule or principle
+    used in solving. The explanation must clearly show what the
+    rule says and how it changes the solution process.
+    Do not separate it into a special section. Blend it into the teaching.
+
     --------------------------------------------------
 
     QUALITY CHECK (MANDATORY):
-    - Minimum length: 6–8 full sentences.
+    - Minimum length: 4-5 full sentences.
     - The explanation must be reusable for any similar problem.
     - If the explanation sounds suitable for a strong student, rewrite it to be simpler.
 
@@ -6709,10 +6760,16 @@ mcq_questions_pdf: |
     Give simple, practical tips written directly for a student.
     **- Do NOT explicitly break the explanation into “What kind of problems”, “Core idea”,"Common mistakes students make  " or “Why this works”.
       Do NOT restate or refer to the given question (Why this idea works .. etc ). **
+
+    7. The KEY IDEA must naturally include the rule or principle
+    used in solving. The explanation must clearly show what the
+    rule says and how it changes the solution process.
+    Do not separate it into a special section. Blend it into the teaching.
+
     --------------------------------------------------
 
     QUALITY CHECK (MANDATORY):
-    - Minimum length: 6–8 full sentences.
+    - Minimum length: 4-5 full sentences.
     - The explanation must be reusable for any similar problem.
     - If the explanation sounds suitable for a strong student, rewrite it to be simpler.
 
@@ -7688,6 +7745,12 @@ FIB: |
       Give simple, practical tips written directly for a student.
       **- Do NOT explicitly break the explanation into “What kind of problems”, “Core idea”,"Common mistakes students make  " or “Why this works”.
       Do NOT restate or refer to the given question (Why this idea works .. etc ). **
+
+      7. The KEY IDEA must naturally include the rule or principle
+      used in solving. The explanation must clearly show what the
+      rule says and how it changes the solution process.
+      Do not separate it into a special section. Blend it into the teaching.
+
       --------------------------------------------------
 
       QUALITY CHECK (MANDATORY):
@@ -8671,6 +8734,12 @@ FIB_pdf: |
       Give simple, practical tips written directly for a student.
       **- Do NOT explicitly break the explanation into “What kind of problems”, “Core idea”,"Common mistakes students make  " or “Why this works”.
       Do NOT restate or refer to the given question (Why this idea works .. etc ). **
+
+      7. The KEY IDEA must naturally include the rule or principle
+      used in solving. The explanation must clearly show what the
+      rule says and how it changes the solution process.
+      Do not separate it into a special section. Blend it into the teaching.
+
       --------------------------------------------------
 
       QUALITY CHECK (MANDATORY):
@@ -9449,10 +9518,16 @@ descriptive: |
       Give simple, practical tips written directly for a student.
       **- Do NOT explicitly break the explanation into “What kind of problems”, “Core idea”,"Common mistakes students make  " or “Why this works”.
       Do NOT restate or refer to the given question (Why this idea works .. etc ). **
+
+      7. The KEY IDEA must naturally include the rule or principle
+      used in solving. The explanation must clearly show what the
+      rule says and how it changes the solution process.
+      Do not separate it into a special section. Blend it into the teaching.
+
       --------------------------------------------------
 
       QUALITY CHECK (MANDATORY):
-      - Minimum length: 6–8 full sentences.
+      - Minimum length: 4-5 full sentences.
       - The explanation must be reusable for any similar problem.
       - If the explanation sounds suitable for a strong student, rewrite it to be simpler.
 
@@ -10248,10 +10323,16 @@ descriptive_pdf: |
       Give simple, practical tips written directly for a student.
       **- Do NOT explicitly break the explanation into “What kind of problems”, “Core idea”,"Common mistakes students make  " or “Why this works”.
       Do NOT restate or refer to the given question (Why this idea works .. etc ). **
+
+      7. The KEY IDEA must naturally include the rule or principle
+      used in solving. The explanation must clearly show what the
+      rule says and how it changes the solution process.
+      Do not separate it into a special section. Blend it into the teaching.
+
       --------------------------------------------------
 
       QUALITY CHECK (MANDATORY):
-      - Minimum length: 6–8 full sentences.
+      - Minimum length: 4-5 full sentences.
       - The explanation must be reusable for any similar problem.
       - If the explanation sounds suitable for a strong student, rewrite it to be simpler.
 
@@ -11079,10 +11160,15 @@ descriptive_subq: |
     Give simple, practical tips written directly for a student.
     **- Do NOT explicitly break the explanation into “What kind of problems”, “Core idea”,"Common mistakes students make  " or “Why this works”.
       Do NOT restate or refer to the given question (Why this idea works .. etc ). **
+
+    7. The KEY IDEA must naturally include the rule or principle
+    used in solving. The explanation must clearly show what the
+    rule says and how it changes the solution process.
+    Do not separate it into a special section. Blend it into the teaching.
     --------------------------------------------------
 
     QUALITY CHECK (MANDATORY):
-    - Minimum length: 6–8 full sentences.
+    - Minimum length: 4-5 full sentences.
     - The explanation must be reusable for any similar problem.
     - If the explanation sounds suitable for a strong student, rewrite it to be simpler.
 
@@ -11936,10 +12022,15 @@ descriptive_subq_pdf: |
     Give simple, practical tips written directly for a student.
     **- Do NOT explicitly break the explanation into “What kind of problems”, “Core idea”,"Common mistakes students make  " or “Why this works”.
       Do NOT restate or refer to the given question (Why this idea works .. etc ). **
+    
+    7. The KEY IDEA must naturally include the rule or principle
+    used in solving. The explanation must clearly show what the
+    rule says and how it changes the solution process.
+    Do not separate it into a special section. Blend it into the teaching.
     --------------------------------------------------
 
     QUALITY CHECK (MANDATORY):
-    - Minimum length: 6–8 full sentences.
+    - Minimum length: 4-5 full sentences.
     - The explanation must be reusable for any similar problem.
     - If the explanation sounds suitable for a strong student, rewrite it to be simpler.
 

@@ -123,7 +123,7 @@ def run_gemini(
     prompt: str,
     api_key: str,
     files: Optional[List] = None,
-    thinking_level: str = "medium",
+    thinking_level: str = "high",
     file_metadata: Optional[Dict[str, Any]] = None
 ) -> Dict[str, Any]:
     """
@@ -295,7 +295,7 @@ async def duplicate_questions_async(
         prompt=formatted_prompt,
         api_key=api_key,
         files=files_to_upload,
-        thinking_level="medium",
+        thinking_level="high",
         file_metadata={'source_type': 'duplicate_context', 'filenames': [getattr(pdf_file, 'name', 'file')]} if pdf_file else None
     )
     
@@ -350,7 +350,7 @@ async def run_gemini_async(
     prompt: str,
     api_key: str,
     files: Optional[List] = None,
-    thinking_level: str = "medium",
+    thinking_level: str = "high",
     file_metadata: Optional[Dict[str, Any]] = None
 ) -> Dict[str, Any]:
     """

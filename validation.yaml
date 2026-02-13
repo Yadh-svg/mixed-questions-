@@ -234,6 +234,15 @@ validation_prompt: |
       • Use inline separators (e.g., "•"), no key:value labels.
       • No commentary inside metadata.
 
+    ## Question - Answer consistency:
+      - Do NOT introduce any new names, characters, or entities in the solution that are not explicitly mentioned in the question.
+      - If the case uses no names, the solution must also use no names.
+      - Refer only to the given subject (e.g., “the student”, “the minute hand”, “the object”, etc.).
+      - Maintain strict consistency between the question, and solution.
+      - Do not assume or add background context that is not provided.
+
+    ✔ All references in the solution must come directly from the given case content.Otherwise edit the solution to make it consistent with the question.
+
     ## GLOBAL MULTI-LINE FORMATTING RULE:
 
       All components of the question item must be formatted with clear vertical line breaks and proper spacing. Nothing should be merged inline or compressed into paragraphs.

@@ -20,6 +20,20 @@ from st_img_pastebutton import paste
 import io
 import base64
 import re
+import logging
+
+# Setup logging
+logger = logging.getLogger(__name__)
+
+# Import history management modules
+from history_manager import HistoryManager
+from file_utils import (
+    extract_all_files_from_config,
+    save_all_files,
+    restore_files_from_map,
+    restore_files_to_config,
+    create_file_object
+)
 
 class PastedFile(io.BytesIO):
     """Wrapper to make pasted images look like UploadedFile objects"""
@@ -64,6 +78,9 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded"
 )
+
+# Initialize history manager
+history_mgr = HistoryManager(history_dir="history", max_runs=20)
 
 # Custom CSS for modern, catchy UI
 st.markdown("""
@@ -155,6 +172,14 @@ if 'universal_pdf' not in st.session_state:
 if 'regen_selection' not in st.session_state:
     st.session_state.regen_selection = set()
 
+# History-related session state
+if 'current_run_id' not in st.session_state:
+    st.session_state.current_run_id = None
+if 'history_mode' not in st.session_state:
+    st.session_state.history_mode = 'new'  # 'new', 'loaded', or 'duplicate'
+if 'loaded_run_data' not in st.session_state:
+    st.session_state.loaded_run_data = None
+
 # Header
 st.markdown("""
 <div class="main-header">
@@ -165,8 +190,19 @@ st.markdown("""
 
 # Core Skill Extraction Toggle
 st.markdown("### 🔧 Core Skill Extraction")
+
+# Check if we have a restored value from history
+if '_restore_core_skill' in st.session_state:
+    # Use the restored value and clear the temp key
+    default_value = st.session_state['_restore_core_skill']
+    del st.session_state['_restore_core_skill']
+else:
+    # Use existing value if set, otherwise False
+    default_value = st.session_state.get('core_skill_enabled', False)
+
 core_skill_enabled = st.checkbox(
     "Enable Core Skill Extraction",
+    value=default_value,
     key="core_skill_enabled",
     help="When enabled, extracts metadata (core_equation, solution_pattern, scenario_signature, etc.) from each batch of questions and passes it to subsequent batches to ensure uniqueness and avoid duplicate scenarios."
 )
@@ -188,6 +224,178 @@ with st.sidebar:
         st.markdown("**Question Types:**")
         for qtype, config in st.session_state.question_types_config.items():
             st.write(f"• {qtype}: {config.get('count', 0)}")
+    
+    st.markdown("---")
+    st.markdown("### 📚 History")
+    
+    # Display history mode if active
+    if st.session_state.history_mode == 'loaded':
+        st.info("📂 Viewing loaded run")
+    elif st.session_state.history_mode == 'duplicate':
+        st.info("📋 Duplicated run - modify and regenerate")
+    
+    # List saved runs
+    runs = history_mgr.list_runs()
+    
+    if runs:
+        st.markdown(f"**Saved Runs ({len(runs)}):**")
+        
+        for run in runs:
+            run_id = run.get("run_id", "")
+            timestamp = run.get("timestamp", "")
+            chapter = run.get("chapter", "Unknown")
+            total_q = run.get("total_questions", 0)
+            
+            # Format timestamp
+            try:
+                from datetime import datetime
+                dt = datetime.fromisoformat(timestamp)
+                formatted_time = dt.strftime("%b %d, %I:%M %p")
+            except:
+                formatted_time = "Unknown time"
+            
+            # Display run info with chapter in title
+            with st.expander(f"🕒 {formatted_time} - {chapter}", expanded=False):
+                st.markdown(f"**Questions:** {total_q}")
+                
+                # Action buttons in a single row
+                col1, col2, col3 = st.columns(3)
+                
+                with col1:
+                    if st.button("📂 Load", key=f"load_{run_id}", help="Load this run"):
+                        # Load the run
+                        loaded_data = history_mgr.load_run(run_id)
+                        
+                        if loaded_data:
+                            # Restore session state
+                            metadata = loaded_data['metadata']
+                            
+                            # Restore general config
+                            st.session_state['general_grade'] = metadata['metadata'].get('grade', 'Grade 1')
+                            st.session_state['general_chapter'] = metadata['metadata'].get('chapter', '')
+                            st.session_state['general_old_concept'] = metadata['metadata'].get('old_concept', '')
+                            st.session_state['general_new_concept'] = metadata['metadata'].get('new_concept', '')
+                            st.session_state['general_additional_notes'] = metadata['metadata'].get('additional_notes', '')
+                            
+                            # Restore question config
+                            st.session_state.question_types_config = metadata['session_config']['question_types_config']
+                            # Note: core_skill_enabled is widget-bound, don't set directly
+                            # Store it separately for restoration
+                            st.session_state['_restore_core_skill'] = metadata['session_config'].get('core_skill_enabled', False)
+                            
+                            # Restore selected question types
+                            st.session_state.selected_question_types = list(st.session_state.question_types_config.keys())
+                            
+                            # Restore files
+                            files_map = metadata.get('files', {})
+                            files_dir = history_mgr.get_files_dir(run_id)
+                            restored_files = restore_files_from_map(files_map, files_dir)
+                            
+                            # Restore universal PDF
+                            if 'universal_pdf' in restored_files:
+                                st.session_state.universal_pdf = restored_files['universal_pdf']
+                            
+                            # Restore per-question files
+                            restore_files_to_config(st.session_state.question_types_config, restored_files)
+                            
+                            # Restore output
+                            st.session_state.generated_output = loaded_data['output']
+                            
+                            # Clear all duplicate-related session state to avoid showing old duplicates
+                            keys_to_remove = [key for key in st.session_state.keys() if key.startswith('duplicates_')]
+                            for key in keys_to_remove:
+                                del st.session_state[key]
+                            
+                            keys_to_remove = [key for key in st.session_state.keys() if key.startswith('duplicate_results_')]
+                            for key in keys_to_remove:
+                                del st.session_state[key]
+                            
+                            keys_to_remove = [key for key in st.session_state.keys() if key.startswith('duplicate_count_results_')]
+                            for key in keys_to_remove:
+                                del st.session_state[key]
+                            
+                            # Clear regeneration selection
+                            st.session_state.regen_selection = set()
+                            
+                            # Set history mode
+                            st.session_state.history_mode = 'loaded'
+                            st.session_state.current_run_id = run_id
+                            st.session_state.loaded_run_data = loaded_data
+                            
+                            st.rerun()
+                
+                with col2:
+                    if st.button("📋 Dup", key=f"dup_{run_id}", help="Duplicate this run"):
+                        # Load the run similar to Load but clear output
+                        loaded_data = history_mgr.load_run(run_id)
+                        
+                        if loaded_data:
+                            # Restore session state
+                            metadata = loaded_data['metadata']
+                            
+                            # Restore general config
+                            st.session_state['general_grade'] = metadata['metadata'].get('grade', 'Grade 1')
+                            st.session_state['general_chapter'] = metadata['metadata'].get('chapter', '')
+                            st.session_state['general_old_concept'] = metadata['metadata'].get('old_concept', '')
+                            st.session_state['general_new_concept'] = metadata['metadata'].get('new_concept', '')
+                            st.session_state['general_additional_notes'] = metadata['metadata'].get('additional_notes', '')
+                            
+                            # Restore question config
+                            st.session_state.question_types_config = metadata['session_config']['question_types_config']
+                            # Note: core_skill_enabled is widget-bound, don't set directly
+                            # Store it separately for restoration
+                            st.session_state['_restore_core_skill'] = metadata['session_config'].get('core_skill_enabled', False)
+                            
+                            # Restore selected question types
+                            st.session_state.selected_question_types = list(st.session_state.question_types_config.keys())
+                            
+                            # Restore files
+                            files_map = metadata.get('files', {})
+                            files_dir = history_mgr.get_files_dir(run_id)
+                            restored_files = restore_files_from_map(files_map, files_dir)
+                            
+                            # Restore universal PDF
+                            if 'universal_pdf' in restored_files:
+                                st.session_state.universal_pdf = restored_files['universal_pdf']
+                            
+                            # Restore per-question files
+                            restore_files_to_config(st.session_state.question_types_config, restored_files)
+                            
+                            # Clear output for duplication
+                            st.session_state.generated_output = None
+                            
+                            # Clear all duplicate-related session state
+                            keys_to_remove = [key for key in st.session_state.keys() if key.startswith('duplicates_')]
+                            for key in keys_to_remove:
+                                del st.session_state[key]
+                            
+                            keys_to_remove = [key for key in st.session_state.keys() if key.startswith('duplicate_results_')]
+                            for key in keys_to_remove:
+                                del st.session_state[key]
+                            
+                            keys_to_remove = [key for key in st.session_state.keys() if key.startswith('duplicate_count_results_')]
+                            for key in keys_to_remove:
+                                del st.session_state[key]
+                            
+                            # Clear regeneration selection
+                            st.session_state.regen_selection = set()
+                            
+                            # Set history mode
+                            st.session_state.history_mode = 'duplicate'
+                            st.session_state.current_run_id = None
+                            st.session_state.loaded_run_data = loaded_data
+                            
+                            st.rerun()
+                
+                with col3:
+                    if st.button("🗑️", key=f"del_{run_id}", help="Delete this run"):
+                        if history_mgr.delete_run(run_id):
+                            st.success(f"Deleted run")
+                            st.rerun()
+                        else:
+                            st.error("Failed to delete run")
+    else:
+        st.info("No saved runs yet. Generate questions to save history!")
     
     st.markdown("---")
     st.markdown("### 🗑️ Reset Tools")
@@ -1529,7 +1737,49 @@ with tab1:
                                 # Store final results
                                 st.session_state.generated_output = final_results
                                 
-                                st.success("✅ All questions generated successfully! Go to the Results tab to view and manage them.")
+                                # Save to history
+                                try:
+                                    # Prepare session data
+                                    session_data = {
+                                        'curriculum': config['curriculum'],
+                                        'grade': config['grade'],
+                                        'subject': config['subject'],
+                                        'chapter': config['chapter'],
+                                        'old_concept': config['old_concept'],
+                                        'new_concept': config['new_concept'],
+                                        'additional_notes': config['additional_notes'],
+                                        'question_types_config': st.session_state.question_types_config,
+                                        'core_skill_enabled': config.get('core_skill_enabled', False)
+                                    }
+                                    
+                                    # Extract all files
+                                    files_dict = extract_all_files_from_config(
+                                        st.session_state.question_types_config,
+                                        config.get('universal_pdf')
+                                    )
+                                    
+                                    # Save files and get file map
+                                    run_id = history_mgr._generate_run_id()
+                                    files_dir = history_mgr.get_files_dir(run_id)
+                                    files_map = save_all_files(files_dict, files_dir)
+                                    
+                                    # Save run
+                                    saved_run_id = history_mgr.save_run(
+                                        session_data=session_data,
+                                        output_data=final_results,
+                                        files_data=files_map
+                                    )
+                                    
+                                    # Update history mode
+                                    st.session_state.history_mode = 'new'
+                                    st.session_state.current_run_id = saved_run_id
+                                    
+                                    st.success(f"✅ All questions generated successfully! Saved to history. Go to the Results tab to view and manage them.")
+                                    
+                                except Exception as save_error:
+                                    # Don't fail the whole generation if save fails
+                                    st.warning(f"⚠️ Questions generated but failed to save to history: {str(save_error)}")
+                                    st.success("✅ All questions generated successfully! Go to the Results tab to view and manage them.")
                                 
                             except Exception as e:
                                 st.error(f"❌ Error during generation: {str(e)}")
@@ -1541,13 +1791,10 @@ with tab1:
 
 
 with tab2:
-    # AUTOMATIC SYNC: Reset regeneration selection every time Results tab is rendered.
-    # The selection set will be rebuilt by result_renderer as it renders each question.
-    # This ensures "ghost" questions (that are no longer rendered) are automatically removed.
-    st.session_state.regen_selection = set()
-
     st.markdown('<div class="section-header">Previously Generated Questions</div>', unsafe_allow_html=True)
 
+    # Regeneration summary removed for cleaner UI
+    
     # Display Persistent Generation Report (if any)
     if 'duplicate_generation_report' in st.session_state and st.session_state.duplicate_generation_report:
         report = st.session_state.duplicate_generation_report
@@ -1555,12 +1802,7 @@ with tab2:
         # Display summary
         st.markdown("### 📊 Generation Report")
         if report.get('success'):
-            col1, col2 = st.columns(2)
-            with col1:
-                st.success(f"✅ Successfully generated duplicates for {report['success_count']} question(s).")
-            # with col2:
-            #     if 'total_cost' in report:
-            #         st.info(f"💰 **Cost:** ${report['total_cost']:.4f}")
+            st.success(f"✅ Successfully generated duplicates for {report['success_count']} question(s).")
         
         if report.get('errors'):
             st.error(f"❌ Failed to generate duplicates for {len(report['errors'])} question(s).")
@@ -1712,6 +1954,20 @@ with tab2:
                             'universal_pdf': st.session_state.get('universal_pdf')
                         }
                         
+                        # Debug: Verify inputs are being passed
+                        st.write("="*70)
+                        st.write("🔍 DEBUG - REGENERATION PARAMETERS:")
+                        st.write(f"  📄 Universal PDF: {'✅ Present' if general_config.get('universal_pdf') else '❌ Missing'}")
+                        if general_config.get('universal_pdf'):
+                            st.write(f"     File name: {general_config['universal_pdf'].name}")
+                        st.write(f"  📚 Chapter: {general_config.get('chapter', 'N/A')}")
+                        st.write(f"  🎓 Grade: {general_config.get('grade', 'N/A')}")
+                        st.write(f"  📖 Subject: {general_config.get('subject', 'N/A')}")
+                        st.write(f"  📝 Old Concept: {general_config.get('old_concept', 'N/A')[:50]}...")
+                        st.write(f"  ✨ New Concept: {general_config.get('new_concept', 'N/A')[:50]}...")
+                        st.write(f"  📋 Additional Notes: {general_config.get('additional_notes', 'N/A')[:50]}...")
+                        st.write("="*70)
+                        
                         # Need to reconstruct the full original config list
                         # AND attach the original text for context
                         
@@ -1834,9 +2090,52 @@ with tab2:
                                         st.error(f"❌ Batch key '{batch_key}' not found in session state!")
                                 
                                 if merged_count > 0:
-                                    st.success(f"✅ Regenerated {merged_count} question(s) successfully!")
+                                    st.success(f"✅ Successfully regenerated {merged_count} question(s)!")
+                                    
+                                    # Save regenerated questions to history
+                                    try:
+                                        # Prepare session data with "(Regenerated)" marker
+                                        chapter_name = general_config.get('chapter', 'Unknown')
+                                        if '(Regenerated)' not in chapter_name:
+                                            chapter_name = f"{chapter_name} (Regenerated)"
+                                        
+                                        session_data = {
+                                            'curriculum': general_config.get('curriculum', ''),
+                                            'grade': general_config.get('grade', ''),
+                                            'subject': general_config.get('subject', ''),
+                                            'chapter': chapter_name,  # Add (Regenerated) suffix
+                                            'old_concept': general_config.get('old_concept', ''),
+                                            'new_concept': general_config.get('new_concept', ''),
+                                            'additional_notes': general_config.get('additional_notes', ''),
+                                            'question_types_config': st.session_state.question_types_config,
+                                            'core_skill_enabled': general_config.get('core_skill_enabled', False)
+                                        }
+                                        
+                                        # Extract all files
+                                        files_dict = extract_all_files_from_config(
+                                            st.session_state.question_types_config,
+                                            general_config.get('universal_pdf')
+                                        )
+                                        
+                                        # Save files and get file map
+                                        new_run_id = history_mgr._generate_run_id()
+                                        files_dir = history_mgr.get_files_dir(new_run_id)
+                                        files_map = save_all_files(files_dict, files_dir)
+                                        
+                                        # Save as new run
+                                        saved_run_id = history_mgr.save_run(
+                                            session_data=session_data,
+                                            output_data=st.session_state.generated_output,
+                                            files_data=files_map
+                                        )
+                                        
+                                        st.info(f"💾 Saved regenerated questions to history as '{chapter_name}'")
+                                        
+                                    except Exception as save_error:
+                                        st.warning(f"⚠️ Questions regenerated but failed to save to history: {str(save_error)}")
+                                    
                                     st.session_state.regen_selection = set()
-                                    st.rerun()  # Instant reload with updated questions
+                                    st.rerun()  # Refresh to show updated questions
                                 else:
                                     st.error("❌ Regeneration failed. Please try again.")
                                 
@@ -1933,13 +2232,17 @@ with tab2:
                             # Create a task for each individual question (not grouped by type)
                             async def process_single_question(key, data):
                                 """Process a single question's duplication"""
+                                # Debug: Log duplication parameters
+                                pdf_file = data.get('pdf_file', None)
+                                logger.info(f"🔍 DEBUG Duplication - {data['question_code']}: PDF={'✅ Present (' + pdf_file.name + ')' if pdf_file else '❌ Missing'}")
+                                
                                 result = await duplicate_questions_async(
                                     original_question_markdown=data['markdown_content'],
                                     question_code=data['question_code'],
                                     num_duplicates=data['num_duplicates'],
                                     api_key=gemini_api_key,
                                     additional_notes=data.get('additional_notes', ""),
-                                    pdf_file=data.get('pdf_file', None)
+                                    pdf_file=pdf_file
                                 )
                                 return key, result
                             

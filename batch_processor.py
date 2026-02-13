@@ -249,6 +249,14 @@ def group_questions_by_type_and_topic(questions_config: List[Dict[str, Any]]) ->
                 logger.info(f"[{q_type}] Optimization needed: Topic '{topic}' (Count {total_count}) fragmented across batches {unique_batches}")
                 break
 
+        # Check if ANY question has the _preserve_order flag (used during regeneration)
+        preserve_order = any(q.get('_preserve_order', False) for q in type_questions)
+        
+        if preserve_order:
+            logger.info(f"  - {q_type}: {len(type_questions)} questions (Preserving Original Order - Regeneration Mode)")
+            final_grouped[q_type] = type_questions
+            continue
+        
         if not needs_optimization:
             logger.info(f"  - {q_type}: {len(type_questions)} questions (Preserved User Order - Efficient)")
             final_grouped[q_type] = type_questions
@@ -341,7 +349,7 @@ async def generate_raw_batch(
             prompt=prompt_text,
             api_key=api_key,
             files=files,
-            thinking_level="medium",
+            thinking_level="high",
             file_metadata=file_metadata
         )
 
@@ -391,7 +399,7 @@ async def validate_batch(
             prompt=validation_prompt_text,
             api_key=api_key,
             files=files,
-            thinking_level="medium",
+            thinking_level="high",
             file_metadata=file_metadata
         )
         
@@ -920,6 +928,7 @@ async def regenerate_specific_questions_pipeline(
             if 0 <= target_global_idx < len(questions_of_type):
                 q_config = questions_of_type[target_global_idx]
                 q_config['_is_being_regenerated'] = True
+                q_config['_preserve_order'] = True  # CRITICAL: Prevent topic sorting!
                 
                 # Attach original text if available
                 existing_content_map = general_config.get('existing_content_map', {})

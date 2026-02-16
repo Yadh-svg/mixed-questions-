@@ -111,7 +111,6 @@ if not st.session_state.authenticated:
             else:
                 st.error("❌ Invalid username or password. Please try again.")
     
-    st.info("💡 **Demo Credentials:** alice / password123, bob / securepass456, admin / admin2024")
     st.stop()  # Stop execution until authenticated
 
 # Initialize history manager (only after authentication)

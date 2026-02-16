@@ -16,7 +16,7 @@ def get_all_users() -> List[str]:
         List of usernames
     """
     try:
-        if hasattr(st.secrets, "users"):
+        if "users" in st.secrets:
             return list(st.secrets["users"].keys())
         return []
     except Exception:
@@ -38,19 +38,26 @@ def authenticate_user(username: str, password: str) -> bool:
         if not username or not password:
             return False
         
+        # Normalize inputs - strip whitespace and lowercase username
+        username = username.strip().lower()
+        password = password.strip()
+        
         # Check if users section exists in secrets
-        if not hasattr(st.secrets, "users"):
+        if "users" not in st.secrets:
+            print("No users section in secrets")
             return False
         
         users = st.secrets["users"]
         
-        # Check if username exists and password matches
-        if username in users and users[username] == password:
-            return True
+        # Debug prints (remove later)
+        print("Available users:", list(users.keys()))
+        print("Entered:", repr(username), repr(password))
+        print("Stored password:", repr(users.get(username)))
         
-        return False
+        return users.get(username) == password
         
-    except Exception:
+    except Exception as e:
+        print("AUTH ERROR:", e)
         return False
 
 

@@ -153,11 +153,11 @@ def save_all_files(files_dict: Dict[str, Any], files_dir: Path) -> Dict[str, str
     Save all files to the history directory.
     
     Args:
-        files_dict: Dictionary of file IDs to file info
+        files_dict: Dictionary of file IDs to file info {'file_obj': obj, 'filename': str}
         files_dir: Directory to save files
         
     Returns:
-        Dictionary mapping file IDs to saved file paths (relative to files_dir)
+        Dictionary mapping file IDs to saved filenames (relative to files_dir) - JSON serializable
     """
     saved_files = {}
     
@@ -165,21 +165,32 @@ def save_all_files(files_dict: Dict[str, Any], files_dir: Path) -> Dict[str, str
         files_dir.mkdir(parents=True, exist_ok=True)
         
         for file_id, file_info in files_dict.items():
-            file_obj = file_info['file_obj']
-            filename = file_info['filename']
+            # Handle both dict format and direct file objects for backward compatibility
+            if isinstance(file_info, dict):
+                file_obj = file_info.get('file_obj')
+                filename = file_info.get('filename', 'unknown_file')
+            else:
+                # Direct file object (shouldn't happen but handle gracefully)
+                file_obj = file_info
+                filename = getattr(file_obj, 'name', 'unknown_file')
+            
+            if not file_obj:
+                logger.warning(f"No file object for {file_id}, skipping")
+                continue
             
             # Create safe filename
             safe_filename = f"{file_id}_{filename}"
             dest_path = files_dir / safe_filename
             
             if save_uploaded_file(file_obj, dest_path):
-                # Store relative path
+                # Store ONLY the filename (string) - JSON serializable
                 saved_files[file_id] = safe_filename
         
         logger.info(f"Saved {len(saved_files)} files to {files_dir}")
         
     except Exception as e:
         logger.error(f"Error saving files: {e}")
+        logger.exception(e)  # Log full traceback for debugging
     
     return saved_files
 

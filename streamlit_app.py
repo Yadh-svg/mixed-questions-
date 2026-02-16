@@ -34,6 +34,7 @@ from file_utils import (
     restore_files_to_config,
     create_file_object
 )
+from auth import authenticate_user, get_display_name
 
 class PastedFile(io.BytesIO):
     """Wrapper to make pasted images look like UploadedFile objects"""
@@ -79,8 +80,50 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Initialize history manager
-history_mgr = HistoryManager(history_dir="history", max_runs=20)
+# Initialize authentication state
+if 'authenticated' not in st.session_state:
+    st.session_state.authenticated = False
+if 'current_user' not in st.session_state:
+    st.session_state.current_user = None
+
+# Login Screen - Show before anything else if not authenticated
+if not st.session_state.authenticated:
+    st.markdown("""
+    <div class="main-header">
+        <h1>🔐 Login to Question Generator</h1>
+        <p>Please enter your credentials to continue</p>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    # Create login form
+    with st.form("login_form"):
+        st.markdown("### Enter Your Credentials")
+        username = st.text_input("Username", placeholder="Enter username")
+        password = st.text_input("Password", type="password", placeholder="Enter password")
+        submit_button = st.form_submit_button("Login")
+        
+        if submit_button:
+            if authenticate_user(username, password):
+                st.session_state.authenticated = True
+                st.session_state.current_user = username
+                st.success(f"✅ Welcome, {get_display_name(username)}!")
+                st.rerun()
+            else:
+                st.error("❌ Invalid username or password. Please try again.")
+    
+    st.info("💡 **Demo Credentials:** alice / password123, bob / securepass456, admin / admin2024")
+    st.stop()  # Stop execution until authenticated
+
+# Initialize history manager (only after authentication)
+if 'history_mgr' not in st.session_state or st.session_state.get('_history_user') != st.session_state.current_user:
+    st.session_state.history_mgr = HistoryManager(
+        username=st.session_state.current_user,
+        history_dir="history",
+        max_runs=10
+    )
+    st.session_state._history_user = st.session_state.current_user
+
+history_mgr = st.session_state.history_mgr
 
 # Custom CSS for modern, catchy UI
 st.markdown("""
@@ -212,6 +255,19 @@ st.markdown("---")
 
 # Sidebar for API configuration
 with st.sidebar:
+    # Show current user and logout button
+    st.markdown(f"### 👤 User: {get_display_name(st.session_state.current_user)}")
+    if st.button("🚪 Logout", help="Logout and return to login screen"):
+        # Clear authentication state
+        st.session_state.authenticated = False
+        st.session_state.current_user = None
+        if 'history_mgr' in st.session_state:
+            del st.session_state.history_mgr
+        if '_history_user' in st.session_state:
+            del st.session_state._history_user
+        st.rerun()
+    
+    st.markdown("---")
     st.markdown("### ⚙️ Configuration")
     # API Key is now handled via st.secrets
     
@@ -226,7 +282,7 @@ with st.sidebar:
             st.write(f"• {qtype}: {config.get('count', 0)}")
     
     st.markdown("---")
-    st.markdown("### 📚 History")
+    st.markdown("### 📚 History (Your Last 10 Runs)")
     
     # Display history mode if active
     if st.session_state.history_mode == 'loaded':
@@ -238,7 +294,7 @@ with st.sidebar:
     runs = history_mgr.list_runs()
     
     if runs:
-        st.markdown(f"**Saved Runs ({len(runs)}):**")
+        st.markdown(f"**Your Runs: {len(runs)}/10**")
         
         for run in runs:
             run_id = run.get("run_id", "")

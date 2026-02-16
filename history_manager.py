@@ -1,6 +1,7 @@
 """
 History Manager Module
 Handles saving, loading, listing, and managing question generation run history.
+Supports user-specific history with file locking for concurrent access.
 """
 
 import json
@@ -9,23 +10,32 @@ from pathlib import Path
 from datetime import datetime
 from typing import Dict, List, Any, Optional
 import logging
+from file_lock import FileLock
+from auth import sanitize_username
 
 logger = logging.getLogger(__name__)
 
 
 class HistoryManager:
-    """Manages conversation history for question generation runs."""
+    """Manages conversation history for question generation runs (user-specific)."""
     
-    def __init__(self, history_dir: str = "history", max_runs: int = 20):
+    def __init__(self, username: str, history_dir: str = "history", max_runs: int = 10):
         """
-        Initialize the history manager.
+        Initialize the history manager for a specific user.
         
         Args:
-            history_dir: Directory to store history files
-            max_runs: Maximum number of runs to keep (default: 20)
+            username: Username for this history manager
+            history_dir: Base directory to store history files
+            max_runs: Maximum number of runs to keep per user (default: 10)
         """
-        self.history_dir = Path(history_dir)
+        self.username = username
+        self.sanitized_username = sanitize_username(username)
+        self.base_history_dir = Path(history_dir)
+        self.history_dir = self.base_history_dir / self.sanitized_username
         self.max_runs = max_runs
+        
+        # Create both base and user-specific directories
+        self.base_history_dir.mkdir(exist_ok=True)
         self.history_dir.mkdir(exist_ok=True)
         
     def _generate_run_id(self) -> str:
@@ -39,7 +49,7 @@ class HistoryManager:
         files_data: Dict[str, Any]
     ) -> str:
         """
-        Save a complete generation run with all context.
+        Save a complete generation run with all context (with file locking).
         
         Args:
             session_data: Session configuration and metadata
@@ -62,6 +72,7 @@ class HistoryManager:
             metadata = {
                 "run_id": run_id,
                 "timestamp": datetime.now().isoformat(),
+                "username": self.username,
                 "metadata": {
                     "curriculum": session_data.get("curriculum", ""),
                     "grade": session_data.get("grade", ""),
@@ -83,11 +94,14 @@ class HistoryManager:
                 "files": files_data
             }
             
-            # Save metadata
-            with open(run_dir / "metadata.json", "w", encoding="utf-8") as f:
-                json.dump(metadata, f, indent=2, ensure_ascii=False)
+            # Use file locking for safe concurrent writes
+            metadata_file = run_dir / "metadata.json"
+            with FileLock(metadata_file, timeout=5.0):
+                # Save metadata
+                with open(metadata_file, "w", encoding="utf-8") as f:
+                    json.dump(metadata, f, indent=2, ensure_ascii=False)
             
-            # Save output
+            # Save output (no locking needed - unique file)
             with open(run_dir / "output.json", "w", encoding="utf-8") as f:
                 json.dump(output_data, f, indent=2, ensure_ascii=False)
             
@@ -99,10 +113,12 @@ class HistoryManager:
                 "total_questions": metadata["metadata"]["total_questions"],
                 "question_types": metadata["metadata"]["question_types"]
             }
-            with open(run_dir / "thumbnail.json", "w", encoding="utf-8") as f:
-                json.dump(thumbnail, f, indent=2, ensure_ascii=False)
+            thumbnail_file = run_dir / "thumbnail.json"
+            with FileLock(thumbnail_file, timeout=5.0):
+                with open(thumbnail_file, "w", encoding="utf-8") as f:
+                    json.dump(thumbnail, f, indent=2, ensure_ascii=False)
             
-            logger.info(f"Saved run {run_id} to {run_dir}")
+            logger.info(f"Saved run {run_id} for user {self.username} to {run_dir}")
             
             # Cleanup old runs
             self.cleanup_old_runs()
@@ -110,7 +126,7 @@ class HistoryManager:
             return run_id
             
         except Exception as e:
-            logger.error(f"Error saving run: {e}")
+            logger.error(f"Error saving run for user {self.username}: {e}")
             raise
     
     def load_run(self, run_id: str) -> Optional[Dict[str, Any]]:
@@ -192,15 +208,18 @@ class HistoryManager:
             run_dir = self.history_dir / run_id
             
             if run_dir.exists():
+                # Delete the entire run directory
+                # Note: shutil.rmtree is atomic enough for our purposes
+                # File locking here can cause issues since we're deleting the lock file itself
                 shutil.rmtree(run_dir)
-                logger.info(f"Deleted run {run_id}")
+                logger.info(f"Deleted run {run_id} for user {self.username}")
                 return True
             else:
-                logger.warning(f"Run {run_id} not found")
+                logger.warning(f"Run {run_id} not found for user {self.username}")
                 return False
                 
         except Exception as e:
-            logger.error(f"Error deleting run {run_id}: {e}")
+            logger.error(f"Error deleting run {run_id} for user {self.username}: {e}")
             return False
     
     def get_run_summary(self, run_id: str) -> str:

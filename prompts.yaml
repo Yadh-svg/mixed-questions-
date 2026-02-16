@@ -74,6 +74,9 @@ case_study_maths: |
   **Additional Instructions:** (contains extra instructions or configuration for how questions or solutions should be generated. Consider these notes when creating questions and formatting solutions.)
   {{Additional_Notes}}
 
+  **CRITICAL - Open-Ended Question Prohibition:**
+  Do not create open-ended questions. An open-ended question is any question that requires more than one response, combines multiple tasks in the same item (such as calculate and then compare or decide), or produces multiple outputs in the answer key. Questions that ask students to perform a task and then make an additional decision or conclusion are also considered open-ended. Each question must ask only one thing and produce exactly one final answer only.
+
   
   All the questions Should start with Scenario which should be made using the bellow rules 
   Scenario Integrity and Originality Rules:
@@ -824,6 +827,9 @@ case_study_maths_pdf: |
     
     **Additional Instructions:** (contains extra instructions or configuration for how questions or solutions should be generated. Consider these notes when creating questions and formatting solutions.)
     {{Additional_Notes}}
+
+    **CRITICAL - Open-Ended Question Prohibition:**
+    Do not create open-ended questions. An open-ended question is any question that requires more than one response, combines multiple tasks in the same item (such as calculate and then compare or decide), or produces multiple outputs in the answer key. Questions that ask students to perform a task and then make an additional decision or conclusion are also considered open-ended. Each question must ask only one thing and produce exactly one final answer only.
 
     - (if the topic requires to use the pdf) The attached PDF contains the key concepts of the chapter.
     - The purpose of analyzing key_concepts is solely to ensure the questions remain:
@@ -1598,6 +1604,9 @@ assertion_reasoning: |
 
     - Old Concepts: {{Old_Concept}}  # Prerequisite knowledge - what the student has already studied before this chapter
     - **Additional Notes**: {{Additional_Notes}}  # Extra instructions or configuration for how questions or solutions should be generated. Consider these notes when creating questions and formatting solutions.
+      
+    **CRITICAL - Open-Ended Question Prohibition:**
+    Do not create open-ended questions. An open-ended question is any question that requires more than one response, combines multiple tasks in the same item (such as calculate and then compare or decide), or produces multiple outputs in the answer key. Questions that ask students to perform a task and then make an additional decision or conclusion are also considered open-ended. Each question must ask only one thing and produce exactly one final answer only.
 
   - **Note**: Concepts consist of New Concepts (current chapter content) and Old Concepts (prerequisite knowledge). Prioritize new concepts for questions.
   - The purpose of analyzing concepts is solely to ensure the questions remain:
@@ -2244,6 +2253,8 @@ assertion_reasoning_pdf: |
 
     - Old Concept: {{Old_Concept}}
     - **Additional Notes**: {{Additional_Notes}}  # Extra instructions or configuration for how questions or solutions should be generated. Consider these notes when creating questions and formatting solutions.
+    **CRITICAL - Open-Ended Question Prohibition:**
+      Do not create open-ended questions. An open-ended question is any question that requires more than one response, combines multiple tasks in the same item (such as calculate and then compare or decide), or produces multiple outputs in the answer key. Questions that ask students to perform a task and then make an additional decision or conclusion are also considered open-ended. Each question must ask only one thing and produce exactly one final answer only.
 
   - (if the topic requires to use the pdf )The attached PDF contains the key concepts of the chapter.
   - The purpose of analyzing key_concepts is solely to ensure the questions remain:
@@ -2912,7 +2923,9 @@ multi_part_maths: |
     - Treat each topic's request as a completely isolated task.
     - Old Concept: {{Old_Concept}}
     - Additional Notes: {{Additional_Notes}}
-    
+    **CRITICAL - Open-Ended Question Prohibition:**
+       Do not create open-ended questions. An open-ended question is any question that requires more than one response, combines multiple tasks in the same item (such as calculate and then compare or decide), or produces multiple outputs in the answer key. Questions that ask students to perform a task and then make an additional decision or conclusion are also considered open-ended. Each question must ask only one thing and produce exactly one final answer only.
+
     **About Concepts:**
     - **New Concept** contains everything covered in this chapter - all the topics and subtopics the student is currently learning.
     - **Old Concept** contains prerequisite knowledge - concepts the student should already know from previous chapters. Use this to gauge the student's existing knowledge level.
@@ -2924,6 +2937,10 @@ multi_part_maths: |
     - From the provided input, each sub-part must use the DOK level given for that sub-part, and must use the taxonomy labels exactly as selected by the user (taxonomy is independent of DOK).
     - Everything including the question as well as the solution should be under the topic and should only use the method which is taught in that topic(For example, students in lower grades use different methods to solve problems than students in higher grades. Their approach depends on the concepts taught at that grade level. So, check the relevant concept to understand the method that students of that grade are expected to use. ).
   =====================================================================================
+  QUESTION DESIGN RULE — REALISM & PRACTICAL VALIDITY
+
+  - All scenarios, measurements, and situations must be realistic and practically possible in real life. Do not use dimensions, constructions, or conditions that cannot logically exist or be implemented (e.g., impossible shapes, inconsistent measurements, impractical arrangements, or real-life actions that would not work as described). If a real-world activity is mentioned (fencing, building, measuring, covering, etc.), the setup must accurately reflect how it would function in practice. Reject or revise any item with physically, logically, or practically unrealistic details.
+
    ## REAL-LIFE WORD PROBLEM (QUALITY & REALISM ENFORCED)
 
         Generate a real-life mathematics word problem.
@@ -3874,7 +3891,9 @@ multi_part_maths_pdf: |
       - Treat each topic's request as a completely isolated task.
       - Old Concept: {{Old_Concept}}
       - Additional Notes: {{Additional_Notes}}
-      
+        **CRITICAL - Open-Ended Question Prohibition:**
+            Do not create open-ended questions. An open-ended question is any question that requires more than one response, combines multiple tasks in the same item (such as calculate and then compare or decide), or produces multiple outputs in the answer key. Questions that ask students to perform a task and then make an additional decision or conclusion are also considered open-ended. Each question must ask only one thing and produce exactly one final answer only.
+
       - (if the topic requires to use the pdf) The attached PDF contains the key concepts of the chapter.
       - The purpose of analyzing key_concepts is solely to ensure the questions remain:
         - grade-appropriate,
@@ -3909,6 +3928,9 @@ multi_part_maths_pdf: |
       - From the provided input, each sub-part must use the DOK level given for that sub-part, and must use the taxonomy labels exactly as selected by the user (taxonomy is independent of DOK).
       - Everything including the question as well as the solution should be under the topic and should only use the method which is taught in that topic(For example, students in lower grades use different methods to solve problems than students in higher grades. Their approach depends on the concepts taught at that grade level. So, check the relevant concept to understand the method that students of that grade are expected to use. ).
     =====================================================================================
+      QUESTION DESIGN RULE — REALISM & PRACTICAL VALIDITY
+      - All scenarios, measurements, and situations must be realistic and practically possible in real life. Do not use dimensions, constructions, or conditions that cannot logically exist or be implemented (e.g., impossible shapes, inconsistent measurements, impractical arrangements, or real-life actions that would not work as described). If a real-world activity is mentioned (fencing, building, measuring, covering, etc.), the setup must accurately reflect how it would function in practice. Reject or revise any item with physically, logically, or practically unrealistic details.
+
      ## REAL-LIFE WORD PROBLEM (QUALITY & REALISM ENFORCED)
 
         Generate a real-life mathematics word problem.
@@ -4798,6 +4820,8 @@ mcq_questions: |
       When multiple questions share the same topic number, analyze the PDF to understand the topic and infer its distinct subtopics.  
       For each existing question, identify its subtopic and core reasoning, and treat any new question as a duplicate if it repeats the same subtopic with the same logic, even if numbers or context change.  
       Generate new questions only from unused subtopics or by applying a clearly different reasoning pattern, and summarize covered subtopics to prevent repetition.
+    **CRITICAL - Open-Ended Question Prohibition:**
+      Do not create open-ended questions. An open-ended question is any question that requires more than one response, combines multiple tasks in the same item (such as calculate and then compare or decide), or produces multiple outputs in the answer key. Questions that ask students to perform a task and then make an additional decision or conclusion are also considered open-ended. Each question must ask only one thing and produce exactly one final answer only.
 
   ## TOPIC COVERAGE AND TRACEABILITY (MANDATORY)
 
@@ -5839,6 +5863,10 @@ mcq_questions_pdf: |
       When multiple questions share the same topic number, analyze the PDF to understand the topic and infer its distinct subtopics.  
       For each existing question, identify its subtopic and core reasoning, and treat any new question as a duplicate if it repeats the same subtopic with the same logic, even if numbers or context change.  
       Generate new questions only from unused subtopics or by applying a clearly different reasoning pattern, and summarize covered subtopics to prevent repetition.
+  **CRITICAL - Open-Ended Question Prohibition:**
+    Do not create open-ended questions. An open-ended question is any question that requires more than one response, combines multiple tasks in the same item (such as calculate and then compare or decide), or produces multiple outputs in the answer key. Questions that ask students to perform a task and then make an additional decision or conclusion are also considered open-ended. Each question must ask only one thing and produce exactly one final answer only.
+
+
   ## TOPIC COVERAGE AND TRACEABILITY (MANDATORY)
 
   1. Coverage Rule (MANDATORY)
@@ -6840,6 +6868,8 @@ FIB: |
     - **Additional Notes**: {{Additional_Notes}}  # Extra instructions or configuration for how questions or solutions should be generated. Consider these notes when creating questions and formatting solutions.
     - IMPORTANT → Total Questions to Generate: {{TOTAL_QUESTIONS}} (Sum of all questions across topics)
        (Generate the specified number of unique Fill in the Blanks questions for each topic as per the list above.)
+    **CRITICAL - Open-Ended Question Prohibition:**
+      Do not create open-ended questions. An open-ended question is any question that requires more than one response, combines multiple tasks in the same item (such as calculate and then compare or decide), or produces multiple outputs in the answer key. Questions that ask students to perform a task and then make an additional decision or conclusion are also considered open-ended. Each question must ask only one thing and produce exactly one final answer only.
 
     ## MULTI-TOPIC HANDLING:
       - You are generating questions for {{NUMBER_OF_TOPICS}} topic(s).
@@ -7797,6 +7827,8 @@ FIB_pdf: |
     {{TOPICS_SECTION}}
     - **Note**: New Concepts are provided in the PDF document/new concepts. The PDF/new concepts contains everything covered in this chapter - all the topics and subtopics the student is currently learning. Old Concepts show prerequisite knowledge - what the student should already know from previous learning. Prioritize new concepts from the PDF/new concept for questions.
     - **Additional Notes**: {{Additional_Notes}}  # Extra instructions or configuration for how questions or solutions should be generated. Consider these notes when creating questions and formatting solutions.
+      **CRITICAL - Open-Ended Question Prohibition:**
+        Do not create open-ended questions. An open-ended question is any question that requires more than one response, combines multiple tasks in the same item (such as calculate and then compare or decide), or produces multiple outputs in the answer key. Questions that ask students to perform a task and then make an additional decision or conclusion are also considered open-ended. Each question must ask only one thing and produce exactly one final answer only.
 
     - (if the topic requires to use the pdf) The attached PDF contains the key concepts of the chapter.
     - The purpose of analyzing key_concepts is solely to ensure the questions remain:
@@ -8798,6 +8830,8 @@ descriptive: |
     {{TOPICS_SECTION}}
     - Additional Notes: {{Additional_Notes}}
     - Total Questions to Generate: {{TOTAL_QUESTIONS}}
+    **CRITICAL - Open-Ended Question Prohibition:**
+          Do not create open-ended questions. An open-ended question is any question that requires more than one response, combines multiple tasks in the same item (such as calculate and then compare or decide), or produces multiple outputs in the answer key. Questions that ask students to perform a task and then make an additional decision or conclusion are also considered open-ended. Each question must ask only one thing and produce exactly one final answer only.
 
     ## MULTI-TOPIC HANDLING:
       - You are generating questions for {{NUMBER_OF_TOPICS}} topic(s).
@@ -9574,7 +9608,8 @@ descriptive_pdf: |
     - New Concept: (Provided in Content Reference Instruction above)
     {{TOPICS_SECTION}}
     - Additional Notes: {{Additional_Notes}}
-
+    **CRITICAL - Open-Ended Question Prohibition:**
+    Do not create open-ended questions. An open-ended question is any question that requires more than one response, combines multiple tasks in the same item (such as calculate and then compare or decide), or produces multiple outputs in the answer key. Questions that ask students to perform a task and then make an additional decision or conclusion are also considered open-ended. Each question must ask only one thing and produce exactly one final answer only.
     - (if the topic requires to use the pdf) The attached PDF contains the key concepts of the chapter.
     - The purpose of analyzing key_concepts is solely to ensure the questions remain:
       - grade-appropriate,
@@ -10382,7 +10417,8 @@ descriptive_subq: |
     {{TOPICS_SECTION}}
     - Additional Notes: {{Additional_Notes}}
     - Total Questions to Generate: {{TOTAL_QUESTIONS}}
-
+    **CRITICAL - Open-Ended Question Prohibition:**
+    Do not create open-ended questions. An open-ended question is any question that requires more than one response, combines multiple tasks in the same item (such as calculate and then compare or decide), or produces multiple outputs in the answer key. Questions that ask students to perform a task and then make an additional decision or conclusion are also considered open-ended. Each question must ask only one thing and produce exactly one final answer only.
     ## MULTI-TOPIC HANDLING:
       - You are generating questions for {{NUMBER_OF_TOPICS}} topic(s).
       - Process each topic independently.
@@ -11216,7 +11252,8 @@ descriptive_subq_pdf: |
     - Old Concept: {{Old_Concept}}
     {{TOPICS_SECTION}}
     - Additional Notes: {{Additional_Notes}}
-
+    **CRITICAL - Open-Ended Question Prohibition:**
+    Do not create open-ended questions. An open-ended question is any question that requires more than one response, combines multiple tasks in the same item (such as calculate and then compare or decide), or produces multiple outputs in the answer key. Questions that ask students to perform a task and then make an additional decision or conclusion are also considered open-ended. Each question must ask only one thing and produce exactly one final answer only.
     - (if the topic requires to use the pdf) The attached PDF contains the key concepts of the chapter.
     - The purpose of analyzing key_concepts is solely to ensure the questions remain:
       - grade-appropriate,
@@ -12071,6 +12108,9 @@ duplicate_question: |
 
   **Additional Instructions / Notes (Optional):**
   {{ADDITIONAL_NOTES}}
+
+  **CRITICAL - Open-Ended Question Prohibition:**
+  Do not create open-ended questions. An open-ended question is any question that requires more than one response, combines multiple tasks in the same item (such as calculate and then compare or decide), or produces multiple outputs in the answer key. Questions that ask students to perform a task and then make an additional decision or conclusion are also considered open-ended. Each question must ask only one thing and produce exactly one final answer only.
 
   ## CORE PRINCIPLES
   - A duplicate must preserve the exact same key idea and solution method as the parent item.

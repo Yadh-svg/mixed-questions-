@@ -233,6 +233,11 @@ validation_prompt: |
       • Metadata line must be separate from question/answer/solution.
       • Use inline separators (e.g., "•"), no key:value labels.
       • No commentary inside metadata.
+    VALIDATION RULE — ONLY FOR FIB
+
+      Only placeholders in the format |TEXT1|, |TEXT2|, |TEXT3| … are allowed.
+      If any other blank format appears (such as ______, ( ), [ ], dotted lines, spaces, or any other placeholder style), it must be removed and replaced with the correct |TEXTn| format.
+      All placeholders must be sequential and placed exactly where the answer is required.
 
     ## Question - Answer consistency:
       - Do NOT introduce any new names, characters, or entities in the solution that are not explicitly mentioned in the question.

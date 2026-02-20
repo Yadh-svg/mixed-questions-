@@ -1,9 +1,9 @@
 <math_core_generation>
   <context>
-    <grade>Grade 5</grade>
+    <grade>Grade 7</grade>
     <subject>Mathematics</subject>
-    <chapter>lines and angles</chapter>
-    <topic>Sum of the two adjacent angles is 180° and viceversa. </topic>
+    <chapter>.</chapter>
+    <topic>.</topic>
     <additional_notes></additional_notes>
   </context>
   
@@ -30,7 +30,7 @@
       </file_instruction>
     </source_material>
     
-Q1: topic : Sum of the two adjacent angles is 180° and viceversa. , DOK 1 - 1.0 mark , MCQ Type: Number Based, Taxonomy: Remembering, Statement Based: NO
+Q1: topic : . , DOK 1 - 1.0 mark , MCQ Type: Auto, Taxonomy: Remembering, Statement Based: NO
   </design_requirements>
   
   <task>  

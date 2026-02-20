@@ -1,6 +1,6 @@
 <writer_generation>
   <context>
-    <grade>Grade 5</grade>
+    <grade>Grade 7</grade>
     <subject>Mathematics</subject>
     <requirements>
     <source_material>
@@ -17,7 +17,7 @@
       </files_uploaded>
     </source_material>
     
-Q1: topic : Sum of the two adjacent angles is 180° and viceversa. , DOK 1 - 1.0 mark , MCQ Type: Number Based, Taxonomy: Remembering, Statement Based: NO</requirements>
+Q1: topic : . , DOK 1 - 1.0 mark , MCQ Type: Auto, Taxonomy: Remembering, Statement Based: NO</requirements>
     <additional_notes></additional_notes>
   </context>
 
@@ -26,9 +26,9 @@ Q1: topic : Sum of the two adjacent angles is 180° and viceversa. , DOK 1 - 1.0
   "math_cores": [
     {
       "id": "Q1",
-      "Abstract Math Structure": "Linear Pair Axiom Application: Two adjacent angles $\\angle AOB$ and $\\angle BOC$ forming a straight line, such that $\\angle AOB + \\angle BOC = 180^{\\circ}$. The value of one angle is provided, and the task requires calculating the numerical value of the other angle, which is its supplement.",
-      "Topic Identification and Description": "Lines and Angles: Study of basic geometric terms, definitions, and properties related to angles formed by intersecting lines or rays. Key concepts include complementary angles, supplementary angles, linear pairs, vertically opposite angles, and the Linear Pair Axiom (if a ray stands on a line, the sum of adjacent angles is $180^{\\circ}$ and vice-versa).",
-      "Subtopic Differentiation": "Direct Application of Linear Pair Axiom to find a numerical angle measure."
+      "Abstract Math Structure": "Angle identification based on intersecting lines forming vertical pairs and linear pairs, where one angle measure is given, and the relationship between the given angle and the target angle is defined by their position (e.g., vertically opposite or supplementary).",
+      "Topic": "Lines and Angles: Properties derived from intersecting lines.",
+      "Description": "This topic covers the angle relationships formed when two lines intersect: vertically opposite angles (which are equal) and adjacent angles that form a linear pair (which sum to 180\u00b0)."
     }
   ]
 }
@@ -88,7 +88,7 @@ Q1: topic : Sum of the two adjacent angles is 180° and viceversa. , DOK 1 - 1.0
         Each MCQ must have:
 
           1. **Question**: A clear, well-formulated question that tests the specified concept
-            - Use student-friendly language appropriate for Grade 5
+            - Use student-friendly language appropriate for Grade 7
             - Names should be simple and commonly used  (eg : Jack	Anna  Ryan	Emily	Sam	Maria	John	)
             
                 DO NOT use academic or classroom settings.
@@ -357,7 +357,7 @@ Q1: topic : Sum of the two adjacent angles is 180° and viceversa. , DOK 1 - 1.0
         - This format is mandatory for all statement-based distractor analyses.
       **CRITICAL Distractor Analysis Requirements:**
       - **Maximum Length**: Each distractor rationale must be **4 lines maximum** (total for all three sub-sections combined)
-      - **Child-Friendly Language**: Use simple, age-appropriate language suitable for Grade 5
+      - **Child-Friendly Language**: Use simple, age-appropriate language suitable for Grade 7
       - **Concise and Clear**: No verbose explanations - keep it short and focused
       - **Educational Tone**: Be supportive, not condescending
       - Do NOT say: "You correctly identified that…" for an incorrect option
@@ -466,6 +466,49 @@ Q1: topic : Sum of the two adjacent angles is 180° and viceversa. , DOK 1 - 1.0
 
     </key_idea rules>
 
+    
+    <Scenario Rules>
+
+      If scenario is needed (as per the user input) these are the rules 
+      1) Scenario-first & form:
+        - A small scenario (2 lines max)
+        - Use simple, common names. Place the story in an Indian context (locations, ₹ or metric units may be referenced qualitatively), but NEVER use classroom/teacher/student language.
+
+      2) No numeric data in the scenario:
+        - Do NOT include explicit numbers, units, or measurements. Describe quantities only qualitatively (e.g., “several boxes,” “a few racks”).
+        - All exact values, counts, and measurements must appear only in the diagram prompt or the sub-questions.
+
+      3) One-purpose & realism:
+        - The scenario must describe a single, realistic situation that naturally requires the mathematical method being tested.
+        - Details must be plausible and logically consistent; avoid exaggeration or impossible quantities.
+
+      4) Functional-consequence (mandatory):
+        - The mathematical/ geometric relationship must arise naturally from movement, placement, layout, mapping, or observation in the story — not from engineering, safety rules, inspections, optimization, or explicit design justification.
+        - Do NOT explain or justify why the geometry exists; simply describe that it is present.
+
+      5) No repetition across parts:
+        - Do NOT repeat scenario details in the diagram or sub-questions. Each section has a distinct role:
+          • Scenario = qualitative story/context only.
+          • Diagram = numeric/visual representation (introduce numbers/relations).
+          • Sub-questions = use diagram numbers to reason and solve.
+        - If a fact appears in the scenario, it must NOT be restated numerically elsewhere.
+
+      6) Structure & flow:
+        - The story must clearly explain WHY the calculation is needed; subparts must follow directly from the same situation.
+        - Only include one clear purpose; do not introduce unrelated secondary ideas.
+
+      7) Variety & reuse:
+        - Do not reuse the same scenario type across questions (avoid repeating “shop”, “garden”, etc.). Rotate contexts meaningfully.
+
+      8) Quality check (mandatory before finalizing):
+        - Read the scenario aloud: it must sound natural and necessary (not forced).
+        - If removing the math would leave the story meaningless, rewrite.
+        - If any rule is violated, regenerate the scenario until all rules are satisfied.
+
+      9) You can even make scenarios using daily lif examples of object, for eg : using cycle, bike tyre you can do some angle related questions.Which enables/encourage the students to relate everyday math objects. 
+      If any rule cannot be followed, stop and rewrite the scenario to meet these constraints.
+
+    </Scenario Rules>
     <question_cognitive_indirectness_rule>
             All questions must be grade-appropriate in mathematical level,
             but the required relationship must NOT be directly visible or immediately usable.

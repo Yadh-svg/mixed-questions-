@@ -987,6 +987,49 @@ mcq_writer: |
 
       </key_idea rules>
 
+      
+      <Scenario Rules>
+
+        If scenario is needed (as per the user input) these are the rules 
+        1) Scenario-first & form:
+          - A small scenario (2 lines max)
+          - Use simple, common names. Place the story in an Indian context (locations, ₹ or metric units may be referenced qualitatively), but NEVER use classroom/teacher/student language.
+
+        2) No numeric data in the scenario:
+          - Do NOT include explicit numbers, units, or measurements. Describe quantities only qualitatively (e.g., “several boxes,” “a few racks”).
+          - All exact values, counts, and measurements must appear only in the diagram prompt or the sub-questions.
+
+        3) One-purpose & realism:
+          - The scenario must describe a single, realistic situation that naturally requires the mathematical method being tested.
+          - Details must be plausible and logically consistent; avoid exaggeration or impossible quantities.
+
+        4) Functional-consequence (mandatory):
+          - The mathematical/ geometric relationship must arise naturally from movement, placement, layout, mapping, or observation in the story — not from engineering, safety rules, inspections, optimization, or explicit design justification.
+          - Do NOT explain or justify why the geometry exists; simply describe that it is present.
+
+        5) No repetition across parts:
+          - Do NOT repeat scenario details in the diagram or sub-questions. Each section has a distinct role:
+            • Scenario = qualitative story/context only.
+            • Diagram = numeric/visual representation (introduce numbers/relations).
+            • Sub-questions = use diagram numbers to reason and solve.
+          - If a fact appears in the scenario, it must NOT be restated numerically elsewhere.
+
+        6) Structure & flow:
+          - The story must clearly explain WHY the calculation is needed; subparts must follow directly from the same situation.
+          - Only include one clear purpose; do not introduce unrelated secondary ideas.
+
+        7) Variety & reuse:
+          - Do not reuse the same scenario type across questions (avoid repeating “shop”, “garden”, etc.). Rotate contexts meaningfully.
+
+        8) Quality check (mandatory before finalizing):
+          - Read the scenario aloud: it must sound natural and necessary (not forced).
+          - If removing the math would leave the story meaningless, rewrite.
+          - If any rule is violated, regenerate the scenario until all rules are satisfied.
+
+        9) You can even make scenarios using daily lif examples of object, for eg : using cycle, bike tyre you can do some angle related questions.Which enables/encourage the students to relate everyday math objects. 
+        If any rule cannot be followed, stop and rewrite the scenario to meet these constraints.
+
+      </Scenario Rules>
       <question_cognitive_indirectness_rule>
               All questions must be grade-appropriate in mathematical level,
               but the required relationship must NOT be directly visible or immediately usable.
@@ -1591,6 +1634,50 @@ fib_writer: |
           Do not include anything else.
 
       </key_idea rules>
+
+            
+      <Scenario Rules>
+
+        If scenario is needed (as per the user input) these are the rules 
+        1) Scenario-first & form:
+          - A small scenario (2 lines max)
+          - Use simple, common names. Place the story in an Indian context (locations, ₹ or metric units may be referenced qualitatively), but NEVER use classroom/teacher/student language.
+
+        2) No numeric data in the scenario:
+          - Do NOT include explicit numbers, units, or measurements. Describe quantities only qualitatively (e.g., “several boxes,” “a few racks”).
+          - All exact values, counts, and measurements must appear only in the diagram prompt or the sub-questions.
+
+        3) One-purpose & realism:
+          - The scenario must describe a single, realistic situation that naturally requires the mathematical method being tested.
+          - Details must be plausible and logically consistent; avoid exaggeration or impossible quantities.
+
+        4) Functional-consequence (mandatory):
+          - The mathematical/ geometric relationship must arise naturally from movement, placement, layout, mapping, or observation in the story — not from engineering, safety rules, inspections, optimization, or explicit design justification.
+          - Do NOT explain or justify why the geometry exists; simply describe that it is present.
+
+        5) No repetition across parts:
+          - Do NOT repeat scenario details in the diagram or sub-questions. Each section has a distinct role:
+            • Scenario = qualitative story/context only.
+            • Diagram = numeric/visual representation (introduce numbers/relations).
+            • Sub-questions = use diagram numbers to reason and solve.
+          - If a fact appears in the scenario, it must NOT be restated numerically elsewhere.
+
+        6) Structure & flow:
+          - The story must clearly explain WHY the calculation is needed; subparts must follow directly from the same situation.
+          - Only include one clear purpose; do not introduce unrelated secondary ideas.
+
+        7) Variety & reuse:
+          - Do not reuse the same scenario type across questions (avoid repeating “shop”, “garden”, etc.). Rotate contexts meaningfully.
+
+        8) Quality check (mandatory before finalizing):
+          - Read the scenario aloud: it must sound natural and necessary (not forced).
+          - If removing the math would leave the story meaningless, rewrite.
+          - If any rule is violated, regenerate the scenario until all rules are satisfied.
+
+        9) You can even make scenarios using daily lif examples of object, for eg : using cycle, bike tyre you can do some angle related questions.Which enables/encourage the students to relate everyday math objects. 
+        If any rule cannot be followed, stop and rewrite the scenario to meet these constraints.
+
+      </Scenario Rules>
 
       <question_cognitive_indirectness_rule>
               All questions must be grade-appropriate in mathematical level,
@@ -2637,6 +2724,50 @@ multipart_writer: |
 
       </key_idea>
 
+            
+      <Scenario Rules>
+
+        If scenario is needed (as per the user input) these are the rules 
+        1) Scenario-first & form:
+          - A small scenario (2 lines max)
+          - Use simple, common names. Place the story in an Indian context (locations, ₹ or metric units may be referenced qualitatively), but NEVER use classroom/teacher/student language.
+
+        2) No numeric data in the scenario:
+          - Do NOT include explicit numbers, units, or measurements. Describe quantities only qualitatively (e.g., “several boxes,” “a few racks”).
+          - All exact values, counts, and measurements must appear only in the diagram prompt or the sub-questions.
+
+        3) One-purpose & realism:
+          - The scenario must describe a single, realistic situation that naturally requires the mathematical method being tested.
+          - Details must be plausible and logically consistent; avoid exaggeration or impossible quantities.
+
+        4) Functional-consequence (mandatory):
+          - The mathematical/ geometric relationship must arise naturally from movement, placement, layout, mapping, or observation in the story — not from engineering, safety rules, inspections, optimization, or explicit design justification.
+          - Do NOT explain or justify why the geometry exists; simply describe that it is present.
+
+        5) No repetition across parts:
+          - Do NOT repeat scenario details in the diagram or sub-questions. Each section has a distinct role:
+            • Scenario = qualitative story/context only.
+            • Diagram = numeric/visual representation (introduce numbers/relations).
+            • Sub-questions = use diagram numbers to reason and solve.
+          - If a fact appears in the scenario, it must NOT be restated numerically elsewhere.
+
+        6) Structure & flow:
+          - The story must clearly explain WHY the calculation is needed; subparts must follow directly from the same situation.
+          - Only include one clear purpose; do not introduce unrelated secondary ideas.
+
+        7) Variety & reuse:
+          - Do not reuse the same scenario type across questions (avoid repeating “shop”, “garden”, etc.). Rotate contexts meaningfully.
+
+        8) Quality check (mandatory before finalizing):
+          - Read the scenario aloud: it must sound natural and necessary (not forced).
+          - If removing the math would leave the story meaningless, rewrite.
+          - If any rule is violated, regenerate the scenario until all rules are satisfied.
+
+        9) You can even make scenarios using daily lif examples of object, for eg : using cycle, bike tyre you can do some angle related questions.Which enables/encourage the students to relate everyday math objects. 
+        If any rule cannot be followed, stop and rewrite the scenario to meet these constraints.
+
+      </Scenario Rules>
+
       <question_cognitive_indirectness_rule>
               All questions must be grade-appropriate in mathematical level,
               but the required relationship must NOT be directly visible or immediately usable.
@@ -3315,6 +3446,50 @@ descriptive_writer: |
 
       </key_idea>
 
+            
+      <Scenario Rules>
+
+        If scenario is needed (as per the user input) these are the rules 
+        1) Scenario-first & form:
+          - A small scenario (2 lines max)
+          - Use simple, common names. Place the story in an Indian context (locations, ₹ or metric units may be referenced qualitatively), but NEVER use classroom/teacher/student language.
+
+        2) No numeric data in the scenario:
+          - Do NOT include explicit numbers, units, or measurements. Describe quantities only qualitatively (e.g., “several boxes,” “a few racks”).
+          - All exact values, counts, and measurements must appear only in the diagram prompt or the sub-questions.
+
+        3) One-purpose & realism:
+          - The scenario must describe a single, realistic situation that naturally requires the mathematical method being tested.
+          - Details must be plausible and logically consistent; avoid exaggeration or impossible quantities.
+
+        4) Functional-consequence (mandatory):
+          - The mathematical/ geometric relationship must arise naturally from movement, placement, layout, mapping, or observation in the story — not from engineering, safety rules, inspections, optimization, or explicit design justification.
+          - Do NOT explain or justify why the geometry exists; simply describe that it is present.
+
+        5) No repetition across parts:
+          - Do NOT repeat scenario details in the diagram or sub-questions. Each section has a distinct role:
+            • Scenario = qualitative story/context only.
+            • Diagram = numeric/visual representation (introduce numbers/relations).
+            • Sub-questions = use diagram numbers to reason and solve.
+          - If a fact appears in the scenario, it must NOT be restated numerically elsewhere.
+
+        6) Structure & flow:
+          - The story must clearly explain WHY the calculation is needed; subparts must follow directly from the same situation.
+          - Only include one clear purpose; do not introduce unrelated secondary ideas.
+
+        7) Variety & reuse:
+          - Do not reuse the same scenario type across questions (avoid repeating “shop”, “garden”, etc.). Rotate contexts meaningfully.
+
+        8) Quality check (mandatory before finalizing):
+          - Read the scenario aloud: it must sound natural and necessary (not forced).
+          - If removing the math would leave the story meaningless, rewrite.
+          - If any rule is violated, regenerate the scenario until all rules are satisfied.
+
+        9) You can even make scenarios using daily lif examples of object, for eg : using cycle, bike tyre you can do some angle related questions.Which enables/encourage the students to relate everyday math objects. 
+        If any rule cannot be followed, stop and rewrite the scenario to meet these constraints.
+
+      </Scenario Rules>
+
       <question_cognitive_indirectness_rule>
               All questions must be grade-appropriate in mathematical level,
               but the required relationship must NOT be directly visible or immediately usable.
@@ -3908,6 +4083,50 @@ descriptive_with_subq_writer: |
 
 
       </key_idea>
+
+            
+      <Scenario Rules>
+
+        If scenario is needed (as per the user input) these are the rules 
+        1) Scenario-first & form:
+          - A small scenario (2 lines max)
+          - Use simple, common names. Place the story in an Indian context (locations, ₹ or metric units may be referenced qualitatively), but NEVER use classroom/teacher/student language.
+
+        2) No numeric data in the scenario:
+          - Do NOT include explicit numbers, units, or measurements. Describe quantities only qualitatively (e.g., “several boxes,” “a few racks”).
+          - All exact values, counts, and measurements must appear only in the diagram prompt or the sub-questions.
+
+        3) One-purpose & realism:
+          - The scenario must describe a single, realistic situation that naturally requires the mathematical method being tested.
+          - Details must be plausible and logically consistent; avoid exaggeration or impossible quantities.
+
+        4) Functional-consequence (mandatory):
+          - The mathematical/ geometric relationship must arise naturally from movement, placement, layout, mapping, or observation in the story — not from engineering, safety rules, inspections, optimization, or explicit design justification.
+          - Do NOT explain or justify why the geometry exists; simply describe that it is present.
+
+        5) No repetition across parts:
+          - Do NOT repeat scenario details in the diagram or sub-questions. Each section has a distinct role:
+            • Scenario = qualitative story/context only.
+            • Diagram = numeric/visual representation (introduce numbers/relations).
+            • Sub-questions = use diagram numbers to reason and solve.
+          - If a fact appears in the scenario, it must NOT be restated numerically elsewhere.
+
+        6) Structure & flow:
+          - The story must clearly explain WHY the calculation is needed; subparts must follow directly from the same situation.
+          - Only include one clear purpose; do not introduce unrelated secondary ideas.
+
+        7) Variety & reuse:
+          - Do not reuse the same scenario type across questions (avoid repeating “shop”, “garden”, etc.). Rotate contexts meaningfully.
+
+        8) Quality check (mandatory before finalizing):
+          - Read the scenario aloud: it must sound natural and necessary (not forced).
+          - If removing the math would leave the story meaningless, rewrite.
+          - If any rule is violated, regenerate the scenario until all rules are satisfied.
+
+        9) You can even make scenarios using daily lif examples of object, for eg : using cycle, bike tyre you can do some angle related questions.Which enables/encourage the students to relate everyday math objects. 
+        If any rule cannot be followed, stop and rewrite the scenario to meet these constraints.
+
+      </Scenario Rules>
       <question_cognitive_indirectness_rule>
             All questions must be grade-appropriate in mathematical level,
             but the required relationship must NOT be directly visible or immediately usable.

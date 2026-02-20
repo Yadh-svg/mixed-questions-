@@ -1,0 +1,83 @@
+{
+  "MCQ - Batch 1": {
+    "raw": {
+      "text": "{\n  \"math_core\": {\n    \"math_cores\": [\n      {\n        \"id\": \"Q1\",\n        \"Abstract Math Structure\": \"Angle identification based on intersecting lines forming vertical pairs and linear pairs, where one angle measure is given, and the relationship between the given angle and the target angle is defined by their position (e.g., vertically opposite or supplementary).\",\n        \"Topic\": \"Lines and Angles: Properties derived from intersecting lines.\",\n        \"Description\": \"This topic covers the angle relationships formed when two lines intersect: vertically opposite angles (which are equal) and adjacent angles that form a linear pair (which sum to 180\\u00b0).\"\n      }\n    ]\n  },\n  \"writer_output\": {\n    \"questions\": [\n      {\n        \"question_id\": \"Q1\",\n        \"question_metadata\": {\n          \"Topic Used\": \"Lines and Angles: Properties derived from intersecting lines.\",\n          \"Mark of question\": 1.0,\n          \"DOK level of question\": 1,\n          \"Taxonomy of question\": \"Remembering\",\n          \"Statement Based\": \"NO\",\n          \"MCQ Type\": \"Image Based\"\n        },\n        \"question_text\": \"Anna is weaving a pattern for a decorative mat using two straight bamboo strips that cross each other at a single point. As she lays them down, she observes the angles formed at the crossing. One angle is marked as $65^{\\\\circ}$, and she looks at the angle directly across from it. \\n\\n**Diagram Prompt:**\\nDraw two straight lines, line AB and line CD, intersecting at point O. Mark the angle $\\\\angle AOC$ as $65^{\\\\circ}$. Mark the angle $\\\\angle BOD$ which is positioned directly opposite to $\\\\angle AOC$ at the vertex O.\\n\\nWhich mathematical term correctly identifies the relationship between the $65^{\\\\circ}$ angle and the angle directly opposite to it?\",\n        \"options\": {\n          \"A\": \"Linear pair of angles\",\n          \"B\": \"Vertically opposite angles\",\n          \"C\": \"Adjacent angles\",\n          \"D\": \"Complementary angles\"\n        },\n        \"correct_option\": \"B\",\n        \"solution\": \"1. When two straight lines (the bamboo strips) intersect at a point, four angles are formed.\\n2. Angles that are opposite to each other at the vertex (crossing point) are known as vertically opposite angles.\\n3. In the diagram, $\\\\angle AOC$ and $\\\\angle BOD$ are formed by the same pair of intersecting lines and are non-adjacent and opposite.\\n4. According to the property of intersecting lines, these are called vertically opposite angles.\\n(Identifying the positional relationship: 0.5 marks; Recalling the correct terminology: 0.5 marks. Total: 1.0 mark)\",\n        \"distractor_analysis\": [\n          {\n            \"Option\": \"A \\u2013 Conceptual Error\",\n            \"Misconception\": \"You chose this thinking the angles are on the same straight line, but a linear pair consists of adjacent angles that sum to $180^{\\\\circ}$, while these are across from each other.\"\n          },\n          {\n            \"Option\": \"C \\u2013 Comprehension Error\",\n            \"Misconception\": \"You likely overlooked the word \\u201copposite\\u201d in the description. Adjacent angles must share a common side and a vertex, which is not the case for angles formed across from each other.\"\n          },\n          {\n            \"Option\": \"D \\u2013 Computational Error\",\n            \"Misconception\": \"You might have incorrectly assumed that because lines cross, they must sum to $90^{\\\\circ}$ or be right angles. This is a calculation-based assumption not supported by the positional definition.\"\n          }\n        ],\n        \"key_idea\": \"These problems involve identifying the specific names given to pairs of angles created when two straight lines cross. The core idea is that whenever two lines intersect, they form two pairs of angles that face away from each other at the point of meeting; these are called vertically opposite angles. This works because the angles are formed by the same two rays extending in opposite directions from a common vertex. To solve this, first identify the vertex where the lines meet, then check if the angles share a side. If they do not share a side but are directly across from one another, they are vertically opposite. A common mistake is confusing them with a linear pair, which occurs only when angles are side-by-side on a straight line. To avoid this, remember that 'opposite' means facing the other way, not sitting next to each other.\"\n      }\n    ]\n  },\n  \"solution_output\": {},\n  \"_pipeline_metadata\": {\n    \"mode\": \"MATH_FIRST\",\n    \"stages\": 2,\n    \"total_tokens\": {\n      \"input\": 19749,\n      \"output\": 1003\n    }\n  }\n}",
+      "elapsed": 0,
+      "batch_key": "MCQ - Batch 1",
+      "input_tokens": 19749,
+      "output_tokens": 1003,
+      "thought_tokens": 0,
+      "billed_output_tokens": 1003
+    },
+    "validated": {
+      "text": "{\n  \"math_core\": {\n    \"math_cores\": [\n      {\n        \"id\": \"Q1\",\n        \"Abstract Math Structure\": \"Angle identification based on intersecting lines forming vertical pairs and linear pairs, where one angle measure is given, and the relationship between the given angle and the target angle is defined by their position (e.g., vertically opposite or supplementary).\",\n        \"Topic\": \"Lines and Angles: Properties derived from intersecting lines.\",\n        \"Description\": \"This topic covers the angle relationships formed when two lines intersect: vertically opposite angles (which are equal) and adjacent angles that form a linear pair (which sum to 180\\u00b0).\"\n      }\n    ]\n  },\n  \"writer_output\": {\n    \"questions\": [\n      {\n        \"question_id\": \"Q1\",\n        \"question_metadata\": {\n          \"Topic Used\": \"Lines and Angles: Properties derived from intersecting lines.\",\n          \"Mark of question\": 1.0,\n          \"DOK level of question\": 1,\n          \"Taxonomy of question\": \"Remembering\",\n          \"Statement Based\": \"NO\",\n          \"MCQ Type\": \"Image Based\"\n        },\n        \"question_text\": \"Anna is weaving a pattern for a decorative mat using two straight bamboo strips that cross each other at a single point. As she lays them down, she observes the angles formed at the crossing. One angle is marked as $65^{\\\\circ}$, and she looks at the angle directly across from it. \\n\\n**Diagram Prompt:**\\nDraw two straight lines, line AB and line CD, intersecting at point O. Mark the angle $\\\\angle AOC$ as $65^{\\\\circ}$. Mark the angle $\\\\angle BOD$ which is positioned directly opposite to $\\\\angle AOC$ at the vertex O.\\n\\nWhich mathematical term correctly identifies the relationship between the $65^{\\\\circ}$ angle and the angle directly opposite to it?\",\n        \"options\": {\n          \"A\": \"Linear pair of angles\",\n          \"B\": \"Vertically opposite angles\",\n          \"C\": \"Adjacent angles\",\n          \"D\": \"Complementary angles\"\n        },\n        \"correct_option\": \"B\",\n        \"solution\": \"1. When two straight lines (the bamboo strips) intersect at a point, four angles are formed.\\n2. Angles that are opposite to each other at the vertex (crossing point) are known as vertically opposite angles.\\n3. In the diagram, $\\\\angle AOC$ and $\\\\angle BOD$ are formed by the same pair of intersecting lines and are non-adjacent and opposite.\\n4. According to the property of intersecting lines, these are called vertically opposite angles.\\n(Identifying the positional relationship: 0.5 marks; Recalling the correct terminology: 0.5 marks. Total: 1.0 mark)\",\n        \"distractor_analysis\": [\n          {\n            \"Option\": \"A \\u2013 Conceptual Error\",\n            \"Misconception\": \"You chose this thinking the angles are on the same straight line, but a linear pair consists of adjacent angles that sum to $180^{\\\\circ}$, while these are across from each other.\"\n          },\n          {\n            \"Option\": \"C \\u2013 Comprehension Error\",\n            \"Misconception\": \"You likely overlooked the word \\u201copposite\\u201d in the description. Adjacent angles must share a common side and a vertex, which is not the case for angles formed across from each other.\"\n          },\n          {\n            \"Option\": \"D \\u2013 Computational Error\",\n            \"Misconception\": \"You might have incorrectly assumed that because lines cross, they must sum to $90^{\\\\circ}$ or be right angles. This is a calculation-based assumption not supported by the positional definition.\"\n          }\n        ],\n        \"key_idea\": \"These problems involve identifying the specific names given to pairs of angles created when two straight lines cross. The core idea is that whenever two lines intersect, they form two pairs of angles that face away from each other at the point of meeting; these are called vertically opposite angles. This works because the angles are formed by the same two rays extending in opposite directions from a common vertex. To solve this, first identify the vertex where the lines meet, then check if the angles share a side. If they do not share a side but are directly across from one another, they are vertically opposite. A common mistake is confusing them with a linear pair, which occurs only when angles are side-by-side on a straight line. To avoid this, remember that 'opposite' means facing the other way, not sitting next to each other.\"\n      }\n    ]\n  },\n  \"solution_output\": {},\n  \"_pipeline_metadata\": {\n    \"mode\": \"MATH_FIRST\",\n    \"stages\": 2,\n    \"total_tokens\": {\n      \"input\": 19749,\n      \"output\": 1003\n    }\n  }\n}",
+      "elapsed": 0,
+      "batch_key": "MCQ - Batch 1",
+      "input_tokens": 0,
+      "output_tokens": 0
+    },
+    "core_skill_metadata": {},
+    "_pipeline_output": {
+      "math_core": {
+        "math_cores": [
+          {
+            "id": "Q1",
+            "Abstract Math Structure": "Angle identification based on intersecting lines forming vertical pairs and linear pairs, where one angle measure is given, and the relationship between the given angle and the target angle is defined by their position (e.g., vertically opposite or supplementary).",
+            "Topic": "Lines and Angles: Properties derived from intersecting lines.",
+            "Description": "This topic covers the angle relationships formed when two lines intersect: vertically opposite angles (which are equal) and adjacent angles that form a linear pair (which sum to 180°)."
+          }
+        ]
+      },
+      "writer_output": {
+        "questions": [
+          {
+            "question_id": "Q1",
+            "question_metadata": {
+              "Topic Used": "Lines and Angles: Properties derived from intersecting lines.",
+              "Mark of question": 1.0,
+              "DOK level of question": 1,
+              "Taxonomy of question": "Remembering",
+              "Statement Based": "NO",
+              "MCQ Type": "Image Based"
+            },
+            "question_text": "Anna is weaving a pattern for a decorative mat using two straight bamboo strips that cross each other at a single point. As she lays them down, she observes the angles formed at the crossing. One angle is marked as $65^{\\circ}$, and she looks at the angle directly across from it. \n\n**Diagram Prompt:**\nDraw two straight lines, line AB and line CD, intersecting at point O. Mark the angle $\\angle AOC$ as $65^{\\circ}$. Mark the angle $\\angle BOD$ which is positioned directly opposite to $\\angle AOC$ at the vertex O.\n\nWhich mathematical term correctly identifies the relationship between the $65^{\\circ}$ angle and the angle directly opposite to it?",
+            "options": {
+              "A": "Linear pair of angles",
+              "B": "Vertically opposite angles",
+              "C": "Adjacent angles",
+              "D": "Complementary angles"
+            },
+            "correct_option": "B",
+            "solution": "1. When two straight lines (the bamboo strips) intersect at a point, four angles are formed.\n2. Angles that are opposite to each other at the vertex (crossing point) are known as vertically opposite angles.\n3. In the diagram, $\\angle AOC$ and $\\angle BOD$ are formed by the same pair of intersecting lines and are non-adjacent and opposite.\n4. According to the property of intersecting lines, these are called vertically opposite angles.\n(Identifying the positional relationship: 0.5 marks; Recalling the correct terminology: 0.5 marks. Total: 1.0 mark)",
+            "distractor_analysis": [
+              {
+                "Option": "A – Conceptual Error",
+                "Misconception": "You chose this thinking the angles are on the same straight line, but a linear pair consists of adjacent angles that sum to $180^{\\circ}$, while these are across from each other."
+              },
+              {
+                "Option": "C – Comprehension Error",
+                "Misconception": "You likely overlooked the word “opposite” in the description. Adjacent angles must share a common side and a vertex, which is not the case for angles formed across from each other."
+              },
+              {
+                "Option": "D – Computational Error",
+                "Misconception": "You might have incorrectly assumed that because lines cross, they must sum to $90^{\\circ}$ or be right angles. This is a calculation-based assumption not supported by the positional definition."
+              }
+            ],
+            "key_idea": "These problems involve identifying the specific names given to pairs of angles created when two straight lines cross. The core idea is that whenever two lines intersect, they form two pairs of angles that face away from each other at the point of meeting; these are called vertically opposite angles. This works because the angles are formed by the same two rays extending in opposite directions from a common vertex. To solve this, first identify the vertex where the lines meet, then check if the angles share a side. If they do not share a side but are directly across from one another, they are vertically opposite. A common mistake is confusing them with a linear pair, which occurs only when angles are side-by-side on a straight line. To avoid this, remember that 'opposite' means facing the other way, not sitting next to each other."
+          }
+        ]
+      },
+      "solution_output": {},
+      "_pipeline_metadata": {
+        "mode": "MATH_FIRST",
+        "stages": 2,
+        "total_tokens": {
+          "input": 19749,
+          "output": 1003
+        }
+      }
+    },
+    "_prompts_dir": "pipeline_outputs\\MCQ_Batch_1"
+  },
+  "_total_cost": 0.0
+}

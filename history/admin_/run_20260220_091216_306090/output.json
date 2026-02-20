@@ -1,0 +1,80 @@
+{
+  "MCQ - Batch 1": {
+    "raw": {
+      "text": "{\n  \"math_core\": {\n    \"math_cores\": [\n      {\n        \"id\": \"Q1\",\n        \"Abstract Math Structure\": \"Linear Pair Axiom Application: Two adjacent angles $\\\\angle AOB$ and $\\\\angle BOC$ forming a straight line, such that $\\\\angle AOB + \\\\angle BOC = 180^{\\\\circ}$. The value of one angle is provided, and the task requires calculating the numerical value of the other angle, which is its supplement.\",\n        \"Topic Identification and Description\": \"Lines and Angles: Study of basic geometric terms, definitions, and properties related to angles formed by intersecting lines or rays. Key concepts include complementary angles, supplementary angles, linear pairs, vertically opposite angles, and the Linear Pair Axiom (if a ray stands on a line, the sum of adjacent angles is $180^{\\\\circ}$ and vice-versa).\",\n        \"Subtopic Differentiation\": \"Direct Application of Linear Pair Axiom to find a numerical angle measure.\"\n      }\n    ]\n  },\n  \"writer_output\": {\n    \"questions\": [\n      {\n        \"question_id\": \"Q1\",\n        \"question_text\": \"Identify the total measure of two adjacent angles whose non-common arms lie along the same straight line.\",\n        \"options\": {\n          \"A\": \"90\\u00b0\",\n          \"B\": \"180\\u00b0\",\n          \"C\": \"270\\u00b0\",\n          \"D\": \"360\\u00b0\"\n        },\n        \"correct_option\": \"B\",\n        \"mark\": 1.0,\n        \"dok_level\": \"DOK 1\",\n        \"taxonomy\": \"Remembering\",\n        \"mcq_type\": \"Number Based\",\n        \"statement_based\": \"NO\",\n        \"solution\": \"1. Understand that when the non-common arms of two adjacent angles lie along the same straight line, they form a linear pair.\\n2. Recall the Linear Pair Axiom: If a ray stands on a line, then the sum of two adjacent angles so formed is 180\\u00b0.\\n3. Therefore, the total measure of these two angles is exactly 180\\u00b0.\\n\\n[Marking Scheme: 0.5 marks for recognizing the linear pair property on a line; 0.5 marks for identifying the correct sum of 180\\u00b0.]\",\n        \"distractor_analysis\": [\n          {\n            \"Option\": \"A \\u2013 Conceptual Error\",\n            \"Misconception\": \"You confused the property of a linear pair with complementary angles. While 90\\u00b0 is a common geometric sum, angles that form a straight line must total 180\\u00b0.\"\n          },\n          {\n            \"Option\": \"C \\u2013 Computational Error\",\n            \"Misconception\": \"You may have made an arithmetic slip by adding extra degrees to the measure of a straight line. A straight angle is always exactly 180\\u00b0, not 270\\u00b0.\"\n          },\n          {\n            \"Option\": \"D \\u2013 Comprehension Error\",\n            \"Misconception\": \"You likely ignored the keyword 'straight line' and provided the sum for a full rotation. 360\\u00b0 is the measure of a full circle, while a line is only half of that.\"\n          }\n        ],\n        \"key_idea\": \"When we look at two angles that sit next to each other on a flat, straight line, we are finding their combined opening. A straight line acts like a perfectly flat floor that measures 180\\u00b0. Because the two angles together cover the exact same space as that flat line, their individual measures must add up to 180\\u00b0. \\n\\nTo find this total, first locate the straight line, then find the point where the two angles meet. Since the outer edges make a single straight path, the sum is always 180\\u00b0.\\n\\nCommon mistakes include using 90\\u00b0 (which is only for L-shapes) or 360\\u00b0 (which is for a full circle). To avoid this, always imagine a protractor sitting on the line; it starts at 0\\u00b0 and ends at 180\\u00b0.\"\n      }\n    ]\n  },\n  \"solution_output\": {},\n  \"_pipeline_metadata\": {\n    \"mode\": \"MATH_FIRST\",\n    \"stages\": 2,\n    \"total_tokens\": {\n      \"input\": 19286,\n      \"output\": 927\n    }\n  }\n}",
+      "elapsed": 0,
+      "batch_key": "MCQ - Batch 1",
+      "input_tokens": 19286,
+      "output_tokens": 927,
+      "thought_tokens": 0,
+      "billed_output_tokens": 927
+    },
+    "validated": {
+      "text": "{\n  \"math_core\": {\n    \"math_cores\": [\n      {\n        \"id\": \"Q1\",\n        \"Abstract Math Structure\": \"Linear Pair Axiom Application: Two adjacent angles $\\\\angle AOB$ and $\\\\angle BOC$ forming a straight line, such that $\\\\angle AOB + \\\\angle BOC = 180^{\\\\circ}$. The value of one angle is provided, and the task requires calculating the numerical value of the other angle, which is its supplement.\",\n        \"Topic Identification and Description\": \"Lines and Angles: Study of basic geometric terms, definitions, and properties related to angles formed by intersecting lines or rays. Key concepts include complementary angles, supplementary angles, linear pairs, vertically opposite angles, and the Linear Pair Axiom (if a ray stands on a line, the sum of adjacent angles is $180^{\\\\circ}$ and vice-versa).\",\n        \"Subtopic Differentiation\": \"Direct Application of Linear Pair Axiom to find a numerical angle measure.\"\n      }\n    ]\n  },\n  \"writer_output\": {\n    \"questions\": [\n      {\n        \"question_id\": \"Q1\",\n        \"question_text\": \"Identify the total measure of two adjacent angles whose non-common arms lie along the same straight line.\",\n        \"options\": {\n          \"A\": \"90\\u00b0\",\n          \"B\": \"180\\u00b0\",\n          \"C\": \"270\\u00b0\",\n          \"D\": \"360\\u00b0\"\n        },\n        \"correct_option\": \"B\",\n        \"mark\": 1.0,\n        \"dok_level\": \"DOK 1\",\n        \"taxonomy\": \"Remembering\",\n        \"mcq_type\": \"Number Based\",\n        \"statement_based\": \"NO\",\n        \"solution\": \"1. Understand that when the non-common arms of two adjacent angles lie along the same straight line, they form a linear pair.\\n2. Recall the Linear Pair Axiom: If a ray stands on a line, then the sum of two adjacent angles so formed is 180\\u00b0.\\n3. Therefore, the total measure of these two angles is exactly 180\\u00b0.\\n\\n[Marking Scheme: 0.5 marks for recognizing the linear pair property on a line; 0.5 marks for identifying the correct sum of 180\\u00b0.]\",\n        \"distractor_analysis\": [\n          {\n            \"Option\": \"A \\u2013 Conceptual Error\",\n            \"Misconception\": \"You confused the property of a linear pair with complementary angles. While 90\\u00b0 is a common geometric sum, angles that form a straight line must total 180\\u00b0.\"\n          },\n          {\n            \"Option\": \"C \\u2013 Computational Error\",\n            \"Misconception\": \"You may have made an arithmetic slip by adding extra degrees to the measure of a straight line. A straight angle is always exactly 180\\u00b0, not 270\\u00b0.\"\n          },\n          {\n            \"Option\": \"D \\u2013 Comprehension Error\",\n            \"Misconception\": \"You likely ignored the keyword 'straight line' and provided the sum for a full rotation. 360\\u00b0 is the measure of a full circle, while a line is only half of that.\"\n          }\n        ],\n        \"key_idea\": \"When we look at two angles that sit next to each other on a flat, straight line, we are finding their combined opening. A straight line acts like a perfectly flat floor that measures 180\\u00b0. Because the two angles together cover the exact same space as that flat line, their individual measures must add up to 180\\u00b0. \\n\\nTo find this total, first locate the straight line, then find the point where the two angles meet. Since the outer edges make a single straight path, the sum is always 180\\u00b0.\\n\\nCommon mistakes include using 90\\u00b0 (which is only for L-shapes) or 360\\u00b0 (which is for a full circle). To avoid this, always imagine a protractor sitting on the line; it starts at 0\\u00b0 and ends at 180\\u00b0.\"\n      }\n    ]\n  },\n  \"solution_output\": {},\n  \"_pipeline_metadata\": {\n    \"mode\": \"MATH_FIRST\",\n    \"stages\": 2,\n    \"total_tokens\": {\n      \"input\": 19286,\n      \"output\": 927\n    }\n  }\n}",
+      "elapsed": 0,
+      "batch_key": "MCQ - Batch 1",
+      "input_tokens": 0,
+      "output_tokens": 0
+    },
+    "core_skill_metadata": {},
+    "_pipeline_output": {
+      "math_core": {
+        "math_cores": [
+          {
+            "id": "Q1",
+            "Abstract Math Structure": "Linear Pair Axiom Application: Two adjacent angles $\\angle AOB$ and $\\angle BOC$ forming a straight line, such that $\\angle AOB + \\angle BOC = 180^{\\circ}$. The value of one angle is provided, and the task requires calculating the numerical value of the other angle, which is its supplement.",
+            "Topic Identification and Description": "Lines and Angles: Study of basic geometric terms, definitions, and properties related to angles formed by intersecting lines or rays. Key concepts include complementary angles, supplementary angles, linear pairs, vertically opposite angles, and the Linear Pair Axiom (if a ray stands on a line, the sum of adjacent angles is $180^{\\circ}$ and vice-versa).",
+            "Subtopic Differentiation": "Direct Application of Linear Pair Axiom to find a numerical angle measure."
+          }
+        ]
+      },
+      "writer_output": {
+        "questions": [
+          {
+            "question_id": "Q1",
+            "question_text": "Identify the total measure of two adjacent angles whose non-common arms lie along the same straight line.",
+            "options": {
+              "A": "90°",
+              "B": "180°",
+              "C": "270°",
+              "D": "360°"
+            },
+            "correct_option": "B",
+            "mark": 1.0,
+            "dok_level": "DOK 1",
+            "taxonomy": "Remembering",
+            "mcq_type": "Number Based",
+            "statement_based": "NO",
+            "solution": "1. Understand that when the non-common arms of two adjacent angles lie along the same straight line, they form a linear pair.\n2. Recall the Linear Pair Axiom: If a ray stands on a line, then the sum of two adjacent angles so formed is 180°.\n3. Therefore, the total measure of these two angles is exactly 180°.\n\n[Marking Scheme: 0.5 marks for recognizing the linear pair property on a line; 0.5 marks for identifying the correct sum of 180°.]",
+            "distractor_analysis": [
+              {
+                "Option": "A – Conceptual Error",
+                "Misconception": "You confused the property of a linear pair with complementary angles. While 90° is a common geometric sum, angles that form a straight line must total 180°."
+              },
+              {
+                "Option": "C – Computational Error",
+                "Misconception": "You may have made an arithmetic slip by adding extra degrees to the measure of a straight line. A straight angle is always exactly 180°, not 270°."
+              },
+              {
+                "Option": "D – Comprehension Error",
+                "Misconception": "You likely ignored the keyword 'straight line' and provided the sum for a full rotation. 360° is the measure of a full circle, while a line is only half of that."
+              }
+            ],
+            "key_idea": "When we look at two angles that sit next to each other on a flat, straight line, we are finding their combined opening. A straight line acts like a perfectly flat floor that measures 180°. Because the two angles together cover the exact same space as that flat line, their individual measures must add up to 180°. \n\nTo find this total, first locate the straight line, then find the point where the two angles meet. Since the outer edges make a single straight path, the sum is always 180°.\n\nCommon mistakes include using 90° (which is only for L-shapes) or 360° (which is for a full circle). To avoid this, always imagine a protractor sitting on the line; it starts at 0° and ends at 180°."
+          }
+        ]
+      },
+      "solution_output": {},
+      "_pipeline_metadata": {
+        "mode": "MATH_FIRST",
+        "stages": 2,
+        "total_tokens": {
+          "input": 19286,
+          "output": 927
+        }
+      }
+    },
+    "_prompts_dir": "pipeline_outputs\\MCQ_Batch_1"
+  },
+  "_total_cost": 0.0
+}

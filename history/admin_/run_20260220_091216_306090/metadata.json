@@ -1,0 +1,46 @@
+{
+  "run_id": "run_20260220_091216_306090",
+  "timestamp": "2026-02-20T09:12:16.307814",
+  "username": "admin ",
+  "metadata": {
+    "curriculum": "NCERT",
+    "grade": "Grade 5",
+    "subject": "Mathematics",
+    "chapter": "lines and angles",
+    "old_concept": "",
+    "new_concept": "",
+    "additional_notes": "",
+    "total_questions": 1,
+    "question_types": [
+      "MCQ"
+    ]
+  },
+  "session_config": {
+    "question_types_config": {
+      "MCQ": {
+        "count": 1,
+        "questions": [
+          {
+            "topic": "Sum of the two adjacent angles is 180° and viceversa. ",
+            "new_concept_source": "pdf",
+            "new_concept_pdf": null,
+            "additional_notes_source": "none",
+            "additional_notes_text": "",
+            "additional_notes_pdf": null,
+            "dok": 1,
+            "marks": 1.0,
+            "taxonomy": "Remembering",
+            "mcq_type": "Number Based",
+            "statement_based": false,
+            "type": "MCQ",
+            "original_index": 0
+          }
+        ]
+      }
+    },
+    "core_skill_enabled": false
+  },
+  "files": {
+    "universal_pdf": "universal_pdf_iemh106 (1).pdf"
+  }
+}

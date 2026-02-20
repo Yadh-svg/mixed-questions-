@@ -15,6 +15,7 @@ import os
 
 from llm_engine import run_gemini_async, save_prompt, save_response
 from prompt_builder import build_prompt_for_batch, get_files
+from pipeline_builder import GENERATION_PIPELINE_MODE
 
 # ... (imports)
 
@@ -325,6 +326,14 @@ async def generate_raw_batch(
     """
     logger.info(f"Generating RAW batch: {batch_key} ({len(questions)} questions)")
     
+    # Load pipeline config to get model
+    from pipeline_executor import load_pipeline_config, get_stage_config
+    pipeline_conf = load_pipeline_config()
+    # For raw generation in legacy mode, we can use 'math_core' or 'writer' model. 
+    # 'writer' seems appropriate for question generation.
+    stage_conf = get_stage_config('writer', pipeline_conf)
+    model_name = stage_conf['model']
+    
     try:
         # Build the prompt for this batch
         # Extract base type key (remove " - Batch X" suffix) for template lookup
@@ -350,7 +359,8 @@ async def generate_raw_batch(
             api_key=api_key,
             files=files,
             thinking_level="high",
-            file_metadata=file_metadata
+            file_metadata=file_metadata,
+            model=model_name
         )
 
         # Save raw response for debugging/record
@@ -386,8 +396,16 @@ async def validate_batch(
     """
     Validate a batch of questions using Gemini 2.5 Pro (Stage 2).
     """
+
     logger.info(f"Validating batch: {batch_key}")
     
+    # Load pipeline config to get model for validation
+    from pipeline_executor import load_pipeline_config, get_stage_config
+    pipeline_conf = load_pipeline_config()
+    # Use 'analysis' or 'solution' model for validation
+    stage_conf = get_stage_config('analysis', pipeline_conf)
+    model_name = stage_conf['model']
+
     try:
         api_key = general_config['api_key']
         
@@ -399,8 +417,9 @@ async def validate_batch(
             prompt=validation_prompt_text,
             api_key=api_key,
             files=files,
-            thinking_level="high",
-            file_metadata=file_metadata
+            thinking_level=stage_conf.get('thinking_level'),
+            file_metadata=file_metadata,
+            model=model_name
         )
         
         # Save validation response for debugging/record
@@ -580,8 +599,86 @@ async def process_single_batch_flow(
     """
     Process a SINGLE batch through the full Generation -> Split -> Batched Validation flow.
     If skip_validation=True (for regeneration), validation is bypassed and generation output is used directly.
+    
+    NEW: If GENERATION_PIPELINE_MODE is enabled, uses the 4-stage pipeline instead.
     """
-    logger.info(f"[{batch_key}] Starting Batched Flow")
+    from pipeline_executor import run_stage_pipeline
+    from prompt_builder import get_files
+    
+    logger.info(f"[{batch_key}] Starting Batched Flow (Pipeline Mode: {GENERATION_PIPELINE_MODE})")
+    
+    # Check if pipeline mode is enabled
+    if GENERATION_PIPELINE_MODE in ["SCENARIO_FIRST", "MATH_FIRST"]:
+        # ============================================================================
+        # NEW PIPELINE MODE: Run 4-stage pipeline
+        # ============================================================================
+        logger.info(f"[{batch_key}] Using 4-stage pipeline (Scenario → Question → Solution → Analysis)")
+        
+        try:
+            # Get files for this batch (PDF/images)
+            files_data = get_files(questions, general_config)
+            files = files_data.get('files', [])  # Extract the actual file list
+            
+            # Create directory for saving prompts
+            from pathlib import Path
+            prompts_dir = Path("pipeline_outputs") / batch_key.replace(" - ", "_").replace(" ", "_")
+            prompts_dir.mkdir(parents=True, exist_ok=True)
+            logger.info(f"💾 Created prompts directory: {prompts_dir}")
+            
+            # Run the full 4-stage pipeline with prompt saving
+            pipeline_result = await run_stage_pipeline(
+                questions, 
+                general_config, 
+                files,
+                save_prompts_dir=prompts_dir
+            )
+            
+            # Format pipeline output for compatibility with existing system
+            # The pipeline returns: {scenario, question, solution, analysis, _pipeline_metadata}
+            # We need to convert this to match the expected format
+            
+            pipeline_payload = {
+                'raw': {
+                    'text': json.dumps(pipeline_result, indent=2),
+                    'elapsed': 0,  # Time tracked within pipeline
+                    'batch_key': batch_key,
+                    'input_tokens': pipeline_result['_pipeline_metadata']['total_tokens']['input'],
+                    'output_tokens': pipeline_result['_pipeline_metadata']['total_tokens']['output'],
+                    'thought_tokens': 0,
+                    'billed_output_tokens': pipeline_result['_pipeline_metadata']['total_tokens']['output']
+                },
+                'validated': {
+                    'text': json.dumps(pipeline_result, indent=2),
+                    'elapsed': 0,
+                    'batch_key': batch_key,
+                    'input_tokens': 0,
+                    'output_tokens': 0
+                },
+                'core_skill_metadata': {},
+                '_pipeline_output': pipeline_result,  # Store full pipeline structure
+                '_prompts_dir': str(prompts_dir)  # Store prompts directory path
+            }
+            
+            if progress_callback:
+                progress_callback(batch_key, pipeline_payload)
+            
+            return {batch_key: pipeline_payload}
+            
+        except Exception as e:
+            logger.error(f"[{batch_key}] Pipeline failed: {e}")
+            error_payload = {
+                'raw': {'error': str(e), 'text': '', 'elapsed': 0, 'batch_key': batch_key},
+                'validated': {'error': 'Pipeline failed', 'text': '', 'elapsed': 0, 'batch_key': batch_key},
+                'core_skill_metadata': {}
+            }
+            if progress_callback:
+                progress_callback(batch_key, error_payload)
+            return {batch_key: error_payload}
+    
+    # ============================================================================
+    # LEGACY MODE: Original generation-validation flow
+    # ============================================================================
+    logger.info(f"[{batch_key}] Using legacy generation-validation flow")
     
     # --- STAGE 1: GENERATION ---
     raw_result = await generate_raw_batch(batch_key, questions, general_config, type_config, previous_batch_metadata)

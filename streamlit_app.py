@@ -21,6 +21,7 @@ import io
 import base64
 import re
 import logging
+import json
 
 # Setup logging
 logger = logging.getLogger(__name__)
@@ -127,79 +128,211 @@ history_mgr = st.session_state.history_mgr
 # Custom CSS for modern, catchy UI
 st.markdown("""
 <style>
-    /* Main theme colors */
+    /* Modern Dark Theme & Glassmorphism */
     :root {
-        --primary-color: #6366f1;
-        --secondary-color: #8b5cf6;
-        --success-color: #10b981;
+        --primary: #8B5CF6;
+        --secondary: #EC4899;
+        --accent: #06B6D4;
+        --background: #0F172A;
+        --surface: rgba(30, 41, 59, 0.7);
+        --glass: rgba(255, 255, 255, 0.05);
+        --glass-border: rgba(255, 255, 255, 0.1);
+        --text: #F8FAFC;
     }
+
+    /* Global Font */
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
     
-    /* Header styling */
+    html, body, [class*="css"] {
+        font-family: 'Inter', sans-serif;
+    }
+
+    /* Main Container Background */
+    .stApp {
+        background: radial-gradient(circle at top left, #1e1b4b, #0f172a);
+    }
+
+    /* Glassmorphic Containers */
     .main-header {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        padding: 2rem;
-        border-radius: 10px;
-        color: white;
+        background: rgba(139, 92, 246, 0.1);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid var(--glass-border);
+        padding: 2.5rem;
+        border-radius: 24px;
         text-align: center;
-        margin-bottom: 2rem;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        margin-bottom: 2.5rem;
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        position: relative;
+        overflow: hidden;
     }
-    
+
+    .main-header::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
+        transform: rotate(30deg);
+        pointer-events: none;
+    }
+
     .main-header h1 {
-        margin: 0;
-        font-size: 2.5rem;
-        font-weight: 700;
+        background: linear-gradient(to right, #8B5CF6, #EC4899);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-weight: 800;
+        font-size: 3rem;
+        margin-bottom: 0.5rem;
+        letter-spacing: -1px;
     }
-    
+
     .main-header p {
-        margin: 0.5rem 0 0 0;
-        font-size: 1.1rem;
-        opacity: 0.9;
-    }
-    
-    /* Section headers */
-    .section-header {
-        background: linear-gradient(90deg, #6366f1 0%, #8b5cf6 100%);
-        color: white;
-        padding: 0.75rem 1.5rem;
-        border-radius: 8px;
-        margin: 1.5rem 0 1rem 0;
-        font-weight: 600;
+        color: #94A3B8;
         font-size: 1.2rem;
+        font-weight: 400;
     }
-    
-    /* Buttons */
+
+    /* Section Headers */
+    .section-header {
+        background: linear-gradient(90deg, rgba(139, 92, 246, 0.2) 0%, rgba(236, 72, 153, 0.2) 100%);
+        border-left: 4px solid #EC4899;
+        color: #F8FAFC;
+        padding: 1rem 1.5rem;
+        border-radius: 12px;
+        margin: 2rem 0 1.5rem 0;
+        font-weight: 600;
+        font-size: 1.25rem;
+        display: flex;
+        align-items: center;
+        backdrop-filter: blur(5px);
+    }
+
+    /* Modern Buttons */
     .stButton > button {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, #8B5CF6 0%, #6366F1 100%);
         color: white;
         border: none;
-        border-radius: 8px;
+        border-radius: 12px;
         padding: 0.75rem 2rem;
         font-weight: 600;
-        font-size: 1rem;
-        transition: all 0.3s ease;
+        letter-spacing: 0.5px;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 4px 6px -1px rgba(139, 92, 246, 0.5);
     }
-    
+
     .stButton > button:hover {
         transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        box-shadow: 0 10px 15px -3px rgba(139, 92, 246, 0.6);
+        background: linear-gradient(135deg, #7C3AED 0%, #4F46E5 100%);
+    }
+
+    .stButton > button:active {
+        transform: translateY(0);
+    }
+
+    /* Secondary/Ghost Buttons (if any) */
+    div[data-testid="stForm"] .stButton > button[kind="secondary"] {
+        background: transparent;
+        border: 1px solid var(--primary);
+        color: var(--primary);
+    }
+
+    /* Inputs & Selectboxes */
+    .stTextInput > div > div > input,
+    .stSelectbox > div > div > div, 
+    .stNumberInput > div > div > input,
+    .stTextArea > div > div > textarea {
+        background-color: rgba(30, 41, 59, 0.6);
+        border: 1px solid rgba(148, 163, 184, 0.2);
+        border-radius: 10px;
+        color: #F8FAFC;
+        transition: all 0.2s ease;
+    }
+
+    .stTextInput > div > div > input:focus,
+    .stTextArea > div > div > textarea:focus {
+        border-color: #8B5CF6;
+        box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2);
+        background-color: rgba(30, 41, 59, 0.9);
+    }
+
+    /* Info/Success/Error Boxes */
+    .stAlert {
+        background-color: rgba(30, 41, 59, 0.6);
+        border: 1px solid rgba(148, 163, 184, 0.1);
+        backdrop-filter: blur(10px);
+        border-radius: 12px;
     }
     
-    /* Info boxes */
-    .info-box {
-        background: #eff6ff;
-        border-left: 4px solid #3b82f6;
-        padding: 1rem;
-        border-radius: 4px;
-        margin: 1rem 0;
+    .stSuccess {
+        border-left-color: #10B981;
     }
     
-    /* Hide copy-to-clipboard buttons */
+    .stInfo {
+        border-left-color: #3B82F6;
+    }
+    
+    .stError {
+        border-left-color: #EF4444;
+    }
+
+    /* Sidebar Styling */
+    section[data-testid="stSidebar"] {
+        background-color: rgba(15, 23, 42, 0.95);
+        border-right: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    /* Metrics */
+    div[data-testid="stMetricValue"] {
+        font-size: 2rem;
+        font-weight: 700;
+        background: linear-gradient(to right, #38BDF8, #818CF8);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    /* Expander */
+    .streamlit-expanderHeader {
+        background-color: rgba(255, 255, 255, 0.03);
+        border-radius: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    
+    .streamlit-expanderContent {
+        background-color: transparent;
+        border: none;
+        padding-left: 1rem;
+        border-left: 2px solid rgba(255, 255, 255, 0.1);
+    }
+
+    /* Hide unnecessary elements */
     button[title="Copy to clipboard"],
     button[data-testid="stCopyButton"],
     .copy-button,
     [data-testid="stMarkdownContainer"] button {
         display: none !important;
+    }
+    
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
+    
+    ::-webkit-scrollbar-track {
+        background: #0F172A;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+        background: #334155;
+        border-radius: 4px;
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+        background: #475569;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -1905,13 +2038,7 @@ with tab2:
 
                 # Show Metadata
                 st.markdown("---")
-                col1, col2, col3 = st.columns(3)
-                with col1:
-                    st.metric("Questions", raw_res.get('question_count', 'N/A'))
-                with col2:
-                    raw_time = raw_res.get('elapsed', 0)
-                    val_time = val_res.get('elapsed', 0) if val_res else 0
-                    st.metric("Total Time", f"{raw_time + val_time:.2f}s")
+
                 # with col3:
                 #     batch_cost = batch_result.get('batch_cost', 0.0)
                 #     st.metric("Cost", f"${batch_cost:.4f}")
@@ -2364,13 +2491,6 @@ with tab2:
                         except Exception as e:
                             st.error(f"❌ Error during duplication: {str(e)}")
                             st.exception(e)
-                            
-
-        else:
-            st.info("ℹ️ Select questions using the checkboxes above to generate duplicates")
-    else:
-        st.info("👈 Configure and generate questions to see results here")
-
 
 # Footer
 st.markdown("---")

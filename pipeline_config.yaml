@@ -1,0 +1,66 @@
+# ===================================================================
+# PIPELINE MODEL CONFIGURATION
+# ===================================================================
+# 
+# This file controls the model settings for each stage of the 
+# 4-stage question generation pipeline.
+#
+# You can customize:
+# - model: Which Gemini model to use
+# - temperature: Creativity level (0.0 = deterministic, 2.0 = creative)
+# - thinking_level: How much time the model spends thinking (low/medium/high, or null for non-thinking models)
+# - top_p: Nucleus sampling (optional)
+# - top_k: Top-k sampling (optional)
+# ===================================================================
+
+# ===================================================================
+# STAGE 1: MATH CORE (ARCHITECT)
+# ===================================================================
+math_core:
+  model: "gemini-2.5-flash-lite-preview-09-2025"
+  temperature: 0.7
+  thinking_level: null
+  top_p: 0.90
+  top_k: 40
+  
+  # Notes:
+  # - The Architect needs HIGH reasoning to design valid math structures.
+  # - Use a thinking model here.
+
+# ===================================================================
+# STAGE 2: WRITER (SCENARIO + QUESTION)
+# ===================================================================
+writer:
+  model: "gemini-3-flash-preview"
+  temperature: 0.7
+  thinking_level: "high"
+  top_p: 0.95
+  top_k: 40
+  
+  # Notes:
+  # - The Writer needs creativity for the scenario but logic for the question.
+  # - gemini-2.5-flash-lite is fast and creative.
+
+# ===================================================================
+# STAGE 3: SOLUTION GENERATION
+# ===================================================================
+solution:
+  model: "gemini-2.5-flash-lite-preview-09-2025"
+  temperature: 0.3
+  thinking_level: null
+  top_p: 0.85
+  top_k: 20
+  
+  # Notes:
+  # - Lower temperature for accurate solutions.
+  
+# ===================================================================
+# [DEPRECATED] STAGE 4: ANALYSIS 
+# ===================================================================
+analysis:
+  model: "gemini-2.5-flash-lite-preview-09-2025"
+  temperature: 0.8
+  thinking_level: null
+  top_p: 0.90
+  
+

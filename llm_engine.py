@@ -124,7 +124,8 @@ def run_gemini(
     api_key: str,
     files: Optional[List] = None,
     thinking_level: str = "high",
-    file_metadata: Optional[Dict[str, Any]] = None
+    file_metadata: Optional[Dict[str, Any]] = None,
+    model: str = None
 ) -> Dict[str, Any]:
     """
     Run Gemini model with optional PDF/image files using File API.
@@ -133,8 +134,9 @@ def run_gemini(
         prompt: The text prompt to send
         api_key: Gemini API key
         files: List of file-like objects to upload (PDFs or images)
-        thinking_level: Level of reasoning for Gemini 3 models (e.g., "medium")
+        thinking_level: Level of reasoning for Gemini thinking models (e.g., "high", "medium", "low")
         file_metadata: Metadata about files (source_type, filenames)
+        model: Gemini model to use (Required)
         
     Returns:
         Dictionary with text, error, elapsed time, and token counts
@@ -153,9 +155,9 @@ def run_gemini(
             source_type = file_metadata.get('source_type', 'Unknown')
             filenames = file_metadata.get('filenames', [])
             logger.info(f"Starting Gemini | Files: {len(files)} files ({source_type}) | "
-                       f"Files: {', '.join(filenames)} | Model: gemini-3-flash-preview")
+                       f"Files: {', '.join(filenames)} | Model: {model}")
         else:
-            logger.info(f"Starting Gemini | Files: None | Model: gemini-3-flash-preview")
+            logger.info(f"Starting Gemini | Files: None | Model: {model}")
         
         # Build contents list
         contents = []
@@ -173,15 +175,20 @@ def run_gemini(
         
         contents.append(prompt)
         
-        config = types.GenerateContentConfig(
-            thinking_config=types.ThinkingConfig(
-                thinking_level=thinking_level
+        # Build generation config - only add thinking config if thinking_level is provided
+        # Some models don't support thinking mode (e.g., gemini-2.5-flash-lite-preview-09-2025)
+        if thinking_level:
+            config = types.GenerateContentConfig(
+                thinking_config=types.ThinkingConfig(
+                    thinking_level=thinking_level
+                )
             )
-        )
+        else:
+            config = None
         
         # Using stream=True to be consistent with previous implementation
         stream = client.models.generate_content_stream(
-            model="gemini-3-flash-preview",
+            model=model,
             contents=contents,
             config=config
         )
@@ -204,12 +211,14 @@ def run_gemini(
         
         # Extract token usage for cost calculation
         if usage_metadata:
-            out["input_tokens"] = getattr(usage_metadata, 'prompt_token_count', 0)
-            out["output_tokens"] = getattr(usage_metadata, 'candidates_token_count', 0)
+            out["input_tokens"] = getattr(usage_metadata, 'prompt_token_count', 0) or 0
+            out["output_tokens"] = getattr(usage_metadata, 'candidates_token_count', 0) or 0
             # Handle possible pluralization variations in different SDK versions
-            out["thought_tokens"] = getattr(usage_metadata, 'thought_token_count', 
+            # For non-thinking models, thought_tokens might be None, so use 0 as default
+            thought_tokens = getattr(usage_metadata, 'thought_token_count', 
                                    getattr(usage_metadata, 'thoughts_token_count', 0))
-            out["total_tokens"] = getattr(usage_metadata, 'total_token_count', 0)
+            out["thought_tokens"] = thought_tokens if thought_tokens is not None else 0
+            out["total_tokens"] = getattr(usage_metadata, 'total_token_count', 0) or 0
             
             # User wants to treat thinking tokens as output tokens
             # Total Billed Output Tokens = candidates + thought
@@ -244,7 +253,8 @@ async def duplicate_questions_async(
     num_duplicates: int,
     api_key: str,
     additional_notes: str = "",
-    pdf_file: Optional[Any] = None
+    pdf_file: Optional[Any] = None,
+    model: str = None
 ) -> Dict[str, Any]:
     """
     Generate duplicate versions of a question with different numbers and scenarios.
@@ -296,7 +306,8 @@ async def duplicate_questions_async(
         api_key=api_key,
         files=files_to_upload,
         thinking_level="high",
-        file_metadata={'source_type': 'duplicate_context', 'filenames': [getattr(pdf_file, 'name', 'file')]} if pdf_file else None
+        file_metadata={'source_type': 'duplicate_context', 'filenames': [getattr(pdf_file, 'name', 'file')]} if pdf_file else None,
+        model=model
     )
     
     if result.get('error'):
@@ -351,9 +362,10 @@ async def run_gemini_async(
     api_key: str,
     files: Optional[List] = None,
     thinking_level: str = "high",
-    file_metadata: Optional[Dict[str, Any]] = None
+    file_metadata: Optional[Dict[str, Any]] = None,
+    model: str = None
 ) -> Dict[str, Any]:
     """
     Async wrapper for run_gemini.
     """
-    return await asyncio.to_thread(run_gemini, prompt, api_key, files, thinking_level, file_metadata)
+    return await asyncio.to_thread(run_gemini, prompt, api_key, files, thinking_level, file_metadata, model)

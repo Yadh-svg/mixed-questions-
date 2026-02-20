@@ -550,6 +550,326 @@ def render_batch_results(batch_key: str, result_data: Dict[str, Any], render_con
         return
     
     # =======================================================================
+    # PIPELINE OUTPUT DETECTION - Check for scenario+question structure
+    # =======================================================================
+    try:
+        parsed_output = json.loads(text_content)
+        
+        # Check if this is a pipeline output with scenario and question
+        # Handle new 3-stage pipeline output (math_core, writer_output, solution_output)
+        if isinstance(parsed_output, dict) and 'writer_output' in parsed_output:
+            st.markdown("### 🎯 Pipeline Generated Content (3-Stage)")
+            
+            # Display Math Core (Architect)
+            if 'math_core' in parsed_output and parsed_output['math_core']:
+                math_core_data = parsed_output['math_core']
+                if 'math_cores' in math_core_data:
+                    with st.expander("🧠 Math Core (Architect Design)", expanded=False):
+                        for i, core in enumerate(math_core_data['math_cores']):
+                            st.markdown(f"#### Q{i+1}: {core.get('id', 'N/A')}")
+                            
+                            # Display Topic
+                            if 'Topic' in core:
+                                st.markdown(f"**Topic:** {core.get('Topic', 'N/A')}")
+                            
+                            # Display Subquestions
+                            sub_questions = {k: v for k, v in core.items() if k.startswith('subquestion_')}
+                            if sub_questions:
+                                st.markdown("**Subquestions:**")
+                                for key, value in sorted(sub_questions.items()):
+                                    # Format key: subquestion_1 -> Subquestion 1
+                                    formatted_key = key.replace('_', ' ').title()
+                                    st.markdown(f"- **{formatted_key}:** {value}")
+                            
+                            # Display MCQ specific Math Core fields
+                            if 'Question_Design' in core:
+                                q_design = core['Question_Design']
+                                if isinstance(q_design, dict):
+                                    st.markdown(f"**Description:** {q_design.get('Description', '')}")
+                                    if 'Given' in q_design:
+                                        st.markdown(f"**Given:** {q_design.get('Given')}")
+                                    if 'Find' in q_design:
+                                        st.markdown(f"**Find:** {q_design.get('Find')}")
+
+                            # Fallback
+                            if 'concept_name' in core:
+                                st.markdown(f"**Concept:** {core.get('concept_name')}")
+                            if 'math_structure' in core:
+                                st.markdown(f"**Structure:** {core.get('math_structure')}")
+                            
+                            st.markdown("---")
+            
+            writer_out = parsed_output['writer_output']
+            if 'questions' in writer_out:
+                for idx, q_item in enumerate(writer_out['questions'], 1):
+                    
+                    # === MCQ Handling ===
+                    if 'options' in q_item:
+                        # MCQ Renderer
+                        q_id = q_item.get('question_id', f"Q{idx}")
+                        with st.container():
+                            st.markdown(f"### ❓ Question {idx} ({q_id})")
+                            
+                            # Question Text
+                            st.markdown(f"**{q_item.get('question_text', '')}**")
+                            
+                            # Diagram prompt
+                            if 'diagram_prompt' in q_item:
+                                st.info(f"🖼️ **Diagram Request:** {q_item['diagram_prompt']}")
+                                
+                            # Options
+                            opts = q_item.get('options', {})
+                            if opts:
+                                st.markdown("#### Options:")
+                                for opt_key, opt_val in opts.items():
+                                    st.markdown(f"- **{opt_key}:** {opt_val}")
+                            
+                            # Answer & Solution
+                            with st.expander("💡 View Solution & Analysis", expanded=False):
+                                # Correct Option
+                                correct_opt = q_item.get('correct_option', 'Unknown')
+                                st.success(f"**Correct Option:** {correct_opt}")
+                                
+                                # Solution
+                                if 'solution' in q_item:
+                                    st.markdown("#### ✅ Solution:")
+                                    st.markdown(q_item['solution'])
+                                
+                                # Key Idea
+                                if 'key_idea' in q_item:
+                                    st.markdown("#### 🔑 Key Idea:")
+                                    st.info(q_item['key_idea'])
+                                    
+                                # Distractor Analysis
+                                if 'distractor_analysis' in q_item:
+                                    st.markdown("#### 🚫 Distractor Analysis:")
+                                    da_content = q_item['distractor_analysis']
+                                    
+                                    if isinstance(da_content, list):
+                                        # Convert list of dicts to markdown table
+                                        # Expecting: [{'Option': '...', 'Misconception': '...'}, ...]
+                                        md_table = "| Option | Misconception |\n|---|---|\n"
+                                        for da_row in da_content:
+                                            if isinstance(da_row, dict):
+                                                opt = da_row.get('Option', '') or da_row.get('option', '')
+                                                # Handle potential variations in keys
+                                                misc = da_row.get('Misconception', '') or da_row.get('misconception', '') or da_row.get('Explanation', '') or da_row.get('explanation', '')
+                                                md_table += f"| {opt} | {misc} |\n"
+                                            else:
+                                                # If row is a string, just append
+                                                md_table += f"| - | {da_row} |\n"
+                                        st.markdown(md_table)
+                                    else:
+                                        # Default string rendering
+                                        st.markdown(da_content)
+                                    
+                                # Metadata
+                                st.markdown("---")
+                                cols = st.columns(4)
+                                cols[0].metric("DOK Level", q_item.get('dok_level', 'N/A'))
+                                cols[1].metric("Taxonomy", q_item.get('taxonomy', 'N/A'))
+                                cols[2].metric("Marks", q_item.get('mark', 'N/A'))
+                                cols[3].metric("Type", q_item.get('mcq_type', 'N/A'))
+                                
+                            st.markdown("---")
+
+                    # === Fill in the Blanks Handling ===
+                    elif 'correct_answer' in q_item:
+                         # FIB Renderer
+                        q_id = q_item.get('question_id', f"Q{idx}")
+                        with st.container():
+                            st.markdown(f"### 📝 Question {idx} ({q_id})")
+                            
+                            # Question Text
+                            st.markdown(f"**{q_item.get('question_text', '')}**")
+                            
+                            # Diagram prompt
+                            if 'diagram_prompt' in q_item:
+                                st.info(f"🖼️ **Diagram Request:** {q_item['diagram_prompt']}")
+                            
+                            # Answer & Solution
+                            with st.expander("💡 View Solution & Analysis", expanded=False):
+                                # Correct Answer
+                                st.success(f"**Correct Answer:**\n\n{q_item.get('correct_answer', 'N/A')}")
+                                
+                                # Solution
+                                if 'solution' in q_item:
+                                    st.markdown("#### ✅ Solution:")
+                                    st.markdown(q_item['solution'])
+                                
+                                # Key Idea
+                                if 'key_idea' in q_item:
+                                    st.markdown("#### 🔑 Key Idea:")
+                                    st.info(q_item['key_idea'])
+                                    
+                                # Metadata
+                                st.markdown("---")
+                                cols = st.columns(3)
+                                cols[0].metric("DOK Level", q_item.get('dok_level', 'N/A'))
+                                cols[1].metric("Taxonomy", q_item.get('taxonomy', 'N/A'))
+                                cols[2].metric("Marks", q_item.get('mark', 'N/A'))
+                                
+                            st.markdown("---")
+
+                    # === Descriptive Handling ===
+                    elif 'final_answer' in q_item:
+                        # Descriptive Renderer
+                        q_id = q_item.get('question_id', f"Q{idx}")
+                        with st.container():
+                            st.markdown(f"### ✍️ Question {idx} ({q_id})")
+                            
+                            # Question Text
+                            st.markdown(f"**{q_item.get('question_text', '')}**")
+                            
+                            # Diagram prompt
+                            if 'diagram_prompt' in q_item and q_item['diagram_prompt'] != "No diagram":
+                                st.info(f"🖼️ **Diagram Request:** {q_item['diagram_prompt']}")
+                            
+                            # Answer & Solution
+                            with st.expander("💡 View Solution & Analysis", expanded=False):
+                                # Final Answer
+                                st.success(f"**Final Answer:**\n\n{q_item.get('final_answer', 'N/A')}")
+                                
+                                # Solution
+                                if 'solution' in q_item:
+                                    st.markdown("#### ✅ Solution:")
+                                    st.markdown(q_item['solution'])
+                                
+                                # Key Idea
+                                if 'key_idea' in q_item:
+                                    st.markdown("#### 🔑 Key Idea:")
+                                    st.info(q_item['key_idea'])
+                                    
+                                # Metadata (if available separately, otherwise it's in text)
+                                st.markdown("---")
+                                cols = st.columns(3)
+                                cols[0].metric("DOK Level", q_item.get('dok_level', 'N/A'))
+                                cols[1].metric("Taxonomy", q_item.get('taxonomy', 'N/A'))
+                                cols[2].metric("Marks", q_item.get('mark', 'N/A'))
+                                
+                            st.markdown("---")
+
+                    # === Descriptive w/ Subquestions Handling ===
+                    elif 'questions_list' in q_item:
+                         # Descriptive w/ Subquestions (similar to Case Study but slightly different keys)
+                        q_id = q_item.get('question_id', f"Q{idx}")
+                        
+                        # Handle the weird key "scenario_text/question_text"
+                        scenario_txt = q_item.get('scenario_text/question_text') or q_item.get('scenario_text') or q_item.get('question_text') or ''
+                        
+                        with st.container():
+                            st.markdown(f"### 📄 Question {idx} ({q_id})")
+                            
+                            # Scenario/Question Text
+                            with st.expander(f"Scenario / Context", expanded=True):
+                                st.markdown(scenario_txt)
+                                if 'diagram_description' in q_item:
+                                    st.info(f"**Diagram:** {q_item['diagram_description']}")
+                            
+                            # Sub-questions
+                            if 'questions_list' in q_item:
+                                st.markdown(f"**Sub-questions:**")
+                                for sub_idx, sub_q in enumerate(q_item['questions_list'], 1):
+                                    st.markdown(f"**({chr(96+sub_idx)})** {sub_q}")
+                            
+                            # Solution & Key Idea
+                            with st.expander("💡 View Solution & Analysis", expanded=False):
+                                if 'final_answer' in q_item:
+                                    st.success(f"**Final Answer:**\n\n{q_item.get('final_answer', 'N/A')}")
+
+                                if 'solution' in q_item:
+                                    st.markdown("#### ✅ Solution:")
+                                    st.markdown(q_item['solution'])
+                                
+                                if 'key_idea' in q_item:
+                                    st.markdown("#### 🔑 Key Idea:")
+                                    st.info(q_item['key_idea'])
+                                    
+                                # Metadata
+                                st.markdown("---")
+                                cols = st.columns(3)
+                                cols[0].metric("DOK Level", q_item.get('dok_level', 'N/A'))
+                                cols[1].metric("Taxonomy", q_item.get('taxonomy', 'N/A'))
+                                cols[2].metric("Marks", q_item.get('mark', 'N/A'))
+                                
+                        st.markdown("---")
+
+                    # === Case Study Handling (Existing) ===
+                    elif 'scenario_text' in q_item:
+                        # Render Scenario
+                        with st.expander(f"Scenario {idx}", expanded=True):
+                            st.markdown(q_item['scenario_text'])
+                            if 'diagram_description' in q_item:
+                                st.info(f"**Diagram:** {q_item['diagram_description']}")
+                        
+                        # Render Questions
+                        if 'questions_list' in q_item:
+                            st.markdown(f"**Questions for Scenario {idx}:**")
+                            for sub_idx, sub_q in enumerate(q_item['questions_list'], 1):
+                                st.markdown(f"**{sub_idx}.** {sub_q}")
+                        
+                        # Render Solution
+                        if 'solution' in q_item and q_item['solution']:
+                            with st.expander(f"💡 Solution", expanded=False):
+                                st.markdown(q_item['solution'])
+
+                        # Render Key Idea
+                        if 'key_idea' in q_item and q_item['key_idea']:
+                            with st.expander(f"🔑 Key Idea", expanded=False):
+                                st.markdown(q_item['key_idea'])
+            
+            # Display metadata
+            if '_pipeline_metadata' in parsed_output:
+                with st.expander("📊 Pipeline Metadata", expanded=False):
+                    metadata = parsed_output['_pipeline_metadata']
+                    st.json(metadata)
+            return
+
+        # Handle legacy or 2-stage pipeline output
+        if isinstance(parsed_output, dict) and ('scenario' in parsed_output or 'question' in parsed_output):
+            st.markdown("### 🎯 Pipeline Generated Content")
+            
+            # Display scenarios
+            if 'scenario' in parsed_output:
+                st.markdown("#### 📝 Generated Scenarios")
+                scenarios = parsed_output['scenario']
+                if isinstance(scenarios, list):
+                    for idx, scenario in enumerate(scenarios, 1):
+                        with st.expander(f"Scenario {idx}: {scenario.get('Topic', 'Untitled')}", expanded=idx == 1):
+                            st.markdown(scenario.get('scenario_text', 'No scenario text available'))
+            
+            # Display questions  
+            if 'question' in parsed_output:
+                st.markdown("#### ❓ Generated Questions")
+                question_data = parsed_output['question']
+                if isinstance(question_data, dict) and 'questions' in question_data:
+                    questions = question_data['questions']
+                    for idx, question in enumerate(questions, 1):
+                        with st.expander(f"Question {question.get('question_id', idx)}", expanded=True):
+                            # Render the markdown content
+                            content = question.get('content_markdown', '')
+                            if content:
+                                st.markdown(content)
+                            else:
+                                st.warning("No content available for this question")
+                
+                # Display metadata
+                if '_pipeline_metadata' in parsed_output:
+                    with st.expander("📊 Pipeline Metadata", expanded=False):
+                        metadata = parsed_output['_pipeline_metadata']
+                        st.json(metadata)
+            
+            # Successfully rendered pipeline output
+            return
+            
+    except json.JSONDecodeError:
+        # Not valid JSON or not pipeline output, continue with normal flow
+        pass
+    except Exception as e:
+        # Something went wrong with pipeline detection, log and continue
+        print(f"Pipeline detection error: {e}")
+    
+    # =======================================================================
     # SINGLE NORMALIZATION BOUNDARY - All LLM output parsing happens here
     # =======================================================================
     questions_dict = normalize_llm_output_to_questions(text_content)

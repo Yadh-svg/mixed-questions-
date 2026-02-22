@@ -49,11 +49,6 @@ def authenticate_user(username: str, password: str) -> bool:
         
         users = st.secrets["users"]
         
-        # Debug prints (remove later)
-        print("Available users:", list(users.keys()))
-        print("Entered:", repr(username), repr(password))
-        print("Stored password:", repr(users.get(username)))
-        
         return users.get(username) == password
         
     except Exception as e:

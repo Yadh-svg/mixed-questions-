@@ -26,6 +26,21 @@ import json
 # Setup logging
 logger = logging.getLogger(__name__)
 
+def _clean_config_for_json(question_config: dict) -> dict:
+    """Return a JSON-serializable copy of question_types_config with file objects stripped out.
+    File objects (UploadedFile, BytesIO) are saved separately via save_all_files().
+    """
+    clean = {}
+    FILE_KEYS = ('new_concept_pdf', 'additional_notes_pdf')
+    for qtype, qcfg in question_config.items():
+        clean[qtype] = {k: v for k, v in qcfg.items() if k != 'questions'}
+        clean[qtype]['questions'] = []
+        for q in qcfg.get('questions', []):
+            clean_q = {k: v for k, v in q.items() if k not in FILE_KEYS}
+            clean[qtype]['questions'].append(clean_q)
+    return clean
+
+
 # Import history management modules
 from history_manager import HistoryManager
 from file_utils import (
@@ -578,7 +593,7 @@ with st.sidebar:
                 with col3:
                     if st.button("🗑️", key=f"del_{run_id}", help="Delete this run"):
                         if history_mgr.delete_run(run_id):
-                            st.success(f"Deleted run")
+                            st.toast("Run deleted ✅")
                             st.rerun()
                         else:
                             st.error("Failed to delete run")
@@ -829,7 +844,7 @@ with tab1:
                 if st.button("📊 Max", key=f"max_btn_{qtype}", help=f"Set to maximum ({max_questions})"):
                     st.session_state[widget_key] = max_questions
                     st.session_state.question_types_config[qtype]['count'] = max_questions
-                    st.rerun()
+                    # No explicit st.rerun() needed — Streamlit reruns automatically on button click
 
             with col_clear:
                 st.markdown("<br>", unsafe_allow_html=True)
@@ -853,7 +868,7 @@ with tab1:
                         }
                         # Update the number input widget
                         st.session_state[widget_key] = 1
-                        st.rerun()
+                        # No explicit st.rerun() needed — Streamlit reruns automatically on button click
             
             with col_input:
                 num_questions = st.number_input(
@@ -1703,6 +1718,9 @@ with tab1:
                                 st.info(f"ℹ️ Will use universal file: **{st.session_state.universal_pdf.name}**")
                             else:
                                 st.warning("⚠️ Please upload a Universal File (PDF/Image) in the General Information section above")
+                        else:
+                            # Explicitly clear stale file reference when switching to text source
+                            st.session_state.question_types_config[qtype]['questions'][i]['new_concept_pdf'] = None
                         
                         # Additional Notes Selection (OPTIONAL)
                         st.markdown("**Additional Notes (Optional):**")
@@ -1928,6 +1946,7 @@ with tab1:
                                 # Save to history
                                 try:
                                     # Prepare session data
+                                    # Strip file objects for JSON serialization (files saved separately below)
                                     session_data = {
                                         'curriculum': config['curriculum'],
                                         'grade': config['grade'],
@@ -1936,7 +1955,7 @@ with tab1:
                                         'old_concept': config['old_concept'],
                                         'new_concept': config['new_concept'],
                                         'additional_notes': config['additional_notes'],
-                                        'question_types_config': st.session_state.question_types_config,
+                                        'question_types_config': _clean_config_for_json(st.session_state.question_types_config),
                                         'core_skill_enabled': config.get('core_skill_enabled', False)
                                     }
                                     
@@ -1946,16 +1965,17 @@ with tab1:
                                         config.get('universal_pdf')
                                     )
                                     
-                                    # Save files and get file map
+                                    # Generate ONE run_id used for both files folder and metadata
                                     run_id = history_mgr._generate_run_id()
                                     files_dir = history_mgr.get_files_dir(run_id)
                                     files_map = save_all_files(files_dict, files_dir)
                                     
-                                    # Save run
+                                    # Save run — pass same run_id so files folder matches metadata
                                     saved_run_id = history_mgr.save_run(
                                         session_data=session_data,
                                         output_data=final_results,
-                                        files_data=files_map
+                                        files_data=files_map,
+                                        run_id=run_id
                                     )
                                     
                                     # Update history mode
@@ -2039,19 +2059,6 @@ with tab2:
                 # Show Metadata
                 st.markdown("---")
 
-                # with col3:
-                #     batch_cost = batch_result.get('batch_cost', 0.0)
-                #     st.metric("Cost", f"${batch_cost:.4f}")
-
-                # Expandable Raw Output
-                with st.expander("Show Generated Version (Raw Backend Output)"):
-                    st.text_area("Raw Generator Output", value=raw_res.get('text', 'No output'), height=300, disabled=True, key=f"raw_bak_{batch_key}")
-                
-                with st.expander("Show Validation Response (Raw Backend Output)"):
-                    if val_res.get('error'):
-                        st.error(f"Validation Error: {val_res['error']}")
-                    st.text_area("Raw Validation Output", value=val_res.get('text', 'No output'), height=300, disabled=True, key=f"val_bak_{batch_key}")
-        
         # Download option
         st.markdown("---")
         
@@ -2121,9 +2128,11 @@ with tab2:
                     st.error("❌ Please enter your Gemini API key in the sidebar")
                 else:
                     with st.spinner("Regenerating specific questions..."):
-                        from batch_processor import regenerate_specific_questions_pipeline
+                        import asyncio
+                        from llm_engine import regenerate_question_async
+                        from result_renderer import extract_json_objects
                         
-                        # Prepare configurations
+                        # Prepare configurations for regeneration
                         general_config = {
                             'curriculum': curriculum,
                             'grade': grade,
@@ -2131,198 +2140,177 @@ with tab2:
                             'chapter': chapter,
                             'old_concept': old_concept,
                             'new_concept': new_concept,
-                            'api_key': gemini_api_key,
-                            'additional_notes': additional_notes,
-                            'universal_pdf': st.session_state.get('universal_pdf')
+                            'additional_notes': additional_notes
                         }
                         
-                        # Debug: Verify inputs are being passed
-                        st.write("="*70)
-                        st.write("🔍 DEBUG - REGENERATION PARAMETERS:")
-                        st.write(f"  📄 Universal PDF: {'✅ Present' if general_config.get('universal_pdf') else '❌ Missing'}")
-                        if general_config.get('universal_pdf'):
-                            st.write(f"     File name: {general_config['universal_pdf'].name}")
-                        st.write(f"  📚 Chapter: {general_config.get('chapter', 'N/A')}")
-                        st.write(f"  🎓 Grade: {general_config.get('grade', 'N/A')}")
-                        st.write(f"  📖 Subject: {general_config.get('subject', 'N/A')}")
-                        st.write(f"  📝 Old Concept: {general_config.get('old_concept', 'N/A')[:50]}...")
-                        st.write(f"  ✨ New Concept: {general_config.get('new_concept', 'N/A')[:50]}...")
-                        st.write(f"  📋 Additional Notes: {general_config.get('additional_notes', 'N/A')[:50]}...")
-                        st.write("="*70)
-                        
-                        # Need to reconstruct the full original config list
-                        # AND attach the original text for context
-                        
-                        # Helper to get original text
-                        from result_renderer import extract_json_objects, normalize_llm_output_to_questions
-                        
-                        full_config_list = []
-                        
-                        # Pre-parse all existing outputs into a lookup map: map[batch_key][question_idx] = text
-                        # question_idx is 1-based index in the batch
-                        existing_content_map = {}
-                        
-                        if st.session_state.generated_output:
-                            for b_key, b_res in st.session_state.generated_output.items():
-                                if b_key.startswith('_') or not isinstance(b_res, dict):
-                                    continue
-                                val_res = b_res.get('validated', {})
-                                text = val_res.get('text', '')
-                                if text:
-                                    # Normalize to get clear {question1: "content"} map
-                                    q_map = normalize_llm_output_to_questions(text)
-                                    existing_content_map[b_key] = q_map
-                        
-                        for q_type, config in st.session_state.question_types_config.items():
-                            for i, q in enumerate(config.get('questions', []), 1):
-                                q_copy = q.copy()
-                                q_copy['type'] = q_type
-                                
-                                # Check if this question is in the regeneration map
-                                # regeneration_map keys are batch_keys (e.g. "MCQ - Batch 1")
-                                # We need to match q_type (e.g. "MCQ") to the batch key? 
-                                # NO, the regeneration map has specific batch keys.
-                                # The `regenerate_specific_questions_pipeline` logic filters by matching base type.
-                                # But we need to know WHICH specific question this is to attach the text.
-                                
-                                # The validation loop in `regenerate_specific_questions_pipeline` calculates global index.
-                                # We can do the reverse here or just attach if we can identify it.
-                                # But simpler: `regenerate_specific_questions_pipeline` has the logic to find the specific config.
-                                # We should pass the LOOKUP MAP to the pipeline or general_config?
-                                # No, we are building `full_config_list`.
-                                # We don't validly know which batch this `q` belongs to easily without re-simulating the batching logic.
-                                
-                                # ALTERNATIVE: Use `general_config` to pass the `existing_content_map`.
-                                # The pipeline can then look it up when it identifies the question.
-                                
-                                full_config_list.append(q_copy)
-                                
-                        general_config['existing_content_map'] = existing_content_map
-                        general_config['regeneration_reasons_map'] = regeneration_reasons_map
-
-                        # Run regeneration
-                        import asyncio
-                        try:
-                            regen_results = asyncio.run(regenerate_specific_questions_pipeline(
-                                original_config=full_config_list,
-                                regeneration_map=regen_map,
-                                general_config=general_config
-                            ))
+                        # Gather inputs directly from session_state.generated_output pipeline data
+                        async def generate_all_regenerations_parallel():
+                            tasks = []
+                            for item in regen_selection:
+                                if ':' in item:
+                                    b_key, q_num = item.rsplit(':', 1)
+                                    regen_reason_key = f"regen_reason_{b_key}_{q_num}"
+                                    reason = st.session_state.get(regen_reason_key, "No reason provided").strip()
+                                    
+                                    # Locate the Math Core and Question Content
+                                    batch_result = st.session_state.generated_output.get(b_key, {})
+                                    val_res = batch_result.get('validated', {})
+                                    text_content = val_res.get('text', '')
+                                    
+                                    logger.warning(f"----- DEBUG REGEN: Batch {b_key}, Question {q_num} -----")
+                                    logger.warning(f"Length of text_content: {len(text_content)}")
+                                    if text_content:
+                                        logger.warning(f"First 500 chars: {text_content[:500]}")
+                                        
+                                        json_objects = extract_json_objects(text_content)
+                                        logger.warning(f"Extracted json_objects count: {len(json_objects)}")
+                                        
+                                        for obj_idx, obj in enumerate(json_objects):
+                                            logger.warning(f"Obj {obj_idx} keys: {list(obj.keys())}")
+                                            # Route 1: 3-Stage Pipeline format (Works for 2-stage too assuming writer_output is there)
+                                            if 'writer_output' in obj and 'questions' in obj['writer_output']:
+                                                logger.warning("-> Route 1 matched: writer_output -> questions found.")
+                                                # Look for Math Core data
+                                                math_cores = obj.get('math_core', {}).get('math_cores', [])
+                                                
+                                                for idx, q_item in enumerate(obj['writer_output']['questions'], 1):
+                                                    if str(idx) == q_num:
+                                                        logger.warning(f"-> Found matching question index: {idx}")
+                                                        q_key = f"question{idx}"
+                                                        question_code = f"{b_key}_q{idx}"
+                                                        import json
+                                                        q_content_str = json.dumps(q_item, indent=2)
+                                                        
+                                                        # Try to align the Math Core with the Question Index
+                                                        mc_data = {}
+                                                        if len(math_cores) >= idx:
+                                                            mc_data = math_cores[idx-1]
+                                                        elif len(math_cores) == 1:
+                                                            mc_data = math_cores[0] # Single shared core
+                                                        
+                                                        # Get the Specific File upload from Duplication state memory if applicable
+                                                        pdf_file = st.session_state.get(f"duplicate_file_{b_key}_{q_key}", None)
+                                                        file_list = []
+                                                        if pdf_file:
+                                                             file_list.append(pdf_file)
+                                                        elif st.session_state.get('universal_pdf'):
+                                                             file_list.append(st.session_state.get('universal_pdf'))
+                                                        
+                                                        async def run_single_regen(b_key, q_key, mc_data, q_item, reason, q_content_str, file_list):
+                                                            logger.info(f"🔄 Executing Regeneration for {b_key} - {q_key}")
+                                                            res = await regenerate_question_async(
+                                                                math_core_data=mc_data,
+                                                                question_data=q_item,
+                                                                general_config=general_config,
+                                                                files=file_list,
+                                                                previous_question_markdown=q_content_str,
+                                                                regeneration_reason=reason,
+                                                                api_key=gemini_api_key,
+                                                                question_code=f"{b_key}_{q_key}"
+                                                            )
+                                                            return f"{b_key}_{q_key}", res
+                                                            
+                                                        tasks.append(run_single_regen(b_key, q_key, mc_data, q_item, reason, q_content_str, file_list))
+                                            # Route 2: Legacy output format bridging
+                                            else:
+                                                questions_to_check = {}
+                                                if 'CORRECTED_ITEM' in obj or 'corrected_item' in obj:
+                                                    corrected = obj.get('CORRECTED_ITEM') or obj.get('corrected_item')
+                                                    if isinstance(corrected, dict):
+                                                        questions_to_check = corrected
+                                                else:
+                                                    questions_to_check = obj
+                                                    
+                                                for q_key_iter, q_item in questions_to_check.items():
+                                                    if q_key_iter.lower().startswith('question') or q_key_iter.lower().startswith('q'):
+                                                        # check if this is the target question
+                                                        import re
+                                                        match = re.search(r'\d+', q_key_iter)
+                                                        if match and match.group() == str(q_num):
+                                                            q_key = f"question{q_num}"
+                                                            import json
+                                                            q_content_str = json.dumps(q_item, indent=2)
+                                                            
+                                                            # We don't have separate Math Core out of the old system easily, but the Writer 
+                                                            # prompt still needs it. We pass an empty dict and Gemini will adapt.
+                                                            mc_data = {}
+                                                            
+                                                            pdf_file = st.session_state.get(f"duplicate_file_{b_key}_{q_key}", None)
+                                                            file_list = []
+                                                            if pdf_file:
+                                                                 file_list.append(pdf_file)
+                                                            elif st.session_state.get('universal_pdf'):
+                                                                 file_list.append(st.session_state.get('universal_pdf'))
+                                                                 
+                                                            # Safe encapsulation
+                                                            q_item_data = q_item if isinstance(q_item, dict) else {"text": str(q_item)}
+                                                            
+                                                            async def run_single_regen_legacy(b_key, q_key, mc_data, q_item_data, reason, q_content_str, file_list):
+                                                                logger.info(f"🔄 Executing Regeneration for {b_key} - {q_key} (Legacy Fallback)")
+                                                                res = await regenerate_question_async(
+                                                                    math_core_data=mc_data,
+                                                                    question_data=q_item_data,
+                                                                    general_config=general_config,
+                                                                    files=file_list,
+                                                                    previous_question_markdown=q_content_str,
+                                                                    regeneration_reason=reason,
+                                                                    api_key=gemini_api_key,
+                                                                    question_code=f"{b_key}_{q_key}"
+                                                                )
+                                                                return f"{b_key}_{q_key}", res
+                                                                
+                                                            tasks.append(run_single_regen_legacy(b_key, q_key, mc_data, q_item_data, reason, q_content_str, file_list))
+                                                                        
+                            results_list = await asyncio.gather(*tasks)
+                            return {key: result for key, result in results_list}
                             
-                            if regen_results.get('error'):
-                                st.error(f"Regeneration failed: {regen_results['error']}")
-                            else:
-                                # Merge results back into st.session_state.generated_output
-                                merged_count = 0
-                                
-                                for batch_key, batch_res in regen_results.items():
-                                    if batch_key.startswith('_') or not isinstance(batch_res, dict):
-                                        continue
-                                    val_res = batch_res.get('validated', {})
-                                    new_text_content = val_res.get('text', '')
-                                    
-                                    if new_text_content and batch_key in st.session_state.generated_output:
-                                        from result_renderer import normalize_llm_output_to_questions
-                                        
-                                        # Parse new and existing content using normalize function
-                                        new_questions_map = normalize_llm_output_to_questions(new_text_content)
-                                        existing_text = st.session_state.generated_output[batch_key]['validated']['text']
-                                        existing_questions_map = normalize_llm_output_to_questions(existing_text)
-                                        
-                                        # Get requested indices for this batch
-                                        requested_indices = sorted(regen_map.get(batch_key, []))
-                                        
-                                        # Sort new keys to align with requested indices
-                                        import re
-                                        sorted_new_keys = sorted(new_questions_map.keys(), 
-                                            key=lambda x: int(re.search(r'\d+', x).group()) if re.search(r'\d+', x) else 0)
-                                            
-                                        if len(sorted_new_keys) != len(requested_indices):
-                                            st.warning(f"⚠️ Expected {len(requested_indices)} questions but got {len(sorted_new_keys)}. Attempting best fit.")
-                                        
-                                        # Replace questions at requested indices
-                                        for i, new_k in enumerate(sorted_new_keys):
-                                            if i < len(requested_indices):
-                                                original_idx = requested_indices[i]
-                                                original_k = f"question{original_idx}"
-                                                existing_questions_map[original_k] = new_questions_map[new_k]
-                                                merged_count += 1
-                                        
-                                        # Serialize and update session state
-                                        import json
-                                        updated_json_str = json.dumps(existing_questions_map, indent=2)
-                                        st.session_state.generated_output[batch_key]['validated']['text'] = updated_json_str
-                                        
-                                        # Update costs
-                                        batch_regen_cost = batch_res.get('batch_cost', 0.0)
-                                        if 'batch_cost' in st.session_state.generated_output[batch_key]:
-                                            st.session_state.generated_output[batch_key]['batch_cost'] += batch_regen_cost
-                                        else:
-                                            st.session_state.generated_output[batch_key]['batch_cost'] = batch_regen_cost
-                                        
-                                        # Update total cost
-                                        if '_total_cost' in st.session_state.generated_output:
-                                            st.session_state.generated_output['_total_cost'] += batch_regen_cost
-                                        else:
-                                            st.session_state.generated_output['_total_cost'] = batch_regen_cost
-                                        
-                                    elif not new_text_content:
-                                        st.error(f"❌ No new content generated for {batch_key}")
-                                    elif batch_key not in st.session_state.generated_output:
-                                        st.error(f"❌ Batch key '{batch_key}' not found in session state!")
-                                
-                                if merged_count > 0:
-                                    st.success(f"✅ Successfully regenerated {merged_count} question(s)!")
-                                    
-                                    # Save regenerated questions to history
-                                    try:
-                                        # Prepare session data with "(Regenerated)" marker
-                                        chapter_name = general_config.get('chapter', 'Unknown')
-                                        if '(Regenerated)' not in chapter_name:
-                                            chapter_name = f"{chapter_name} (Regenerated)"
-                                        
-                                        session_data = {
-                                            'curriculum': general_config.get('curriculum', ''),
-                                            'grade': general_config.get('grade', ''),
-                                            'subject': general_config.get('subject', ''),
-                                            'chapter': chapter_name,  # Add (Regenerated) suffix
-                                            'old_concept': general_config.get('old_concept', ''),
-                                            'new_concept': general_config.get('new_concept', ''),
-                                            'additional_notes': general_config.get('additional_notes', ''),
-                                            'question_types_config': st.session_state.question_types_config,
-                                            'core_skill_enabled': general_config.get('core_skill_enabled', False)
-                                        }
-                                        
-                                        # Extract all files
-                                        files_dict = extract_all_files_from_config(
-                                            st.session_state.question_types_config,
-                                            general_config.get('universal_pdf')
-                                        )
-                                        
-                                        # Save files and get file map
-                                        new_run_id = history_mgr._generate_run_id()
-                                        files_dir = history_mgr.get_files_dir(new_run_id)
-                                        files_map = save_all_files(files_dict, files_dir)
-                                        
-                                        # Save as new run
-                                        saved_run_id = history_mgr.save_run(
-                                            session_data=session_data,
-                                            output_data=st.session_state.generated_output,
-                                            files_data=files_map
-                                        )
-                                        
-                                        st.info(f"💾 Saved regenerated questions to history as '{chapter_name}'")
-                                        
-                                    except Exception as save_error:
-                                        st.warning(f"⚠️ Questions regenerated but failed to save to history: {str(save_error)}")
-                                    
-                                    st.session_state.regen_selection = set()
-                                    st.rerun()  # Refresh to show updated questions
+                        # Run async generation
+                        try:
+                            regen_results = asyncio.run(generate_all_regenerations_parallel())
+                            
+                            success_count = 0
+                            for unique_key, result in regen_results.items():
+                                if result.get('error'):
+                                    st.error(f"❌ Failed to regenerate {unique_key}: {result['error']}")
                                 else:
-                                    st.error("❌ Regeneration failed. Please try again.")
-                                
+                                    regen_data = result.get('regenerated_data', {})
+                                    if regen_data:
+                                        # Key is {b_key}_{q_key} so let's unpack
+                                        b_key, q_key = unique_key.rsplit('_', 1)
+                                        regen_store_key = f"regenerated_{b_key}_{q_key}"
+                                        st.session_state[regen_store_key] = regen_data
+                                        success_count += 1
+                                        
+                                        # Save to txt file in a new folder
+                                        try:
+                                            import os
+                                            import json
+                                            regen_folder = "regenerated_outputs"
+                                            os.makedirs(regen_folder, exist_ok=True)
+                                            regen_file = os.path.join(regen_folder, f"{unique_key}_regenerated.txt")
+                                            with open(regen_file, "w", encoding="utf-8") as rf:
+                                                rf.write(json.dumps(regen_data, indent=2))
+                                        except Exception as e:
+                                            logger.error(f"Failed to save regenerated data to txt: {e}")
+                                            
+                                        # Track Cost
+                                        from batch_processor import calculate_cost
+                                        q_cost = calculate_cost(result.get('input_tokens', 0), result.get('output_tokens', 0))
+                                        
+                                        # Apply backend cost increment
+                                        if 'batch_cost' in st.session_state.generated_output.get(b_key, {}):
+                                            st.session_state.generated_output[b_key]['batch_cost'] += q_cost
+                                        if '_total_cost' in st.session_state.generated_output:
+                                            st.session_state.generated_output['_total_cost'] += q_cost
+
+                            if success_count > 0:
+                                st.success(f"✅ Successfully regenerated {success_count} question(s)!")
+                                st.session_state.regen_selection = set()
+                                st.rerun()  # Refresh the UI to display expanded versions
+
                         except Exception as e:
                             st.error(f"Error running regeneration: {e}")
+                            st.exception(e)
         else:
             st.info("ℹ️ Select questions above using the checkboxes to regenerate specific items.")
 
@@ -2347,7 +2335,34 @@ with tab2:
                 json_objects = extract_json_objects(text_content)
                 
                 for obj in json_objects:
-                    # Handle validation wrapper
+                    import json
+                    # Handle new 3-stage pipeline format
+                    if 'writer_output' in obj and 'questions' in obj['writer_output']:
+                        for idx, q_item in enumerate(obj['writer_output']['questions'], 1):
+                            q_key = f"question{idx}"
+                            checkbox_key = f"duplicate_results_{batch_key}_{q_key}"
+                            
+                            if st.session_state.get(checkbox_key, False):
+                                count_key = f"duplicate_count_results_{batch_key}_{q_key}"
+                                q_num = str(idx)
+                                question_code = f"{batch_key}_q{q_num}"
+                                
+                                # Let's format the q_item dict roughly as markdown for the prompt
+                                # or simply dump it as well-structured JSON string which LLM understands
+                                q_content_str = json.dumps(q_item, indent=2)
+                                
+                                selected_questions[f"{batch_key}_{q_key}"] = {
+                                    'question_key': q_key,
+                                    'question_code': question_code,
+                                    'batch_key': batch_key,
+                                    'markdown_content': q_content_str,
+                                    'num_duplicates': st.session_state.get(count_key, 1),
+                                    'additional_notes': st.session_state.get(f"duplicate_notes_{batch_key}_{q_key}", ""),
+                                    'pdf_file': st.session_state.get(f"duplicate_file_{batch_key}_{q_key}", None)
+                                }
+                        continue # processed as 3-stage
+                    
+                    # Handle validation wrapper (old format)
                     questions_to_check = {}
                     if 'CORRECTED_ITEM' in obj or 'corrected_item' in obj:
                         corrected = obj.get('CORRECTED_ITEM') or obj.get('corrected_item')
@@ -2356,7 +2371,7 @@ with tab2:
                     else:
                         questions_to_check = obj
                     
-                    # Check each question
+                    # Check each question (old format)
                     for q_key, q_content in questions_to_check.items():
                         if q_key.lower().startswith('question') or q_key.lower().startswith('q'):
                             # Use 'results' context to match the render context
@@ -2418,13 +2433,28 @@ with tab2:
                                 pdf_file = data.get('pdf_file', None)
                                 logger.info(f"🔍 DEBUG Duplication - {data['question_code']}: PDF={'✅ Present (' + pdf_file.name + ')' if pdf_file else '❌ Missing'}")
                                 
+                                # Load model configuration
+                                import yaml
+                                from pathlib import Path
+                                model_to_use = "gemini-3-flash-preview"  # fallback
+                                try:
+                                    config_path = Path("pipeline_config.yaml")
+                                    if config_path.exists():
+                                        with open(config_path, 'r', encoding='utf-8') as f:
+                                            config = yaml.safe_load(f)
+                                            # Pull duplication model from config
+                                            model_to_use = config.get('duplication', {}).get('model', model_to_use)
+                                except Exception as e:
+                                    logger.warning(f"Could not load duplication model from config, using fallback: {e}")
+
                                 result = await duplicate_questions_async(
                                     original_question_markdown=data['markdown_content'],
                                     question_code=data['question_code'],
                                     num_duplicates=data['num_duplicates'],
                                     api_key=gemini_api_key,
                                     additional_notes=data.get('additional_notes', ""),
-                                    pdf_file=pdf_file
+                                    pdf_file=pdf_file,
+                                    model=model_to_use
                                 )
                                 return key, result
                             

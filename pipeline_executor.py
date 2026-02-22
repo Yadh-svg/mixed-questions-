@@ -67,7 +67,8 @@ async def run_stage_pipeline(
     questions: List[Dict[str, Any]],
     general_config: Dict[str, Any],
     files: List = None,
-    save_prompts_dir: Optional[Path] = None
+    save_prompts_dir: Optional[Path] = None,
+    previous_batch_metadata: Optional[Dict[str, Any]] = None
 ) -> Dict[str, Any]:
     """
     Execute 3-Stage Pipeline:
@@ -97,7 +98,7 @@ async def run_stage_pipeline(
         s1_conf = get_stage_config('math_core', pipeline_config)
         logger.info(f"🏛️ Stage 1: Math Core (Architect) | Model: {s1_conf['model']}")
         
-        prompt_data_1 = build_math_core_prompt(questions, general_config, files)
+        prompt_data_1 = build_math_core_prompt(questions, general_config, files, previous_batch_metadata)
         
         # Save prompt
         if save_prompts_dir:
@@ -126,7 +127,7 @@ async def run_stage_pipeline(
         s2_conf = get_stage_config('writer', pipeline_config)
         logger.info(f"✍️ Stage 2: Writer | Model: {s2_conf['model']}")
         
-        prompt_data_2 = build_writer_prompt(math_core_data, questions, general_config, files)
+        prompt_data_2 = build_writer_prompt(math_core_data, questions, general_config, files, previous_batch_metadata)
         
         if save_prompts_dir:
             with open(save_prompts_dir / "stage2_writer_prompt.txt", "w", encoding="utf-8") as f:
@@ -158,6 +159,28 @@ async def run_stage_pipeline(
         total_input = result_1.get('input_tokens', 0) + result_2.get('input_tokens', 0)
         total_output = result_1.get('output_tokens', 0) + result_2.get('output_tokens', 0)
         
+        # EXTRACT CORE SKILL METADATA
+        # 1. Topics from Math Core
+        used_topics = []
+        if isinstance(math_core_data, dict) and 'core_skill_metadata' in math_core_data:
+            metadata = math_core_data.get('core_skill_metadata', {})
+            used_topics = metadata.get('topics_used', [])
+            if not isinstance(used_topics, list):
+                used_topics = []
+        
+        # 2. Scenarios from Writer
+        used_scenarios = []
+        if isinstance(writer_data, dict) and 'core_skill_metadata' in writer_data:
+            metadata = writer_data.get('core_skill_metadata', {})
+            used_scenarios = metadata.get('scenarios_used', [])
+            if not isinstance(used_scenarios, list):
+                used_scenarios = []
+                    
+        core_skill_data = {
+            "topics": used_topics,
+            "scenarios": used_scenarios
+        }
+        
         final_output = {
             "math_core": math_core_data,
             "writer_output": writer_data,
@@ -168,7 +191,8 @@ async def run_stage_pipeline(
                 "total_tokens": {
                     "input": total_input,
                     "output": total_output
-                }
+                },
+                "core_skill_data": core_skill_data
             }
         }
         

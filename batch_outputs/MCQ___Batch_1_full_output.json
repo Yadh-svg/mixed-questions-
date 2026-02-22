@@ -1,0 +1,74 @@
+{
+  "raw": {
+    "text": "{\n  \"math_core\": {\n    \"math_cores\": [\n      {\n        \"id\": \"Q1\",\n        \"Abstract Math Structure\": \"Arithmetic Progression Formula Application: $a_n = a + (n-1)d$\",\n        \"Topic Identification and Description\": \"nth term of an AP: This topic involves identifying the first term ($a$), the common difference ($d$), and the term number ($n$) to calculate the specific value of the $n^{\\\\text{th}}$ term ($a_n$) of a sequence defined by a constant difference between consecutive terms.\",\n        \"Subtopic Differentiation\": \"Direct Calculation of the nth Term Value\"\n      }\n    ]\n  },\n  \"writer_output\": {\n    \"questions\": [\n      {\n        \"question_id\": \"Q1\",\n        \"metadata\": {\n          \"Topic Used\": \"nth term of an AP\",\n          \"MCQ Type\": \"Number Based\",\n          \"Mark of question\": \"1.0\",\n          \"DOK level of question\": \"1\",\n          \"Taxonomy of question\": \"Remembering\",\n          \"Statement Based\": \"NO\"\n        },\n        \"question_text\": \"In an arithmetic progression, the first term ($a$) is 12 and the common difference ($d$) is 7. What is the value of the $10^{\\\\text{th}}$ term?\",\n        \"options\": {\n          \"A\": \"75\",\n          \"B\": \"82\",\n          \"Source\": \"68\",\n          \"D\": \"12\"\n        },\n        \"correct_option\": \"A\",\n        \"solution\": \"Step 1: Identify the given values from the question: first term $a = 12$, common difference $d = 7$, and term position $n = 10$. [0.25 marks]\\nStep 2: Recall the formula for the $n^{\\\\text{th}}$ term of an arithmetic progression: $a_n = a + (n-1)d$. [0.25 marks]\\nStep 3: Substitute the values into the formula: $a_{10} = 12 + (10 - 1) \\\\times 7$. Calculate the number of steps: $9 \\\\times 7 = 63$. [0.25 marks]\\nStep 4: Add the first term to the total difference: $12 + 63 = 75$. Therefore, the $10^{\\\\text{th}}$ term is 75. [0.25 marks]\",\n        \"distractor_analysis\": \"| Option | Misconception |\\n| :--- | :--- |\\n| B \\u2013 Conceptual Error | You likely used the formula $a + nd$ instead of $a + (n-1)d$, multiplying the common difference by the term number instead of the number of jumps ($n-1$). You should subtract 1 from the position before multiplying. |\\n| C \\u2013 Computational Error | You likely made an arithmetic mistake by calculating $9 \\\\times 7$ as 56 instead of 63. While you used the correct formula, this multiplication error led to an incorrect final sum of 68. |\\n| D \\u2013 Comprehension Error | You likely misread the question or overlooked the instruction to find the $10^{\\\\text{th}}$ term and simply provided the value of the first term ($a = 12$). Read the prompt carefully to identify the specific term required. |\",\n        \"key_idea\": \"To find a specific term in an arithmetic progression, we use a constant pattern where each term increases by a fixed amount called the common difference ($d$). The core idea is that to reach the $n^{\\\\text{th}}$ term, we start at the first term ($a$) and add the common difference one fewer time than the total number of terms ($n-1$). This works because the first term involves zero jumps of the difference. \\n\\nGeneral step-by-step method:\\nStep 1: Identify the first term ($a$).\\nStep 2: Identify the common difference ($d$).\\nStep 3: Identify the position of the term you want to find ($n$).\\nStep 4: Use the relationship $a + (n-1)d$ to calculate the result.\\n\\nCommon mistakes include multiplying $d$ by $n$ instead of $n-1$, or simple calculation errors during multiplication. A helpful tip is to remember that the common difference represents the 'steps' between terms, and there is always one less step than the number of terms.\"\n      }\n    ]\n  },\n  \"solution_output\": {},\n  \"_pipeline_metadata\": {\n    \"mode\": \"MATH_FIRST\",\n    \"stages\": 2,\n    \"total_tokens\": {\n      \"input\": 8486,\n      \"output\": 1006\n    },\n    \"core_skill_data\": {\n      \"topics\": [],\n      \"scenarios\": []\n    }\n  }\n}",
+    "elapsed": 0,
+    "batch_key": "MCQ - Batch 1",
+    "input_tokens": 8486,
+    "output_tokens": 1006,
+    "thought_tokens": 0,
+    "billed_output_tokens": 1006
+  },
+  "validated": {
+    "text": "{\n  \"math_core\": {\n    \"math_cores\": [\n      {\n        \"id\": \"Q1\",\n        \"Abstract Math Structure\": \"Arithmetic Progression Formula Application: $a_n = a + (n-1)d$\",\n        \"Topic Identification and Description\": \"nth term of an AP: This topic involves identifying the first term ($a$), the common difference ($d$), and the term number ($n$) to calculate the specific value of the $n^{\\\\text{th}}$ term ($a_n$) of a sequence defined by a constant difference between consecutive terms.\",\n        \"Subtopic Differentiation\": \"Direct Calculation of the nth Term Value\"\n      }\n    ]\n  },\n  \"writer_output\": {\n    \"questions\": [\n      {\n        \"question_id\": \"Q1\",\n        \"metadata\": {\n          \"Topic Used\": \"nth term of an AP\",\n          \"MCQ Type\": \"Number Based\",\n          \"Mark of question\": \"1.0\",\n          \"DOK level of question\": \"1\",\n          \"Taxonomy of question\": \"Remembering\",\n          \"Statement Based\": \"NO\"\n        },\n        \"question_text\": \"In an arithmetic progression, the first term ($a$) is 12 and the common difference ($d$) is 7. What is the value of the $10^{\\\\text{th}}$ term?\",\n        \"options\": {\n          \"A\": \"75\",\n          \"B\": \"82\",\n          \"Source\": \"68\",\n          \"D\": \"12\"\n        },\n        \"correct_option\": \"A\",\n        \"solution\": \"Step 1: Identify the given values from the question: first term $a = 12$, common difference $d = 7$, and term position $n = 10$. [0.25 marks]\\nStep 2: Recall the formula for the $n^{\\\\text{th}}$ term of an arithmetic progression: $a_n = a + (n-1)d$. [0.25 marks]\\nStep 3: Substitute the values into the formula: $a_{10} = 12 + (10 - 1) \\\\times 7$. Calculate the number of steps: $9 \\\\times 7 = 63$. [0.25 marks]\\nStep 4: Add the first term to the total difference: $12 + 63 = 75$. Therefore, the $10^{\\\\text{th}}$ term is 75. [0.25 marks]\",\n        \"distractor_analysis\": \"| Option | Misconception |\\n| :--- | :--- |\\n| B \\u2013 Conceptual Error | You likely used the formula $a + nd$ instead of $a + (n-1)d$, multiplying the common difference by the term number instead of the number of jumps ($n-1$). You should subtract 1 from the position before multiplying. |\\n| C \\u2013 Computational Error | You likely made an arithmetic mistake by calculating $9 \\\\times 7$ as 56 instead of 63. While you used the correct formula, this multiplication error led to an incorrect final sum of 68. |\\n| D \\u2013 Comprehension Error | You likely misread the question or overlooked the instruction to find the $10^{\\\\text{th}}$ term and simply provided the value of the first term ($a = 12$). Read the prompt carefully to identify the specific term required. |\",\n        \"key_idea\": \"To find a specific term in an arithmetic progression, we use a constant pattern where each term increases by a fixed amount called the common difference ($d$). The core idea is that to reach the $n^{\\\\text{th}}$ term, we start at the first term ($a$) and add the common difference one fewer time than the total number of terms ($n-1$). This works because the first term involves zero jumps of the difference. \\n\\nGeneral step-by-step method:\\nStep 1: Identify the first term ($a$).\\nStep 2: Identify the common difference ($d$).\\nStep 3: Identify the position of the term you want to find ($n$).\\nStep 4: Use the relationship $a + (n-1)d$ to calculate the result.\\n\\nCommon mistakes include multiplying $d$ by $n$ instead of $n-1$, or simple calculation errors during multiplication. A helpful tip is to remember that the common difference represents the 'steps' between terms, and there is always one less step than the number of terms.\"\n      }\n    ]\n  },\n  \"solution_output\": {},\n  \"_pipeline_metadata\": {\n    \"mode\": \"MATH_FIRST\",\n    \"stages\": 2,\n    \"total_tokens\": {\n      \"input\": 8486,\n      \"output\": 1006\n    },\n    \"core_skill_data\": {\n      \"topics\": [],\n      \"scenarios\": []\n    }\n  }\n}",
+    "elapsed": 0,
+    "batch_key": "MCQ - Batch 1",
+    "input_tokens": 0,
+    "output_tokens": 0
+  },
+  "core_skill_metadata": {
+    "topics": [],
+    "scenarios": []
+  },
+  "_pipeline_output": {
+    "math_core": {
+      "math_cores": [
+        {
+          "id": "Q1",
+          "Abstract Math Structure": "Arithmetic Progression Formula Application: $a_n = a + (n-1)d$",
+          "Topic Identification and Description": "nth term of an AP: This topic involves identifying the first term ($a$), the common difference ($d$), and the term number ($n$) to calculate the specific value of the $n^{\\text{th}}$ term ($a_n$) of a sequence defined by a constant difference between consecutive terms.",
+          "Subtopic Differentiation": "Direct Calculation of the nth Term Value"
+        }
+      ]
+    },
+    "writer_output": {
+      "questions": [
+        {
+          "question_id": "Q1",
+          "metadata": {
+            "Topic Used": "nth term of an AP",
+            "MCQ Type": "Number Based",
+            "Mark of question": "1.0",
+            "DOK level of question": "1",
+            "Taxonomy of question": "Remembering",
+            "Statement Based": "NO"
+          },
+          "question_text": "In an arithmetic progression, the first term ($a$) is 12 and the common difference ($d$) is 7. What is the value of the $10^{\\text{th}}$ term?",
+          "options": {
+            "A": "75",
+            "B": "82",
+            "Source": "68",
+            "D": "12"
+          },
+          "correct_option": "A",
+          "solution": "Step 1: Identify the given values from the question: first term $a = 12$, common difference $d = 7$, and term position $n = 10$. [0.25 marks]\nStep 2: Recall the formula for the $n^{\\text{th}}$ term of an arithmetic progression: $a_n = a + (n-1)d$. [0.25 marks]\nStep 3: Substitute the values into the formula: $a_{10} = 12 + (10 - 1) \\times 7$. Calculate the number of steps: $9 \\times 7 = 63$. [0.25 marks]\nStep 4: Add the first term to the total difference: $12 + 63 = 75$. Therefore, the $10^{\\text{th}}$ term is 75. [0.25 marks]",
+          "distractor_analysis": "| Option | Misconception |\n| :--- | :--- |\n| B \u2013 Conceptual Error | You likely used the formula $a + nd$ instead of $a + (n-1)d$, multiplying the common difference by the term number instead of the number of jumps ($n-1$). You should subtract 1 from the position before multiplying. |\n| C \u2013 Computational Error | You likely made an arithmetic mistake by calculating $9 \\times 7$ as 56 instead of 63. While you used the correct formula, this multiplication error led to an incorrect final sum of 68. |\n| D \u2013 Comprehension Error | You likely misread the question or overlooked the instruction to find the $10^{\\text{th}}$ term and simply provided the value of the first term ($a = 12$). Read the prompt carefully to identify the specific term required. |",
+          "key_idea": "To find a specific term in an arithmetic progression, we use a constant pattern where each term increases by a fixed amount called the common difference ($d$). The core idea is that to reach the $n^{\\text{th}}$ term, we start at the first term ($a$) and add the common difference one fewer time than the total number of terms ($n-1$). This works because the first term involves zero jumps of the difference. \n\nGeneral step-by-step method:\nStep 1: Identify the first term ($a$).\nStep 2: Identify the common difference ($d$).\nStep 3: Identify the position of the term you want to find ($n$).\nStep 4: Use the relationship $a + (n-1)d$ to calculate the result.\n\nCommon mistakes include multiplying $d$ by $n$ instead of $n-1$, or simple calculation errors during multiplication. A helpful tip is to remember that the common difference represents the 'steps' between terms, and there is always one less step than the number of terms."
+        }
+      ]
+    },
+    "solution_output": {},
+    "_pipeline_metadata": {
+      "mode": "MATH_FIRST",
+      "stages": 2,
+      "total_tokens": {
+        "input": 8486,
+        "output": 1006
+      },
+      "core_skill_data": {
+        "topics": [],
+        "scenarios": []
+      }
+    }
+  },
+  "_prompts_dir": "pipeline_outputs\\MCQ_Batch_1"
+}

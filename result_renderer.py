@@ -520,9 +520,353 @@ def render_markdown_question(question_key: str, markdown_content: str, question_
                 </script>
                 """
                 components.html(dup_copy_html, height=60)
+                
+    # Render Regenerated Question at the very bottom (if available)
+    if render_context == "results":
+        render_regenerated_question(batch_key, question_key, render_context)
+
+
+
+
+def render_regenerated_question(batch_key: str, question_key: str, render_context: str = "results"):
+    """Render previously regenerated questions underneath the original."""
+    if render_context != "results":
+        return
+        
+    import html
+    import streamlit as st
+    import json
     
+    regenerated_key = f"regenerated_{batch_key}_{question_key}"
     
+    if regenerated_key in st.session_state and st.session_state[regenerated_key]:
+        st.markdown("")
+        st.markdown(f"**🔄 Regenerated Version**")
+        
+        duplicate = st.session_state[regenerated_key]
+        
+        # The LLM sometimes returns structured JSON embedded inside a `question1` string value.
+        # Unwrap it so we can render it properly instead of displaying raw JSON text.
+        _structured_keys = ['scenario_text', 'question_text', 'options', 'solution',
+                            'distractor_analysis', 'correct_answer', 'final_answer', 'questions_list']
+        if not any(k in duplicate for k in _structured_keys):
+            for _k, _v in duplicate.items():
+                if _k == 'question_code':
+                    continue
+                if isinstance(_v, str) and _v.strip().startswith('{'):
+                    try:
+                        _inner = json.loads(_v)
+                        if isinstance(_inner, dict) and any(k2 in _inner for k2 in _structured_keys):
+                            duplicate = _inner
+                            break
+                    except json.JSONDecodeError:
+                        pass
+
+        # Detect structured output — covers MCQ, FIB, Descriptive, Case Study, Multi-Part
+        is_structured = any(k in duplicate for k in [
+            'question_text', 'scenario_text', 'options', 'solution',
+            'distractor_analysis', 'correct_answer', 'final_answer', 'questions_list'
+        ])
+        
+        if is_structured:
+            parts = []
+            top_note = ""
+            
+            handled_keys = [
+                'question_code', 'question_id', 'question_text', 'scenario_text',
+                'scenario_text/question_text', 'options', 'solution', 'distractor_analysis',
+                'correct_option', 'correct_answer', 'final_answer', 'questions_list', 'key_idea'
+            ]
+            
+            for k, v in duplicate.items():
+                if k not in handled_keys and isinstance(v, str):
+                    top_note += f"**{k}**: {v}\n\n"
+            if top_note:
+                parts.append(top_note)
+            
+            # Scenario or question stem
+            q_text = (
+                duplicate.get('scenario_text/question_text')
+                or duplicate.get('scenario_text')
+                or duplicate.get('question_text', '')
+            )
+            if q_text:
+                parts.append(f"**{q_text}**\n\n")
+
+            # Sub-questions (Case Study, Multi-Part, Descriptive w/ Sub)
+            questions_list = duplicate.get('questions_list', [])
+            if isinstance(questions_list, list) and questions_list:
+                parts.append("**Sub-questions:**\n")
+                for si, sq in enumerate(questions_list, 1):
+                    parts.append(f"**({chr(96+si)})** {sq}\n")
+                parts.append("\n")
+
+            # MCQ options
+            options = duplicate.get('options', {})
+            if isinstance(options, dict) and options:
+                for opt_k, opt_v in options.items():
+                    parts.append(f"- **{opt_k})** {opt_v}")
+                parts.append("\n")
+            
+            correct_opt = duplicate.get('correct_option', '')
+            if correct_opt:
+                parts.append(f"**Correct Option:** {correct_opt}\n\n")
+
+            # FIB correct answer
+            correct_answer = duplicate.get('correct_answer', '')
+            if correct_answer:
+                parts.append(f"**Correct Answer:** {correct_answer}\n\n")
+
+            # Descriptive final answer
+            final_answer = duplicate.get('final_answer', '')
+            if final_answer:
+                parts.append(f"**Final Answer:** {final_answer}\n\n")
+                
+            solution = duplicate.get('solution', '')
+            if solution:
+                parts.append(f"**Solution:**\n{solution}\n\n")
+                
+            distractors = duplicate.get('distractor_analysis', [])
+            if isinstance(distractors, list) and distractors:
+                parts.append("**Distractor Analysis:**\n")
+                parts.append("| Option | Misconception |")
+                parts.append("| :--- | :--- |")
+                for dist in distractors:
+                    if isinstance(dist, dict):
+                        opt = str(dist.get('Option', '')).replace('|', '\\|')
+                        misc = str(dist.get('Misconception', '')).replace('|', '\\|')
+                        parts.append(f"| **{opt}** | {misc} |")
+                    else:
+                        val = str(dist).replace('|', '\\|')
+                        parts.append(f"| | {val} |")
+                parts.append("\n\n")
+                
+            key_idea = duplicate.get('key_idea', '')
+            if key_idea:
+                parts.append(f"**Key Idea:**\n{key_idea}\n\n")
+            
+            dup_markdown = "\n".join(parts)
+        else:
+            dup_content_key = [k for k in duplicate.keys() if k != 'question_code'][0] if len(duplicate.keys()) > 1 else 'question1'
+            dup_markdown = duplicate.get(dup_content_key, str(duplicate))
+            
+        with st.expander(f"✨ Regenerated Output", expanded=True):
+            st.markdown(dup_markdown)
+        st.markdown("---")
+
+
+
+
+def render_duplication_controls(batch_key: str, question_key: str, q_num: str, render_context: str = "results"):
+    """Render duplication checkboxes and input fields for a given question."""
+    if render_context != "results":
+        return
+        
+    import streamlit as st
     
+    checkbox_key = f"duplicate_{render_context}_{batch_key}_{question_key}"
+    count_key = f"duplicate_count_{render_context}_{batch_key}_{question_key}"
+    
+    st.markdown("") # spacing
+    col1, col2, col3 = st.columns([0.8, 1.2, 2.5])
+    
+    with col1:
+        duplicate_selected = st.checkbox(
+            "Duplicate Item",
+            key=checkbox_key,
+            help="Select this question to generate duplicates"
+        )
+        
+    with col2:
+        regen_key = f"regen_select_{batch_key}_{q_num}"
+        regen_selected = st.checkbox("Regenerate Item", key=regen_key, help="Select to regenerate ONLY this question")
+        if regen_selected:
+            if 'regen_selection' not in st.session_state:
+                st.session_state.regen_selection = set()
+            st.session_state.regen_selection.add(f"{batch_key}:{q_num}")
+            regen_reason_key = f"regen_reason_{batch_key}_{q_num}"
+            st.text_input(
+                "Reason",
+                placeholder="e.g., Options are incorrect...",
+                key=regen_reason_key
+            )
+        else:
+            if 'regen_selection' in st.session_state:
+                st.session_state.regen_selection.discard(f"{batch_key}:{q_num}")
+                
+    with col3:
+        if duplicate_selected:
+            st.number_input(
+                "# Duplicates",
+                min_value=1,
+                max_value=5,
+                value=1,
+                key=count_key,
+                help="Number of duplicates to generate"
+            )
+            
+            notes_key = f"duplicate_notes_{batch_key}_{question_key}"
+            file_key = f"duplicate_file_{batch_key}_{question_key}"
+            
+            with st.expander("📝 Duplicate Customization (Notes & PDF)", expanded=False):
+                st.text_area("Additional Instructions", key=notes_key, height=70)
+                st.file_uploader("Context File (PDF/Image)", type=['pdf', 'png', 'jpg', 'jpeg', 'webp'], key=file_key)
+
+
+def render_generated_duplicates(batch_key: str, question_key: str, render_context: str = "results"):
+    """Render previously generated duplicates for a question."""
+    if render_context != "results":
+        return
+        
+    import html
+    import streamlit as st
+    import streamlit.components.v1 as components
+    
+    duplicates_key = f"duplicates_{batch_key}_{question_key}"
+    
+    if duplicates_key in st.session_state and st.session_state[duplicates_key]:
+        st.markdown("")
+        st.markdown(f"**🔄 Duplicates ({len(st.session_state[duplicates_key])})**")
+        
+        for i, duplicate in enumerate(st.session_state[duplicates_key], 1):
+            dup_question_key = duplicate.get('question_code', f'{question_key}-dup-{i}')
+            
+            # The LLM sometimes returns structured JSON embedded inside a `question1` string value.
+            # Unwrap it so we can render it properly instead of displaying raw JSON text.
+            _structured_keys = ['scenario_text', 'question_text', 'options', 'solution',
+                                'distractor_analysis', 'correct_answer', 'final_answer', 'questions_list']
+            if not any(k in duplicate for k in _structured_keys):
+                for _k, _v in duplicate.items():
+                    if _k == 'question_code':
+                        continue
+                    if isinstance(_v, str) and _v.strip().startswith('{'):
+                        try:
+                            _inner = json.loads(_v)
+                            if isinstance(_inner, dict) and any(k2 in _inner for k2 in _structured_keys):
+                                duplicate = _inner
+                                break
+                        except json.JSONDecodeError:
+                            pass
+
+            # Detect structured output — covers MCQ, FIB, Descriptive, Case Study, Multi-Part
+            is_structured = any(k in duplicate for k in [
+                'question_text', 'scenario_text', 'options', 'solution',
+                'distractor_analysis', 'correct_answer', 'final_answer', 'questions_list'
+            ])
+            
+            if is_structured:
+                import json
+                
+                parts = []
+                top_note = ""
+
+                handled_keys = [
+                    'question_code', 'question_id', 'question_text', 'scenario_text',
+                    'scenario_text/question_text', 'options', 'solution', 'distractor_analysis',
+                    'correct_option', 'correct_answer', 'final_answer', 'questions_list', 'key_idea'
+                ]
+
+                for k, v in duplicate.items():
+                    if k not in handled_keys and isinstance(v, str):
+                        top_note += f"**{k}**: {v}\n\n"
+                if top_note:
+                    parts.append(top_note)
+                
+                # Scenario or question stem
+                q_text = (
+                    duplicate.get('scenario_text/question_text')
+                    or duplicate.get('scenario_text')
+                    or duplicate.get('question_text', '')
+                )
+                if q_text:
+                    parts.append(f"**{q_text}**\n\n")
+
+                # Sub-questions (Case Study, Multi-Part, Descriptive w/ Sub)
+                questions_list = duplicate.get('questions_list', [])
+                if isinstance(questions_list, list) and questions_list:
+                    parts.append("**Sub-questions:**\n")
+                    for si, sq in enumerate(questions_list, 1):
+                        parts.append(f"**({chr(96+si)})** {sq}\n")
+                    parts.append("\n")
+
+                # MCQ options
+                options = duplicate.get('options', {})
+                if isinstance(options, dict) and options:
+                    for opt_k, opt_v in options.items():
+                        parts.append(f"- **{opt_k})** {opt_v}")
+                    parts.append("\n")
+                
+                correct_opt = duplicate.get('correct_option', '')
+                if correct_opt:
+                    parts.append(f"**Correct Option:** {correct_opt}\n\n")
+
+                # FIB
+                correct_answer = duplicate.get('correct_answer', '')
+                if correct_answer:
+                    parts.append(f"**Correct Answer:** {correct_answer}\n\n")
+
+                # Descriptive
+                final_answer = duplicate.get('final_answer', '')
+                if final_answer:
+                    parts.append(f"**Final Answer:** {final_answer}\n\n")
+                    
+                solution = duplicate.get('solution', '')
+                if solution:
+                    parts.append(f"**Solution:**\n{solution}\n\n")
+                    
+                distractors = duplicate.get('distractor_analysis', [])
+                if isinstance(distractors, list) and distractors:
+                    parts.append("**Distractor Analysis:**\n")
+                    parts.append("| Option | Misconception |")
+                    parts.append("| :--- | :--- |")
+                    for dist in distractors:
+                        if isinstance(dist, dict):
+                            # Escape pipe characters in content to avoid breaking the markdown table
+                            opt = str(dist.get('Option', '')).replace('|', '\\|')
+                            misc = str(dist.get('Misconception', '')).replace('|', '\\|')
+                            parts.append(f"| **{opt}** | {misc} |")
+                        else:
+                            val = str(dist).replace('|', '\\|')
+                            parts.append(f"| | {val} |")
+                    parts.append("\n")
+                
+                dup_markdown = "\n".join(parts)
+            else:
+                # Fallback to older text-based markdown blob
+                dup_content_key = [k for k in duplicate.keys() if k != 'question_code'][0] if len(duplicate.keys()) > 1 else 'question1'
+                dup_markdown = duplicate.get(dup_content_key, str(duplicate))
+                
+            dup_col1, dup_col2 = st.columns([0.9, 0.1])
+            
+            with dup_col1:
+                with st.expander(f"Duplicate {i} - {dup_question_key}", expanded=False):
+                    st.markdown(dup_markdown)
+            
+            with dup_col2:
+                dup_copy_key = f"copy_dup_{render_context}_{batch_key}_{question_key}_{i}"
+                escaped_dup_markdown = html.escape(dup_markdown)
+                
+                dup_copy_html = f"""
+                <div style="display: flex; align-items: center; justify-content: center; height: 50px; margin-top: 8px;">
+                    <textarea id="text_{dup_copy_key}" style="position: absolute; left: -9999px;">{escaped_dup_markdown}</textarea>
+                    <button id="btn_{dup_copy_key}" 
+                            style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                                   color: white; border: none; border-radius: 8px;
+                                   padding: 10px 14px; font-size: 18px; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 2px 4px rgba(0,0,0,0.1);"
+                            title="Copy duplicate {i} to clipboard">📋</button>
+                </div>
+                <script>
+                    document.getElementById('btn_{dup_copy_key}').addEventListener('click', function() {{
+                        const ta = document.createElement('textarea');
+                        ta.value = document.getElementById('text_{dup_copy_key}').value;
+                        document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+                        this.innerHTML = '✅'; this.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
+                        setTimeout(() => {{ this.innerHTML='📋'; this.style.background='linear-gradient(135deg, #667eea 0%, #764ba2 100%)'; }}, 1500);
+                    }});
+                </script>
+                """
+                components.html(dup_copy_html, height=60)
+        st.markdown("---")
 
 def render_batch_results(batch_key: str, result_data: Dict[str, Any], render_context: str = "results"):
     """
@@ -555,49 +899,9 @@ def render_batch_results(batch_key: str, result_data: Dict[str, Any], render_con
     try:
         parsed_output = json.loads(text_content)
         
-        # Check if this is a pipeline output with scenario and question
         # Handle new 3-stage pipeline output (math_core, writer_output, solution_output)
         if isinstance(parsed_output, dict) and 'writer_output' in parsed_output:
-            st.markdown("### 🎯 Pipeline Generated Content (3-Stage)")
-            
-            # Display Math Core (Architect)
-            if 'math_core' in parsed_output and parsed_output['math_core']:
-                math_core_data = parsed_output['math_core']
-                if 'math_cores' in math_core_data:
-                    with st.expander("🧠 Math Core (Architect Design)", expanded=False):
-                        for i, core in enumerate(math_core_data['math_cores']):
-                            st.markdown(f"#### Q{i+1}: {core.get('id', 'N/A')}")
-                            
-                            # Display Topic
-                            if 'Topic' in core:
-                                st.markdown(f"**Topic:** {core.get('Topic', 'N/A')}")
-                            
-                            # Display Subquestions
-                            sub_questions = {k: v for k, v in core.items() if k.startswith('subquestion_')}
-                            if sub_questions:
-                                st.markdown("**Subquestions:**")
-                                for key, value in sorted(sub_questions.items()):
-                                    # Format key: subquestion_1 -> Subquestion 1
-                                    formatted_key = key.replace('_', ' ').title()
-                                    st.markdown(f"- **{formatted_key}:** {value}")
-                            
-                            # Display MCQ specific Math Core fields
-                            if 'Question_Design' in core:
-                                q_design = core['Question_Design']
-                                if isinstance(q_design, dict):
-                                    st.markdown(f"**Description:** {q_design.get('Description', '')}")
-                                    if 'Given' in q_design:
-                                        st.markdown(f"**Given:** {q_design.get('Given')}")
-                                    if 'Find' in q_design:
-                                        st.markdown(f"**Find:** {q_design.get('Find')}")
-
-                            # Fallback
-                            if 'concept_name' in core:
-                                st.markdown(f"**Concept:** {core.get('concept_name')}")
-                            if 'math_structure' in core:
-                                st.markdown(f"**Structure:** {core.get('math_structure')}")
-                            
-                            st.markdown("---")
+            st.markdown("### 🎯 Generated Content")
             
             writer_out = parsed_output['writer_output']
             if 'questions' in writer_out:
@@ -624,6 +928,9 @@ def render_batch_results(batch_key: str, result_data: Dict[str, Any], render_con
                                 for opt_key, opt_val in opts.items():
                                     st.markdown(f"- **{opt_key}:** {opt_val}")
                             
+                            render_duplication_controls(batch_key, f'question{idx}', str(idx), render_context)
+                            render_generated_duplicates(batch_key, f'question{idx}', render_context)
+                            render_regenerated_question(batch_key, f'question{idx}', render_context)
                             # Answer & Solution
                             with st.expander("💡 View Solution & Analysis", expanded=False):
                                 # Correct Option
@@ -687,6 +994,9 @@ def render_batch_results(batch_key: str, result_data: Dict[str, Any], render_con
                             if 'diagram_prompt' in q_item:
                                 st.info(f"🖼️ **Diagram Request:** {q_item['diagram_prompt']}")
                             
+                            render_duplication_controls(batch_key, f'question{idx}', str(idx), render_context)
+                            render_generated_duplicates(batch_key, f'question{idx}', render_context)
+                            render_regenerated_question(batch_key, f'question{idx}', render_context)
                             # Answer & Solution
                             with st.expander("💡 View Solution & Analysis", expanded=False):
                                 # Correct Answer
@@ -725,6 +1035,9 @@ def render_batch_results(batch_key: str, result_data: Dict[str, Any], render_con
                             if 'diagram_prompt' in q_item and q_item['diagram_prompt'] != "No diagram":
                                 st.info(f"🖼️ **Diagram Request:** {q_item['diagram_prompt']}")
                             
+                            render_duplication_controls(batch_key, f'question{idx}', str(idx), render_context)
+                            render_generated_duplicates(batch_key, f'question{idx}', render_context)
+                            render_regenerated_question(batch_key, f'question{idx}', render_context)
                             # Answer & Solution
                             with st.expander("💡 View Solution & Analysis", expanded=False):
                                 # Final Answer
@@ -773,6 +1086,9 @@ def render_batch_results(batch_key: str, result_data: Dict[str, Any], render_con
                                     st.markdown(f"**({chr(96+sub_idx)})** {sub_q}")
                             
                             # Solution & Key Idea
+                            render_duplication_controls(batch_key, f"question{idx}", str(idx), render_context)
+                            render_generated_duplicates(batch_key, f"question{idx}", render_context)
+                            render_regenerated_question(batch_key, f"question{idx}", render_context)
                             with st.expander("💡 View Solution & Analysis", expanded=False):
                                 if 'final_answer' in q_item:
                                     st.success(f"**Final Answer:**\n\n{q_item.get('final_answer', 'N/A')}")
@@ -817,12 +1133,7 @@ def render_batch_results(batch_key: str, result_data: Dict[str, Any], render_con
                         if 'key_idea' in q_item and q_item['key_idea']:
                             with st.expander(f"🔑 Key Idea", expanded=False):
                                 st.markdown(q_item['key_idea'])
-            
-            # Display metadata
-            if '_pipeline_metadata' in parsed_output:
-                with st.expander("📊 Pipeline Metadata", expanded=False):
-                    metadata = parsed_output['_pipeline_metadata']
-                    st.json(metadata)
+            # Display metadata is removed for cleaner UI
             return
 
         # Handle legacy or 2-stage pipeline output
@@ -853,11 +1164,7 @@ def render_batch_results(batch_key: str, result_data: Dict[str, Any], render_con
                             else:
                                 st.warning("No content available for this question")
                 
-                # Display metadata
-                if '_pipeline_metadata' in parsed_output:
-                    with st.expander("📊 Pipeline Metadata", expanded=False):
-                        metadata = parsed_output['_pipeline_metadata']
-                        st.json(metadata)
+                # Display metadata is removed for cleaner UI
             
             # Successfully rendered pipeline output
             return
@@ -866,8 +1173,13 @@ def render_batch_results(batch_key: str, result_data: Dict[str, Any], render_con
         # Not valid JSON or not pipeline output, continue with normal flow
         pass
     except Exception as e:
-        # Something went wrong with pipeline detection, log and continue
+        # Something went wrong with pipeline detection — show error in UI so it's visible
+        import traceback
+        st.error(f"⚠️ Rendering error: {e}")
+        with st.expander("Error Details"):
+            st.code(traceback.format_exc())
         print(f"Pipeline detection error: {e}")
+        return  # Don't fall through to normalizer — partial output already may have rendered
     
     # =======================================================================
     # SINGLE NORMALIZATION BOUNDARY - All LLM output parsing happens here

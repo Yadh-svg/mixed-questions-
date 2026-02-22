@@ -1,0 +1,726 @@
+<writer_generation>
+  <context>
+    <grade>Grade 10</grade>
+    <subject>Mathematics</subject>
+    <requirements>
+    <source_material>
+      <new_concept>
+        
+      </new_concept>
+      
+      <old_concept>
+        
+      </old_concept>
+      
+      <files_uploaded>
+        None
+      </files_uploaded>
+    </source_material>
+    
+    <already_seen_scenarios>
+- Number-based sequences representing constant growth or reduction patterns
+- Arranging flower pots in a garden display
+- Stacking cans in a triangular grocery display
+- Abstract number sequence summation
+- Stacking pipes at a construction site
+    </already_seen_scenarios>
+    <core_skill_instruction>
+      You MUST AVOID using the exact scenarios listed above.
+      - Create NOVEL, DISTINCT scenarios.
+      - Do not repeat storylines or contexts from previous batches.
+    </core_skill_instruction>
+            
+Q1: topic : NTH TERM , DOK 1 - 1.0 mark , MCQ Type: Auto, Taxonomy: Remembering, Statement Based: NO
+Q2: topic : NTH TERM , DOK 1 - 1.0 mark , MCQ Type: Auto, Taxonomy: Remembering, Statement Based: NO
+Q3: topic : Sum of First n Terms of an AP , DOK 1 - 1.0 mark , MCQ Type: Auto, Taxonomy: Remembering, Statement Based: NO
+Q4: topic : Sum of First n Terms of an AP , DOK 1 - 1.0 mark , MCQ Type: Auto, Taxonomy: Remembering, Statement Based: NO</requirements>
+    <additional_notes></additional_notes>
+  </context>
+
+  <math_blueprint>
+    {
+  "core_skill_metadata": {
+    "topics_used": [
+      "Finding the nth term of an AP using $a_n = a_1 + (n-1)d$ where $a_1$ and $d$ are given.",
+      "Finding the nth term of an AP given two non-consecutive terms or specific term values.",
+      "Finding the sum of the first n terms of an AP using $S_n = \\frac{n}{2}[2a_1 + (n-1)d]$ where $a_1$ and $d$ are given.",
+      "Finding the sum of the first n terms of an AP using a relationship between $S_n$ and $a_n$ or $a_1$ and $a_n$."
+    ]
+  },
+  "math_cores": [
+    {
+      "id": "Q1",
+      "Abstract Math Structure": "Arithmetic Sequence defined by initial term and common difference.",
+      "Topic Identification and Description": "NTH TERM: Determining a specific term ($a_n$) in an Arithmetic Progression (AP) when the first term ($a_1$) and the common difference ($d$) are explicitly provided.",
+      "Subtopic Differentiation": "Direct application of $a_n$ formula with given $a_1$ and $d$."
+    },
+    {
+      "id": "Q2",
+      "Abstract Math Structure": "System of two linear equations derived from term definitions in an Arithmetic Sequence.",
+      "Topic Identification and Description": "NTH TERM: Determining the $n^{th}$ term ($a_n$) of an AP when two different non-consecutive terms (e.g., $a_p$ and $a_q$) are known, requiring derivation of $a_1$ and $d$ first.",
+      "Subtopic Differentiation": "Indirect calculation of $a_n$ via solving for $a_1$ and $d$ using two known terms."
+    },
+    {
+      "id": "Q3",
+      "Abstract Math Structure": "Arithmetic Sequence summation formula application.",
+      "Topic Identification and Description": "Sum of First n Terms of an AP: Calculating the sum of the first $n$ terms ($S_n$) using the formula $S_n = \\frac{n}{2}[2a_1 + (n-1)d]$ when $a_1$, $d$, and $n$ are known.",
+      "Subtopic Differentiation": "Direct calculation of $S_n$ using the formula involving $a_1$ and $d$."
+    },
+    {
+      "id": "Q4",
+      "Abstract Math Structure": "Arithmetic Sequence summation using boundary terms.",
+      "Topic Identification and Description": "Sum of First n Terms of an AP: Calculating the sum of the first $n$ terms ($S_n$) when the number of terms ($n$), the first term ($a_1$), and the last term ($a_n$) are provided.",
+      "Subtopic Differentiation": "Application of the concise summation formula $S_n = \\frac{n}{2}(a_1 + a_n)$."
+    }
+  ]
+}
+  </math_blueprint>
+
+  <task>
+    Generate {{TOTAL_QUESTIONS}} Multiple Choice Questions (MCQs) based on the inputs above and.
+
+    Each question must:
+      
+      - Generate **original** questions that are not copied, adapted, or rephrased from textbooks or existing items.
+      - Ensure all mathematics is **accurate**, with logically sound reasoning and correct solutions.
+      - Each question must be **distinct** and not resemble previously generated items.
+      - Align every question with the specified **DOK level** and **cognitive taxonomy**.
+      - Ensure the difficulty, language, and structure are **appropriate for the target grade**.
+    - Use only the concepts listed in the specified topics.
+      - Design questions that assess **conceptual understanding**, not just routine procedures.
+
+  </task>
+     - Start with the explicit metadata: "Topic Used: <topic>"
+      - Additional Notes from user: 
+  <requirements>
+    <important>
+        TOPIC COVERAGE AND TRACEABILITY (MANDATORY)
+          1. Coverage Rule (MANDATORY)
+            - You MUST generate questions for EVERY topic mentioned.
+            - Do NOT skip, merge, or partially cover any topic.
+            - If a topic requires N questions, generate exactly N questions.
+
+          2. Topic Traceability Rule
+            - Above EACH question (above scenario), explicitly mention:
+              Topic Used: <exact topic name>
+            - The topic name must exactly match one of the input topics.
+            - The topic should not be mentioned along with the question.
+
+          3. Question Generation Rule
+            - Each question must strictly follow the given:
+              - Marks
+              - DOK level
+            - Do NOT change or average these values across topics.
+            - Each question should be independent unless explicitly stated otherwise.
+            - Metadata of this should be present athe the begining fo the question (before scenario), Dont add topic,marks dok level other things along with the question
+          **Continuity rule:**
+            When a question has multiple sub-parts (or when two or more items are grouped as a single set), all sub-parts must belong to one continuous scenario — the same storyline, characters and setting — and one sub-part should logically lead to the next. (Continuity applies to the scenario/context, not necessarily the numeric results.)
+
+        
+        **Taxonomy Lock Rule**
+        - For every question type, the user will explicitly specify:
+          - Taxonomy (e.g., Remembering, Understanding, Applying, Analyzing, etc.)
+          - DOK level
+          - Marks
+        - You MUST use **only the taxonomy provided for that question type**.
+        - Do NOT substitute, infer, upgrade, downgrade, or mix taxonomies.
+        - If a question cannot be generated under the given taxonomy, you must still stay within it and simplify the question accordingly.
+    </important>
+    <MCQ_Structure>
+        Each MCQ must have:
+
+          1. **Question**: A clear, well-formulated question that tests the specified concept
+            - Use student-friendly language appropriate for Grade 10
+            - Names should be simple and commonly used  (eg : Jack	Anna  Ryan	Emily	Sam	Maria	John	)
+            
+                DO NOT use academic or classroom settings.
+                This means NO:
+                - teacher, student, class, quiz, test, homework, assignment, exam, studying
+            - Avoid ambiguous wording
+            - Include all necessary information
+            - Use correct mathematical notation
+
+          2. **Four Answer Choices**: Exactly 4 options labeled A, B, C, D
+            - **1 Correct Answer**: The only mathematically correct solution
+            - **3 Distractors**: Plausible but incorrect options
+
+          3. **Solution**: Step-by-step solution showing how to arrive at the correct answer
+            - Clearly explain the reasoning
+            - Show all mathematical steps
+            - Justify why the correct answer is right
+
+          4. **Distractor Analysis**: For each of the 3 distractors, explain:
+            - Why a student might choose this incorrect option
+            - What misconception or error leads to this answer
+            - How to correct the misunderstanding
+            - It should be maximum of 4 lines 
+
+     </MCQ_Structure>
+
+     <types_of_mcq>
+         1. MCQ (Number Based)
+            Description:
+              A question that presents information entirely using numbers, symbols, or units.
+              There is no image and no real-world narrative.
+              Students operate purely on abstract or quantitative data (comparison, place value, unit conversion, arithmetic, patterns, etc.).
+            Example:
+              Choose the smallest number from the given options.
+              Options:
+              A) 3,80,912
+              B) 3,89,012
+              C) 3,98,012
+              D) 3,89,100
+
+          2. MCQ (Image Based)
+            Description:
+              A question where the image or diagram provides the critical mathematical information needed to answer.
+              There is no real-world story. The reasoning is visual/structural (shapes, geometry, patterns, fold symmetry, matchsticks, etc.).
+              Options may also appear as visuals.
+            Example (with Diagram Prompt):
+              Diagram Prompt:
+              Draw two matchstick figures:
+              - Figure A: three matchsticks forming an open V-shape
+              - Figure B: the same three matchsticks rearranged into a closed triangle
+              All matchsticks are equal in length, no measurements.
+              Question:
+              The matchsticks in Figure A are joined to form a triangle as shown in Figure B. What type of triangle is it?
+              Options:
+              A) Equilateral Triangle
+              B) Scalene Triangle
+              C) Isosceles Triangle
+              D) Right-Angled Triangle
+
+          3. MCQ (Real-World Word Questions)
+            Description:
+              A question framed using a real-life situation described only in words - no images.
+              Students translate the scenario into mathematical reasoning (measures, money, packing, production, containers, etc.).
+            Example:
+              A sugar factory produced 7 quintals of sugar.
+              The sugar is priced and packed per kilogram.
+              How many kilograms of sugar did they produce?
+              Options:
+                A) 7 kg
+                B) 70 kg
+                C) 700 kg
+                D) 7,000 kg
+
+          4. MCQ (Real-World Image-Based Word Questions)
+            Description:
+              A real-life scenario where both the image and the text are jointly required to answer.
+              The image presents practical or quantitative information (weights, objects, arrangements, packaging, etc.).
+            Example (with Diagram Prompt):
+              Diagram Prompt:
+              Draw four flour packets arranged in a row.
+              Label them:
+              - Packet 1: "1 kg"
+              - Packet 2: "1 kg"
+              - Packet 3: "1 kg"
+              - Packet 4: "500 g"
+              Avoid background scenery.
+              Question:
+              Arun bought several flour packets, as shown in the picture.
+              What is the total weight of the flour he bought?
+              Options:
+              • 3 kg 500 g
+              • 4 kg 500 g
+              • 4 kg
+              • 3 kg 150 g
+
+          ## MCQ Type Selection Rule (CRITICAL)
+          - In the TOPICS_SECTION, each question may optionally specify an "MCQ Type".
+          - If "MCQ Type" is specified, you **MUST STRICTLY** generate a question that fits that specific definition and style.
+          - If "MCQ Type" is "Auto" or NOT specified, you must choose the most appropriate type based on the topic and grade level, ensuring variety across the set.
+
+          For each question, you must specify:
+            - **MCQ Type**: (Number Based / Image Based / Real-World Word / Real-World Image-Based Word)
+            - **Mark of question**: {{Marks}}
+            - **DOK level of question**: {{DOK_Level}}
+            - **Taxonomy of question**: {{Taxonomy}}
+            - **Statement Based**: (YES/NO)
+                
+     </types_of_mcq>
+     <solution_generation>
+          [Provide step-by-step solution showing how to arrive at the correct answer. Include all reasoning and calculations and the mark split.]
+
+     </solution_generation>
+
+     <distractor_analysis>
+        For every mcq question, a Distractor Analysis is compulsory.
+
+          1. Distractor Design Rule
+            Each incorrect option MUST be intentionally framed using exactly ONE identifiable mathematical error type. 
+            Distractors must reflect realistic student mistakes and must not be random, vague, or purely eliminative.
+            Do NOT mix multiple error types within a single option.
+            - You should only select error type from the list provided below ( 4 type of errors)
+            - You should not repeat the same error type for all options.
+            - Do not use phrases such as “the student might think” or “the student might choose” in the distractor analysis, because the explanation is addressed to the learner directly.	
+          2. Permitted Error Types (Use ONLY these)
+
+            A. Conceptual Error  
+              Definition: Arises from an incorrect understanding of a mathematical concept, rule, or property, leading to the wrong method or idea being applied.  
+              Nature: Misunderstanding what concept should be used.  
+              Use in distractors: Target common misconceptions.
+              eg : Examples:
+                  • Believing (a+b)^2 = a^2 + b^2
+                  • Using the area formula when the perimeter is required
+                Use in distractors:
+                  Targets common misconceptions.
+
+            B. Computational Error  
+              Definition: Occurs when the correct concept and method are chosen, but a mistake is made during arithmetic or algebraic computation.  
+              Nature: Careless calculation or manipulation error.  
+              Use in distractors: Capture calculation-based mistakes.
+              Examples:
+                • 7 \times 8 = 54
+                • Sign error: -4 + 6 = -10
+                • Incorrect simplification: \frac{6}{3} = 1
+              Use in distractors:
+                Captures careless calculation mistakes.
+            C. Communicational Error  
+              Definition: Occurs when the student understands the mathematical concept and solution
+              but expresses the answer using incorrect notation, symbols, format, or units.  
+              Nature: Error in mathematical communication or representation.  
+              Use in distractors: Test notation, symbols, units, and expression clarity.
+
+              Examples:
+                Writing x = 2 instead of x ± 2
+                Writing x = 3 instead of x ≥ 3
+                Giving 30 instead of 30 km/h
+                Writing x = 1,2 instead of {1,2}
+
+                Use in distractors:
+                Tests mathematical communication and notation skills.
+            D. Comprehension Error    
+              Definition: Occurs when the student correctly understands the mathematical concepts
+              but misreads, overlooks, or ignores explicit instructions, conditions, or keywords
+              in the question.  
+              Nature: Error in interpreting what is asked, not in understanding mathematics.
+              Use in distractors: Identify reading comprehension and instruction-following weaknesses.
+              Examples:
+                • Finding the area when the question asks for perimeter
+                • Ignoring words like “number of solutions”, “at most”, “except”
+                • Solving for x when the question asks for the value of an expression
+                Use in distractors:
+                  Identifies weaknesses in reading comprehension and attention to detail.
+          Distractor analysis should explain the reasoning abstractly, without referencing textbook pages, sections, or verbatim excerpts.
+          ### Error-Type Classification Gate (MANDATORY)
+
+              Before assigning an error type to any distractor, apply this gate:
+
+              1. If the student’s mistake would STILL occur even if the question were reworded or simplified,
+                then it is NOT a Comprehension Error.
+
+              2. Comprehension Error may be used ONLY when:
+                - the student ignores or misreads an explicit instruction, keyword, or condition
+                - AND the mathematical concept itself is correctly understood
+
+              3. Any misunderstanding of:
+                - sign (positive / negative / zero)
+                - number properties
+                - definitions
+                - term meaning (e.g., “negative”, “odd”, “multiple”)
+                MUST be classified as a Conceptual Error, not Comprehension.
+            ### Error-Type Decision Table (MANDATORY)
+
+          | Observed Student Mistake | Correct Error Type |
+          |--------------------------|-------------------|
+          | Thinks 0 is negative | Conceptual Error |
+          | Uses wrong formula | Conceptual Error |
+          | Ignores word like “except”, “first”, “at most” | Comprehension Error |
+          | Solves correctly but answers a different quantity | Comprehension Error |
+          | Arithmetic slip with correct method | Computational Error |
+          | Wrong units / notation / symbol | Communicational Error |
+
+        IMPORTANT EXCLUSION:
+          If the error arises from misunderstanding a mathematical definition, property,
+          classification, or meaning (e.g., sign of a number, term meaning, formula components),
+          it MUST be classified as a Conceptual Error, not Comprehension.
+
+          -- First finalize on what type of error will be used then make options based on that error type.
+
+      **OUTPUT FORMAT: The distractor analysis MUST be presented as a markdown table with two columns: "Option" and "Misconception"**. The “Option” column must display the option label followed by the assigned error type, separated by a hyphen (e.g., B – Conceptual Error).
+
+        For each incorrect option (3 distractors), follow this exact explanation structure:
+
+
+      **Option [X]: [The incorrect answer]**
+
+      **Why students might select this:**
+      - Begin by identifying the likely mistake: "You selected this option because you likely…"
+      - Explain the specific error or misconception that leads to this answer
+      - Be specific about what went wrong (e.g., "used addition instead of multiplication", "confused the formula", "forgot to convert units")
+
+      **What's wrong with this approach:**
+      - Explain clearly why this reasoning is incorrect
+      - Show the correct concept or procedure that should have been used
+      - Use mathematical reasoning to demonstrate the error
+
+      **Correct approach:
+      - Briefly state what the student should have done instead
+      - Connect back to the correct answer
+      ### Mandatory Distractor Analysis for DOK 2 questions for grade 6 and upper (for statement based questions)
+
+        When providing distractor analysis for DOK 2 grade 6 adn upper questions, follow the format and rules below strictly.
+
+        #### Core Requirement
+        The distractor analysis MUST:
+        1. State which statements were correctly identified as true.
+        2. Explicitly state any true statement that the student failed to identify.
+        3. Explicitly explain why any incorrect statement was mistakenly identified as true.
+
+        #### Mandatory Structure
+        Use the exact narrative structure below (modify only statement numbers and reasons):
+
+        "You have identified that Statement ___ is true.  
+        But you missed to identify that Statement ___ is also a true statement.  
+        You might have thought so since ___ (reason category: computational / conceptual / communication / comprehension).  
+        Also, you thought that Statement ___ is a correct statement since ___ (specific reason)."
+
+        #### If Multiple Statements Are Correctly Identified
+        - Clearly acknowledge all correctly identified statements.
+        - Then address each incorrectly identified statement individually with a reason.
+
+        #### Reason Specification Rules
+        - Reasons must be **specific and concrete**, not vague.
+        - Acceptable examples include:
+          - You might have misunderstood a parallelogram as a square.
+          - You might have forgotten to apply the theorem.
+          - You might have added instead of subtracting.
+          - You might have missed noticing a condition in the question.
+          - You might be unaware of the relevant property or rule.
+        - Always classify the error under one of the following:
+          **computational / conceptual / communication / comprehension**
+
+        #### Output Constraint
+        - Do NOT change the tone or structure.
+        - Do NOT omit either:
+          - the reason for missing a true statement, or
+          - the reason for selecting a false statement.
+        - This format is mandatory for all statement-based distractor analyses.
+      **CRITICAL Distractor Analysis Requirements:**
+      - **Maximum Length**: Each distractor rationale must be **4 lines maximum** (total for all three sub-sections combined)
+      - **Child-Friendly Language**: Use simple, age-appropriate language suitable for Grade 10
+      - **Concise and Clear**: No verbose explanations - keep it short and focused
+      - **Educational Tone**: Be supportive, not condescending
+      - Do NOT say: "You correctly identified that…" for an incorrect option
+      - Include mathematical notation when needed, but keep it minimal
+      - Make sure each distractor analysis is unique and addresses a different type of error
+      - Do Not explicitly say  "Why students might select this" , "What's wrong with this approach" , "Correct approach" in the distractor analysis (you are the one who is explaining the distractor analysis)
+      - Make sure each distractor analysis is of maximum 4 lines
+      Error-Type Diversity Rule (MANDATORY):
+        Each of the three distractors must be based on a different error type.
+        No two distractors may rely on the same underlying mistake, even if expressed differently.
+      
+
+      **Example:**
+          | Distractors | Misconception |
+          |------------|----------------|
+          | B – Conceptual error | You correctly identified that Statement I is true, but you might have misunderstood the term “first five.” The sum of the first five consecutive odd numbers (1 + 3 + 5 + 7 + 9) is 25, not 4³ = 64. Since Statement II is mathematically incorrect, this option is incorrect as a whole. |
+          | C – Computational Error   | You correctly identified that Statement I is true, but you might have assumed that the sum of any three odd numbers always equals 3³ = 27. For example, 1 + 3 + 5 equals 9, not 27. Because Statement III is incorrect, this option is incorrect. |
+          | D – Comprehension Error | You correctly identified that Statement I is true, but you might have misunderstood two ideas: believing that any three odd numbers always sum to 27, and assuming that the sum of consecutive odd numbers is always odd. For example, 1 + 3 = 4 (even). Since Statement III and Statement IV are both incorrect, this option is wrong. |
+
+
+     </distractor_analysis>
+
+     <statement_based_Mcq>
+       
+        When generating **statement-based questions**, follow all rules below strictly.
+
+        ### Stem Requirement (Mandatory)
+        - First create a **clear stem** (context, situation, figure, expression, or given information).
+        - All numbered statements (I, II, III, IV) must be **directly derived from this stem**.
+        - Statements must NOT be independent or unrelated facts.
+        - Each statement should test interpretation, evaluation, or application of the given stem.
+
+        ### Statement Structure
+        - Provide **multiple numbered statements** (e.g., I, II, III, IV).
+        - Each statement must be independently verifiable as **true or false** based only on the stem.
+        - Avoid ambiguous or overlapping statements.
+
+        ### Options Structure
+        - Options must be **combinations of statement numbers**, such as:
+          - I and II only
+          - I, III and IV only
+        - There must be **exactly one correct combination**.
+        - No two options may represent the same logical outcome.
+
+        ### Correct Answer Rule
+        - Clearly identify which statements are **true**.
+        - The correct option must include **all and only** the true statements.
+
+        ### Distractor Analysis Requirement (Mandatory)
+        For **each incorrect option**, provide a distractor analysis that:
+
+        1. States which statements were **correctly identified**.
+        2. States which **true statements were missed**, if any.
+        3. States which **false statements were incorrectly identified as true**.
+        4. Gives a **specific reason** for each error.
+        5. Classifies each error under one of the following:
+          - Computational
+          - Conceptual
+          - Communication
+          - Comprehension
+
+        ### DOK 2 Question Framing Rule for Statement-Based Questions
+
+          When the **input DOK level is DOK 2**, apply the following rules strictly while generating or validating questions:
+
+          • **Up to Grade 5**  
+            - DOK 2 questions must involve **identifying whether a single statement is correct or incorrect**.
+            - Do NOT ask for combinations of statements at this level.
+
+          • **Grade 6 and Above**  
+            - DOK 2 questions involve **identifying the correct combination of statements** (e.g., I & III, II & IV).
+            - Students are expected to evaluate and compare multiple statements, but **no justification or reasoning** should be required.
+
+
+
+     </statement_based_Mcq>
+
+     
+    <key_idea rules>
+      KEY IDEA
+
+        1. What kind of problems these are  
+          Explain simply what students are trying to find in such problems.
+
+        2. Core idea behind these problems  
+          Teach the main idea from the beginning in very simple terms.
+
+        3. Why this idea works  
+          Explain the logic in real understanding, not as a rule to memorize.
+
+        4. General step-by-step method  
+          Step 1:  
+          Step 2:  
+          Step 3:  
+          Step 4:  
+
+        5. Common mistakes students make  
+          Mention at least two mistakes and why they happen.
+
+        6. Tips to avoid these mistakes  
+          Give practical student-friendly advice.
+
+        The explanation must naturally include the rule or principle used, but blended into teaching — not as a separate definition.
+
+        Do not include anything else.
+
+    </key_idea rules>
+
+    
+    <Scenario Rules>
+
+      If scenario is needed (as per the user input) these are the rules 
+      1) Scenario-first & form:
+        - A small scenario (2 lines max)
+        - Use simple, common names. Place the story in an Indian context (locations, ₹ or metric units may be referenced qualitatively), but NEVER use classroom/teacher/student language.
+
+      2) No numeric data in the scenario:
+        - Do NOT include explicit numbers, units, or measurements. Describe quantities only qualitatively (e.g., “several boxes,” “a few racks”).
+        - All exact values, counts, and measurements must appear only in the diagram prompt or the sub-questions.
+
+      3) One-purpose & realism:
+        - The scenario must describe a single, realistic situation that naturally requires the mathematical method being tested.
+        - Details must be plausible and logically consistent; avoid exaggeration or impossible quantities.
+
+      4) Functional-consequence (mandatory):
+        - The mathematical/ geometric relationship must arise naturally from movement, placement, layout, mapping, or observation in the story — not from engineering, safety rules, inspections, optimization, or explicit design justification.
+        - Do NOT explain or justify why the geometry exists; simply describe that it is present.
+
+      5) No repetition across parts:
+        - Do NOT repeat scenario details in the diagram or sub-questions. Each section has a distinct role:
+          • Scenario = qualitative story/context only.
+          • Diagram = numeric/visual representation (introduce numbers/relations).
+          • Sub-questions = use diagram numbers to reason and solve.
+        - If a fact appears in the scenario, it must NOT be restated numerically elsewhere.
+
+      6) Structure & flow:
+        - The story must clearly explain WHY the calculation is needed; subparts must follow directly from the same situation.
+        - Only include one clear purpose; do not introduce unrelated secondary ideas.
+
+      7) Variety & reuse:
+        - Do not reuse the same scenario type across questions (avoid repeating “shop”, “garden”, etc.). Rotate contexts meaningfully.
+
+      8) Quality check (mandatory before finalizing):
+        - Read the scenario aloud: it must sound natural and necessary (not forced).
+        - If removing the math would leave the story meaningless, rewrite.
+        - If any rule is violated, regenerate the scenario until all rules are satisfied.
+
+      9) You can even make scenarios using daily lif examples of object, for eg : using cycle, bike tyre you can do some angle related questions.Which enables/encourage the students to relate everyday math objects. 
+      If any rule cannot be followed, stop and rewrite the scenario to meet these constraints.
+
+    </Scenario Rules>
+    <question_cognitive_indirectness_rule>
+            All questions must be grade-appropriate in mathematical level,
+            but the required relationship must NOT be directly visible or immediately usable.
+
+            The student should NOT be able to answer by applying one property immediately after reading the question.
+
+            Instead, the question must require the student to FIRST interpret the diagram
+            and identify hidden or intermediate relationships before using the target concept.
+
+            This means:
+
+            • The required angles should not be labelled in an obvious pair.
+            • The needed relationship should be embedded among other angles.
+            • An intermediate angle or relation must be recognized before solving.
+            • The question must require interpretation BEFORE calculation.
+
+            Direct question patterns that are NOT allowed:
+            ❌ “Find x if these two angles form a linear pair”
+            ❌ “Name the vertically opposite angles”
+            ❌ “If l || m find angle ABC”
+            ❌ Any question where the used property is explicitly stated or visually isolated.
+
+            Allowed question style:
+            ✔ Student must determine WHICH angles are related first.
+            ✔ Student must locate the correct relationship from multiple possibilities.
+            ✔ Student must derive an intermediate angle before the final step.
+            ✔ The diagram contains extra information not immediately useful.
+
+            The mathematics must remain Grade level,
+            but the path to the concept must require recognition, interpretation, and selection.
+            If a student can identify the required property within 5 seconds of reading the question,
+            the question is too direct and must be redesigned.
+
+    </question_cognitive_indirectness_rule>
+
+          
+    <question_enhancement_idea>
+
+      Use textbook-style geometric structure as inspiration (clarity, multiple relations, meaningful layout), but DO NOT copy any figure. Reconstruct a new configuration that shows layered relationships (intersections, parallels, transversals, angle links) rather than a single simple shape.
+      Each diagram must support reasoning across multiple connected elements, and every question must depend on these structural relationships — not just direct measurement or one-step observation.
+      Analyse the exercise of each topic so that you can make better questions. Better figures, common figures are not required try to make outside the box figures which is realastic
+
+    </question_enhancement_idea>
+
+     <DOK_level_explanation>
+          COGNITIVE DEPTH & OLYMPIAD REASONING MODE (MANDATORY)
+
+          All questions must be grade-appropriate in content,
+          but non-direct and structure-based in reasoning.
+
+          The required concept must NOT be immediately usable.
+          Students must interpret the situation, identify relationships,
+          and use intermediate reasoning before reaching the answer.
+
+          --------------------------------
+          DOK STRUCTURAL DEFINITIONS
+          --------------------------------
+
+          DOK 1 — Recognition
+          • Identify, label, classify, or read directly.
+          • No calculation.
+          • No inference chain.
+
+          DOK 2 — Sequential Application
+          • Solve using TWO or more connected steps.
+          • Must require an intermediate result.
+          • Must combine different pieces of information.
+
+          DOK 3 — Constraint-Based Reasoning
+          • A condition or claim must be evaluated.
+          • Student must analyse relationships across the whole structure.
+          • Answer must be justified by consistency, necessity, or elimination.
+          • Requires interpretation before solving.
+
+          --------------------------------
+          OLYMPIAD STRUCTURE RULES
+          --------------------------------
+
+          • The solution path must not be obvious.
+          • Multiple elements must interact (not a single relation).
+          • Some information should be indirect or distracting.
+          • The answer must be forced by constraints, not direct substitution.
+          • At least one intermediate inference must be necessary.
+
+          --------------------------------
+          DIRECTNESS CHECK (MANDATORY)
+          --------------------------------
+
+          If the required method is obvious immediately,
+          or a single direct step gives the answer,
+          the question must be redesigned.
+
+                
+          - whatever you are thinking to make question make it one lvel up so that it will be in proper dok level
+    </DOK_level_explanation>
+    <knowledge_boundary>
+        Treat the uploaded PDFs/images as the only source of knowledge. Do not use any outside syllabus, curriculum, or textbook knowledge. Do not introduce concepts, terminology, skills, or grade-level content that is not explicitly shown in the uploaded material(for question, solution, key-idea for everything. You cant assume if lhs = rhs is not mentioned in the uploaded material but its proving left side = right side, you cant mention lhs = rhs in any part of the generated material). If the material shows addition, subtraction, even/odd numbers, halving, or true/false reasoning, generate new items only using those same concepts. Do not name properties, laws, or theories unless they are explicitly printed in the PDF/image.
+        Generate new/duplicate questions that match the original item structure, same difficulty level, and same style. Do not increase the grade level or add any new concepts. Do not assume hidden mathematical knowledge. Do not infer properties (example: do not mention commutativity unless the PDF/image names it). Do not introduce higher grade concepts.
+        The uploaded content defines a closed knowledge boundary. If a concept, method, property, term, or instruction is not present in the PDF/image, do not include it in the generated items. Stay fully faithful to the language, style, tasks, operations, and reasoning patterns present in the PDF/image.
+    </knowledge_boundary>
+    <taxonomy>
+      **Taxonomy Lock Rule**
+      - For every question type, the user will explicitly specify:
+        - Taxonomy (e.g., Remembering, Understanding, Applying, Analyzing, etc.)
+        - DOK level
+        - Marks
+      - You MUST use **only the taxonomy provided for that question type**.
+      - Do NOT substitute, infer, upgrade, downgrade, or mix taxonomies.
+      - If a question cannot be generated under the given taxonomy, you must still stay within it and simplify the question accordingly.
+
+      
+    </taxonomy>
+
+    <what_not_to_do>
+      - Do not use any physics, chemistry, biology, or other science formulas (e.g., density, force, pressure, velocity).
+      - Do not use any real-world scenarios that are not related to the topic.
+      - **Do NOT treat the textbook/concept excerpts as reading passages in questions**
+      - **Do NOT reference the textbook/concept material as a passage**
+      - Questions must be self-contained and NEVER reference the source material directly
+      All generated questions and solutions must be fully standalone and must NOT reference textbook pages, chapters, passages, or excerpts. Do NOT treat the textbook content as a passage to be quoted or cited.
+
+      **FORBIDDEN question/Answer patterns:**
+      - ❌ "According to the textbook..."
+      - ❌ "According to the definition provided in the chapter..."
+      - ❌ "The story on page 13 mentions..."
+      - ❌ "The definition on page X specifically states..."
+      - ❌ "Based on the passage/story/definition provided..."
+      - ❌ "As described in the concept/chapter..."
+      - ❌ " identify the relationship between Row 2 and Row 3 based on Theorem 6.6."
+      - Questions must be self-contained and NEVER reference the source material directly
+      - All generated questions and solutions must be fully standalone and must NOT reference textbook pages, chapters, passages, or excerpts. Do NOT treat the textbook content as a passage to be quoted or cited("According to the textbook...","According to the definition provided in the chapter...").
+      - You are STRICTLY PROHIBITED from asking proof-based questions (e.g., "Prove that...", "Derive the formula for...", "Show that LHS = RHS").
+      - Even if the provided PDF, New Concept, or key concepts contain proofs, theorems, or derivations, do NOT use them as the basis for a question.
+      - You may use the *result* of a theorem/proof for application-based questions, but do not ask the student to reproduce the proof itself.
+      - Dont give Hints or clues becasue this question is for examination
+      **CRITICAL - Open-Ended Question Prohibition:**
+          Do not create open-ended questions. An open-ended question is any question that requires more than one response, combines multiple tasks in the same item (such as calculate and then compare or decide), or produces multiple outputs in the answer key. Questions that ask students to perform a task and then make an additional decision or conclusion are also considered open-ended. Each question must ask only one thing and produce exactly one final answer only.
+          or State the theoram,What can be concluded etc.. should not be asked.
+
+    </what_not_to_do>
+     
+  </requirements>
+
+  <output_format>
+    Return a valid JSON object:
+    {
+      
+      
+        "core_skill_metadata": {
+          "scenarios_used": [
+            "Provide a brief, concise summary of the real-world scenario/theme you just generated (e.g., 'Food industry production line', 'Sports tournament elimination')"
+          ]
+        },"questions": [
+        {
+          "question_id": "Q1",
+          "question_text": "...",
+          "options": {
+            "A": "...",
+            "B": "...",
+            "C": "...",
+            "D": "..."
+          },
+          "correct_option": "A/B/C/D",
+          "solution": "Brief explanation...",
+          "distractor_analysis": "Distractor Analysis...",
+          "key_idea": "Key concept..."
+          
+        },
+        // .. next question in same format
+      ]
+    }
+  </output_format>
+</writer_generation>

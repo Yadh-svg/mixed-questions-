@@ -306,7 +306,8 @@ def _format_question_requirement(q: Dict[str, Any], index: int, batch_type: str)
 def build_math_core_prompt(
     questions: List[Dict[str, Any]],
     general_config: Dict[str, Any],
-    files: List = None
+    files: List = None,
+    previous_batch_metadata: Dict[str, Any] = None
 ) -> Dict[str, Any]:
     """Build prompt for Stage 1: Math Core (Architect)."""
     batch_type = _get_batch_type(questions)
@@ -336,37 +337,75 @@ def build_math_core_prompt(
     global_notes = general_config.get('additional_notes', 'None')
     
     # Prepare Context Strings (New/Old Concept & Files)
-    new_concept = general_config.get('new_concept', 'N/A')
-    old_concept = general_config.get('old_concept', 'N/A')
+    new_concept = general_config.get('new_concept', 'N/A').strip()
+    old_concept = general_config.get('old_concept', 'N/A').strip()
     
     # Get File Info to build context
     file_info = get_files(questions, general_config)
     files = file_info['files']
     filenames = file_info['filenames']
     
-    context_instruction = f"""
-    <source_material>
-      <new_concept>
-        {new_concept}
-      </new_concept>
-      
-      <old_concept>
-        {old_concept}
-      </old_concept>
-      
-      <files_uploaded>
-        {', '.join(filenames) if filenames else 'None'}
-      </files_uploaded>
-      
+    source_material_parts = []
+    
+    if new_concept and new_concept.lower() not in ['n/a', 'none', '']:
+        source_material_parts.append(f"<new_concept>\n        {new_concept}\n      </new_concept>")
+        
+    if old_concept and old_concept.lower() not in ['n/a', 'none', '']:
+        source_material_parts.append(f"<old_concept>\n        {old_concept}\n      </old_concept>")
+        
+    if filenames:
+        source_material_parts.append(f"<files_uploaded>\n        {', '.join(filenames)}\n      </files_uploaded>")
+        
+    if source_material_parts:
+        # Add instruction only if there are valid parts
+        file_instruction = """
       <file_instruction>
         - If files are uploaded, use them as the PRIMARY source for specific question details as indicated in requirements.
         - 'New Concept' text above is the theoretical basis.
         - 'Old Concept' is prerequisite knowledge.
-      </file_instruction>
+      </file_instruction>"""
+        source_material_parts.append(file_instruction)
+        
+        context_instruction_content = "\n      ".join(source_material_parts)
+        context_instruction = f"""
+    <source_material>
+      {context_instruction_content}
     </source_material>
     """
+    else:
+        context_instruction = ""
+
+    # Inject Core Skill Metadata (Negative Constraints)
+    core_skill_instruction_text = ""
+    # Inject Core Skill Output requirements if enabled
+    if general_config.get('core_skill_enabled', False):
+        core_skill_instruction_text = """
+        "core_skill_metadata": {
+          "topics_used": [
+            "Provide a brief, concise summary of the abstract mathematical structure you just generated (e.g., 'Linear equations mapping variable cost')"
+          ]
+        },"""
+        logger.info("Injecting explicit core_skill_metadata JSON requirement into Math Core prompt")
+        
+    if previous_batch_metadata and 'topics' in previous_batch_metadata:
+        seen_topics = previous_batch_metadata['topics']
+        if seen_topics:
+            topics_str = "\n".join([f"- {t}" for t in seen_topics])
+            core_skill_block = f"""
+    <already_seen_topics>
+{topics_str}
+    </already_seen_topics>
+    <core_skill_instruction>
+      You MUST AVOID using the exact topics listed above if possible. 
+      - If a topic is repeated, find a DISTINCT sub-topic or different mathematical angle.
+      - Ensure diversity across batches.
+    </core_skill_instruction>
+            """
+            context_instruction += core_skill_block
+            logger.info(f"Injecting {len(seen_topics)} seen topics into Math Core prompt")
     
     replacements = {
+        '{{Core_Skill_Output_Instruction}}': core_skill_instruction_text,
         '{{Grade}}': str(general_config.get('grade', 'Grade 10')),
         '{{Subject}}': general_config.get('subject', 'Mathematics'),
         '{{Chapter}}': general_config.get('chapter', 'Chapter'),
@@ -385,7 +424,10 @@ def build_writer_prompt(
     math_core_data: Dict[str, Any],
     questions: List[Dict[str, Any]],
     general_config: Dict[str, Any],
-    files: List = None
+    files: List = None,
+    previous_batch_metadata: Dict[str, Any] = None,
+    regeneration_reason: str = None,
+    previous_question_markdown: str = None
 ) -> Dict[str, Any]:
     """Build prompt for Stage 2: Writer (Scenario + Question)."""
     batch_type = _get_batch_type(questions)
@@ -402,6 +444,11 @@ def build_writer_prompt(
     req_list = []
     for i, q in enumerate(questions, 1):
         line = _format_question_requirement(q, i, batch_type)
+        if regeneration_reason:
+            line = line.replace('MCQ Type: Auto', 'MCQ Type: (Keep original type)')
+            line = line.replace('FIB Type: Auto', 'FIB Type: (Keep original type)')
+            line = line.replace('Multi-Part Type: Auto', 'Multi-Part Type: (Keep original type)')
+            line = line.replace('Descriptive Type: Auto', 'Descriptive Type: (Keep original type)')
         req_list.append(line)
         
     req_text = "\n".join(req_list)
@@ -410,31 +457,66 @@ def build_writer_prompt(
     global_notes = general_config.get('additional_notes', 'None')
 
     # Prepare Context Strings (New/Old Concept & Files) for Writer as well
-    new_concept = general_config.get('new_concept', 'N/A')
-    old_concept = general_config.get('old_concept', 'N/A')
+    new_concept = general_config.get('new_concept', 'N/A').strip()
+    old_concept = general_config.get('old_concept', 'N/A').strip()
     
     # Get File Info to build context
     file_info = get_files(questions, general_config)
     files = file_info['files']
     filenames = file_info['filenames']
     
-    context_instruction = f"""
+    source_material_parts = []
+    
+    if new_concept and new_concept.lower() not in ['n/a', 'none', '']:
+        source_material_parts.append(f"<new_concept>\n        {new_concept}\n      </new_concept>")
+        
+    if old_concept and old_concept.lower() not in ['n/a', 'none', '']:
+        source_material_parts.append(f"<old_concept>\n        {old_concept}\n      </old_concept>")
+        
+    if filenames:
+        source_material_parts.append(f"<files_uploaded>\n        {', '.join(filenames)}\n      </files_uploaded>")
+        
+    if source_material_parts:
+        context_instruction_content = "\n      ".join(source_material_parts)
+        context_instruction = f"""
     <source_material>
-      <new_concept>
-        {new_concept}
-      </new_concept>
-      
-      <old_concept>
-        {old_concept}
-      </old_concept>
-      
-      <files_uploaded>
-        {', '.join(filenames) if filenames else 'None'}
-      </files_uploaded>
+      {context_instruction_content}
     </source_material>
     """
+    else:
+        context_instruction = ""
+    
+    # Inject Core Skill Metadata (Negative Constraints)
+    core_skill_instruction_text = ""
+    # Inject Core Skill Output requirements if enabled
+    if general_config.get('core_skill_enabled', False):
+        core_skill_instruction_text = """
+        "core_skill_metadata": {
+          "scenarios_used": [
+            "Provide a brief, concise summary of the real-world scenario/theme you just generated (e.g., 'Food industry production line', 'Sports tournament elimination')"
+          ]
+        },"""
+        logger.info("Injecting explicit core_skill_metadata JSON requirement into Writer prompt")
+        
+    if previous_batch_metadata and 'scenarios' in previous_batch_metadata:
+        seen_scenarios = previous_batch_metadata['scenarios']
+        if seen_scenarios:
+            scenarios_str = "\n".join([f"- {s}" for s in seen_scenarios])
+            core_skill_block = f"""
+    <already_seen_scenarios>
+{scenarios_str}
+    </already_seen_scenarios>
+    <core_skill_instruction>
+      You MUST AVOID using the exact scenarios listed above.
+      - Create NOVEL, DISTINCT scenarios.
+      - Do not repeat storylines or contexts from previous batches.
+    </core_skill_instruction>
+            """
+            context_instruction += core_skill_block
+            logger.info(f"Injecting {len(seen_scenarios)} seen scenarios into Writer prompt")
 
     replacements = {
+        '{{Core_Skill_Output_Instruction}}': core_skill_instruction_text,
         '{{Grade}}': str(general_config.get('grade', '10')),
         '{{Subject}}': general_config.get('subject', 'Math'),
         '{{Question_Requirements}}': context_instruction + "\n" + req_text,
@@ -443,8 +525,44 @@ def build_writer_prompt(
     }
     
     prompt = template
+    
+    if regeneration_reason:
+        import re
+        prompt = re.sub(r'<math_blueprint>.*?</math_blueprint>', '', prompt, flags=re.DOTALL)
+        prompt = re.sub(r'<about_you>.*?</about_you>', '', prompt, flags=re.DOTALL)
+        prompt = re.sub(r'<task>.*?</task>', '', prompt, flags=re.DOTALL)
+        
     for k, v in replacements.items():
         prompt = prompt.replace(k, v)
+        
+    # Prepend Regeneration instructions if this is a regeneration call
+    if regeneration_reason and previous_question_markdown:
+        logger.info("Injecting REGENERATION feedback block to the top of the Writer prompt")
+        regeneration_block = f"""
+# ===================================================================
+# 🔄 REGENERATION OVERRIDE INSTRUCTIONS
+# ===================================================================
+This is for regenerating.
+
+## Original Question:
+{previous_question_markdown}
+
+## User's Instruction for Change:
+"{regeneration_reason}"
+
+## YOUR TASK:
+1. Analyse the original question.
+2. Whatever the user says in the instruction, change the question according to that.
+3. DO NOT change the format or anything else. ONLY change what the user explicitly says.
+4. The rules in this prompt below (like Scenario Rules, Balance Rules) are just for checking; apply them to change the question ONLY if the user explicitly asked to change anything from them (e.g. if the user says "add a scenario", then use the Scenario Rules).
+5. You need to output everything not only what you hace changed(for eg : if you change any name is scenario as user says, not only ouptu scenario and solution, you need to outptu the whole thing)
+5. Output the exact same JSON format requested below.
+
+# ===================================================================
+# ORIGINAL PROMPT TEMPLATE FOLLOWS
+# ===================================================================
+"""
+        prompt = regeneration_block + prompt
         
     return {'prompt': prompt, 'files': files or [], 'file_metadata': {'stage': 'writer'}}
 

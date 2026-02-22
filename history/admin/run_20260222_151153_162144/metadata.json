@@ -1,0 +1,42 @@
+{
+  "run_id": "run_20260222_151153_162144",
+  "timestamp": "2026-02-22T15:11:53.169952",
+  "username": "admin",
+  "metadata": {
+    "curriculum": "NCERT",
+    "grade": "Grade 9",
+    "subject": "Mathematics",
+    "chapter": "Arithmetic Progression",
+    "old_concept": "",
+    "new_concept": "",
+    "additional_notes": "",
+    "total_questions": 1,
+    "question_types": [
+      "MCQ"
+    ]
+  },
+  "session_config": {
+    "question_types_config": {
+      "MCQ": {
+        "count": 1,
+        "questions": [
+          {
+            "topic": "nth term of an ap",
+            "new_concept_source": "pdf",
+            "additional_notes_source": "none",
+            "additional_notes_text": "",
+            "dok": 1,
+            "marks": 1.0,
+            "taxonomy": "Remembering",
+            "mcq_type": "Auto",
+            "statement_based": false,
+            "type": "MCQ",
+            "original_index": 0
+          }
+        ]
+      }
+    },
+    "core_skill_enabled": false
+  },
+  "files": {}
+}

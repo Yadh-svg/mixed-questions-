@@ -1,0 +1,84 @@
+{
+  "run_id": "run_20260222_115411_355065",
+  "timestamp": "2026-02-22T11:54:11.356603",
+  "username": "admin",
+  "metadata": {
+    "curriculum": "NCERT",
+    "grade": "Grade 9",
+    "subject": "Mathematics",
+    "chapter": "Arithmetic Progression",
+    "old_concept": "",
+    "new_concept": "",
+    "additional_notes": "",
+    "total_questions": 2,
+    "question_types": [
+      "Case Study"
+    ]
+  },
+  "session_config": {
+    "question_types_config": {
+      "Case Study": {
+        "count": 2,
+        "questions": [
+          {
+            "topic": "nth term ",
+            "new_concept_source": "pdf",
+            "additional_notes_source": "none",
+            "additional_notes_text": "",
+            "dok": 1,
+            "marks": 1.0,
+            "taxonomy": "Remembering",
+            "num_subparts": 3,
+            "subparts": [
+              {
+                "part": "a",
+                "dok": 1,
+                "marks": 1.0
+              },
+              {
+                "part": "b",
+                "dok": 1,
+                "marks": 1.0
+              },
+              {
+                "part": "c",
+                "dok": 1,
+                "marks": 1.0
+              }
+            ],
+            "type": "Case Study",
+            "original_index": 0
+          },
+          {
+            "topic": "sum of an ap",
+            "new_concept_source": "pdf",
+            "additional_notes_source": "none",
+            "additional_notes_text": "",
+            "num_subparts": 3,
+            "subparts": [
+              {
+                "part": "a",
+                "dok": 1,
+                "marks": 1.0
+              },
+              {
+                "part": "b",
+                "dok": 1,
+                "marks": 1.0
+              },
+              {
+                "part": "c",
+                "dok": 1,
+                "marks": 1.0
+              }
+            ],
+            "type": "Case Study",
+            "original_index": 1
+          }
+        ]
+      }
+    },
+    "core_skill_enabled": false
+  },
+  "files": {}
+}

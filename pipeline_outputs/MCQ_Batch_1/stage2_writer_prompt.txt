@@ -1,23 +1,9 @@
 <writer_generation>
   <context>
-    <grade>Grade 7</grade>
+    <grade>Grade 9</grade>
     <subject>Mathematics</subject>
     <requirements>
-    <source_material>
-      <new_concept>
-        
-      </new_concept>
-      
-      <old_concept>
-        
-      </old_concept>
-      
-      <files_uploaded>
-        iemh106 (1).pdf
-      </files_uploaded>
-    </source_material>
-    
-Q1: topic : . , DOK 1 - 1.0 mark , MCQ Type: Auto, Taxonomy: Remembering, Statement Based: NO</requirements>
+Q1: topic : nth term of an ap , DOK 1 - 1.0 mark , MCQ Type: Auto, Taxonomy: Remembering, Statement Based: NO</requirements>
     <additional_notes></additional_notes>
   </context>
 
@@ -26,9 +12,9 @@ Q1: topic : . , DOK 1 - 1.0 mark , MCQ Type: Auto, Taxonomy: Remembering, Statem
   "math_cores": [
     {
       "id": "Q1",
-      "Abstract Math Structure": "Angle identification based on intersecting lines forming vertical pairs and linear pairs, where one angle measure is given, and the relationship between the given angle and the target angle is defined by their position (e.g., vertically opposite or supplementary).",
-      "Topic": "Lines and Angles: Properties derived from intersecting lines.",
-      "Description": "This topic covers the angle relationships formed when two lines intersect: vertically opposite angles (which are equal) and adjacent angles that form a linear pair (which sum to 180\u00b0)."
+      "Abstract Math Structure": "Arithmetic Progression Formula Application: $a_n = a + (n-1)d$",
+      "Topic Identification and Description": "nth term of an AP: This topic involves identifying the first term ($a$), the common difference ($d$), and the term number ($n$) to calculate the specific value of the $n^{\\text{th}}$ term ($a_n$) of a sequence defined by a constant difference between consecutive terms.",
+      "Subtopic Differentiation": "Direct Calculation of the nth Term Value"
     }
   ]
 }
@@ -88,7 +74,7 @@ Q1: topic : . , DOK 1 - 1.0 mark , MCQ Type: Auto, Taxonomy: Remembering, Statem
         Each MCQ must have:
 
           1. **Question**: A clear, well-formulated question that tests the specified concept
-            - Use student-friendly language appropriate for Grade 7
+            - Use student-friendly language appropriate for Grade 9
             - Names should be simple and commonly used  (eg : Jack	Anna  Ryan	Emily	Sam	Maria	John	)
             
                 DO NOT use academic or classroom settings.
@@ -357,7 +343,7 @@ Q1: topic : . , DOK 1 - 1.0 mark , MCQ Type: Auto, Taxonomy: Remembering, Statem
         - This format is mandatory for all statement-based distractor analyses.
       **CRITICAL Distractor Analysis Requirements:**
       - **Maximum Length**: Each distractor rationale must be **4 lines maximum** (total for all three sub-sections combined)
-      - **Child-Friendly Language**: Use simple, age-appropriate language suitable for Grade 7
+      - **Child-Friendly Language**: Use simple, age-appropriate language suitable for Grade 9
       - **Concise and Clear**: No verbose explanations - keep it short and focused
       - **Educational Tone**: Be supportive, not condescending
       - Do NOT say: "You correctly identified that…" for an incorrect option
@@ -655,6 +641,7 @@ Q1: topic : . , DOK 1 - 1.0 mark , MCQ Type: Auto, Taxonomy: Remembering, Statem
   <output_format>
     Return a valid JSON object:
     {
+      
       "questions": [
         {
           "question_id": "Q1",

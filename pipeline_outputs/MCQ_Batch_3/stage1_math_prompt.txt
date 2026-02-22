@@ -1,0 +1,117 @@
+<math_core_generation>
+  <context>
+    <grade>Grade 10</grade>
+    <subject>Mathematics</subject>
+    <chapter>Arithmetic Progression</chapter>
+    <topic>Sum of First n Terms of an AP, NTH TERM</topic>
+    <additional_notes></additional_notes>
+  </context>
+  
+  <design_requirements>
+    The user needs the following specific questions designed:
+    
+    <source_material>
+      <new_concept>
+        
+      </new_concept>
+      
+      <old_concept>
+        
+      </old_concept>
+      
+      <files_uploaded>
+        None
+      </files_uploaded>
+      
+      <file_instruction>
+        - If files are uploaded, use them as the PRIMARY source for specific question details as indicated in requirements.
+        - 'New Concept' text above is the theoretical basis.
+        - 'Old Concept' is prerequisite knowledge.
+      </file_instruction>
+    </source_material>
+    
+    <already_seen_topics>
+- Arithmetic Progression: Defining sequences by a constant difference and determining specific terms using the formula $a_n = a_1 + (n-1)d$.
+- Direct application of the formula $S_n = \frac{n}{2}[2a_1 + (n-1)d]$ to find the sum.
+- Direct application of the formula $S_n = \frac{n}{2}(a_1 + a_n)$ to find the sum.
+- Calculating the sum $S_n$ when the first term ($a_1$) and common difference ($d$) are directly given.
+- Calculating the sum $S_n$ when the first term ($a_1$) and the $n^{th}$ term ($a_n$) are directly given.
+    </already_seen_topics>
+    <core_skill_instruction>
+      You MUST AVOID using the exact topics listed above if possible. 
+      - If a topic is repeated, find a DISTINCT sub-topic or different mathematical angle.
+      - Ensure diversity across batches.
+    </core_skill_instruction>
+            
+Q1: topic : NTH TERM , DOK 1 - 1.0 mark , MCQ Type: Auto, Taxonomy: Remembering, Statement Based: NO
+Q2: topic : NTH TERM , DOK 1 - 1.0 mark , MCQ Type: Auto, Taxonomy: Remembering, Statement Based: NO
+Q3: topic : Sum of First n Terms of an AP , DOK 1 - 1.0 mark , MCQ Type: Auto, Taxonomy: Remembering, Statement Based: NO
+Q4: topic : Sum of First n Terms of an AP , DOK 1 - 1.0 mark , MCQ Type: Auto, Taxonomy: Remembering, Statement Based: NO
+  </design_requirements>
+  
+  <task>  
+    You are the **"Architect"**. Your role is to design the **Math Core** for the requested questions.
+
+    STRICT RULES:  
+    - Do NOT write a story.  
+    - Do NOT write a scenario.  
+    - Do NOT restate or display DOK level, marks, or any metadata provided in the input.  
+    - ONLY design the mathematical structure and logic that will generate the question.  
+    - If **Additional Notes** are provided, they are mandatory design constraints and must be applied.
+
+    For EACH question listed in <design_requirements>, define:
+
+    1. **Abstract Math Structure**  
+      - The underlying mathematical framework (e.g., Right Triangle, Linear Pair, Quadratic Curve, etc.)  
+      - Must be deep enough to support the required reasoning complexity.
+
+    2. **Topic Identification and Description**  
+      - Identify the specific mathematical topic being used.  
+      - Provide a brief description of the topic, including the main concepts or component ideas within it.
+
+    3. **Subtopic Differentiation (ONLY if multiple questions share the same topic)**  
+      - Identify a distinct subtopic for each question.  
+      - Subtopics must be unique across questions.  
+      - Subtopics must come from conceptual analysis (textbook structure, concept hierarchy, or progression of ideas).
+
+  </task>
+
+  <requirements>
+
+    1. TOPIC ANALYSIS  
+      - For each given topic, describe the conceptual coverage (what ideas, properties, or methods belong to it).  
+      - If multiple questions use the same topic, assign different subtopics within that topic.
+
+    2. STRUCTURAL COMPLEXITY  
+      - The math structure must be sufficiently rich to support the required reasoning level.  
+      - The structure must naturally produce the intended mathematical task.
+
+    3. ADDITIONAL NOTES (MANDATORY)  
+      - Any condition, restriction, or design instruction provided must be incorporated into the structure.
+
+    4. OUTPUT RESTRICTIONS  
+      - Do NOT include DOK level, marks, scoring, pedagogy labels, or curriculum references.  
+      - Only output structural mathematical design.
+
+  </requirements>
+  
+  <output_format>
+    Return a valid JSON object:
+    {
+      
+      
+        "core_skill_metadata": {
+          "topics_used": [
+            "Provide a brief, concise summary of the abstract mathematical structure you just generated (e.g., 'Linear equations mapping variable cost')"
+          ]
+        },"math_cores": [
+        {
+          "id": "Q1",
+          "Topic": "topic name and its description",
+          ...
+        },
+        ...// next object(question) with same structure
+      ]
+    }
+  </output_format>
+</math_core_generation>

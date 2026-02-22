@@ -1,0 +1,557 @@
+<writer_generation>
+  <context>
+     <grade>Grade 9</grade>
+     <requirements>
+Q1: topic : nth term : number of subquestion : 1 , 1 - DOK 1 - 1.0 mark , FIB Type: Auto, Taxonomy: Remembering
+Q2: topic : sum of n terms : number of subquestion : 1 , 1 - DOK 1 - 1.0 mark , FIB Type: Auto, Taxonomy: Remembering</requirements>
+     <additional_notes></additional_notes>
+  </context>
+  <math_blueprint>
+     {
+  "math_cores": [
+    {
+      "id": "Q1",
+      "Topic": "Arithmetic Progression",
+      "subquestion_1": "Finding a specific term: Given the first term and the common difference of an AP, find the value of the $n^{th}$ term."
+    },
+    {
+      "id": "Q2",
+      "Topic": "Arithmetic Progression",
+      "subquestion_1": "Finding the sum of terms: Given the first term and the common difference of an AP, find the sum of the first $n$ terms."
+    }
+  ]
+}
+  </math_blueprint>
+  <task>
+     Write the FIB question. Use "|TEXT N| or |DROP N|" for the blank.
+     Start with "Topic Used: <topic>".
+  </task>
+
+  <requirements>
+               Fill in the Blanks questions are used to assess mathematical understanding where
+          students must supply missing information directly, without being guided step-by-step.
+          FIB questions may include THREE distinct answer-handling types:
+          
+          1. UNIQUE-ANSWER FIB (TEXT ENTRY)
+          • Use when:
+            - Only ONE mathematically correct answer exists.
+            - Use for ALL numerical or computational questions.
+            - Allow ONLY ONE correct answer.
+            - No alternative wording or representation is acceptable.
+
+          • Format:
+            - Use |TEXT n| placeholders.
+            - No dropdowns, no options shown to students.
+
+          • Answer Key Rules:
+            - Provide exactly one correct value.
+            - Do NOT add unnecessary variants.
+
+          • Typical use cases:
+            - Exact values,
+            - Final inferred results,
+            - Constrained outcomes after reasoning.
+
+          • Example (validated):
+            TEXT1: 196
+            TEXT2: 225
+            TEXT3: 14
+
+          2. PROBABLE-ANSWER FIB (TEXT ENTRY)
+          • Use when:
+            - The correct answer can be written in multiple valid ways.
+            - Use when the SAME correct answer can be written in MULTIPLE valid ways
+              (word form, number form, equivalent expressions, accepted terminology).
+
+          • Format:
+            - Use placeholders: |TEXT 1|, |TEXT 2|, etc.
+            - Do NOT provide options inside the question.
+            - Student response is free text.
+
+          • Answer Key Rules:
+            - All acceptable answers must be listed.
+            - Separate probable answers using a semicolon (;).
+            - Do NOT include unnecessary variations.
+            - Only mathematically and linguistically valid equivalents are allowed.
+
+          • Example (validated):
+            |TEXT 1| → single; one; 1
+
+          • Important:
+            - The blank must NOT reduce to a single forced representation.
+            - If only one exact response is possible, this is NOT a probable-answer FIB.
+          
+          3. DROP-DOWN FIB (CONTROLLED SELECTION)
+          
+          • Use when:
+            - Use when there are TOO MANY probable answers to manage fairly in free-text entry.
+            - Provide a fixed option set with EXACTLY ONE correct answer.
+            
+
+          • Format:
+            - Use placeholder: [DROP]
+            - Explicitly list dropdown options for each blank.
+            - Each [DROP] has its own option set.
+
+          • Rules:
+            - Other options must be close and plausible so the student must think carefully.
+            - Options must be mutually exclusive.
+            - Exactly one option must be correct.
+            - Avoid trivial elimination.
+
+          • Example (validated):
+            [DROP] → (Red, Green, Black, Blue)
+    ** Based on the topic, grade level, and concepts being assessed, you may choose the most appropriate Fill in the Blanks type (unique-answer, probable-answer, or drop-down); a single topic may include a mix of all three types, and where visual understanding is required, you may include a diagram prompt describing the image to be shown (for visualization purposes only), ensuring the diagram contains only essential visual information and does not include labels, values, or clues that directly reveal the answer.
+
+
+      EXAMPLE 1: UNIQUE ANSWER (Numerical – only one correct answer)
+
+        Question:
+        Find the value of x if:
+        5x − 15 = 0  
+        x = |TEXT1|
+
+        Answer:
+        TEXT1: 3
+
+        Solution Explanation:
+        5x − 15 = 0  
+        ⇒ 5x = 15  
+        ⇒ x = 3  
+        Since this is a numerical equation, there is only one correct value of x.
+
+
+        ------------------------------------------------------------
+
+        EXAMPLE 2: PROBABLE / MULTIPLE ANSWERS (Descriptive – more than one valid form)
+
+          Question:
+          Write the number name of 12.
+          |TEXT1|
+
+          Answers:
+          TEXT1: twelve; Twelve
+
+          Solution Explanation:
+          The question checks the understanding of number names.
+          Both "twelve" and "Twelve" represent the same correct answer.
+          Hence, multiple acceptable answers are allowed.
+
+
+        ------------------------------------------------------------
+
+        EXAMPLE 3: DROPDOWN QUESTION (Selection from given options)
+
+          Question:
+          A right angle measures [DROP] degrees.
+
+          Drop-down Options:
+          [DROP] → (45, 90, 180, 360)
+
+          Answer:
+          [DROP]: 90
+
+          Solution Explanation:
+          By definition, a right angle measures exactly 90 degrees.
+          The correct option must be selected from the given choices.
+    4.  Marks and Blanks Rules (STRICT RULE):
+
+      - Each blank or dropdown must carry either **0.5 mark or 1 mark only** but give preference to 0.5 marks blank.
+      - No blank or dropdown can have marks **less than 0.5 or more than 1**, and no other intermediate values are allowed.
+      - Wherever possible, prioritize using blanks with **0.5 marks** (e.g., split a 1-mark question into two 0.5-mark blanks).
+
+      - For a **1-mark question**:
+        - Use **one blank of 1 mark**, OR
+        - Use **two blanks of 0.5 mark each**.
+
+      - For a **2-mark question**:
+        - Use **at least two blanks** (any valid combination of 0.5 or 1 mark each).
+
+      - For a **3-mark question**:
+        - Use **at least three blanks** (any valid combination of 0.5 or 1 mark each).
+
+      - It is allowed to include **multiple blanks and/or dropdowns** as appropriate to the question type, provided the above marking rules are satisfied.
+      - Each blank should carry marks in proportion to its allotted value.
+      
+
+      
+    </fib_question_structure>
+
+    <types_of_fib_questions>
+       1. Fill in the Blank (Number Based)
+          Description:
+            A fill-in-the-blank question using only numeric or symbolic information (numbers, patterns, sequences, units, place value). 
+            There is no image and no real-world narrative. Students rely purely on quantitative or abstract reasoning.
+          Examples:
+            10,000 was added five times.
+            Now to reach 52,500 with the least number of steps, 1,000 should be added |TEXT1| times and 100 |TEXT2| times.
+
+            In a sequence of 9 consecutive numbers starting with 401.
+            The number of odd numbers is |TEXT1|
+            The number of even numbers is |TEXT2|
+            The largest odd number in the sequence is |TEXT3|
+            The smallest even number in the sequence is |TEXT4|
+
+            Look at the pattern:
+            684, 689, 694, 699, 704, ___
+            The next term in the sequence is |TEXT1| which is an [DROP2] number.
+            The value of the 5th even term in the sequence is |TEXT3|.
+
+      2. Fill in the Blank (Image Based)
+          Description:
+            A fill-in-the-blank question where the image/diagram provides the key mathematical information.
+            There is no real-world narrative. Students must visually interpret the diagram.
+          Example (with Diagram Prompt):
+            Diagram Prompt:
+            Draw an arrangement of coins and currency notes with visible denominations.
+            Ensure coins and notes are distinct and arranged clearly.
+            Question:
+            From the image given,
+            Total value of notes is ₹ |TEXT1|
+            Total value of coins is ₹ |TEXT2|
+            The total amount is ₹ |TEXT3|
+
+          Example (with Diagram Prompt):
+            Diagram Prompt:
+            Draw three rectangles side-by-side, each with different shaded fractions.
+            Ensure one rectangle has one-seventh of its area shaded.
+            Question:
+            Out of the three, rectangle [DROP1] represents one-seventh as its shaded area.
+            The shaded area of rectangle 1 represents |TEXT1|.
+
+      3. Fill in the Blank (Real-World Word Questions)
+          Description:
+            A fill-in-the-blank question framed using a real-life context described only in words.
+            There is no image. Students translate the scenario into mathematical reasoning.
+          Example:
+            Arun has the following containers with different liquid capacities:
+            (600 mL, 400 mL, 1 L, 500 mL, 2 L, 150 mL)
+            How many of these containers can store half a litre of water (500 mL)?
+            Answer = |TEXT1|
+            The container with the least capacity is [DROP2]
+
+          Example:
+            The city with the smallest number of tourists is [DROP1]
+            If the cities are arranged in descending order of tourists, then it follows the order [DROP2]
+
+      4. Fill in the Blank (Real-World Image-Based Word Questions)
+          Description:
+            A real-life scenario where both words and an accompanying image are needed to answer.
+            The image provides practical or spatial information (weights, positions, grids, shirts, etc.).
+          Example (with Diagram Prompt):
+            Diagram Prompt:
+            Draw piles of T-shirts of different colors arranged in a 2×3 grid.
+            Each pile contains a different quantity of shirts. The white shirt starts at Row 1, Column 1.
+            Question:
+            Which colour shirt will be in the right corner of the top row after the rearrangement?
+            Answer: |TEXT1|
+            In which row and column will the grey shirt be after the rearrangement?
+            Row number = |TEXT2| and Column number = |TEXT3|
+
+          Example (with Diagram Prompt):
+            Diagram Prompt:
+            Draw a 4×4 grid with four children (John, Liya, Mira, Noah) placed at different grid coordinates.
+            Place a treasure box at Row 3, Column 2.
+            Question:
+            Who takes the most steps to reach the treasure box?
+            Answer: [DROP1]
+            How many more steps does Liya take compared to John?
+            Answer: |TEXT2|
+
+        ## FIB Type Selection Rule (CRITICAL)
+        - In the TOPICS_SECTION, each question may optionally specify an "FIB Type".
+        - If "FIB Type" is specified, you **MUST STRICTLY** generate a question that fits that specific definition and style.
+        - If "FIB Type" is "Auto" or NOT specified, you must choose the most appropriate type based on the topic and grade level, ensuring variety across the set.
+
+    </types_of_fib_questions>
+
+    <diagram_prompt_guidelines>
+        Diagram is optional (unless the topic inherently requires visual representation).
+      - If included, give a **diagram prompt** (NOT the actual image).
+      - If the topic inherently requires visual representation, then the diagram is mandatory.And the questions in the topic should be image based and everything should be related to the image .
+      
+      ### Diagram Prompt Guidelines:
+      
+      **Purpose**: Create exam-ready visual representations that support the question.
+      
+      **Content Requirements**:
+        - It should describe the scene (NOT just "make 2 shapes with these lengths")
+        - Must be an image suitable for putting in an exam paper
+        - Should contain the scene with marking of values if needed
+        - Create a realistic, data-based diagram that directly represents the situation
+        - Visually match the setup (e.g., areas, objects, sections, or people mentioned) using relevant numerical values
+        - Include only essential measurable details — such as quantities, time, cost, length, or rates — with proper units
+        - Keep it simple, consistent, and self-contained
+        - The diagram must reflect the same context as the question but present it through clear numbers or labeled visuals
+      
+      **Format Requirements**:
+        - Do NOT give point-by-point descriptions
+        - Use continuous narrative that properly defines everything
+        - Write as a cohesive description, not a bulleted list
+      
+      ### Numerical Placement Rules:
+        - **Diagram Prompt**: Introduce actual values, quantities, or relationships
+
+      
+      ### No-Repetition Rule:
+        - Details or data mentioned in the context must NOT be repeated in the diagram
+        - Each section must serve a distinct purpose:
+            • Short Context = Real-life setup and qualitative description
+            • Diagram = Visual/numerical representation of the setup
+      
+    </diagram_prompt_guidelines>
+
+    <fib_subpart_specs>
+      **CRITICAL - SUBPART STRUCTURE (MANDATORY COMPLIANCE)**:
+  
+      ⚠️ **STEP 1: CHECK THE CONFIGURATION ABOVE** ⚠️
+      Look at the "FIB Sub-parts Configuration" section immediately above this instruction.
+      - If it shows "Question X: N sub-parts - i) DOK..., ii) DOK...", that question REQUIRES roman numeral subparts
+      - If a question is NOT listed in the configuration, it should be a single-part question (no subparts)
+      
+      ⚠️ **STEP 2: FOR QUESTIONS WITH SUB-PARTS LISTED** ⚠️
+      You MUST follow this structure EXACTLY:
+      
+      1. **Roman Numeral Labels (MANDATORY)**:
+        - Use i), ii), iii), iv), v) for each subpart
+        - DO NOT use a), b), c) or 1), 2), 3)
+        - DO NOT create a single question without subparts when subparts are specified
+      
+      2. **Subpart Requirements**:
+        - Each subpart (i, ii, iii, etc.) must have its own blank(s)
+        - Each subpart must match its specified DOK, Marks, and Taxonomy from the configuration
+        - All subparts belong to ONE continuous scenario/context
+        - Each subpart tests a different aspect of the same concept
+      
+      3. **Marker Numbering (CRITICAL)**:
+        - Number markers sequentially across ALL subparts: |TEXT 1|, |TEXT 2|, |TEXT 3|, etc.
+        - Example: If subpart i) uses |TEXT 1|, then subpart ii) starts with |TEXT 2|
+        - DO NOT restart numbering for each subpart
+    
+    </fib_subpart_specs>
+
+    <solution_generation>
+          [Provide step-by-step solution showing how to arrive at the correct answer. Include all reasoning and calculations and the mark split.]
+
+     </solution_generation>
+
+     <key_idea rules>
+      KEY IDEA
+
+        1. What kind of problems these are  
+          Explain simply what students are trying to find in such problems.
+
+        2. Core idea behind these problems  
+          Teach the main idea from the beginning in very simple terms.
+
+        3. Why this idea works  
+          Explain the logic in real understanding, not as a rule to memorize.
+
+        4. General step-by-step method  
+          Step 1:  
+          Step 2:  
+          Step 3:  
+          Step 4:  
+
+        5. Common mistakes students make  
+          Mention at least two mistakes and why they happen.
+
+        6. Tips to avoid these mistakes  
+          Give practical student-friendly advice.
+
+        The explanation must naturally include the rule or principle used, but blended into teaching — not as a separate definition.
+
+        Do not include anything else.
+
+    </key_idea rules>
+
+          
+    <Scenario Rules>
+
+      If scenario is needed (as per the user input) these are the rules 
+      1) Scenario-first & form:
+        - A small scenario (2 lines max)
+        - Use simple, common names. Place the story in an Indian context (locations, ₹ or metric units may be referenced qualitatively), but NEVER use classroom/teacher/student language.
+
+      2) No numeric data in the scenario:
+        - Do NOT include explicit numbers, units, or measurements. Describe quantities only qualitatively (e.g., “several boxes,” “a few racks”).
+        - All exact values, counts, and measurements must appear only in the diagram prompt or the sub-questions.
+
+      3) One-purpose & realism:
+        - The scenario must describe a single, realistic situation that naturally requires the mathematical method being tested.
+        - Details must be plausible and logically consistent; avoid exaggeration or impossible quantities.
+
+      4) Functional-consequence (mandatory):
+        - The mathematical/ geometric relationship must arise naturally from movement, placement, layout, mapping, or observation in the story — not from engineering, safety rules, inspections, optimization, or explicit design justification.
+        - Do NOT explain or justify why the geometry exists; simply describe that it is present.
+
+      5) No repetition across parts:
+        - Do NOT repeat scenario details in the diagram or sub-questions. Each section has a distinct role:
+          • Scenario = qualitative story/context only.
+          • Diagram = numeric/visual representation (introduce numbers/relations).
+          • Sub-questions = use diagram numbers to reason and solve.
+        - If a fact appears in the scenario, it must NOT be restated numerically elsewhere.
+
+      6) Structure & flow:
+        - The story must clearly explain WHY the calculation is needed; subparts must follow directly from the same situation.
+        - Only include one clear purpose; do not introduce unrelated secondary ideas.
+
+      7) Variety & reuse:
+        - Do not reuse the same scenario type across questions (avoid repeating “shop”, “garden”, etc.). Rotate contexts meaningfully.
+
+      8) Quality check (mandatory before finalizing):
+        - Read the scenario aloud: it must sound natural and necessary (not forced).
+        - If removing the math would leave the story meaningless, rewrite.
+        - If any rule is violated, regenerate the scenario until all rules are satisfied.
+
+      9) You can even make scenarios using daily lif examples of object, for eg : using cycle, bike tyre you can do some angle related questions.Which enables/encourage the students to relate everyday math objects. 
+      If any rule cannot be followed, stop and rewrite the scenario to meet these constraints.
+
+    </Scenario Rules>
+
+    <question_cognitive_indirectness_rule>
+            All questions must be grade-appropriate in mathematical level,
+            but the required relationship must NOT be directly visible or immediately usable.
+
+            The student should NOT be able to answer by applying one property immediately after reading the question.
+
+            Instead, the question must require the student to FIRST interpret the diagram
+            and identify hidden or intermediate relationships before using the target concept.
+
+            This means:
+
+            • The required angles should not be labelled in an obvious pair.
+            • The needed relationship should be embedded among other angles.
+            • An intermediate angle or relation must be recognized before solving.
+            • The question must require interpretation BEFORE calculation.
+
+            Direct question patterns that are NOT allowed:
+            ❌ “Find x if these two angles form a linear pair”
+            ❌ “Name the vertically opposite angles”
+            ❌ “If l || m find angle ABC”
+            ❌ Any question where the used property is explicitly stated or visually isolated.
+
+            Allowed question style:
+            ✔ Student must determine WHICH angles are related first.
+            ✔ Student must locate the correct relationship from multiple possibilities.
+            ✔ Student must derive an intermediate angle before the final step.
+            ✔ The diagram contains extra information not immediately useful.
+
+            The mathematics must remain Grade level,
+            but the path to the concept must require recognition, interpretation, and selection.
+            If a student can identify the required property within 5 seconds of reading the question,
+            the question is too direct and must be redesigned.
+
+    </question_cognitive_indirectness_rule>
+
+          
+    <question_enhancement_idea>
+
+      Use textbook-style geometric structure as inspiration (clarity, multiple relations, meaningful layout), but DO NOT copy any figure. Reconstruct a new configuration that shows layered relationships (intersections, parallels, transversals, angle links) rather than a single simple shape.
+      Each diagram must support reasoning across multiple connected elements, and every question must depend on these structural relationships — not just direct measurement or one-step observation.
+      Analyse the exercise of each topic so that you can make better questions. Better figures, common figures are not required try to make outside the box figures which is realastic
+
+    </question_enhancement_idea>
+
+     <DOK_level_explanation>
+          COGNITIVE DEPTH & OLYMPIAD REASONING MODE (MANDATORY)
+
+          All questions must be grade-appropriate in content,
+          but non-direct and structure-based in reasoning.
+
+          The required concept must NOT be immediately usable.
+          Students must interpret the situation, identify relationships,
+          and use intermediate reasoning before reaching the answer.
+
+          --------------------------------
+          DOK STRUCTURAL DEFINITIONS
+          --------------------------------
+
+          DOK 1 — Recognition
+          • Identify, label, classify, or read directly.
+          • No calculation.
+          • No inference chain.
+
+          DOK 2 — Sequential Application
+          • Solve using TWO or more connected steps.
+          • Must require an intermediate result.
+          • Must combine different pieces of information.
+
+          DOK 3 — Constraint-Based Reasoning
+          • A condition or claim must be evaluated.
+          • Student must analyse relationships across the whole structure.
+          • Answer must be justified by consistency, necessity, or elimination.
+          • Requires interpretation before solving.
+
+          --------------------------------
+          OLYMPIAD STRUCTURE RULES
+          --------------------------------
+
+          • The solution path must not be obvious.
+          • Multiple elements must interact (not a single relation).
+          • Some information should be indirect or distracting.
+          • The answer must be forced by constraints, not direct substitution.
+          • At least one intermediate inference must be necessary.
+
+          --------------------------------
+          DIRECTNESS CHECK (MANDATORY)
+          --------------------------------
+
+          If the required method is obvious immediately,
+          or a single direct step gives the answer,
+          the question must be redesigned.
+
+                
+          - whatever you are thinking to make question make it one lvel up so that it will be in proper dok level
+    </DOK_level_explanation>
+    <knowledge_boundary>
+        Treat the uploaded PDFs/images as the only source of knowledge. Do not use any outside syllabus, curriculum, or textbook knowledge. Do not introduce concepts, terminology, skills, or grade-level content that is not explicitly shown in the uploaded material(for question, solution, key-idea for everything. You cant assume if lhs = rhs is not mentioned in the uploaded material but its proving left side = right side, you cant mention lhs = rhs in any part of the generated material). If the material shows addition, subtraction, even/odd numbers, halving, or true/false reasoning, generate new items only using those same concepts. Do not name properties, laws, or theories unless they are explicitly printed in the PDF/image.
+        Generate new/duplicate questions that match the original item structure, same difficulty level, and same style. Do not increase the grade level or add any new concepts. Do not assume hidden mathematical knowledge. Do not infer properties (example: do not mention commutativity unless the PDF/image names it). Do not introduce higher grade concepts.
+        The uploaded content defines a closed knowledge boundary. If a concept, method, property, term, or instruction is not present in the PDF/image, do not include it in the generated items. Stay fully faithful to the language, style, tasks, operations, and reasoning patterns present in the PDF/image.
+    </knowledge_boundary>
+    <what_not_to_do>
+      - Do not use any physics, chemistry, biology, or other science formulas (e.g., density, force, pressure, velocity).
+      - Do not use any real-world scenarios that are not related to the topic.
+      - **Do NOT treat the textbook/concept excerpts as reading passages in questions**
+      - **Do NOT reference the textbook/concept material as a passage**
+      - Questions must be self-contained and NEVER reference the source material directly
+      All generated questions and solutions must be fully standalone and must NOT reference textbook pages, chapters, passages, or excerpts. Do NOT treat the textbook content as a passage to be quoted or cited.
+
+      **FORBIDDEN question/Answer patterns:**
+      - ❌ "According to the textbook..."
+      - ❌ "According to the definition provided in the chapter..."
+      - ❌ "The story on page 13 mentions..."
+      - ❌ "The definition on page X specifically states..."
+      - ❌ "Based on the passage/story/definition provided..."
+      - ❌ "As described in the concept/chapter..."
+      - ❌ " identify the relationship between Row 2 and Row 3 based on Theorem 6.6."
+      - Questions must be self-contained and NEVER reference the source material directly
+      - All generated questions and solutions must be fully standalone and must NOT reference textbook pages, chapters, passages, or excerpts. Do NOT treat the textbook content as a passage to be quoted or cited("According to the textbook...","According to the definition provided in the chapter...").
+      - You are STRICTLY PROHIBITED from asking proof-based questions (e.g., "Prove that...", "Derive the formula for...", "Show that LHS = RHS").
+      - Even if the provided PDF, New Concept, or key concepts contain proofs, theorems, or derivations, do NOT use them as the basis for a question.
+      - You may use the *result* of a theorem/proof for application-based questions, but do not ask the student to reproduce the proof itself.
+      - Dont give Hints or clues becasue this question is for examination
+      **CRITICAL - Open-Ended Question Prohibition:**
+          Do not create open-ended questions. An open-ended question is any question that requires more than one response, combines multiple tasks in the same item (such as calculate and then compare or decide), or produces multiple outputs in the answer key. Questions that ask students to perform a task and then make an additional decision or conclusion are also considered open-ended. Each question must ask only one thing and produce exactly one final answer only.
+          or State the theoram,What can be concluded etc.. should not be asked.
+
+    </what_not_to_do>
+  </requirements>
+  <output_format>
+     Return JSON: 
+    {
+      
+      "questions": [
+        {
+          "question_id": "Q1",
+          "question_text": "...",
+          "correct_answer": "correct answer for each blanks [|TEXT n|or |DROP N|]", 
+          "solution": "Brief explanation...",
+          "key_idea": "Key concept..."
+          
+        },
+        // .. next question in same format
+      ]
+    }
+  </output_format>
+</writer_generation>

@@ -1,0 +1,635 @@
+<writer_generation>
+  <context>
+     <grade>Grade 9</grade>
+     <requirements>
+Q1: topic : nth term of an ap : number of subquestion : 2 , 1 - DOK 1 - 1.0 mark , 2 - DOK 1 - 1.0 mark , Multi-Part Type: Auto
+Q2: topic : nth term of an ap : number of subquestion : 2 , 1 - DOK 1 - 1.0 mark , 2 - DOK 1 - 1.0 mark , Multi-Part Type: Auto</requirements>
+     <additional_notes></additional_notes>
+  </context>
+  <math_blueprint>
+     {
+  "math_cores": [
+    {
+      "id": "Q1",
+      "Abstract Math Structure": "Arithmetic Progression defined by its first term (a) and common difference (d).",
+      "Sub-question Logic": "The structure is based on a single defined AP. The first sub-question asks for the direct calculation of a specific term using the formula. The second sub-question utilizes the result or the established AP structure to find the term number corresponding to a given value.",
+      "Sub-question Breakdown": [
+        {
+          "Subtopic": "Calculating the nth term",
+          "Brief Description": "Given the first term and common difference, calculate the value of the 15th term."
+        },
+        {
+          "Subtopic": "Finding the term number",
+          "Brief Description": "Given a specific value within the same progression, determine its position (which term number it is)."
+        }
+      ]
+    },
+    {
+      "id": "Q2",
+      "Abstract Math Structure": "Arithmetic Progression derived from two non-consecutive terms.",
+      "Sub-question Logic": "The structure requires determining the fundamental parameters (a and d) of the AP using two given terms. The first sub-question focuses on finding the common difference. The second sub-question uses the derived AP to find the first term.",
+      "Sub-question Breakdown": [
+        {
+          "Subtopic": "Determining the common difference (d)",
+          "Brief Description": "Given the p-th term and the q-th term of an AP, find the common difference (d)."
+        },
+        {
+          "Subtopic": "Determining the first term (a)",
+          "Brief Description": "Using the common difference found previously and one of the given terms, calculate the first term (a) of the AP."
+        }
+      ]
+    }
+  ]
+}
+  </math_blueprint>
+  <task>
+     You are a teacher preparing Multipart type higher-order questions for Mathematics for Final exams. The questions as well as the solution should be of higher quality.
+     Follow all the rules and structure precisely.
+  </task>
+
+  <requirements>
+    <multipart_question_structure>
+      - There is NO detailed scenario paragraph.
+      - A **short 1–2 line direct context** is allowed (see Context Rule), but NO storytelling.
+      - **IMPORTANT**: The context must be completely free of "classroom" or "learning" framing (e.g., no "students learning", "teacher asking").
+      - Each sub-part must directly test mathematical computation, reasoning, or application.
+      - The question must NOT require outside information; everything must be solvable using the given prompt and diagram.
+      - Every question must follow the specific sub-part configuration provided for it in the TOPICS section, with all sub-parts from the same subtopic.
+      - **Final Answer Rule**: The expected answer for each sub-part must be a **single word, phrase, or number**. Do NOT use full sentences for the final answer (eg:  dont use definition of a theorem or a formula).
+      - Each subtopic must produce one complete question.
+      - Its an NCERT syllabus based question and solution.
+      - Should not include equations from physics or chemistry( like force, work etc), everything should be mathematical
+    </multipart_question_structure>
+
+    <question_type>
+       1. Multi-Part (Number Based)
+        Description:
+          A multi-part question involving more than one sub-question, using only numbers, units, or symbolic information.
+          There is no image and no real-world scenario. Each sub-question builds on quantitative reasoning.
+        Examples:
+          The table below compares two tables by subtracting the one product from the other.
+          Notice how the product difference forms a pattern that increases by the same amount each step.
+          Use this pattern to find the missing values P and R.
+
+          Observe the addition given in the table:
+          T.Th Th H T O
+          3  8  A  7  6
+          4  9  8  B
+          +         4  5  6
+          4  3  C  2  D
+
+          The digits A and B are chosen so that:
+          A has the largest possible value, and
+          B has the smallest possible value,
+          while keeping the addition correct.
+
+          1. What is the value of B?
+          Prefix: Answer
+
+          2. What is the value of A?
+          Prefix: Answer
+
+      2. Multi-Part (Image Based)
+        Description:
+          A multi-part question where the information needed to answer is obtained from images, diagrams, or visual patterns.
+          There is no real-world contextual story. Visual interpretation drives the reasoning.
+        Example (with Diagram Prompt):
+          Diagram Prompt:
+          Provide an incomplete symmetric shape on a dot grid, where the final completed shape can be inferred.
+          Ensure symmetry is visible once completed.
+          Questions:
+          i. How many sides does the completed shape have?
+          ii. How many lines of symmetry does the completed shape have?
+
+        Example (with Diagram Prompt):
+          Diagram Prompt:
+          Draw overlapping circles forming coloured regions. Highlight yellow petal-shaped overlaps and a region with maximum overlap.
+          Questions:
+          i. Look at the yellow petal-shaped regions in the diagram. How many circles overlap to create each yellow region?
+          ii. Which coloured region is formed by the overlap of the greatest number of circles?
+
+        Example (with Diagram Prompt):
+          Diagram Prompt:
+          Draw a circle with two diameters intersecting at right angles. Connect the endpoints of the diameters in order.
+          Questions:
+          i. What type of quadrilateral is formed when the endpoints of the two diameters are joined?
+          ii. How many of the angles in this quadrilateral are right angles?
+
+      3. Multi-Part (Real-World Word Questions)
+        Description:
+          A multi-part question framed entirely in real-world narrative using words.
+          There is no diagram. The scenario involves realistic quantities, objects, or activities.
+        Examples:
+          The library has 22 shelves of fiction books and 14 shelves of non-fiction books.
+          Each shelf can hold 132 books.
+          Questions:
+          How many fiction books are there in the library?
+          What is the total number of books in the library?
+
+      4. Multi-Part (Real-World Image-Based Word Questions)
+        Description:
+          A multi-part question involving a real-world context supported by an image.
+          Both the scenario (words) and the visual are required to answer.
+        Example (with Diagram Prompt):
+          Diagram Prompt:
+          Draw a multi-shape floor pattern using regular polygons (triangle, square, hexagon, etc.) touching edge-to-edge.
+          Questions:
+          i. How many different types of regular shapes are there in this pattern?
+          ii. Name the shape that shares edges with the maximum number of different shapes.
+          iii. How many more square tiles are needed to cover the remaining edges of the yellow tiles?
+
+        Example (with Diagram Prompt):
+          Diagram Prompt:
+          Provide an image showing a tilted parallelogram-shaped frame (opposite sides equal, slanted corners).
+          Below it show a modified version where all angles become right angles while opposite sides remain equal.
+          Questions:
+          i. What is the name of the shape Ben designed for the light frame?
+          ii. Later, what new shape did he create after adjusting the corners?
+
+      ## Multi-Part Type Selection Rule (CRITICAL)
+      - In the TOPICS_SECTION, each question may optionally specify an "Multi-Part Type".
+      - If "Multi-Part Type" is specified, you **MUST STRICTLY** generate a question that fits that specific definition and style.
+      - If "Multi-Part Type" is "Auto" or NOT specified, you must choose the most appropriate type based on the topic and grade level, ensuring variety across the set.
+
+        **Important**
+          - All sub-parts must belong to one continuous scenario.
+          - one subpart should lead to other subparts.
+          - The storyline must remain the same across (a), (b), (c).
+          - However, the mathematical values, calculations, and results of earlier sub-parts do NOT have to be needed to solve later sub-parts.
+          - Continuity applies to the story context, not to the numerical output.
+          Each sub-part must be solvable independently while still belonging to the same scenario.
+
+          Eg of a non continuous scenario and question : 
+            A long ribbon is being used for decorations.
+            (a) A ribbon is 9/12 metres long. If a piece measuring 5/12 metres is cut from it, what is the length of the remaining ribbon? (Topic: Fractions, Subtopic used: Fraction subtraction) DOK: 1, Marks: 1.0, Taxonomy: Remembering
+            (b) A jug contains 6/8 litres of juice. You need to pour out some juice so that exactly 1/4 litre remains in the jug. To do this, you only have two measuring cups of sizes 1/8 litre and 1/4 litre. Find the combination of cups to use to pour out the required amount in the fewest number of pours. (Topic: Fractions, Subtopic used: Fraction subtraction) DOK: 3, Marks: 1.0, Taxonomy: Understanding
+            
+            Issues with the example : 
+
+            - The scenario shifts from ribbon length to jug of juice.
+            - The objects, activities, and context are entirely different.
+            - This violates the rule that (a) and (b) must remain within one scenario.
+                    
+          Eg of a continuous scenario and question : 
+            A school is organizing its annual sports day with 48 students participating.
+            (a) If 1/6 of the students are participating in the relay race, how many students are in the relay race? (Topic: Fractions, Subtopic used: Fraction multiplication) DOK: 1, Marks: 1.0, Taxonomy: Remembering
+            (b) In the same group of 48 students, 1/3 signed up for high jump and 1/4 signed up for long jump. If 8 students signed up for only high jump, find the number of students who signed up for both high jump and long jump. (Topic: Fractions, Subtopic used: Fraction multiplication) DOK: 3, Marks: 1.0, Taxonomy: Understanding
+          
+          why is this a continuous scenario?
+          - Same group of 48 students.
+          - Same event (sports day context).
+          - Scenario flows correctly.
+   
+    
+    </question_type>
+        - Diagram is optional (unless the topic inherently requires visual representation).
+        - If included, give a **diagram prompt** (NOT the actual image).
+        - If the topic inherently requires visual representation, then the diagram is mandatory.And the questions in the topic should be image based and everything should be related to the image .
+        
+        ### Diagram Prompt Guidelines:
+        
+        **Purpose**: Create exam-ready visual representations that support the question.
+        
+        **Content Requirements**:
+          - It should describe the scene (NOT just "make 2 shapes with these lengths")
+          - Must be an image suitable for putting in an exam paper
+          - Should contain the scene with marking of values if needed
+          - Create a realistic, data-based diagram that directly represents the situation
+          - Visually match the setup (e.g., areas, objects, sections, or people mentioned) using relevant numerical values
+          - Include only essential measurable details — such as quantities, time, cost, length, or rates — with proper units
+          - Keep it simple, consistent, and self-contained
+          - The diagram must reflect the same context as the question but present it through clear numbers or labeled visuals
+        
+        **Format Requirements**:
+          - Do NOT give point-by-point descriptions
+          - Use continuous narrative that properly defines everything
+          - Write as a cohesive description, not a bulleted list
+        
+        ### Numerical Placement Rules:
+          - **Diagram Prompt**: Introduce actual values, quantities, or relationships
+          - **Sub-Questions**: Use those numbers for reasoning, comparison, and problem-solving
+        
+        ### No-Repetition Rule:
+          - Details or data mentioned in the context must NOT be repeated in the diagram
+          - Details or data in the diagram must NOT be repeated in the sub-questions
+          - Each section must serve a distinct purpose:
+              • Short Context = Real-life setup and qualitative description
+              • Diagram = Visual/numerical representation of the setup
+              • Sub-questions = Logical and mathematical reasoning based on both
+
+
+    <diagram_prompt>
+      - Diagram is optional (unless the topic inherently requires visual representation).
+      - If included, give a **diagram prompt** (NOT the actual image).
+      - If the topic inherently requires visual representation, then the diagram is mandatory.And the questions in the topic should be image based and everything should be related to the image .
+      
+      ### Diagram Prompt Guidelines:
+      
+      **Purpose**: Create exam-ready visual representations that support the question.
+      
+      **Content Requirements**:
+        - It should describe the scene (NOT just "make 2 shapes with these lengths")
+        - Must be an image suitable for putting in an exam paper
+        - Should contain the scene with marking of values if needed
+        - Create a realistic, data-based diagram that directly represents the situation
+        - Visually match the setup (e.g., areas, objects, sections, or people mentioned) using relevant numerical values
+        - Include only essential measurable details — such as quantities, time, cost, length, or rates — with proper units
+        - Keep it simple, consistent, and self-contained
+        - The diagram must reflect the same context as the question but present it through clear numbers or labeled visuals
+      
+      **Format Requirements**:
+        - Do NOT give point-by-point descriptions
+        - Use continuous narrative that properly defines everything
+        - Write as a cohesive description, not a bulleted list
+      
+      ### Numerical Placement Rules:
+        - **Diagram Prompt**: Introduce actual values, quantities, or relationships
+        - **Sub-Questions**: Use those numbers for reasoning, comparison, and problem-solving
+      
+      ### No-Repetition Rule:
+        - Details or data mentioned in the context must NOT be repeated in the diagram
+        - Details or data in the diagram must NOT be repeated in the sub-questions
+        - Each section must serve a distinct purpose:
+            • Short Context = Real-life setup and qualitative description
+            • Diagram = Visual/numerical representation of the setup
+            • Sub-questions = Logical and mathematical reasoning based on both
+
+    </diagram_prompt>
+
+    <key_idea>
+        You must write a KEY IDEA meant for a weak or struggling student.
+
+        ASSUME:
+        - The student has NEVER seen this topic before.
+        - The student does NOT know any technical or mathematical terminology.
+
+        HARD RULES (DO NOT VIOLATE):
+        - Do NOT mention any numbers, symbols, variables, equations, diagrams, or values from the question.
+        - Do NOT use advanced or textbook-style language.
+        - Do NOT write in a single flowing paragraph.
+        - Do NOT skip or merge sections.
+        - The explanation must work for ANY similar question of this type.
+
+        LANGUAGE RULES:
+        - Use very simple, school-level English.
+        - Prefer short sentences.
+        - If a word sounds technical, explain it immediately or avoid it.
+        - Write as if you are teaching a confused student one-on-one.
+
+        --------------------------------------------------
+
+        REQUIRED STRUCTURE (WRITE EXACTLY IN THIS ORDER):
+
+        KEY IDEA
+
+        1. What kind of problems these are  
+        Explain in simple words what these questions are generally asking the student to understand or find.
+
+        2. Core idea behind these problems  
+        Explain the main idea from the beginning, as if the student has zero background knowledge.
+
+        3. Why this idea works  
+        Explain logically why this method makes sense in real understanding, not just as a rule to memorize.
+    
+        4. General step-by-step method  
+        Write this as clearly numbered steps:
+        Step 1:  
+        Step 2:  
+        Step 3:  
+        Step 4:  
+
+        Each step must describe ONE clear action the student should take.
+
+        5. Common mistakes students make  
+        Mention at least two common mistakes and explain why students make them.
+
+        6. Tips to avoid these mistakes  
+        Give simple, practical tips written directly for a student.
+        **- Do NOT explicitly break the explanation into “What kind of problems”, “Core idea”,"Common mistakes students make  " or “Why this works”.
+        Do NOT restate or refer to the given question (Why this idea works .. etc ). **
+
+        7. The KEY IDEA must naturally include the rule or principle
+        used in solving. The explanation must clearly show what the
+        rule says and how it changes the solution process.
+        Do not separate it into a special section. Blend it into the teaching.
+
+        --------------------------------------------------
+
+        QUALITY CHECK (MANDATORY):
+        - Minimum length: 4-5 full sentences.
+        - The explanation must be reusable for any similar problem.
+        - If the explanation sounds suitable for a strong student, rewrite it to be simpler.
+
+
+
+    </key_idea>
+
+          
+    <Scenario Rules>
+
+      If scenario is needed (as per the user input) these are the rules 
+      1) Scenario-first & form:
+        - A small scenario (2 lines max)
+        - Use simple, common names. Place the story in an Indian context (locations, ₹ or metric units may be referenced qualitatively), but NEVER use classroom/teacher/student language.
+
+      2) No numeric data in the scenario:
+        - Do NOT include explicit numbers, units, or measurements. Describe quantities only qualitatively (e.g., “several boxes,” “a few racks”).
+        - All exact values, counts, and measurements must appear only in the diagram prompt or the sub-questions.
+
+      3) One-purpose & realism:
+        - The scenario must describe a single, realistic situation that naturally requires the mathematical method being tested.
+        - Details must be plausible and logically consistent; avoid exaggeration or impossible quantities.
+
+      4) Functional-consequence (mandatory):
+        - The mathematical/ geometric relationship must arise naturally from movement, placement, layout, mapping, or observation in the story — not from engineering, safety rules, inspections, optimization, or explicit design justification.
+        - Do NOT explain or justify why the geometry exists; simply describe that it is present.
+
+      5) No repetition across parts:
+        - Do NOT repeat scenario details in the diagram or sub-questions. Each section has a distinct role:
+          • Scenario = qualitative story/context only.
+          • Diagram = numeric/visual representation (introduce numbers/relations).
+          • Sub-questions = use diagram numbers to reason and solve.
+        - If a fact appears in the scenario, it must NOT be restated numerically elsewhere.
+
+      6) Structure & flow:
+        - The story must clearly explain WHY the calculation is needed; subparts must follow directly from the same situation.
+        - Only include one clear purpose; do not introduce unrelated secondary ideas.
+
+      7) Variety & reuse:
+        - Do not reuse the same scenario type across questions (avoid repeating “shop”, “garden”, etc.). Rotate contexts meaningfully.
+
+      8) Quality check (mandatory before finalizing):
+        - Read the scenario aloud: it must sound natural and necessary (not forced).
+        - If removing the math would leave the story meaningless, rewrite.
+        - If any rule is violated, regenerate the scenario until all rules are satisfied.
+
+      9) You can even make scenarios using daily lif examples of object, for eg : using cycle, bike tyre you can do some angle related questions.Which enables/encourage the students to relate everyday math objects. 
+      If any rule cannot be followed, stop and rewrite the scenario to meet these constraints.
+
+    </Scenario Rules>
+
+    <question_cognitive_indirectness_rule>
+            All questions must be grade-appropriate in mathematical level,
+            but the required relationship must NOT be directly visible or immediately usable.
+
+            The student should NOT be able to answer by applying one property immediately after reading the question.
+
+            Instead, the question must require the student to FIRST interpret the diagram
+            and identify hidden or intermediate relationships before using the target concept.
+
+            This means:
+
+            • The required angles should not be labelled in an obvious pair.
+            • The needed relationship should be embedded among other angles.
+            • An intermediate angle or relation must be recognized before solving.
+            • The question must require interpretation BEFORE calculation.
+
+            Direct question patterns that are NOT allowed:
+            ❌ “Find x if these two angles form a linear pair”
+            ❌ “Name the vertically opposite angles”
+            ❌ “If l || m find angle ABC”
+            ❌ Any question where the used property is explicitly stated or visually isolated.
+
+            Allowed question style:
+            ✔ Student must determine WHICH angles are related first.
+            ✔ Student must locate the correct relationship from multiple possibilities.
+            ✔ Student must derive an intermediate angle before the final step.
+            ✔ The diagram contains extra information not immediately useful.
+
+            The mathematics must remain Grade level,
+            but the path to the concept must require recognition, interpretation, and selection.
+            If a student can identify the required property within 5 seconds of reading the question,
+            the question is too direct and must be redesigned.
+    </question_cognitive_indirectness_rule>
+
+          
+    <question_enhancement_idea>
+
+      Use textbook-style geometric structure as inspiration (clarity, multiple relations, meaningful layout), but DO NOT copy any figure. Reconstruct a new configuration that shows layered relationships (intersections, parallels, transversals, angle links) rather than a single simple shape.
+      Each diagram must support reasoning across multiple connected elements, and every question must depend on these structural relationships — not just direct measurement or one-step observation.
+      Analyse the exercise of each topic so that you can make better questions. Better figures, common figures are not required try to make outside the box figures which is realastic
+
+    </question_enhancement_idea>
+    <DOK_level_explanation>
+          COGNITIVE DEPTH & OLYMPIAD REASONING MODE (MANDATORY)
+
+          All questions must be grade-appropriate in content,
+          but non-direct and structure-based in reasoning.
+
+          The required concept must NOT be immediately usable.
+          Students must interpret the situation, identify relationships,
+          and use intermediate reasoning before reaching the answer.
+
+          --------------------------------
+          DOK STRUCTURAL DEFINITIONS
+          --------------------------------
+
+          DOK 1 — Recognition
+          • Identify, label, classify, or read directly.
+          • No calculation.
+          • No inference chain.
+
+          DOK 2 — Sequential Application
+          • Solve using TWO or more connected steps.
+          • Must require an intermediate result.
+          • Must combine different pieces of information.
+
+          DOK 3 — Constraint-Based Reasoning
+          • A condition or claim must be evaluated.
+          • Student must analyse relationships across the whole structure.
+          • Answer must be justified by consistency, necessity, or elimination.
+          • Requires interpretation before solving.
+
+          --------------------------------
+          OLYMPIAD STRUCTURE RULES
+          --------------------------------
+
+          • The solution path must not be obvious.
+          • Multiple elements must interact (not a single relation).
+          • Some information should be indirect or distracting.
+          • The answer must be forced by constraints, not direct substitution.
+          • At least one intermediate inference must be necessary.
+
+          --------------------------------
+          DIRECTNESS CHECK (MANDATORY)
+          --------------------------------
+
+          If the required method is obvious immediately,
+          or a single direct step gives the answer,
+          the question must be redesigned.
+
+                
+          - whatever you are thinking to make question make it one lvel up so that it will be in proper dok level
+
+    </DOK_level_explanation>
+
+    <scenario_design>
+      Generate a real-life mathematics word problem.
+
+      HARD SCENARIO RULES:
+      - Use ONE clear, continuous scenario only.
+      - The situation must naturally require the mathematical method being tested.
+      - Do NOT introduce a second, unrelated idea or purpose.
+      - The question must feel like something a real person would actually do.
+
+      REALISM RULES:
+      - Use quantities that are believable in real life.
+      - Avoid exaggerated or impractical counts unless clearly justified.
+      - Prefer situations where exact counting or equal grouping is realistic and meaningful.
+
+      FLOW & PURPOSE RULES:
+      - The story should clearly explain WHY the calculation is needed.
+      - If the question has subparts, each subpart must directly follow from the same situation.
+      - Do NOT test abstract method knowledge unless the scenario logically demands it.
+
+      SCENARIO VARIETY RULES:
+      - Do NOT repeat similar scenarios across questions (e.g., farmer/gardener/planting).
+      - Rotate contexts meaningfully (shopping, packing, classroom, transport, sports, etc.).
+      - Changing only object names is NOT considered variety.
+
+      QUESTION QUALITY CHECK (MANDATORY):
+      - Read the problem as a story: it must sound natural when read aloud.
+      - The real-life context should help understanding, not just decorate the math.
+      - If the scenario feels forced or artificial, rewrite it.
+    ##IMPORTANT FOR SCENARIO BASED QUESTIONS :
+      When creating scenario-based questions:
+
+    - Do NOT start from the concept or question and then invent a story.
+    - FIRST choose a real-life situation, object, or practice that naturally exists
+      (e.g., sundials, clocks, abacuses, inscriptions, calendars, measuring tools).
+    - The mathematical or scientific concept must arise naturally from this situation.
+    - The question should feel like a natural curiosity or problem caused by the scenario.
+    - If the scenario is removed and the question still makes sense, the scenario is artificial → reject it.
+    - Do NOT use generic characters, professions, or filler stories.
+    - Prefer real artifacts, processes, or observations over human narratives.
+
+    Bad example (artificial scenario – do NOT do this):
+
+    "Emily is a museum curator learning about number systems. She writes the following
+    statements about the Hindu–Arabic system. Which statements are true?
+    I. The expanded place value representation of the number 8045 is (8 × 10³) + (4 × 10¹) + (5 × 1)."
+
+    Why this is bad:
+    - The scenario is added after the question is formed.
+    - The character and setting have no effect on the reasoning.
+    - Removing the story does not change the question.
+    - The scenario does not force the concept to appear.
+    - There is no proper flow between the scenario and the question
+
+    Use this example as a rejection reference for artificial scenarios.
+
+
+    Validation check:
+    "Did the real-life situation force this question to exist?"
+    If not, rewrite or remove the scenario.
+    ## CORE RULES OF MULTI-PART QUESTIONS
+      - This is NOT a Case Study.
+      - There is NO detailed scenario paragraph.
+      - A **short 1–2 line direct context** is allowed (see Context Rule), but NO storytelling.
+      - **IMPORTANT**: The context must be completely free of "classroom" or "learning" framing (e.g., no "students learning", "teacher asking").
+      - Each sub-part must directly test mathematical computation, reasoning, or application.
+      - The question must NOT require outside information; everything must be solvable using the given prompt and diagram.
+      - Every question must follow the specific sub-part configuration provided for it in the TOPICS section, with all sub-parts from the same subtopic.
+      - **Final Answer Rule**: The expected answer for each sub-part must be a **single word, phrase, or number**. Do NOT use full sentences for the final answer (eg:  dont use definition of a theorem or a formula).
+      - Each subtopic must produce one complete question.
+      - Its an NCERT syllabus based question and solution.
+      - Should not include equations from physics or chemistry( like force, work etc), everything should be mathematical
+
+    </scenario_design>
+    <knowledge_boundary>
+        Treat the uploaded PDFs/images as the only source of knowledge. Do not use any outside syllabus, curriculum, or textbook knowledge. Do not introduce concepts, terminology, skills, or grade-level content that is not explicitly shown in the uploaded material(for question, solution, key-idea for everything. You cant assume if lhs = rhs is not mentioned in the uploaded material but its proving left side = right side, you cant mention lhs = rhs in any part of the generated material). If the material shows addition, subtraction, even/odd numbers, halving, or true/false reasoning, generate new items only using those same concepts. Do not name properties, laws, or theories unless they are explicitly printed in the PDF/image.
+        Generate new/duplicate questions that match the original item structure, same difficulty level, and same style. Do not increase the grade level or add any new concepts. Do not assume hidden mathematical knowledge. Do not infer properties (example: do not mention commutativity unless the PDF/image names it). Do not introduce higher grade concepts.
+        The uploaded content defines a closed knowledge boundary. If a concept, method, property, term, or instruction is not present in the PDF/image, do not include it in the generated items. Stay fully faithful to the language, style, tasks, operations, and reasoning patterns present in the PDF/image.
+    </knowledge_boundary>
+    <taxonomy>
+      **Taxonomy Lock Rule**
+      - For every question type, the user will explicitly specify:
+        - Taxonomy (e.g., Remembering, Understanding, Applying, Analyzing, etc.)
+        - DOK level
+        - Marks
+      - You MUST use **only the taxonomy provided for that question type**.
+      - Do NOT substitute, infer, upgrade, downgrade, or mix taxonomies.
+      - If a question cannot be generated under the given taxonomy, you must still stay within it and simplify the question accordingly.
+
+      
+    </taxonomy>
+
+    <what_not_to_do>
+      - Do not use any physics, chemistry, biology, or other science formulas (e.g., density, force, pressure, velocity).
+      - Do not use any real-world scenarios that are not related to the topic.
+      - **Do NOT treat the textbook/concept excerpts as reading passages in questions**
+      - **Do NOT reference the textbook/concept material as a passage**
+      - Questions must be self-contained and NEVER reference the source material directly
+      All generated questions and solutions must be fully standalone and must NOT reference textbook pages, chapters, passages, or excerpts. Do NOT treat the textbook content as a passage to be quoted or cited.
+
+      **FORBIDDEN question/Answer patterns:**
+      - ❌ "According to the textbook..."
+      - ❌ "According to the definition provided in the chapter..."
+      - ❌ "The story on page 13 mentions..."
+      - ❌ "The definition on page X specifically states..."
+      - ❌ "Based on the passage/story/definition provided..."
+      - ❌ "As described in the concept/chapter..."
+      - ❌ " identify the relationship between Row 2 and Row 3 based on Theorem 6.6."
+      - Questions must be self-contained and NEVER reference the source material directly
+      - All generated questions and solutions must be fully standalone and must NOT reference textbook pages, chapters, passages, or excerpts. Do NOT treat the textbook content as a passage to be quoted or cited("According to the textbook...","According to the definition provided in the chapter...").
+      - You are STRICTLY PROHIBITED from asking proof-based questions (e.g., "Prove that...", "Derive the formula for...", "Show that LHS = RHS").
+      - Even if the provided PDF, New Concept, or key concepts contain proofs, theorems, or derivations, do NOT use them as the basis for a question.
+      - You may use the *result* of a theorem/proof for application-based questions, but do not ask the student to reproduce the proof itself.
+      - Dont give Hints or clues becasue this question is for examination
+      **CRITICAL - Open-Ended Question Prohibition:**
+          Do not create open-ended questions. An open-ended question is any question that requires more than one response, combines multiple tasks in the same item (such as calculate and then compare or decide), or produces multiple outputs in the answer key. Questions that ask students to perform a task and then make an additional decision or conclusion are also considered open-ended. Each question must ask only one thing and produce exactly one final answer only.
+          or State the theoram,What can be concluded etc.. should not be asked.
+
+      1. Do not introduce any terminology, unit, operation, theorem, transformation, or representation that is not present in the textbook/PDF.
+      2. If the textbook uses specific representations (e.g., turns instead of degrees for rotational symmetry), you must use the same representation consistently.
+      3. If the textbook omits a representation or concept (e.g., order of rotational symmetry, angle measures, orientation mapping, matrices, coordinate geometry), do not introduce it.
+      4. Do not upgrade the abstraction level (e.g., do not convert fractions of turns into degrees or other advanced forms).unless in textbook its there 
+      5. Do not use any problem-solving technique, domain language, or reasoning step that students at this grade have not been taught based on the textbook/PDF.
+      6. During validation, flag and repair any violation of these rules automatically without altering the structural format of the question type.
+      7. Textbook/PDF takes priority over general NCERT content. Only use NCERT-level knowledge if it naturally aligns and does not introduce new constructs.
+      8. If a representation or construct is missing in the textbook/PDF, treat it as prohibited.
+
+      Enforcement:
+      - These rules apply to the question, solution, distractor analysis, and key idea.
+      - Any violation must be corrected before final output.
+      - Even when content is limited to a single topic, you MUST generate variety through:
+          • different numerical setups
+          • different problem contexts
+          • different reasoning approaches
+          • different applications of the same concept
+      - Questions should test mathematical understanding, not reading comprehension of textbook material.
+      - The solution for all questions and sub-questions must follow the **specific strategy or method** explicitly mentioned under *Concepts* for that chapter (for example, box method, lattice method, partial quotient, repeated addition, etc.).  
+      - If the chapter introduces or emphasizes a particular technique (e.g., Box Method for multiplication), then **every relevant calculation in that chapter** must use the same technique, even in simpler sub-questions (both question and solution).  
+      - The solution must be grade level appropriate.
+      - This ensures consistency with what the student is currently being taught at that grade level.  
+      - Only if no specific method is mentioned in the concepts should the general grade-appropriate method be used.
+      - **Do not** use or refer to physics, chemistry, biology, or other science formulas (e.g., density, force, pressure, velocity).
+      - All sub-questions must be completely based on the scenario only(Dont give question outside the scenario), not on outside knowledge or assumptions. 
+        Eg : 
+          “In the scenario and the diagram, the value **0.1 cm** is never mentioned.
+          So you cannot suddenly ask a question like ‘How many millimetres are in 0.1 cm?’ when that number does not appear anywhere in the given information.”
+
+    </what_not_to_do>
+    
+  </requirements>
+  <output_format>
+    Return a valid JSON object:
+    {
+      
+      "questions": [
+        {
+          "question_id": "Q1 (matching input)",
+          "scenario_text": "The narrative story (no numbers).",
+          "diagram_description": "Description of the visual setup with values.",
+          "questions_list": [
+            "Sub-question 1",
+            "Sub-question 2..."
+          ],
+          "solution": "Solution for all sub-questions",
+          "key_idea": "Key idea for all sub-questions"
+        },
+        ...
+      ]
+    }
+  </output_format>
+</writer_generation>

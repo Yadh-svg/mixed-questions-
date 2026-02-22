@@ -1,0 +1,14 @@
+{
+  "question_id": "Q1",
+  "question_text": "Topic Used: nth term of an ap\nMCQ Type: Number Based\nMark of question: 1.0\nDOK level of question: 1\nTaxonomy of question: Remembering\nStatement Based: NO\n\nAn arithmetic progression has a first term ($a$) of 11 and a common difference ($d$) of 3. What is the $5^{th}$ term ($a_5$) of this sequence?",
+  "options": {
+    "A": "23",
+    "B": "26",
+    "C": "22",
+    "D": "14"
+  },
+  "correct_option": "A",
+  "solution": "To find the $n^{th}$ term of an arithmetic progression, we use the formula $a_n = a + (n-1)d$.\n\nStep 1: Identify the given components from the problem:\n- First term ($a$) = 11\n- Common difference ($d$) = 3\n- Term number ($n$) = 5\n\nStep 2: Substitute the values into the formula:\n$a_5 = 11 + (5 - 1) \\times 3$\n\nStep 3: Simplify the expression:\n$a_5 = 11 + 4 \\times 3$\n$a_5 = 11 + 12$\n$a_5 = 23$\n\nMark Split:\n- 0.5 marks: Correct identification and substitution of $a$, $d$, and $n$ into the formula.\n- 0.5 marks: Correct final calculation of the $5^{th}$ term.",
+  "distractor_analysis": "| Option | Misconception |\n| :--- | :--- |\n| B \u2013 Conceptual Error | You likely applied the formula $a + nd$ instead of $a + (n-1)d$. By multiplying the term number (5) directly by the difference (3) and adding it to 11, you ignore that the first term already represents the starting point without a difference added. |\n| C \u2013 Computational Error | You likely used the correct formula and identified the values accurately but made an arithmetic slip during the multiplication phase, such as calculating $4 \\times 3$ as 11. Adding 11 to 11 results in 22, which is incorrect. |\n| D \u2013 Comprehension Error | You likely misread or ignored the requirement to find the $5^{th}$ term and instead provided the value of the $2^{nd}$ term. By adding 11 and 3 to get 14, you only progressed one step in the sequence instead of the four steps required. |",
+  "key_idea": "These problems involve finding a specific number in a list where the gap between each consecutive number is always the same. To find any term, you start with the first number and add the common gap a certain number of times. Because the first term is already at the first position, you only need to add the common difference $(n-1)$ times to reach the $n^{th}$ position. \n\nGeneral step-by-step method: \nStep 1: Identify the first term ($a$), the common difference ($d$), and the position of the term you want to find ($n$). \nStep 2: Subtract 1 from the term position ($n-1$). \nStep 3: Multiply this result by the common difference. \nStep 4: Add this final product to the first term. \n\nCommon mistakes include using the term number ($n$) directly instead of $n-1$, or accidentally swapping the first term and the common difference in the formula. To avoid this, always double-check that you have subtracted 1 from the position before multiplying."
+}

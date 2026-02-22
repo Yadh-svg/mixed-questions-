@@ -630,7 +630,8 @@ async def process_single_batch_flow(
                 questions, 
                 general_config, 
                 files,
-                save_prompts_dir=prompts_dir
+                save_prompts_dir=prompts_dir,
+                previous_batch_metadata=previous_batch_metadata
             )
             
             # Format pipeline output for compatibility with existing system
@@ -654,10 +655,26 @@ async def process_single_batch_flow(
                     'input_tokens': 0,
                     'output_tokens': 0
                 },
-                'core_skill_metadata': {},
+                'core_skill_metadata': pipeline_result['_pipeline_metadata'].get('core_skill_data', {}),
                 '_pipeline_output': pipeline_result,  # Store full pipeline structure
                 '_prompts_dir': str(prompts_dir)  # Store prompts directory path
             }
+            
+            # Save detailed batch output for debugging/analysis
+            try:
+                output_dir = Path("batch_outputs")
+                output_dir.mkdir(exist_ok=True)
+                clean_key = batch_key.replace(" ", "_").replace("-", "_")
+                output_file = output_dir / f"{clean_key}_full_output.json"
+                
+                with open(output_file, "w", encoding="utf-8") as f:
+                    json.dump(pipeline_payload, f, indent=2)
+                logger.info(f"Saved full batch output to {output_file}")
+            except Exception as e:
+                logger.error(f"Failed to save full batch output: {e}")
+
+            # Use the extracted metadata for the return value
+            return {batch_key: pipeline_payload, '_metadata': pipeline_payload['core_skill_metadata']}
             
             if progress_callback:
                 progress_callback(batch_key, pipeline_payload)
@@ -889,7 +906,9 @@ async def process_batches_pipeline(
             for i, batch_questions in enumerate(batches):
                 batch_key = f"{base_type_key} - Batch {i + 1}"
                 
-                logger.info(f"[Core Skill] Processing {batch_key} with {len(accumulated_metadata.get('core_equation', []))} prior metadata entries")
+                t_count = len(accumulated_metadata.get('topics', []))
+                s_count = len(accumulated_metadata.get('scenarios', []))
+                logger.info(f"[Core Skill] Processing {batch_key} with prior knowledge: {t_count} topics, {s_count} scenarios")
                 
                 # Process this batch with previous metadata
                 result = await process_single_batch_flow(
@@ -911,20 +930,31 @@ async def process_batches_pipeline(
                     # Initialize if empty
                     if not accumulated_metadata:
                         accumulated_metadata = batch_metadata.copy()
-                        logger.info(f"[Core Skill] Initialized metadata with {len(batch_metadata.get('batch_summary', '').split(','))} items")
+                        topic_count = len(accumulated_metadata.get('topics', []))
+                        logger.info(f"[Core Skill] Initialized metadata with {topic_count} topics")
                     else:
-                        # Append new values to existing strings
+                        # Append new values
                         for key, new_val in batch_metadata.items():
                             if key in accumulated_metadata:
-                                # Append with comma
                                 current_val = accumulated_metadata[key]
-                                if new_val.strip():
-                                    accumulated_metadata[key] = f"{current_val}, {new_val}"
+                                
+                                # Handle List accumulation (New Core Skill)
+                                if isinstance(current_val, list) and isinstance(new_val, list):
+                                    # Extend list with new items
+                                    accumulated_metadata[key] = current_val + new_val
+                                    
+                                # Handle String accumulation (Legacy)
+                                elif isinstance(current_val, str) and isinstance(new_val, str):
+                                    if new_val.strip():
+                                        accumulated_metadata[key] = f"{current_val}, {new_val}"
                             else:
                                 # New key, just add it
                                 accumulated_metadata[key] = new_val
                                 
-                        logger.info(f"[Core Skill] Updated cumulative metadata. Total summary items: {len(accumulated_metadata.get('batch_summary', '').split(','))}")
+                        # Log summary stats
+                        topic_count = len(accumulated_metadata.get('topics', []))
+                        scenario_count = len(accumulated_metadata.get('scenarios', []))
+                        logger.info(f"[Core Skill] Updated cumulative metadata. Usage: {topic_count} topics, {scenario_count} scenarios.")
                 
                 # Add batch results to pipeline results
                 total_cost += result[batch_key].get('batch_cost', 0.0)

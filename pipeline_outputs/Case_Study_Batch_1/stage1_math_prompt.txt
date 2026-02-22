@@ -1,0 +1,82 @@
+<math_core_generation>
+  <context>
+    <grade>Grade 10</grade>
+    <subject>Mathematics</subject>
+    <chapter>Arithmetic Progression</chapter>
+    <topic>nth term of an ap, SUM OF N TERMS</topic>
+    <additional_notes></additional_notes>
+  </context>
+  
+  <design_requirements>
+    The user needs the following specific questions designed:
+    
+Q1: topic : nth term of an ap : number of subquestion : 3 , 1 - DOK 1 - 1.0 mark , 2 - DOK 1 - 1.0 mark , 3 - DOK 1 - 1.0 mark
+Q2: topic : SUM OF N TERMS : number of subquestion : 3 , 1 - DOK 1 - 1.0 mark , 2 - DOK 1 - 1.0 mark , 3 - DOK 1 - 1.0 mark
+
+CRITICAL INSTRUCTION: For EACH sub-question, you must identify a distinct sub-topic or specific mathematical area within the main Topic to ensure variety and depth. Do NOT ask the same type of question for all parts.
+  </design_requirements>
+  
+  <task>  
+    You are the **"Architect"**. Your role is to design the **Math Core** for the requested questions.
+
+    STRICT RULES:  
+    - Do NOT write a story.  
+    - Do NOT write a scenario.  
+    - Do NOT restate or display the Topic name.  
+    - Do NOT display DOK level, marks, or any metadata provided in the input.  
+    - ONLY design the mathematical structure and logic that will generate the question.  
+    - If **Additional Notes** are provided, they are mandatory design constraints and must be applied.
+
+    For EACH question listed in <design_requirements>, define:
+
+    1. **Abstract Math Structure**  
+      - The underlying mathematical framework (e.g., Linear Pair, System of Equations, Right Triangle with altitude, etc.)  
+      - Must be deep enough to logically support all required sub-questions.
+
+    2. **Sub-question Logic**  
+      - Explain how the structure supports multiple sub-questions in a progressive or connected way.  
+      - The structure must naturally allow increasing reasoning complexity.
+
+    3. **Sub-question Breakdown**  
+      For EACH sub-question provide:
+      - **Subtopic (unique — cannot repeat across sub-questions)**  
+      - **Brief Description** explaining what mathematical idea or operation is being tested.
+
+  </task>
+
+  <requirements>
+
+    1. SUBTOPIC SELECTION  
+      - Identify different subtopics from within the given topic domain.  
+      - Each sub-question MUST use a distinct subtopic.  
+      - Subtopics must come from concept analysis (textbook, syllabus progression, or logical concept hierarchy).
+
+    2. STRUCTURAL COMPLEXITY  
+      - The math structure must be sufficiently rich to support all sub-questions logically.  
+      - Sub-questions must emerge naturally from the same structure (not disconnected tasks).
+
+    3. ADDITIONAL NOTES (MANDATORY)  
+      - If any constraint, condition, value restriction, or design instruction appears in Additional Notes, it MUST be incorporated into the structure and sub-question logic.
+
+    4. OUTPUT RESTRICTIONS  
+      - Do NOT include:DOK level, marks, scoring, pedagogy labels,explanation of curriculum alignment, or **how to make questions**.  
+      - Only output structural mathematical design.
+
+  </requirements>
+  <output_format>
+    Return a valid JSON object:
+    {
+      
+      "math_cores": [
+        {
+          "id": "Q1",
+          "Topic": "topic name",
+          "subquestion_1": "subtopic and its description",
+          "subquestion_2": "subtopic and its description",
+          ...
+        },
+        ...// next object with same structure
+      ]
+    }
+  </output_format>
+</math_core_generation>

@@ -1,0 +1,35 @@
+{
+  "question_id": "Q2",
+  "topic": "sum of an ap",
+  "metadata": {
+    "MCQ Type": "Real-World Word",
+    "Mark of question": "1.0",
+    "DOK level of question": "1",
+    "Taxonomy of question": "Remembering",
+    "Statement Based": "NO"
+  },
+  "question_text": "Yadhu decides to save some money every day. The amount he saves each day increases by a fixed amount compared to the previous day. To find the total amount Yadhu has saved after $n$ days, which of the following formulas correctly represents the sum ($S_n$) of the savings, where '$a$' is the first day's savings and '$l$' is the savings on the $n$-th day?",
+  "options": {
+    "A": "$S_n = \\frac{n}{2} (a + l)$",
+    "B": "$S_n = n(a + l)$",
+    "C": "$S_n = \\frac{1}{2} (a + l)$",
+    "D": "$S_n = \\frac{n}{2} (a - l)$"
+  },
+  "correct_option": "A",
+  "solution": "The sum of the first $n$ terms of an AP can be calculated if the first term ($a$) and the last term ($l$) are known. The sum is effectively the average of the first and last terms multiplied by the total number of terms ($n$). \n- Average of terms: $\\frac{a+l}{2}$ \n- Multiply by number of terms: $n \\times \\frac{a+l}{2}$ \n- Result: $S_n = \\frac{n}{2} (a + l)$. [1.0 Mark]",
+  "distractor_analysis": [
+    {
+      "Option": "B \u2013 Conceptual Error",
+      "Misconception": "You likely forgot that the sum formula requires the average of the terms. You multiplied the total terms by the sum of $a$ and $l$ without dividing by 2."
+    },
+    {
+      "Option": "C \u2013 Comprehension Error",
+      "Misconception": "You likely overlooked the variable $n$ representing the total number of days. This choice only calculates the average of the first and last day, not the total sum."
+    },
+    {
+      "Option": "D \u2013 Computational Error",
+      "Misconception": "You likely made a calculation error by using subtraction inside the parentheses. To find the total sum, the first and last values must be added, not subtracted."
+    }
+  ],
+  "key_idea": "The sum of an AP is the total of all values in a sequence where the difference between terms is constant. It is based on the logic that the average of the first and last term represents the 'middle' value of the set. Step 1: Identify the first and last terms. Step 2: Add these two values together. Step 3: Multiply the result by the total number of terms. Step 4: Divide the final result by two. A common mistake is forgetting the division by two or using the wrong number of terms. To avoid errors, always check if you are looking for the total sum or just one specific term."
+}

@@ -1,0 +1,101 @@
+{
+  "Multi-Part - Batch 1": {
+    "raw": {
+      "text": "{\n  \"math_core\": {\n    \"math_cores\": [\n      {\n        \"id\": \"Q1\",\n        \"Abstract Math Structure\": \"Arithmetic Progression defined by its first term (a) and common difference (d).\",\n        \"Sub-question Logic\": \"The structure is based on a single defined AP. The first sub-question asks for the direct calculation of a specific term using the formula. The second sub-question utilizes the result or the established AP structure to find the term number corresponding to a given value.\",\n        \"Sub-question Breakdown\": [\n          {\n            \"Subtopic\": \"Calculating the nth term\",\n            \"Brief Description\": \"Given the first term and common difference, calculate the value of the 15th term.\"\n          },\n          {\n            \"Subtopic\": \"Finding the term number\",\n            \"Brief Description\": \"Given a specific value within the same progression, determine its position (which term number it is).\"\n          }\n        ]\n      },\n      {\n        \"id\": \"Q2\",\n        \"Abstract Math Structure\": \"Arithmetic Progression derived from two non-consecutive terms.\",\n        \"Sub-question Logic\": \"The structure requires determining the fundamental parameters (a and d) of the AP using two given terms. The first sub-question focuses on finding the common difference. The second sub-question uses the derived AP to find the first term.\",\n        \"Sub-question Breakdown\": [\n          {\n            \"Subtopic\": \"Determining the common difference (d)\",\n            \"Brief Description\": \"Given the p-th term and the q-th term of an AP, find the common difference (d).\"\n          },\n          {\n            \"Subtopic\": \"Determining the first term (a)\",\n            \"Brief Description\": \"Using the common difference found previously and one of the given terms, calculate the first term (a) of the AP.\"\n          }\n        ]\n      }\n    ]\n  },\n  \"writer_output\": {\n    \"questions\": [\n      {\n        \"question_id\": \"Q1\",\n        \"scenario_text\": \"Stone steps are built into the hills of Hampi to reach a mountain shrine.\",\n        \"diagram_description\": \"The illustration displays a sequence of stone steps where the height of the first step is marked as 12 cm. Each subsequent step shows a steady increase in height by exactly 8 cm compared to the step before it.\",\n        \"questions_list\": [\n          \"What is the total height of the 15th step from the base?\",\n          \"Which step number reaches a total height of 132 cm?\"\n        ],\n        \"solution\": \"1. To find the 15th term, we use the rule for a constant pattern. The first value (a) is 12 and the gap (d) is 8. The height of the 15th step is 12 + (15 - 1) \\u00d7 8. This simplifies to 12 + (14 \\u00d7 8) = 12 + 112 = 124 cm.\\n2. To find the step number (n) for a height of 132 cm, we set up the relationship: 132 = 12 + (n - 1) \\u00d7 8. Subtracting 12 from both sides gives 120 = (n - 1) \\u00d7 8. Dividing by 8 gives 15 = n - 1. Adding 1 gives n = 16.\",\n        \"key_idea\": \"These problems are about finding values in a list where the gap between numbers is always the same. Imagine a set of steps where each one is the exact same height above the previous one. If you know the height of the first step and the size of each gap, you can figure out any other step. This works because you are just adding the same amount over and over again. \\n\\nStep 1: Find the value of the first item and the size of the gap between items. \\nStep 2: To find the value at a specific position, subtract one from that position and multiply it by the gap. \\nStep 3: Add that result to the first item's value. \\nStep 4: To find a position number, subtract the first item from the given value, divide by the gap, and add one. \\n\\nA common mistake is using the position number directly without subtracting one first. Always remember that the first item doesn't have a gap before it, so for the tenth item, you only add nine gaps.\"\n      },\n      {\n        \"question_id\": \"Q2\",\n        \"scenario_text\": \"Decorative flower planters are arranged in a straight line along the corridor of a heritage hotel in Jaipur.\",\n        \"diagram_description\": \"The visual shows a series of planters where the fourth planter is labeled as containing 15 flowers and the seventh planter is labeled as containing 27 flowers. The number of flowers increases by the same amount in each successive planter.\",\n        \"questions_list\": [\n          \"What is the constant increase in the number of flowers between any two consecutive planters?\",\n          \"How many flowers are placed in the very first planter of the row?\"\n        ],\n        \"solution\": \"1. The difference in the number of flowers between the 7th and 4th planter is 27 - 15 = 12. Since there are 7 - 4 = 3 equal gaps between these planters, the constant increase (common difference) is 12 \\u00f7 3 = 4.\\n2. To find the first term (a), we use the 4th planter's value of 15. The 4th planter is reached by adding the gap of 4 three times to the first planter. So, 15 = a + (3 \\u00d7 4). This means 15 = a + 12. Subtracting 12 gives a = 3.\",\n        \"key_idea\": \"These problems help you find the starting point or the gap in a pattern when you only know two points in the middle. Think of it like knowing the height of the 4th and 7th floors of a building. \\n\\nStep 1: Find the difference between the two known values. \\nStep 2: Find the difference between their position numbers. \\nStep 3: Divide the value difference by the position difference to find the size of one jump. \\nStep 4: To find the very first value, take one of the known values and subtract the jumps needed to get back to the start. \\n\\nStudents often make the mistake of dividing the value by the position number directly, which only works if the first value is zero. Another mistake is miscounting the number of jumps between the two positions. Always check your jump size by making sure it adds up correctly between the two known values.\"\n      }\n    ]\n  },\n  \"solution_output\": {},\n  \"_pipeline_metadata\": {\n    \"mode\": \"MATH_FIRST\",\n    \"stages\": 2,\n    \"total_tokens\": {\n      \"input\": 9043,\n      \"output\": 1500\n    },\n    \"core_skill_data\": {\n      \"topics\": [],\n      \"scenarios\": []\n    }\n  }\n}",
+      "elapsed": 0,
+      "batch_key": "Multi-Part - Batch 1",
+      "input_tokens": 9043,
+      "output_tokens": 1500,
+      "thought_tokens": 0,
+      "billed_output_tokens": 1500
+    },
+    "validated": {
+      "text": "{\n  \"math_core\": {\n    \"math_cores\": [\n      {\n        \"id\": \"Q1\",\n        \"Abstract Math Structure\": \"Arithmetic Progression defined by its first term (a) and common difference (d).\",\n        \"Sub-question Logic\": \"The structure is based on a single defined AP. The first sub-question asks for the direct calculation of a specific term using the formula. The second sub-question utilizes the result or the established AP structure to find the term number corresponding to a given value.\",\n        \"Sub-question Breakdown\": [\n          {\n            \"Subtopic\": \"Calculating the nth term\",\n            \"Brief Description\": \"Given the first term and common difference, calculate the value of the 15th term.\"\n          },\n          {\n            \"Subtopic\": \"Finding the term number\",\n            \"Brief Description\": \"Given a specific value within the same progression, determine its position (which term number it is).\"\n          }\n        ]\n      },\n      {\n        \"id\": \"Q2\",\n        \"Abstract Math Structure\": \"Arithmetic Progression derived from two non-consecutive terms.\",\n        \"Sub-question Logic\": \"The structure requires determining the fundamental parameters (a and d) of the AP using two given terms. The first sub-question focuses on finding the common difference. The second sub-question uses the derived AP to find the first term.\",\n        \"Sub-question Breakdown\": [\n          {\n            \"Subtopic\": \"Determining the common difference (d)\",\n            \"Brief Description\": \"Given the p-th term and the q-th term of an AP, find the common difference (d).\"\n          },\n          {\n            \"Subtopic\": \"Determining the first term (a)\",\n            \"Brief Description\": \"Using the common difference found previously and one of the given terms, calculate the first term (a) of the AP.\"\n          }\n        ]\n      }\n    ]\n  },\n  \"writer_output\": {\n    \"questions\": [\n      {\n        \"question_id\": \"Q1\",\n        \"scenario_text\": \"Stone steps are built into the hills of Hampi to reach a mountain shrine.\",\n        \"diagram_description\": \"The illustration displays a sequence of stone steps where the height of the first step is marked as 12 cm. Each subsequent step shows a steady increase in height by exactly 8 cm compared to the step before it.\",\n        \"questions_list\": [\n          \"What is the total height of the 15th step from the base?\",\n          \"Which step number reaches a total height of 132 cm?\"\n        ],\n        \"solution\": \"1. To find the 15th term, we use the rule for a constant pattern. The first value (a) is 12 and the gap (d) is 8. The height of the 15th step is 12 + (15 - 1) \\u00d7 8. This simplifies to 12 + (14 \\u00d7 8) = 12 + 112 = 124 cm.\\n2. To find the step number (n) for a height of 132 cm, we set up the relationship: 132 = 12 + (n - 1) \\u00d7 8. Subtracting 12 from both sides gives 120 = (n - 1) \\u00d7 8. Dividing by 8 gives 15 = n - 1. Adding 1 gives n = 16.\",\n        \"key_idea\": \"These problems are about finding values in a list where the gap between numbers is always the same. Imagine a set of steps where each one is the exact same height above the previous one. If you know the height of the first step and the size of each gap, you can figure out any other step. This works because you are just adding the same amount over and over again. \\n\\nStep 1: Find the value of the first item and the size of the gap between items. \\nStep 2: To find the value at a specific position, subtract one from that position and multiply it by the gap. \\nStep 3: Add that result to the first item's value. \\nStep 4: To find a position number, subtract the first item from the given value, divide by the gap, and add one. \\n\\nA common mistake is using the position number directly without subtracting one first. Always remember that the first item doesn't have a gap before it, so for the tenth item, you only add nine gaps.\"\n      },\n      {\n        \"question_id\": \"Q2\",\n        \"scenario_text\": \"Decorative flower planters are arranged in a straight line along the corridor of a heritage hotel in Jaipur.\",\n        \"diagram_description\": \"The visual shows a series of planters where the fourth planter is labeled as containing 15 flowers and the seventh planter is labeled as containing 27 flowers. The number of flowers increases by the same amount in each successive planter.\",\n        \"questions_list\": [\n          \"What is the constant increase in the number of flowers between any two consecutive planters?\",\n          \"How many flowers are placed in the very first planter of the row?\"\n        ],\n        \"solution\": \"1. The difference in the number of flowers between the 7th and 4th planter is 27 - 15 = 12. Since there are 7 - 4 = 3 equal gaps between these planters, the constant increase (common difference) is 12 \\u00f7 3 = 4.\\n2. To find the first term (a), we use the 4th planter's value of 15. The 4th planter is reached by adding the gap of 4 three times to the first planter. So, 15 = a + (3 \\u00d7 4). This means 15 = a + 12. Subtracting 12 gives a = 3.\",\n        \"key_idea\": \"These problems help you find the starting point or the gap in a pattern when you only know two points in the middle. Think of it like knowing the height of the 4th and 7th floors of a building. \\n\\nStep 1: Find the difference between the two known values. \\nStep 2: Find the difference between their position numbers. \\nStep 3: Divide the value difference by the position difference to find the size of one jump. \\nStep 4: To find the very first value, take one of the known values and subtract the jumps needed to get back to the start. \\n\\nStudents often make the mistake of dividing the value by the position number directly, which only works if the first value is zero. Another mistake is miscounting the number of jumps between the two positions. Always check your jump size by making sure it adds up correctly between the two known values.\"\n      }\n    ]\n  },\n  \"solution_output\": {},\n  \"_pipeline_metadata\": {\n    \"mode\": \"MATH_FIRST\",\n    \"stages\": 2,\n    \"total_tokens\": {\n      \"input\": 9043,\n      \"output\": 1500\n    },\n    \"core_skill_data\": {\n      \"topics\": [],\n      \"scenarios\": []\n    }\n  }\n}",
+      "elapsed": 0,
+      "batch_key": "Multi-Part - Batch 1",
+      "input_tokens": 0,
+      "output_tokens": 0
+    },
+    "core_skill_metadata": {
+      "topics": [],
+      "scenarios": []
+    },
+    "_pipeline_output": {
+      "math_core": {
+        "math_cores": [
+          {
+            "id": "Q1",
+            "Abstract Math Structure": "Arithmetic Progression defined by its first term (a) and common difference (d).",
+            "Sub-question Logic": "The structure is based on a single defined AP. The first sub-question asks for the direct calculation of a specific term using the formula. The second sub-question utilizes the result or the established AP structure to find the term number corresponding to a given value.",
+            "Sub-question Breakdown": [
+              {
+                "Subtopic": "Calculating the nth term",
+                "Brief Description": "Given the first term and common difference, calculate the value of the 15th term."
+              },
+              {
+                "Subtopic": "Finding the term number",
+                "Brief Description": "Given a specific value within the same progression, determine its position (which term number it is)."
+              }
+            ]
+          },
+          {
+            "id": "Q2",
+            "Abstract Math Structure": "Arithmetic Progression derived from two non-consecutive terms.",
+            "Sub-question Logic": "The structure requires determining the fundamental parameters (a and d) of the AP using two given terms. The first sub-question focuses on finding the common difference. The second sub-question uses the derived AP to find the first term.",
+            "Sub-question Breakdown": [
+              {
+                "Subtopic": "Determining the common difference (d)",
+                "Brief Description": "Given the p-th term and the q-th term of an AP, find the common difference (d)."
+              },
+              {
+                "Subtopic": "Determining the first term (a)",
+                "Brief Description": "Using the common difference found previously and one of the given terms, calculate the first term (a) of the AP."
+              }
+            ]
+          }
+        ]
+      },
+      "writer_output": {
+        "questions": [
+          {
+            "question_id": "Q1",
+            "scenario_text": "Stone steps are built into the hills of Hampi to reach a mountain shrine.",
+            "diagram_description": "The illustration displays a sequence of stone steps where the height of the first step is marked as 12 cm. Each subsequent step shows a steady increase in height by exactly 8 cm compared to the step before it.",
+            "questions_list": [
+              "What is the total height of the 15th step from the base?",
+              "Which step number reaches a total height of 132 cm?"
+            ],
+            "solution": "1. To find the 15th term, we use the rule for a constant pattern. The first value (a) is 12 and the gap (d) is 8. The height of the 15th step is 12 + (15 - 1) × 8. This simplifies to 12 + (14 × 8) = 12 + 112 = 124 cm.\n2. To find the step number (n) for a height of 132 cm, we set up the relationship: 132 = 12 + (n - 1) × 8. Subtracting 12 from both sides gives 120 = (n - 1) × 8. Dividing by 8 gives 15 = n - 1. Adding 1 gives n = 16.",
+            "key_idea": "These problems are about finding values in a list where the gap between numbers is always the same. Imagine a set of steps where each one is the exact same height above the previous one. If you know the height of the first step and the size of each gap, you can figure out any other step. This works because you are just adding the same amount over and over again. \n\nStep 1: Find the value of the first item and the size of the gap between items. \nStep 2: To find the value at a specific position, subtract one from that position and multiply it by the gap. \nStep 3: Add that result to the first item's value. \nStep 4: To find a position number, subtract the first item from the given value, divide by the gap, and add one. \n\nA common mistake is using the position number directly without subtracting one first. Always remember that the first item doesn't have a gap before it, so for the tenth item, you only add nine gaps."
+          },
+          {
+            "question_id": "Q2",
+            "scenario_text": "Decorative flower planters are arranged in a straight line along the corridor of a heritage hotel in Jaipur.",
+            "diagram_description": "The visual shows a series of planters where the fourth planter is labeled as containing 15 flowers and the seventh planter is labeled as containing 27 flowers. The number of flowers increases by the same amount in each successive planter.",
+            "questions_list": [
+              "What is the constant increase in the number of flowers between any two consecutive planters?",
+              "How many flowers are placed in the very first planter of the row?"
+            ],
+            "solution": "1. The difference in the number of flowers between the 7th and 4th planter is 27 - 15 = 12. Since there are 7 - 4 = 3 equal gaps between these planters, the constant increase (common difference) is 12 ÷ 3 = 4.\n2. To find the first term (a), we use the 4th planter's value of 15. The 4th planter is reached by adding the gap of 4 three times to the first planter. So, 15 = a + (3 × 4). This means 15 = a + 12. Subtracting 12 gives a = 3.",
+            "key_idea": "These problems help you find the starting point or the gap in a pattern when you only know two points in the middle. Think of it like knowing the height of the 4th and 7th floors of a building. \n\nStep 1: Find the difference between the two known values. \nStep 2: Find the difference between their position numbers. \nStep 3: Divide the value difference by the position difference to find the size of one jump. \nStep 4: To find the very first value, take one of the known values and subtract the jumps needed to get back to the start. \n\nStudents often make the mistake of dividing the value by the position number directly, which only works if the first value is zero. Another mistake is miscounting the number of jumps between the two positions. Always check your jump size by making sure it adds up correctly between the two known values."
+          }
+        ]
+      },
+      "solution_output": {},
+      "_pipeline_metadata": {
+        "mode": "MATH_FIRST",
+        "stages": 2,
+        "total_tokens": {
+          "input": 9043,
+          "output": 1500
+        },
+        "core_skill_data": {
+          "topics": [],
+          "scenarios": []
+        }
+      }
+    },
+    "_prompts_dir": "pipeline_outputs\\Multi-Part_Batch_1"
+  },
+  "_total_cost": 0.0
+}

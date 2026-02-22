@@ -1,0 +1,69 @@
+{
+  "MCQ - Batch 1": {
+    "raw": {
+      "text": "{\n  \"math_core\": {\n    \"math_cores\": [\n      {\n        \"id\": \"Q1\",\n        \"Abstract Math Structure\": \"Arithmetic Sequence Definition: $a_n = a_1 + (n-1)d$, where $a_n$ is the $n^{th}$ term, $a_1$ is the first term, and $d$ is the common difference.\",\n        \"Topic Identification and Description\": \"nth term of an AP: Determining a specific term ($a_n$) in an arithmetic progression given the first term ($a_1$) and the common difference ($d$), or by direct application of the formula.\",\n        \"Subtopic Differentiation\": \"Direct formula application for the nth term.\"\n      }\n    ]\n  },\n  \"writer_output\": {\n    \"questions\": [\n      {\n        \"question_id\": \"Q1\",\n        \"question_text\": \"Topic Used: nth term of an AP\\nMCQ Type: Number Based\\nMark of question: 1.0\\nDOK level of question: 1\\nTaxonomy of question: Remembering\\nStatement Based: NO\\n\\nAn arithmetic progression is defined by a starting value $a$ and a constant common difference $d$. Which expression correctly represents the value of the $n^{th}$ term ($a_n$) in this progression?\",\n        \"options\": {\n          \"A\": \"$a_n = a + (n + 1)d$\",\n          \"B\": \"$a_n = a + (n - 1)d$\",\n          \"C\": \"$a_n = a - (n - 1)d$\",\n          \"D\": \"$a_n = n + (a - 1)d$\"\n        },\n        \"correct_option\": \"B\",\n        \"solution\": \"1. Recall that an arithmetic progression starts at the first term $a$.\\n2. To reach the $n^{th}$ term, we must add the common difference $d$ for every step taken from the first term.\\n3. Since there are $n-1$ steps to reach the $n^{th}$ position, we multiply $(n-1)$ by $d$. [0.5 marks]\\n4. Adding this total change to the first term gives the formula $a_n = a + (n - 1)d$. [0.5 marks]\",\n        \"distractor_analysis\": \"| Option | Misconception |\\n| :--- | :--- |\\n| A \\u2013 Conceptual Error | You likely used $n+1$ instead of $n-1$. In an AP, the common difference is added once for every step after the first term, so for the $n^{th}$ term, we only add it $n-1$ times. |\\n| C \\u2013 Computational Error | You chose a formula using subtraction. In a standard arithmetic progression, we find the term by adding the growth ($(n-1)d$) to the starting value, not by taking it away. |\\n| D \\u2013 Comprehension Error | You likely swapped the variables for the first term $a$ and the position $n$. The term position $n$ determines how many steps to take, while $a$ is the fixed starting value. |\",\n        \"key_idea\": \"These problems focus on finding a specific value in a list of numbers that change by the same amount every time. The core idea is that to find any term, you start at the beginning and add the jump value for every step you take. This works because the number of jumps needed to reach a position is always one less than the position number itself. For example, to get to the 3rd term, you take 2 jumps from the 1st.\\n\\nGeneral step-by-step method:\\nStep 1: Identify the starting number ($a$).\\nStep 2: Find the constant jump or common difference ($d$).\\nStep 3: Identify the position number you are looking for ($n$).\\nStep 4: Multiply the jumps ($n-1$) by the jump size ($d$) and add it to the start ($a$).\\n\\nCommon mistakes include using the position number $n$ directly instead of $n-1$, which adds the difference one too many times, and incorrectly using subtraction when the sequence is increasing.\\n\\nTips to avoid mistakes: Always subtract 1 from the term position first. If the sequence is decreasing, remember that the common difference $d$ will be negative.\"\n      }\n    ]\n  },\n  \"solution_output\": {},\n  \"_pipeline_metadata\": {\n    \"mode\": \"MATH_FIRST\",\n    \"stages\": 2,\n    \"total_tokens\": {\n      \"input\": 8502,\n      \"output\": 974\n    },\n    \"core_skill_data\": {\n      \"topics\": [],\n      \"scenarios\": []\n    }\n  }\n}",
+      "elapsed": 0,
+      "batch_key": "MCQ - Batch 1",
+      "input_tokens": 8502,
+      "output_tokens": 974,
+      "thought_tokens": 0,
+      "billed_output_tokens": 974
+    },
+    "validated": {
+      "text": "{\n  \"math_core\": {\n    \"math_cores\": [\n      {\n        \"id\": \"Q1\",\n        \"Abstract Math Structure\": \"Arithmetic Sequence Definition: $a_n = a_1 + (n-1)d$, where $a_n$ is the $n^{th}$ term, $a_1$ is the first term, and $d$ is the common difference.\",\n        \"Topic Identification and Description\": \"nth term of an AP: Determining a specific term ($a_n$) in an arithmetic progression given the first term ($a_1$) and the common difference ($d$), or by direct application of the formula.\",\n        \"Subtopic Differentiation\": \"Direct formula application for the nth term.\"\n      }\n    ]\n  },\n  \"writer_output\": {\n    \"questions\": [\n      {\n        \"question_id\": \"Q1\",\n        \"question_text\": \"Topic Used: nth term of an AP\\nMCQ Type: Number Based\\nMark of question: 1.0\\nDOK level of question: 1\\nTaxonomy of question: Remembering\\nStatement Based: NO\\n\\nAn arithmetic progression is defined by a starting value $a$ and a constant common difference $d$. Which expression correctly represents the value of the $n^{th}$ term ($a_n$) in this progression?\",\n        \"options\": {\n          \"A\": \"$a_n = a + (n + 1)d$\",\n          \"B\": \"$a_n = a + (n - 1)d$\",\n          \"C\": \"$a_n = a - (n - 1)d$\",\n          \"D\": \"$a_n = n + (a - 1)d$\"\n        },\n        \"correct_option\": \"B\",\n        \"solution\": \"1. Recall that an arithmetic progression starts at the first term $a$.\\n2. To reach the $n^{th}$ term, we must add the common difference $d$ for every step taken from the first term.\\n3. Since there are $n-1$ steps to reach the $n^{th}$ position, we multiply $(n-1)$ by $d$. [0.5 marks]\\n4. Adding this total change to the first term gives the formula $a_n = a + (n - 1)d$. [0.5 marks]\",\n        \"distractor_analysis\": \"| Option | Misconception |\\n| :--- | :--- |\\n| A \\u2013 Conceptual Error | You likely used $n+1$ instead of $n-1$. In an AP, the common difference is added once for every step after the first term, so for the $n^{th}$ term, we only add it $n-1$ times. |\\n| C \\u2013 Computational Error | You chose a formula using subtraction. In a standard arithmetic progression, we find the term by adding the growth ($(n-1)d$) to the starting value, not by taking it away. |\\n| D \\u2013 Comprehension Error | You likely swapped the variables for the first term $a$ and the position $n$. The term position $n$ determines how many steps to take, while $a$ is the fixed starting value. |\",\n        \"key_idea\": \"These problems focus on finding a specific value in a list of numbers that change by the same amount every time. The core idea is that to find any term, you start at the beginning and add the jump value for every step you take. This works because the number of jumps needed to reach a position is always one less than the position number itself. For example, to get to the 3rd term, you take 2 jumps from the 1st.\\n\\nGeneral step-by-step method:\\nStep 1: Identify the starting number ($a$).\\nStep 2: Find the constant jump or common difference ($d$).\\nStep 3: Identify the position number you are looking for ($n$).\\nStep 4: Multiply the jumps ($n-1$) by the jump size ($d$) and add it to the start ($a$).\\n\\nCommon mistakes include using the position number $n$ directly instead of $n-1$, which adds the difference one too many times, and incorrectly using subtraction when the sequence is increasing.\\n\\nTips to avoid mistakes: Always subtract 1 from the term position first. If the sequence is decreasing, remember that the common difference $d$ will be negative.\"\n      }\n    ]\n  },\n  \"solution_output\": {},\n  \"_pipeline_metadata\": {\n    \"mode\": \"MATH_FIRST\",\n    \"stages\": 2,\n    \"total_tokens\": {\n      \"input\": 8502,\n      \"output\": 974\n    },\n    \"core_skill_data\": {\n      \"topics\": [],\n      \"scenarios\": []\n    }\n  }\n}",
+      "elapsed": 0,
+      "batch_key": "MCQ - Batch 1",
+      "input_tokens": 0,
+      "output_tokens": 0
+    },
+    "core_skill_metadata": {
+      "topics": [],
+      "scenarios": []
+    },
+    "_pipeline_output": {
+      "math_core": {
+        "math_cores": [
+          {
+            "id": "Q1",
+            "Abstract Math Structure": "Arithmetic Sequence Definition: $a_n = a_1 + (n-1)d$, where $a_n$ is the $n^{th}$ term, $a_1$ is the first term, and $d$ is the common difference.",
+            "Topic Identification and Description": "nth term of an AP: Determining a specific term ($a_n$) in an arithmetic progression given the first term ($a_1$) and the common difference ($d$), or by direct application of the formula.",
+            "Subtopic Differentiation": "Direct formula application for the nth term."
+          }
+        ]
+      },
+      "writer_output": {
+        "questions": [
+          {
+            "question_id": "Q1",
+            "question_text": "Topic Used: nth term of an AP\nMCQ Type: Number Based\nMark of question: 1.0\nDOK level of question: 1\nTaxonomy of question: Remembering\nStatement Based: NO\n\nAn arithmetic progression is defined by a starting value $a$ and a constant common difference $d$. Which expression correctly represents the value of the $n^{th}$ term ($a_n$) in this progression?",
+            "options": {
+              "A": "$a_n = a + (n + 1)d$",
+              "B": "$a_n = a + (n - 1)d$",
+              "C": "$a_n = a - (n - 1)d$",
+              "D": "$a_n = n + (a - 1)d$"
+            },
+            "correct_option": "B",
+            "solution": "1. Recall that an arithmetic progression starts at the first term $a$.\n2. To reach the $n^{th}$ term, we must add the common difference $d$ for every step taken from the first term.\n3. Since there are $n-1$ steps to reach the $n^{th}$ position, we multiply $(n-1)$ by $d$. [0.5 marks]\n4. Adding this total change to the first term gives the formula $a_n = a + (n - 1)d$. [0.5 marks]",
+            "distractor_analysis": "| Option | Misconception |\n| :--- | :--- |\n| A – Conceptual Error | You likely used $n+1$ instead of $n-1$. In an AP, the common difference is added once for every step after the first term, so for the $n^{th}$ term, we only add it $n-1$ times. |\n| C – Computational Error | You chose a formula using subtraction. In a standard arithmetic progression, we find the term by adding the growth ($(n-1)d$) to the starting value, not by taking it away. |\n| D – Comprehension Error | You likely swapped the variables for the first term $a$ and the position $n$. The term position $n$ determines how many steps to take, while $a$ is the fixed starting value. |",
+            "key_idea": "These problems focus on finding a specific value in a list of numbers that change by the same amount every time. The core idea is that to find any term, you start at the beginning and add the jump value for every step you take. This works because the number of jumps needed to reach a position is always one less than the position number itself. For example, to get to the 3rd term, you take 2 jumps from the 1st.\n\nGeneral step-by-step method:\nStep 1: Identify the starting number ($a$).\nStep 2: Find the constant jump or common difference ($d$).\nStep 3: Identify the position number you are looking for ($n$).\nStep 4: Multiply the jumps ($n-1$) by the jump size ($d$) and add it to the start ($a$).\n\nCommon mistakes include using the position number $n$ directly instead of $n-1$, which adds the difference one too many times, and incorrectly using subtraction when the sequence is increasing.\n\nTips to avoid mistakes: Always subtract 1 from the term position first. If the sequence is decreasing, remember that the common difference $d$ will be negative."
+          }
+        ]
+      },
+      "solution_output": {},
+      "_pipeline_metadata": {
+        "mode": "MATH_FIRST",
+        "stages": 2,
+        "total_tokens": {
+          "input": 8502,
+          "output": 974
+        },
+        "core_skill_data": {
+          "topics": [],
+          "scenarios": []
+        }
+      }
+    },
+    "_prompts_dir": "pipeline_outputs\\MCQ_Batch_1"
+  },
+  "_total_cost": 0.0
+}

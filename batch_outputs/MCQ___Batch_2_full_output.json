@@ -1,0 +1,238 @@
+{
+  "raw": {
+    "text": "{\n  \"math_core\": {\n    \"core_skill_metadata\": {\n      \"topics_used\": [\n        \"Direct application of the formula $S_n = \\\\frac{n}{2}[2a_1 + (n-1)d]$ to find the sum.\",\n        \"Direct application of the formula $S_n = \\\\frac{n}{2}(a_1 + a_n)$ to find the sum.\",\n        \"Calculating the sum $S_n$ when the first term ($a_1$) and common difference ($d$) are directly given.\",\n        \"Calculating the sum $S_n$ when the first term ($a_1$) and the $n^{th}$ term ($a_n$) are directly given.\"\n      ]\n    },\n    \"math_cores\": [\n      {\n        \"id\": \"Q1\",\n        \"Abstract Math Structure\": \"Arithmetic Progression summation using $a_1$ and $d$. Given $a_1, d, n$, calculate $S_n$.\",\n        \"Topic Identification and Description\": \"Sum of First n Terms of an AP: Involves finding the total value when summing the first $n$ terms of a sequence where the difference between consecutive terms is constant ($d$).\",\n        \"Subtopic Differentiation\": \"Calculation of $S_n$ using the formula $S_n = \\\\frac{n}{2}[2a_1 + (n-1)d]$ when $a_1, d,$ and $n$ are known.\"\n      },\n      {\n        \"id\": \"Q2\",\n        \"Abstract Math Structure\": \"Arithmetic Progression summation using $a_1$ and $a_n$. Given $a_1, a_n, n$, calculate $S_n$.\",\n        \"Topic Identification and Description\": \"Sum of First n Terms of an AP: Finding the cumulative total of the initial terms in an arithmetic sequence.\",\n        \"Subtopic Differentiation\": \"Calculation of $S_n$ using the simplified formula $S_n = \\\\frac{n}{2}(a_1 + a_n)$ when the first and last terms of the required sum are known.\"\n      },\n      {\n        \"id\": \"Q3\",\n        \"Abstract Math Structure\": \"Arithmetic Progression summation where $a_1$ and $d$ are constants defining the sequence, and $n$ is a positive integer.\",\n        \"Topic Identification and Description\": \"Sum of First n Terms of an AP: Determining the resulting sum $S_n$ based on the fundamental definition parameters of the AP ($a_1$ and $d$).\",\n        \"Subtopic Differentiation\": \"Direct computation of $S_n$ requiring substitution of specific numerical values for $a_1$, $d$, and $n$ into the standard sum formula.\"\n      },\n      {\n        \"id\": \"Q4\",\n        \"Abstract Math Structure\": \"Arithmetic Progression summation where $a_1$ and $a_n$ are given bounds, defining the sum over $n$ terms.\",\n        \"Topic Identification and Description\": \"Sum of First n Terms of an AP: Utilizing the relationship between the first term, the $n$-th term, and the number of terms to find the total sum.\",\n        \"Subtopic Differentiation\": \"Direct computation of $S_n$ using the formula based on the first and last terms of the partial sum.\"\n      }\n    ]\n  },\n  \"writer_output\": {\n    \"core_skill_metadata\": {\n      \"scenarios_used\": [\n        \"Arranging flower pots in a garden display\",\n        \"Stacking cans in a triangular grocery display\",\n        \"Abstract number sequence summation\",\n        \"Stacking pipes at a construction site\"\n      ]\n    },\n    \"questions\": [\n      {\n        \"question_id\": \"Q1\",\n        \"mcq_type\": \"Real-World Word\",\n        \"mark\": 1.0,\n        \"dok_level\": 1,\n        \"taxonomy\": \"Remembering\",\n        \"statement_based\": \"NO\",\n        \"topic_used\": \"Calculating the sum $S_n$ when the first term ($a_1$) and common difference ($d$) are directly given.\",\n        \"question_text\": \"Maria arranges several flower pots in a garden display. The first row has 10 pots, and each subsequent row contains 2 more pots than the row before it. What is the total number of pots Maria used in the first 5 rows?\",\n        \"options\": {\n          \"A\": \"18\",\n          \"B\": \"60\",\n          \"C\": \"70\",\n          \"D\": \"50\"\n        },\n        \"correct_option\": \"C\",\n        \"solution\": \"The number of pots in each row forms an AP where:\\nFirst term ($a_1$) = 10\\nCommon difference ($d$) = 2\\nNumber of terms ($n$) = 5\\n\\nUsing the formula $S_n = \\\\frac{n}{2}[2a_1 + (n-1)d]$:\\n$S_5 = \\\\frac{5}{2}[2(10) + (5-1)2]$\\n$S_5 = 2.5[20 + 8]$\\n$S_5 = 2.5 \\\\times 28$\\n$S_5 = 70$\\n\\nMaria used 70 pots in total.\",\n        \"distractor_analysis\": [\n          {\n            \"Option\": \"A \\u2013 Comprehension Error\",\n            \"Misconception\": \"You calculated only the 5th term using $a + (n-1)d$, which is 18. This represents the number of pots in the last row only, not the cumulative total of all five rows.\"\n          },\n          {\n            \"Option\": \"B \\u2013 Computational Error\",\n            \"Misconception\": \"You likely made an arithmetic error when multiplying 2.5 by 28 or during the addition inside the brackets. Double-check your multiplication steps to ensure the final product is 70.\"\n          },\n          {\n            \"Option\": \"D \\u2013 Conceptual Error\",\n            \"Misconception\": \"You multiplied the first term by the number of terms ($10 \\\\times 5 = 50$). This assumes every row has the same number of pots, ignoring the common difference of 2 pots per row.\"\n          }\n        ],\n        \"key_idea\": \"To find the sum of terms in an AP, you are calculating the cumulative total of all values in the sequence. The core idea is that the average of the terms, multiplied by the number of terms, gives the total. Step 1: Identify $a_1$, $d$, and $n$. Step 2: Substitute these into the formula $S_n = \\\\frac{n}{2}[2a_1 + (n-1)d]$. Step 3: Solve the brackets first. Step 4: Multiply by $\\\\frac{n}{2}$. A common mistake is finding the $n^{th}$ term instead of the sum. Always read if the total or a specific position is required.\"\n      },\n      {\n        \"question_id\": \"Q2\",\n        \"mcq_type\": \"Real-World Word\",\n        \"mark\": 1.0,\n        \"dok_level\": 1,\n        \"taxonomy\": \"Remembering\",\n        \"statement_based\": \"NO\",\n        \"topic_used\": \"Calculating the sum $S_n$ when the first term ($a_1$) and the $n^{th}$ term ($a_n$) are directly given.\",\n        \"question_text\": \"John sees a triangular stack of cans at a store. The stack has 10 rows in total. The bottom row contains 20 cans, and the top row contains 2 cans. How many cans are there in the entire stack?\",\n        \"options\": {\n          \"A\": \"22\",\n          \"B\": \"110\",\n          \"C\": \"220\",\n          \"D\": \"100\"\n        },\n        \"correct_option\": \"B\",\n        \"solution\": \"The number of cans in the stack forms an AP where:\\nFirst term ($a_1$) = 20\\nLast term ($a_{10}$) = 2\\nNumber of terms ($n$) = 10\\n\\nUsing the formula $S_n = \\\\frac{n}{2}(a_1 + a_n)$:\\n$S_{10} = \\\\frac{10}{2}(20 + 2)$\\n$S_{10} = 5(22)$\\n$S_{10} = 110$\\n\\nThere are 110 cans in the stack.\",\n        \"distractor_analysis\": [\n          {\n            \"Option\": \"A \\u2013 Comprehension Error\",\n            \"Misconception\": \"You simply added the first and last terms ($20 + 2 = 22$). This ignores the other 8 rows in the stack and fails to multiply by the factor of $\\\\frac{n}{2}$.\"\n          },\n          {\n            \"Option\": \"C \\u2013 Conceptual Error\",\n            \"Misconception\": \"You used the formula $n(a_1 + a_n)$ without dividing $n$ by 2. This results in exactly double the actual sum because you missed the averaging step of the summation formula.\"\n          },\n          {\n            \"Option\": \"D \\u2013 Computational Error\",\n            \"Misconception\": \"You likely calculated $5 \\\\times 20$ instead of $5 \\\\times 22$, perhaps by forgetting to add the last term correctly before multiplying by 5.\"\n          }\n        ],\n        \"key_idea\": \"When the first and last terms are known, the sum is found by multiplying the average of those two terms by the total count of terms. This works because the terms pair up symmetrically. Step 1: Identify $a_1$, $a_n$, and $n$. Step 2: Use $S_n = \\\\frac{n}{2}(a_1 + a_n)$. Step 3: Sum the first and last terms. Step 4: Multiply by half the number of terms. Mistake: Forgetting to divide $n$ by 2. Tip: Always check if you have $n$ (the count) or $d$ (the difference).\"\n      },\n      {\n        \"question_id\": \"Q3\",\n        \"mcq_type\": \"Number Based\",\n        \"mark\": 1.0,\n        \"dok_level\": 1,\n        \"taxonomy\": \"Remembering\",\n        \"statement_based\": \"NO\",\n        \"topic_used\": \"Direct application of the formula $S_n = \\\\frac{n}{2}[2a_1 + (n-1)d]$ to find the sum.\",\n        \"question_text\": \"In an arithmetic progression, the first term is 15 and the common difference is 10. What is the sum of the first 5 terms of this sequence?\",\n        \"options\": {\n          \"A\": \"55\",\n          \"B\": \"175\",\n          \"C\": \"125\",\n          \"D\": \"S = 175 terms\"\n        },\n        \"correct_option\": \"B\",\n        \"solution\": \"Given:\\n$a_1 = 15$\\n$d = 10$\\n$n = 5$\\n\\nCalculation:\\n$S_5 = \\\\frac{5}{2}[2(15) + (5-1)10]$\\n$S_5 = 2.5[30 + 40]$\\n$S_5 = 2.5 \\\\times 70$\\n$S_5 = 175$\\n\\nThe sum of the first 5 terms is 175.\",\n        \"distractor_analysis\": [\n          {\n            \"Option\": \"A \\u2013 Comprehension Error\",\n            \"Misconception\": \"You calculated the 5th term ($15 + 40 = 55$) instead of the sum of all 5 terms. The sum formula requires the addition of all previous terms as well.\"\n          },\n          {\n            \"Option\": \"C \\u2013 Conceptual Error\",\n            \"Misconception\": \"You multiplied the number of terms by the first term ($5 \\\\times 25$ or $5 \\\\times 15 + \\\\text{misc error}$), failing to account for the increasing values of the subsequent terms.\"\n          },\n          {\n            \"Option\": \"D \\u2013 Communicational Error\",\n            \"Misconception\": \"While the numerical value 175 is correct, you used 'terms' as the unit for the sum. A sum represents a value, not a count of terms, which makes this notation incorrect.\"\n          }\n        ],\n        \"key_idea\": \"Summing terms in an AP involves using the starting value and the rate of change to find the total. The formula $S_n = \\\\frac{n}{2}[2a_1 + (n-1)d]$ is a shortcut to adding each term individually. Step 1: List the given values. Step 2: Plug them into the formula. Step 3: Simplify the expression inside the brackets. Step 4: Finalize the multiplication. Common mistakes include using $n$ instead of $n-1$ inside the bracket. Tip: Check your arithmetic for decimal multiplication.\"\n      },\n      {\n        \"question_id\": \"Q4\",\n        \"mcq_type\": \"Real-World Word\",\n        \"mark\": 1.0,\n        \"dok_level\": 1,\n        \"taxonomy\": \"Remembering\",\n        \"statement_based\": \"NO\",\n        \"topic_used\": \"Direct application of the formula $S_n = \\\\frac{n}{2}(a_1 + a_n)$ to find the sum.\",\n        \"question_text\": \"Sam observes a stack of pipes at a construction site. The stack has 6 rows. The bottom row has 15 pipes and the top row has 5 pipes. How many pipes are in the stack in total?\",\n        \"options\": {\n          \"A\": \"20\",\n          \"B\": \"60\",\n          \"C\": \"120\",\n          \"D\": \"50\"\n        },\n        \"correct_option\": \"B\",\n        \"solution\": \"The pipes are arranged in an AP where:\\n$a_1 = 15$ (bottom row)\\n$a_6 = 5$ (top row)\\n$n = 6$\\n\\nUsing the formula $S_n = \\\\frac{n}{2}(a_1 + a_n)$:\\n$S_6 = \\\\frac{6}{2}(15 + 5)$\\n$S_6 = 3(20)$\\n$S_6 = 60$\\n\\nThere are 60 pipes in total.\",\n        \"distractor_analysis\": [\n          {\n            \"Option\": \"A \\u2013 Comprehension Error\",\n            \"Misconception\": \"You only added the number of pipes in the first and last rows ($15 + 5 = 20$), missing the intermediate 4 rows that contribute to the total stack.\"\n          },\n          {\n            \"Option\": \"C \\u2013 Conceptual Error\",\n            \"Misconception\": \"You used $n(a_1 + a_n)$ instead of $\\\\frac{n}{2}(a_1 + a_n)$. This results in 120, which is double the actual quantity because the division by 2 was ignored.\"\n          },\n          {\n            \"Option\": \"D \\u2013 Computational Error\",\n            \"Misconception\": \"You likely made a multiplication or addition error, such as $3 \\\\times 15 + 5$ or $3 \\\\times 17$. Ensure you add the terms inside the parentheses before multiplying by 3.\"\n          }\n        ],\n        \"key_idea\": \"This problem uses the 'short form' of the sum formula, which relies on knowing the start and end of the sequence. By adding the first and last terms, you find the sum of a representative 'pair'. Step 1: Identify the bounds ($a_1, a_n$) and the count ($n$). Step 2: Sum the bounds. Step 3: Multiply by $\\\\frac{n}{2}$. This logic is based on the fact that terms equidistant from the ends have the same sum. A common mistake is using the wrong $n$. Tip: Always verify the number of rows/terms.\"\n      }\n    ]\n  },\n  \"solution_output\": {},\n  \"_pipeline_metadata\": {\n    \"mode\": \"MATH_FIRST\",\n    \"stages\": 2,\n    \"total_tokens\": {\n      \"input\": 9845,\n      \"output\": 3710\n    },\n    \"core_skill_data\": {\n      \"topics\": [\n        \"Direct application of the formula $S_n = \\\\frac{n}{2}[2a_1 + (n-1)d]$ to find the sum.\",\n        \"Direct application of the formula $S_n = \\\\frac{n}{2}(a_1 + a_n)$ to find the sum.\",\n        \"Calculating the sum $S_n$ when the first term ($a_1$) and common difference ($d$) are directly given.\",\n        \"Calculating the sum $S_n$ when the first term ($a_1$) and the $n^{th}$ term ($a_n$) are directly given.\"\n      ],\n      \"scenarios\": [\n        \"Arranging flower pots in a garden display\",\n        \"Stacking cans in a triangular grocery display\",\n        \"Abstract number sequence summation\",\n        \"Stacking pipes at a construction site\"\n      ]\n    }\n  }\n}",
+    "elapsed": 0,
+    "batch_key": "MCQ - Batch 2",
+    "input_tokens": 9845,
+    "output_tokens": 3710,
+    "thought_tokens": 0,
+    "billed_output_tokens": 3710
+  },
+  "validated": {
+    "text": "{\n  \"math_core\": {\n    \"core_skill_metadata\": {\n      \"topics_used\": [\n        \"Direct application of the formula $S_n = \\\\frac{n}{2}[2a_1 + (n-1)d]$ to find the sum.\",\n        \"Direct application of the formula $S_n = \\\\frac{n}{2}(a_1 + a_n)$ to find the sum.\",\n        \"Calculating the sum $S_n$ when the first term ($a_1$) and common difference ($d$) are directly given.\",\n        \"Calculating the sum $S_n$ when the first term ($a_1$) and the $n^{th}$ term ($a_n$) are directly given.\"\n      ]\n    },\n    \"math_cores\": [\n      {\n        \"id\": \"Q1\",\n        \"Abstract Math Structure\": \"Arithmetic Progression summation using $a_1$ and $d$. Given $a_1, d, n$, calculate $S_n$.\",\n        \"Topic Identification and Description\": \"Sum of First n Terms of an AP: Involves finding the total value when summing the first $n$ terms of a sequence where the difference between consecutive terms is constant ($d$).\",\n        \"Subtopic Differentiation\": \"Calculation of $S_n$ using the formula $S_n = \\\\frac{n}{2}[2a_1 + (n-1)d]$ when $a_1, d,$ and $n$ are known.\"\n      },\n      {\n        \"id\": \"Q2\",\n        \"Abstract Math Structure\": \"Arithmetic Progression summation using $a_1$ and $a_n$. Given $a_1, a_n, n$, calculate $S_n$.\",\n        \"Topic Identification and Description\": \"Sum of First n Terms of an AP: Finding the cumulative total of the initial terms in an arithmetic sequence.\",\n        \"Subtopic Differentiation\": \"Calculation of $S_n$ using the simplified formula $S_n = \\\\frac{n}{2}(a_1 + a_n)$ when the first and last terms of the required sum are known.\"\n      },\n      {\n        \"id\": \"Q3\",\n        \"Abstract Math Structure\": \"Arithmetic Progression summation where $a_1$ and $d$ are constants defining the sequence, and $n$ is a positive integer.\",\n        \"Topic Identification and Description\": \"Sum of First n Terms of an AP: Determining the resulting sum $S_n$ based on the fundamental definition parameters of the AP ($a_1$ and $d$).\",\n        \"Subtopic Differentiation\": \"Direct computation of $S_n$ requiring substitution of specific numerical values for $a_1$, $d$, and $n$ into the standard sum formula.\"\n      },\n      {\n        \"id\": \"Q4\",\n        \"Abstract Math Structure\": \"Arithmetic Progression summation where $a_1$ and $a_n$ are given bounds, defining the sum over $n$ terms.\",\n        \"Topic Identification and Description\": \"Sum of First n Terms of an AP: Utilizing the relationship between the first term, the $n$-th term, and the number of terms to find the total sum.\",\n        \"Subtopic Differentiation\": \"Direct computation of $S_n$ using the formula based on the first and last terms of the partial sum.\"\n      }\n    ]\n  },\n  \"writer_output\": {\n    \"core_skill_metadata\": {\n      \"scenarios_used\": [\n        \"Arranging flower pots in a garden display\",\n        \"Stacking cans in a triangular grocery display\",\n        \"Abstract number sequence summation\",\n        \"Stacking pipes at a construction site\"\n      ]\n    },\n    \"questions\": [\n      {\n        \"question_id\": \"Q1\",\n        \"mcq_type\": \"Real-World Word\",\n        \"mark\": 1.0,\n        \"dok_level\": 1,\n        \"taxonomy\": \"Remembering\",\n        \"statement_based\": \"NO\",\n        \"topic_used\": \"Calculating the sum $S_n$ when the first term ($a_1$) and common difference ($d$) are directly given.\",\n        \"question_text\": \"Maria arranges several flower pots in a garden display. The first row has 10 pots, and each subsequent row contains 2 more pots than the row before it. What is the total number of pots Maria used in the first 5 rows?\",\n        \"options\": {\n          \"A\": \"18\",\n          \"B\": \"60\",\n          \"C\": \"70\",\n          \"D\": \"50\"\n        },\n        \"correct_option\": \"C\",\n        \"solution\": \"The number of pots in each row forms an AP where:\\nFirst term ($a_1$) = 10\\nCommon difference ($d$) = 2\\nNumber of terms ($n$) = 5\\n\\nUsing the formula $S_n = \\\\frac{n}{2}[2a_1 + (n-1)d]$:\\n$S_5 = \\\\frac{5}{2}[2(10) + (5-1)2]$\\n$S_5 = 2.5[20 + 8]$\\n$S_5 = 2.5 \\\\times 28$\\n$S_5 = 70$\\n\\nMaria used 70 pots in total.\",\n        \"distractor_analysis\": [\n          {\n            \"Option\": \"A \\u2013 Comprehension Error\",\n            \"Misconception\": \"You calculated only the 5th term using $a + (n-1)d$, which is 18. This represents the number of pots in the last row only, not the cumulative total of all five rows.\"\n          },\n          {\n            \"Option\": \"B \\u2013 Computational Error\",\n            \"Misconception\": \"You likely made an arithmetic error when multiplying 2.5 by 28 or during the addition inside the brackets. Double-check your multiplication steps to ensure the final product is 70.\"\n          },\n          {\n            \"Option\": \"D \\u2013 Conceptual Error\",\n            \"Misconception\": \"You multiplied the first term by the number of terms ($10 \\\\times 5 = 50$). This assumes every row has the same number of pots, ignoring the common difference of 2 pots per row.\"\n          }\n        ],\n        \"key_idea\": \"To find the sum of terms in an AP, you are calculating the cumulative total of all values in the sequence. The core idea is that the average of the terms, multiplied by the number of terms, gives the total. Step 1: Identify $a_1$, $d$, and $n$. Step 2: Substitute these into the formula $S_n = \\\\frac{n}{2}[2a_1 + (n-1)d]$. Step 3: Solve the brackets first. Step 4: Multiply by $\\\\frac{n}{2}$. A common mistake is finding the $n^{th}$ term instead of the sum. Always read if the total or a specific position is required.\"\n      },\n      {\n        \"question_id\": \"Q2\",\n        \"mcq_type\": \"Real-World Word\",\n        \"mark\": 1.0,\n        \"dok_level\": 1,\n        \"taxonomy\": \"Remembering\",\n        \"statement_based\": \"NO\",\n        \"topic_used\": \"Calculating the sum $S_n$ when the first term ($a_1$) and the $n^{th}$ term ($a_n$) are directly given.\",\n        \"question_text\": \"John sees a triangular stack of cans at a store. The stack has 10 rows in total. The bottom row contains 20 cans, and the top row contains 2 cans. How many cans are there in the entire stack?\",\n        \"options\": {\n          \"A\": \"22\",\n          \"B\": \"110\",\n          \"C\": \"220\",\n          \"D\": \"100\"\n        },\n        \"correct_option\": \"B\",\n        \"solution\": \"The number of cans in the stack forms an AP where:\\nFirst term ($a_1$) = 20\\nLast term ($a_{10}$) = 2\\nNumber of terms ($n$) = 10\\n\\nUsing the formula $S_n = \\\\frac{n}{2}(a_1 + a_n)$:\\n$S_{10} = \\\\frac{10}{2}(20 + 2)$\\n$S_{10} = 5(22)$\\n$S_{10} = 110$\\n\\nThere are 110 cans in the stack.\",\n        \"distractor_analysis\": [\n          {\n            \"Option\": \"A \\u2013 Comprehension Error\",\n            \"Misconception\": \"You simply added the first and last terms ($20 + 2 = 22$). This ignores the other 8 rows in the stack and fails to multiply by the factor of $\\\\frac{n}{2}$.\"\n          },\n          {\n            \"Option\": \"C \\u2013 Conceptual Error\",\n            \"Misconception\": \"You used the formula $n(a_1 + a_n)$ without dividing $n$ by 2. This results in exactly double the actual sum because you missed the averaging step of the summation formula.\"\n          },\n          {\n            \"Option\": \"D \\u2013 Computational Error\",\n            \"Misconception\": \"You likely calculated $5 \\\\times 20$ instead of $5 \\\\times 22$, perhaps by forgetting to add the last term correctly before multiplying by 5.\"\n          }\n        ],\n        \"key_idea\": \"When the first and last terms are known, the sum is found by multiplying the average of those two terms by the total count of terms. This works because the terms pair up symmetrically. Step 1: Identify $a_1$, $a_n$, and $n$. Step 2: Use $S_n = \\\\frac{n}{2}(a_1 + a_n)$. Step 3: Sum the first and last terms. Step 4: Multiply by half the number of terms. Mistake: Forgetting to divide $n$ by 2. Tip: Always check if you have $n$ (the count) or $d$ (the difference).\"\n      },\n      {\n        \"question_id\": \"Q3\",\n        \"mcq_type\": \"Number Based\",\n        \"mark\": 1.0,\n        \"dok_level\": 1,\n        \"taxonomy\": \"Remembering\",\n        \"statement_based\": \"NO\",\n        \"topic_used\": \"Direct application of the formula $S_n = \\\\frac{n}{2}[2a_1 + (n-1)d]$ to find the sum.\",\n        \"question_text\": \"In an arithmetic progression, the first term is 15 and the common difference is 10. What is the sum of the first 5 terms of this sequence?\",\n        \"options\": {\n          \"A\": \"55\",\n          \"B\": \"175\",\n          \"C\": \"125\",\n          \"D\": \"S = 175 terms\"\n        },\n        \"correct_option\": \"B\",\n        \"solution\": \"Given:\\n$a_1 = 15$\\n$d = 10$\\n$n = 5$\\n\\nCalculation:\\n$S_5 = \\\\frac{5}{2}[2(15) + (5-1)10]$\\n$S_5 = 2.5[30 + 40]$\\n$S_5 = 2.5 \\\\times 70$\\n$S_5 = 175$\\n\\nThe sum of the first 5 terms is 175.\",\n        \"distractor_analysis\": [\n          {\n            \"Option\": \"A \\u2013 Comprehension Error\",\n            \"Misconception\": \"You calculated the 5th term ($15 + 40 = 55$) instead of the sum of all 5 terms. The sum formula requires the addition of all previous terms as well.\"\n          },\n          {\n            \"Option\": \"C \\u2013 Conceptual Error\",\n            \"Misconception\": \"You multiplied the number of terms by the first term ($5 \\\\times 25$ or $5 \\\\times 15 + \\\\text{misc error}$), failing to account for the increasing values of the subsequent terms.\"\n          },\n          {\n            \"Option\": \"D \\u2013 Communicational Error\",\n            \"Misconception\": \"While the numerical value 175 is correct, you used 'terms' as the unit for the sum. A sum represents a value, not a count of terms, which makes this notation incorrect.\"\n          }\n        ],\n        \"key_idea\": \"Summing terms in an AP involves using the starting value and the rate of change to find the total. The formula $S_n = \\\\frac{n}{2}[2a_1 + (n-1)d]$ is a shortcut to adding each term individually. Step 1: List the given values. Step 2: Plug them into the formula. Step 3: Simplify the expression inside the brackets. Step 4: Finalize the multiplication. Common mistakes include using $n$ instead of $n-1$ inside the bracket. Tip: Check your arithmetic for decimal multiplication.\"\n      },\n      {\n        \"question_id\": \"Q4\",\n        \"mcq_type\": \"Real-World Word\",\n        \"mark\": 1.0,\n        \"dok_level\": 1,\n        \"taxonomy\": \"Remembering\",\n        \"statement_based\": \"NO\",\n        \"topic_used\": \"Direct application of the formula $S_n = \\\\frac{n}{2}(a_1 + a_n)$ to find the sum.\",\n        \"question_text\": \"Sam observes a stack of pipes at a construction site. The stack has 6 rows. The bottom row has 15 pipes and the top row has 5 pipes. How many pipes are in the stack in total?\",\n        \"options\": {\n          \"A\": \"20\",\n          \"B\": \"60\",\n          \"C\": \"120\",\n          \"D\": \"50\"\n        },\n        \"correct_option\": \"B\",\n        \"solution\": \"The pipes are arranged in an AP where:\\n$a_1 = 15$ (bottom row)\\n$a_6 = 5$ (top row)\\n$n = 6$\\n\\nUsing the formula $S_n = \\\\frac{n}{2}(a_1 + a_n)$:\\n$S_6 = \\\\frac{6}{2}(15 + 5)$\\n$S_6 = 3(20)$\\n$S_6 = 60$\\n\\nThere are 60 pipes in total.\",\n        \"distractor_analysis\": [\n          {\n            \"Option\": \"A \\u2013 Comprehension Error\",\n            \"Misconception\": \"You only added the number of pipes in the first and last rows ($15 + 5 = 20$), missing the intermediate 4 rows that contribute to the total stack.\"\n          },\n          {\n            \"Option\": \"C \\u2013 Conceptual Error\",\n            \"Misconception\": \"You used $n(a_1 + a_n)$ instead of $\\\\frac{n}{2}(a_1 + a_n)$. This results in 120, which is double the actual quantity because the division by 2 was ignored.\"\n          },\n          {\n            \"Option\": \"D \\u2013 Computational Error\",\n            \"Misconception\": \"You likely made a multiplication or addition error, such as $3 \\\\times 15 + 5$ or $3 \\\\times 17$. Ensure you add the terms inside the parentheses before multiplying by 3.\"\n          }\n        ],\n        \"key_idea\": \"This problem uses the 'short form' of the sum formula, which relies on knowing the start and end of the sequence. By adding the first and last terms, you find the sum of a representative 'pair'. Step 1: Identify the bounds ($a_1, a_n$) and the count ($n$). Step 2: Sum the bounds. Step 3: Multiply by $\\\\frac{n}{2}$. This logic is based on the fact that terms equidistant from the ends have the same sum. A common mistake is using the wrong $n$. Tip: Always verify the number of rows/terms.\"\n      }\n    ]\n  },\n  \"solution_output\": {},\n  \"_pipeline_metadata\": {\n    \"mode\": \"MATH_FIRST\",\n    \"stages\": 2,\n    \"total_tokens\": {\n      \"input\": 9845,\n      \"output\": 3710\n    },\n    \"core_skill_data\": {\n      \"topics\": [\n        \"Direct application of the formula $S_n = \\\\frac{n}{2}[2a_1 + (n-1)d]$ to find the sum.\",\n        \"Direct application of the formula $S_n = \\\\frac{n}{2}(a_1 + a_n)$ to find the sum.\",\n        \"Calculating the sum $S_n$ when the first term ($a_1$) and common difference ($d$) are directly given.\",\n        \"Calculating the sum $S_n$ when the first term ($a_1$) and the $n^{th}$ term ($a_n$) are directly given.\"\n      ],\n      \"scenarios\": [\n        \"Arranging flower pots in a garden display\",\n        \"Stacking cans in a triangular grocery display\",\n        \"Abstract number sequence summation\",\n        \"Stacking pipes at a construction site\"\n      ]\n    }\n  }\n}",
+    "elapsed": 0,
+    "batch_key": "MCQ - Batch 2",
+    "input_tokens": 0,
+    "output_tokens": 0
+  },
+  "core_skill_metadata": {
+    "topics": [
+      "Direct application of the formula $S_n = \\frac{n}{2}[2a_1 + (n-1)d]$ to find the sum.",
+      "Direct application of the formula $S_n = \\frac{n}{2}(a_1 + a_n)$ to find the sum.",
+      "Calculating the sum $S_n$ when the first term ($a_1$) and common difference ($d$) are directly given.",
+      "Calculating the sum $S_n$ when the first term ($a_1$) and the $n^{th}$ term ($a_n$) are directly given."
+    ],
+    "scenarios": [
+      "Arranging flower pots in a garden display",
+      "Stacking cans in a triangular grocery display",
+      "Abstract number sequence summation",
+      "Stacking pipes at a construction site"
+    ]
+  },
+  "_pipeline_output": {
+    "math_core": {
+      "core_skill_metadata": {
+        "topics_used": [
+          "Direct application of the formula $S_n = \\frac{n}{2}[2a_1 + (n-1)d]$ to find the sum.",
+          "Direct application of the formula $S_n = \\frac{n}{2}(a_1 + a_n)$ to find the sum.",
+          "Calculating the sum $S_n$ when the first term ($a_1$) and common difference ($d$) are directly given.",
+          "Calculating the sum $S_n$ when the first term ($a_1$) and the $n^{th}$ term ($a_n$) are directly given."
+        ]
+      },
+      "math_cores": [
+        {
+          "id": "Q1",
+          "Abstract Math Structure": "Arithmetic Progression summation using $a_1$ and $d$. Given $a_1, d, n$, calculate $S_n$.",
+          "Topic Identification and Description": "Sum of First n Terms of an AP: Involves finding the total value when summing the first $n$ terms of a sequence where the difference between consecutive terms is constant ($d$).",
+          "Subtopic Differentiation": "Calculation of $S_n$ using the formula $S_n = \\frac{n}{2}[2a_1 + (n-1)d]$ when $a_1, d,$ and $n$ are known."
+        },
+        {
+          "id": "Q2",
+          "Abstract Math Structure": "Arithmetic Progression summation using $a_1$ and $a_n$. Given $a_1, a_n, n$, calculate $S_n$.",
+          "Topic Identification and Description": "Sum of First n Terms of an AP: Finding the cumulative total of the initial terms in an arithmetic sequence.",
+          "Subtopic Differentiation": "Calculation of $S_n$ using the simplified formula $S_n = \\frac{n}{2}(a_1 + a_n)$ when the first and last terms of the required sum are known."
+        },
+        {
+          "id": "Q3",
+          "Abstract Math Structure": "Arithmetic Progression summation where $a_1$ and $d$ are constants defining the sequence, and $n$ is a positive integer.",
+          "Topic Identification and Description": "Sum of First n Terms of an AP: Determining the resulting sum $S_n$ based on the fundamental definition parameters of the AP ($a_1$ and $d$).",
+          "Subtopic Differentiation": "Direct computation of $S_n$ requiring substitution of specific numerical values for $a_1$, $d$, and $n$ into the standard sum formula."
+        },
+        {
+          "id": "Q4",
+          "Abstract Math Structure": "Arithmetic Progression summation where $a_1$ and $a_n$ are given bounds, defining the sum over $n$ terms.",
+          "Topic Identification and Description": "Sum of First n Terms of an AP: Utilizing the relationship between the first term, the $n$-th term, and the number of terms to find the total sum.",
+          "Subtopic Differentiation": "Direct computation of $S_n$ using the formula based on the first and last terms of the partial sum."
+        }
+      ]
+    },
+    "writer_output": {
+      "core_skill_metadata": {
+        "scenarios_used": [
+          "Arranging flower pots in a garden display",
+          "Stacking cans in a triangular grocery display",
+          "Abstract number sequence summation",
+          "Stacking pipes at a construction site"
+        ]
+      },
+      "questions": [
+        {
+          "question_id": "Q1",
+          "mcq_type": "Real-World Word",
+          "mark": 1.0,
+          "dok_level": 1,
+          "taxonomy": "Remembering",
+          "statement_based": "NO",
+          "topic_used": "Calculating the sum $S_n$ when the first term ($a_1$) and common difference ($d$) are directly given.",
+          "question_text": "Maria arranges several flower pots in a garden display. The first row has 10 pots, and each subsequent row contains 2 more pots than the row before it. What is the total number of pots Maria used in the first 5 rows?",
+          "options": {
+            "A": "18",
+            "B": "60",
+            "C": "70",
+            "D": "50"
+          },
+          "correct_option": "C",
+          "solution": "The number of pots in each row forms an AP where:\nFirst term ($a_1$) = 10\nCommon difference ($d$) = 2\nNumber of terms ($n$) = 5\n\nUsing the formula $S_n = \\frac{n}{2}[2a_1 + (n-1)d]$:\n$S_5 = \\frac{5}{2}[2(10) + (5-1)2]$\n$S_5 = 2.5[20 + 8]$\n$S_5 = 2.5 \\times 28$\n$S_5 = 70$\n\nMaria used 70 pots in total.",
+          "distractor_analysis": [
+            {
+              "Option": "A \u2013 Comprehension Error",
+              "Misconception": "You calculated only the 5th term using $a + (n-1)d$, which is 18. This represents the number of pots in the last row only, not the cumulative total of all five rows."
+            },
+            {
+              "Option": "B \u2013 Computational Error",
+              "Misconception": "You likely made an arithmetic error when multiplying 2.5 by 28 or during the addition inside the brackets. Double-check your multiplication steps to ensure the final product is 70."
+            },
+            {
+              "Option": "D \u2013 Conceptual Error",
+              "Misconception": "You multiplied the first term by the number of terms ($10 \\times 5 = 50$). This assumes every row has the same number of pots, ignoring the common difference of 2 pots per row."
+            }
+          ],
+          "key_idea": "To find the sum of terms in an AP, you are calculating the cumulative total of all values in the sequence. The core idea is that the average of the terms, multiplied by the number of terms, gives the total. Step 1: Identify $a_1$, $d$, and $n$. Step 2: Substitute these into the formula $S_n = \\frac{n}{2}[2a_1 + (n-1)d]$. Step 3: Solve the brackets first. Step 4: Multiply by $\\frac{n}{2}$. A common mistake is finding the $n^{th}$ term instead of the sum. Always read if the total or a specific position is required."
+        },
+        {
+          "question_id": "Q2",
+          "mcq_type": "Real-World Word",
+          "mark": 1.0,
+          "dok_level": 1,
+          "taxonomy": "Remembering",
+          "statement_based": "NO",
+          "topic_used": "Calculating the sum $S_n$ when the first term ($a_1$) and the $n^{th}$ term ($a_n$) are directly given.",
+          "question_text": "John sees a triangular stack of cans at a store. The stack has 10 rows in total. The bottom row contains 20 cans, and the top row contains 2 cans. How many cans are there in the entire stack?",
+          "options": {
+            "A": "22",
+            "B": "110",
+            "C": "220",
+            "D": "100"
+          },
+          "correct_option": "B",
+          "solution": "The number of cans in the stack forms an AP where:\nFirst term ($a_1$) = 20\nLast term ($a_{10}$) = 2\nNumber of terms ($n$) = 10\n\nUsing the formula $S_n = \\frac{n}{2}(a_1 + a_n)$:\n$S_{10} = \\frac{10}{2}(20 + 2)$\n$S_{10} = 5(22)$\n$S_{10} = 110$\n\nThere are 110 cans in the stack.",
+          "distractor_analysis": [
+            {
+              "Option": "A \u2013 Comprehension Error",
+              "Misconception": "You simply added the first and last terms ($20 + 2 = 22$). This ignores the other 8 rows in the stack and fails to multiply by the factor of $\\frac{n}{2}$."
+            },
+            {
+              "Option": "C \u2013 Conceptual Error",
+              "Misconception": "You used the formula $n(a_1 + a_n)$ without dividing $n$ by 2. This results in exactly double the actual sum because you missed the averaging step of the summation formula."
+            },
+            {
+              "Option": "D \u2013 Computational Error",
+              "Misconception": "You likely calculated $5 \\times 20$ instead of $5 \\times 22$, perhaps by forgetting to add the last term correctly before multiplying by 5."
+            }
+          ],
+          "key_idea": "When the first and last terms are known, the sum is found by multiplying the average of those two terms by the total count of terms. This works because the terms pair up symmetrically. Step 1: Identify $a_1$, $a_n$, and $n$. Step 2: Use $S_n = \\frac{n}{2}(a_1 + a_n)$. Step 3: Sum the first and last terms. Step 4: Multiply by half the number of terms. Mistake: Forgetting to divide $n$ by 2. Tip: Always check if you have $n$ (the count) or $d$ (the difference)."
+        },
+        {
+          "question_id": "Q3",
+          "mcq_type": "Number Based",
+          "mark": 1.0,
+          "dok_level": 1,
+          "taxonomy": "Remembering",
+          "statement_based": "NO",
+          "topic_used": "Direct application of the formula $S_n = \\frac{n}{2}[2a_1 + (n-1)d]$ to find the sum.",
+          "question_text": "In an arithmetic progression, the first term is 15 and the common difference is 10. What is the sum of the first 5 terms of this sequence?",
+          "options": {
+            "A": "55",
+            "B": "175",
+            "C": "125",
+            "D": "S = 175 terms"
+          },
+          "correct_option": "B",
+          "solution": "Given:\n$a_1 = 15$\n$d = 10$\n$n = 5$\n\nCalculation:\n$S_5 = \\frac{5}{2}[2(15) + (5-1)10]$\n$S_5 = 2.5[30 + 40]$\n$S_5 = 2.5 \\times 70$\n$S_5 = 175$\n\nThe sum of the first 5 terms is 175.",
+          "distractor_analysis": [
+            {
+              "Option": "A \u2013 Comprehension Error",
+              "Misconception": "You calculated the 5th term ($15 + 40 = 55$) instead of the sum of all 5 terms. The sum formula requires the addition of all previous terms as well."
+            },
+            {
+              "Option": "C \u2013 Conceptual Error",
+              "Misconception": "You multiplied the number of terms by the first term ($5 \\times 25$ or $5 \\times 15 + \\text{misc error}$), failing to account for the increasing values of the subsequent terms."
+            },
+            {
+              "Option": "D \u2013 Communicational Error",
+              "Misconception": "While the numerical value 175 is correct, you used 'terms' as the unit for the sum. A sum represents a value, not a count of terms, which makes this notation incorrect."
+            }
+          ],
+          "key_idea": "Summing terms in an AP involves using the starting value and the rate of change to find the total. The formula $S_n = \\frac{n}{2}[2a_1 + (n-1)d]$ is a shortcut to adding each term individually. Step 1: List the given values. Step 2: Plug them into the formula. Step 3: Simplify the expression inside the brackets. Step 4: Finalize the multiplication. Common mistakes include using $n$ instead of $n-1$ inside the bracket. Tip: Check your arithmetic for decimal multiplication."
+        },
+        {
+          "question_id": "Q4",
+          "mcq_type": "Real-World Word",
+          "mark": 1.0,
+          "dok_level": 1,
+          "taxonomy": "Remembering",
+          "statement_based": "NO",
+          "topic_used": "Direct application of the formula $S_n = \\frac{n}{2}(a_1 + a_n)$ to find the sum.",
+          "question_text": "Sam observes a stack of pipes at a construction site. The stack has 6 rows. The bottom row has 15 pipes and the top row has 5 pipes. How many pipes are in the stack in total?",
+          "options": {
+            "A": "20",
+            "B": "60",
+            "C": "120",
+            "D": "50"
+          },
+          "correct_option": "B",
+          "solution": "The pipes are arranged in an AP where:\n$a_1 = 15$ (bottom row)\n$a_6 = 5$ (top row)\n$n = 6$\n\nUsing the formula $S_n = \\frac{n}{2}(a_1 + a_n)$:\n$S_6 = \\frac{6}{2}(15 + 5)$\n$S_6 = 3(20)$\n$S_6 = 60$\n\nThere are 60 pipes in total.",
+          "distractor_analysis": [
+            {
+              "Option": "A \u2013 Comprehension Error",
+              "Misconception": "You only added the number of pipes in the first and last rows ($15 + 5 = 20$), missing the intermediate 4 rows that contribute to the total stack."
+            },
+            {
+              "Option": "C \u2013 Conceptual Error",
+              "Misconception": "You used $n(a_1 + a_n)$ instead of $\\frac{n}{2}(a_1 + a_n)$. This results in 120, which is double the actual quantity because the division by 2 was ignored."
+            },
+            {
+              "Option": "D \u2013 Computational Error",
+              "Misconception": "You likely made a multiplication or addition error, such as $3 \\times 15 + 5$ or $3 \\times 17$. Ensure you add the terms inside the parentheses before multiplying by 3."
+            }
+          ],
+          "key_idea": "This problem uses the 'short form' of the sum formula, which relies on knowing the start and end of the sequence. By adding the first and last terms, you find the sum of a representative 'pair'. Step 1: Identify the bounds ($a_1, a_n$) and the count ($n$). Step 2: Sum the bounds. Step 3: Multiply by $\\frac{n}{2}$. This logic is based on the fact that terms equidistant from the ends have the same sum. A common mistake is using the wrong $n$. Tip: Always verify the number of rows/terms."
+        }
+      ]
+    },
+    "solution_output": {},
+    "_pipeline_metadata": {
+      "mode": "MATH_FIRST",
+      "stages": 2,
+      "total_tokens": {
+        "input": 9845,
+        "output": 3710
+      },
+      "core_skill_data": {
+        "topics": [
+          "Direct application of the formula $S_n = \\frac{n}{2}[2a_1 + (n-1)d]$ to find the sum.",
+          "Direct application of the formula $S_n = \\frac{n}{2}(a_1 + a_n)$ to find the sum.",
+          "Calculating the sum $S_n$ when the first term ($a_1$) and common difference ($d$) are directly given.",
+          "Calculating the sum $S_n$ when the first term ($a_1$) and the $n^{th}$ term ($a_n$) are directly given."
+        ],
+        "scenarios": [
+          "Arranging flower pots in a garden display",
+          "Stacking cans in a triangular grocery display",
+          "Abstract number sequence summation",
+          "Stacking pipes at a construction site"
+        ]
+      }
+    }
+  },
+  "_prompts_dir": "pipeline_outputs\\MCQ_Batch_2"
+}

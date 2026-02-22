@@ -1,0 +1,105 @@
+{
+  "raw": {
+    "text": "{\n  \"math_core\": {\n    \"core_skill_metadata\": {\n      \"topics_used\": [\n        \"Arithmetic Progression: Calculating the sum of the first 'n' terms using direct input of the first term, common difference, and number of terms.\"\n      ]\n    },\n    \"math_cores\": [\n      {\n        \"id\": \"Q1\",\n        \"Abstract Math Structure\": \"Arithmetic Sequence Summation Formula Application: $S_n = f(a_1, d, n)$\",\n        \"Topic Identification and Description\": \"SUM OF N TERMS: Involves determining the total value obtained by adding a fixed number ($n$) of consecutive terms in an Arithmetic Progression, starting from the first term ($a_1$) and adding the common difference ($d$) sequentially. This uses the formula $S_n = \\\\frac{n}{2}[2a_1 + (n-1)d]$.\",\n        \"Subtopic Differentiation\": \"Direct application of the sum formula given $a_1, d,$ and $n$.\"\n      }\n    ]\n  },\n  \"writer_output\": {\n    \"core_skill_metadata\": {\n      \"scenarios_used\": [\n        \"None - Purely abstract number-based evaluation as per DOK 1 Remembering requirements.\"\n      ]\n    },\n    \"questions\": [\n      {\n        \"question_id\": \"Q1\",\n        \"topic_used\": \"Arithmetic Progression: Calculating the sum of the first 'n' terms using direct input of the first term, common difference, and number of terms.\",\n        \"question_text\": \"Find the value of $S_{10}$ for an arithmetic progression where the first term ($a$) is 4 and the common difference ($d$) is 3.\",\n        \"options\": {\n          \"A\": \"175\",\n          \"B\": \"350\",\n          \"C\": \"190\",\n          \"D\": \"31\"\n        },\n        \"correct_option\": \"A\",\n        \"metadata\": {\n          \"mcq_type\": \"Number Based\",\n          \"mark_of_question\": \"1.0\",\n          \"dok_level_of_question\": \"DOK 1\",\n          \"taxonomy_of_question\": \"Remembering\",\n          \"statement_based\": \"NO\"\n        },\n        \"solution\": \"Step 1: Identify the given values: first term $a = 4$, common difference $d = 3$, and number of terms $n = 10$.\\nStep 2: Use the sum formula for an arithmetic progression: $S_n = \\\\frac{n}{2}[2a + (n - 1)d]$.\\nStep 3: Substitute the values: $S_{10} = \\\\frac{10}{2}[2(4) + (10 - 1)3]$.\\nStep 4: Simplify inside the brackets: $S_{10} = 5[8 + (9)3] = 5[8 + 27]$.\\nStep 5: Calculate the final sum: $S_{10} = 5[35] = 175$.\\n[Mark split: 0.5 marks for correct substitution into the formula, 0.5 marks for the final calculation.]\",\n        \"distractor_analysis\": [\n          {\n            \"Option\": \"B \\u2013 Conceptual Error\",\n            \"Misconception\": \"You likely used the formula $n[2a + (n-1)d]$ but forgot to divide the number of terms by 2. This misunderstanding of the formula structure leads to a result exactly double the correct sum.\"\n          },\n          {\n            \"Option\": \"C \\u2013 Computational Error\",\n            \"Misconception\": \"You correctly used the sum formula but likely used $n$ instead of $n-1$ inside the brackets, calculating $5[8 + 10(3)] = 190$. Ensure you always subtract 1 from the position number when finding the sum.\"\n          },\n          {\n            \"Option\": \"D \\u2013 Comprehension Error\",\n            \"Misconception\": \"You calculated the value of the 10th term using $a + (n-1)d$ instead of the total sum of 10 terms. This happens when misinterpreting the instruction for the total sum as a request for a single term's value.\"\n          }\n        ],\n        \"key_idea\": \"These problems involve finding the total combined value of a specific number of terms in a sequence where each term increases by a constant amount. The core idea is using the formula $S_n = \\\\frac{n}{2}[2a + (n-1)d]$. This logic works because an arithmetic progression can be thought of as pairs of terms (first and last, second and second-to-last) that all add up to the same constant sum; since there are $n$ terms, there are $n/2$ such pairs. To solve these, first identify the first term ($a$), the difference ($d$), and the count ($n$). Then, substitute these into the formula, solve the part inside the brackets first, and finally multiply by $n/2$. Common mistakes include using $n$ instead of $n-1$ or forgetting to divide $n$ by 2. To avoid errors, always write the empty formula first and carefully label your variables before substituting.\"\n      }\n    ]\n  },\n  \"solution_output\": {},\n  \"_pipeline_metadata\": {\n    \"mode\": \"MATH_FIRST\",\n    \"stages\": 2,\n    \"total_tokens\": {\n      \"input\": 9430,\n      \"output\": 1195\n    },\n    \"core_skill_data\": {\n      \"topics\": [\n        \"Arithmetic Progression: Calculating the sum of the first 'n' terms using direct input of the first term, common difference, and number of terms.\"\n      ],\n      \"scenarios\": [\n        \"None - Purely abstract number-based evaluation as per DOK 1 Remembering requirements.\"\n      ]\n    }\n  }\n}",
+    "elapsed": 0,
+    "batch_key": "MCQ - Batch 4",
+    "input_tokens": 9430,
+    "output_tokens": 1195,
+    "thought_tokens": 0,
+    "billed_output_tokens": 1195
+  },
+  "validated": {
+    "text": "{\n  \"math_core\": {\n    \"core_skill_metadata\": {\n      \"topics_used\": [\n        \"Arithmetic Progression: Calculating the sum of the first 'n' terms using direct input of the first term, common difference, and number of terms.\"\n      ]\n    },\n    \"math_cores\": [\n      {\n        \"id\": \"Q1\",\n        \"Abstract Math Structure\": \"Arithmetic Sequence Summation Formula Application: $S_n = f(a_1, d, n)$\",\n        \"Topic Identification and Description\": \"SUM OF N TERMS: Involves determining the total value obtained by adding a fixed number ($n$) of consecutive terms in an Arithmetic Progression, starting from the first term ($a_1$) and adding the common difference ($d$) sequentially. This uses the formula $S_n = \\\\frac{n}{2}[2a_1 + (n-1)d]$.\",\n        \"Subtopic Differentiation\": \"Direct application of the sum formula given $a_1, d,$ and $n$.\"\n      }\n    ]\n  },\n  \"writer_output\": {\n    \"core_skill_metadata\": {\n      \"scenarios_used\": [\n        \"None - Purely abstract number-based evaluation as per DOK 1 Remembering requirements.\"\n      ]\n    },\n    \"questions\": [\n      {\n        \"question_id\": \"Q1\",\n        \"topic_used\": \"Arithmetic Progression: Calculating the sum of the first 'n' terms using direct input of the first term, common difference, and number of terms.\",\n        \"question_text\": \"Find the value of $S_{10}$ for an arithmetic progression where the first term ($a$) is 4 and the common difference ($d$) is 3.\",\n        \"options\": {\n          \"A\": \"175\",\n          \"B\": \"350\",\n          \"C\": \"190\",\n          \"D\": \"31\"\n        },\n        \"correct_option\": \"A\",\n        \"metadata\": {\n          \"mcq_type\": \"Number Based\",\n          \"mark_of_question\": \"1.0\",\n          \"dok_level_of_question\": \"DOK 1\",\n          \"taxonomy_of_question\": \"Remembering\",\n          \"statement_based\": \"NO\"\n        },\n        \"solution\": \"Step 1: Identify the given values: first term $a = 4$, common difference $d = 3$, and number of terms $n = 10$.\\nStep 2: Use the sum formula for an arithmetic progression: $S_n = \\\\frac{n}{2}[2a + (n - 1)d]$.\\nStep 3: Substitute the values: $S_{10} = \\\\frac{10}{2}[2(4) + (10 - 1)3]$.\\nStep 4: Simplify inside the brackets: $S_{10} = 5[8 + (9)3] = 5[8 + 27]$.\\nStep 5: Calculate the final sum: $S_{10} = 5[35] = 175$.\\n[Mark split: 0.5 marks for correct substitution into the formula, 0.5 marks for the final calculation.]\",\n        \"distractor_analysis\": [\n          {\n            \"Option\": \"B \\u2013 Conceptual Error\",\n            \"Misconception\": \"You likely used the formula $n[2a + (n-1)d]$ but forgot to divide the number of terms by 2. This misunderstanding of the formula structure leads to a result exactly double the correct sum.\"\n          },\n          {\n            \"Option\": \"C \\u2013 Computational Error\",\n            \"Misconception\": \"You correctly used the sum formula but likely used $n$ instead of $n-1$ inside the brackets, calculating $5[8 + 10(3)] = 190$. Ensure you always subtract 1 from the position number when finding the sum.\"\n          },\n          {\n            \"Option\": \"D \\u2013 Comprehension Error\",\n            \"Misconception\": \"You calculated the value of the 10th term using $a + (n-1)d$ instead of the total sum of 10 terms. This happens when misinterpreting the instruction for the total sum as a request for a single term's value.\"\n          }\n        ],\n        \"key_idea\": \"These problems involve finding the total combined value of a specific number of terms in a sequence where each term increases by a constant amount. The core idea is using the formula $S_n = \\\\frac{n}{2}[2a + (n-1)d]$. This logic works because an arithmetic progression can be thought of as pairs of terms (first and last, second and second-to-last) that all add up to the same constant sum; since there are $n$ terms, there are $n/2$ such pairs. To solve these, first identify the first term ($a$), the difference ($d$), and the count ($n$). Then, substitute these into the formula, solve the part inside the brackets first, and finally multiply by $n/2$. Common mistakes include using $n$ instead of $n-1$ or forgetting to divide $n$ by 2. To avoid errors, always write the empty formula first and carefully label your variables before substituting.\"\n      }\n    ]\n  },\n  \"solution_output\": {},\n  \"_pipeline_metadata\": {\n    \"mode\": \"MATH_FIRST\",\n    \"stages\": 2,\n    \"total_tokens\": {\n      \"input\": 9430,\n      \"output\": 1195\n    },\n    \"core_skill_data\": {\n      \"topics\": [\n        \"Arithmetic Progression: Calculating the sum of the first 'n' terms using direct input of the first term, common difference, and number of terms.\"\n      ],\n      \"scenarios\": [\n        \"None - Purely abstract number-based evaluation as per DOK 1 Remembering requirements.\"\n      ]\n    }\n  }\n}",
+    "elapsed": 0,
+    "batch_key": "MCQ - Batch 4",
+    "input_tokens": 0,
+    "output_tokens": 0
+  },
+  "core_skill_metadata": {
+    "topics": [
+      "Arithmetic Progression: Calculating the sum of the first 'n' terms using direct input of the first term, common difference, and number of terms."
+    ],
+    "scenarios": [
+      "None - Purely abstract number-based evaluation as per DOK 1 Remembering requirements."
+    ]
+  },
+  "_pipeline_output": {
+    "math_core": {
+      "core_skill_metadata": {
+        "topics_used": [
+          "Arithmetic Progression: Calculating the sum of the first 'n' terms using direct input of the first term, common difference, and number of terms."
+        ]
+      },
+      "math_cores": [
+        {
+          "id": "Q1",
+          "Abstract Math Structure": "Arithmetic Sequence Summation Formula Application: $S_n = f(a_1, d, n)$",
+          "Topic Identification and Description": "SUM OF N TERMS: Involves determining the total value obtained by adding a fixed number ($n$) of consecutive terms in an Arithmetic Progression, starting from the first term ($a_1$) and adding the common difference ($d$) sequentially. This uses the formula $S_n = \\frac{n}{2}[2a_1 + (n-1)d]$.",
+          "Subtopic Differentiation": "Direct application of the sum formula given $a_1, d,$ and $n$."
+        }
+      ]
+    },
+    "writer_output": {
+      "core_skill_metadata": {
+        "scenarios_used": [
+          "None - Purely abstract number-based evaluation as per DOK 1 Remembering requirements."
+        ]
+      },
+      "questions": [
+        {
+          "question_id": "Q1",
+          "topic_used": "Arithmetic Progression: Calculating the sum of the first 'n' terms using direct input of the first term, common difference, and number of terms.",
+          "question_text": "Find the value of $S_{10}$ for an arithmetic progression where the first term ($a$) is 4 and the common difference ($d$) is 3.",
+          "options": {
+            "A": "175",
+            "B": "350",
+            "C": "190",
+            "D": "31"
+          },
+          "correct_option": "A",
+          "metadata": {
+            "mcq_type": "Number Based",
+            "mark_of_question": "1.0",
+            "dok_level_of_question": "DOK 1",
+            "taxonomy_of_question": "Remembering",
+            "statement_based": "NO"
+          },
+          "solution": "Step 1: Identify the given values: first term $a = 4$, common difference $d = 3$, and number of terms $n = 10$.\nStep 2: Use the sum formula for an arithmetic progression: $S_n = \\frac{n}{2}[2a + (n - 1)d]$.\nStep 3: Substitute the values: $S_{10} = \\frac{10}{2}[2(4) + (10 - 1)3]$.\nStep 4: Simplify inside the brackets: $S_{10} = 5[8 + (9)3] = 5[8 + 27]$.\nStep 5: Calculate the final sum: $S_{10} = 5[35] = 175$.\n[Mark split: 0.5 marks for correct substitution into the formula, 0.5 marks for the final calculation.]",
+          "distractor_analysis": [
+            {
+              "Option": "B \u2013 Conceptual Error",
+              "Misconception": "You likely used the formula $n[2a + (n-1)d]$ but forgot to divide the number of terms by 2. This misunderstanding of the formula structure leads to a result exactly double the correct sum."
+            },
+            {
+              "Option": "C \u2013 Computational Error",
+              "Misconception": "You correctly used the sum formula but likely used $n$ instead of $n-1$ inside the brackets, calculating $5[8 + 10(3)] = 190$. Ensure you always subtract 1 from the position number when finding the sum."
+            },
+            {
+              "Option": "D \u2013 Comprehension Error",
+              "Misconception": "You calculated the value of the 10th term using $a + (n-1)d$ instead of the total sum of 10 terms. This happens when misinterpreting the instruction for the total sum as a request for a single term's value."
+            }
+          ],
+          "key_idea": "These problems involve finding the total combined value of a specific number of terms in a sequence where each term increases by a constant amount. The core idea is using the formula $S_n = \\frac{n}{2}[2a + (n-1)d]$. This logic works because an arithmetic progression can be thought of as pairs of terms (first and last, second and second-to-last) that all add up to the same constant sum; since there are $n$ terms, there are $n/2$ such pairs. To solve these, first identify the first term ($a$), the difference ($d$), and the count ($n$). Then, substitute these into the formula, solve the part inside the brackets first, and finally multiply by $n/2$. Common mistakes include using $n$ instead of $n-1$ or forgetting to divide $n$ by 2. To avoid errors, always write the empty formula first and carefully label your variables before substituting."
+        }
+      ]
+    },
+    "solution_output": {},
+    "_pipeline_metadata": {
+      "mode": "MATH_FIRST",
+      "stages": 2,
+      "total_tokens": {
+        "input": 9430,
+        "output": 1195
+      },
+      "core_skill_data": {
+        "topics": [
+          "Arithmetic Progression: Calculating the sum of the first 'n' terms using direct input of the first term, common difference, and number of terms."
+        ],
+        "scenarios": [
+          "None - Purely abstract number-based evaluation as per DOK 1 Remembering requirements."
+        ]
+      }
+    }
+  },
+  "_prompts_dir": "pipeline_outputs\\MCQ_Batch_4"
+}

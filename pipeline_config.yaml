@@ -63,4 +63,12 @@ analysis:
   thinking_level: null
   top_p: 0.90
   
-
+  # ===================================================================
+# STAGE 5: DUPLICATION
+# ===================================================================
+duplication:
+  model: "gemini-3-flash-preview"
+  temperature: 0.7
+  thinking_level: "low"
+  top_p: 0.95
+  top_k: 40

@@ -46,7 +46,8 @@ class HistoryManager:
         self,
         session_data: Dict[str, Any],
         output_data: Any,
-        files_data: Dict[str, Any]
+        files_data: Dict[str, Any],
+        run_id: Optional[str] = None
     ) -> str:
         """
         Save a complete generation run with all context (with file locking).
@@ -60,7 +61,7 @@ class HistoryManager:
             run_id: Unique identifier for this run
         """
         try:
-            run_id = self._generate_run_id()
+            run_id = run_id or self._generate_run_id()
             run_dir = self.history_dir / run_id
             run_dir.mkdir(exist_ok=True)
             

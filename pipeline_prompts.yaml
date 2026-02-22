@@ -70,7 +70,8 @@ cbs_math_core: |
     <output_format>
       Return a valid JSON object:
       {
-        "math_cores": [
+        
+        {{Core_Skill_Output_Instruction}}"math_cores": [
           {
             "id": "Q1",
             "Topic": "topic name",
@@ -442,7 +443,8 @@ cbs_writer: |
     <output_format>
       Return a valid JSON object:
       {
-        "questions": [
+        
+        {{Core_Skill_Output_Instruction}}"questions": [
           {
             "question_id": "Q1 (matching input)",
             "scenario_text": "The narrative story (no numbers).",
@@ -530,7 +532,8 @@ mcq_math_core: |
     <output_format>
       Return a valid JSON object:
       {
-        "math_cores": [
+        
+        {{Core_Skill_Output_Instruction}}"math_cores": [
           {
             "id": "Q1",
             "Topic": "topic name and its description",
@@ -1176,7 +1179,8 @@ mcq_writer: |
     <output_format>
       Return a valid JSON object:
       {
-        "questions": [
+        
+        {{Core_Skill_Output_Instruction}}"questions": [
           {
             "question_id": "Q1",
             "question_text": "...",
@@ -1268,7 +1272,8 @@ fib_math_core: |
     <output_format>
       Return a valid JSON object:
         {
-        "math_cores": [
+        
+        {{Core_Skill_Output_Instruction}}"math_cores": [
           {
             "id": "Q1",
             "Topic": "topic name",
@@ -1810,7 +1815,8 @@ fib_writer: |
     <output_format>
        Return JSON: 
       {
-        "questions": [
+        
+        {{Core_Skill_Output_Instruction}}"questions": [
           {
             "question_id": "Q1",
             "question_text": "...",
@@ -1890,7 +1896,8 @@ a&b_math_core: |
     <output_format>
       Return a valid JSON object:
       {
-        "math_cores": [
+        
+        {{Core_Skill_Output_Instruction}}"math_cores": [
           {
             "id": "Q1",
             "Topic": "topic name and its description",
@@ -2331,7 +2338,8 @@ a&b_writer: |
     <output_format>
        Return JSON: 
        {
-        "questions": [
+        
+        {{Core_Skill_Output_Instruction}}"questions": [
           {
             "question_id": "Q1",
             "question_text": "...",
@@ -2420,7 +2428,8 @@ multipart_math_core: |
     <output_format>
       Return a valid JSON object:
       {
-        "math_cores": [
+        
+        {{Core_Skill_Output_Instruction}}"math_cores": [
           {
             "id": "Q1",
             "Topic": "topic name and its description",
@@ -3015,7 +3024,8 @@ multipart_writer: |
     <output_format>
       Return a valid JSON object:
       {
-        "questions": [
+        
+        {{Core_Skill_Output_Instruction}}"questions": [
           {
             "question_id": "Q1 (matching input)",
             "scenario_text": "The narrative story (no numbers).",
@@ -3103,7 +3113,8 @@ descriptive_math_core: |
     <output_format>
       Return a valid JSON object:
       {
-        "math_cores": [
+        
+        {{Core_Skill_Output_Instruction}}"math_cores": [
           {
             "id": "Q1",
             "Topic": "topic name and its description",
@@ -3637,7 +3648,8 @@ descriptive_writer: |
      <output_format>
        Return JSON: 
       {
-        "questions": [
+        
+        {{Core_Skill_Output_Instruction}}"questions": [
           {
             "question_id": "Q1",
             "question_text": "...",
@@ -3721,7 +3733,8 @@ descriptive_with_subq_math_core: |
     <output_format>
       Return a valid JSON object:
       {
-        "math_cores": [
+        
+        {{Core_Skill_Output_Instruction}}"math_cores": [
           {
             "id": "Q1",
             "Topic": "topic name",
@@ -4275,7 +4288,8 @@ descriptive_with_subq_writer: |
      <output_format>
        Return JSON: 
       {
-        "questions": [
+        
+        {{Core_Skill_Output_Instruction}}"questions": [
           {
             "question_id": "Q1 (matching input)",
             "scenario_text/question_text": "The narrative story (no numbers).",
@@ -4293,3 +4307,152 @@ descriptive_with_subq_writer: |
     </output_format>
     </output_format>
   </writer_generation>
+
+# ===================================================================
+# DUPLICATION PROMPT
+# Purpose: Duplicate an existing question with variation
+# ===================================================================
+
+duplicate_question: |
+  You are an expert question generator tasked with creating duplicate versions of educational questions. Your goal is to produce variations that test the same mathematical concept and solution method but with different numbers and scenarios.
+
+  ## INPUT DETAILS
+
+  - Number of Duplicates to Generate: {{NUM_DUPLICATES}}
+  - Original Question (Markdown Format):
+  
+  {{ORIGINAL_QUESTION}}
+
+  **Additional Instructions / Notes (Optional):**
+  {{ADDITIONAL_NOTES}}
+
+  **CRITICAL - Open-Ended Question Prohibition:**
+      Do not create open-ended questions. An open-ended question is any question that requires more than one response, combines multiple tasks in the same item (such as calculate and then compare or decide), or produces multiple outputs in the answer key. Questions that ask students to perform a task and then make an additional decision or conclusion are also considered open-ended. Each question must ask only one thing and produce exactly one final answer only.
+      or State the theoram,What can be concluded etc.. should not be asked.
+
+  ## CORE PRINCIPLES
+  - A duplicate must preserve the exact same key idea and solution method as the parent item.
+  - Duplicates must NOT include the original Key-Idea text. Instead, add a top-line inside the duplicate markdown:
+    **Duplicate built using parent key idea: {{QUESTION_CODE}}**
+  - Preserve all structural fields (question type, parts count, number of options/blanks, marks, taxonomy, distractor analysis structure, difficulty, solution steps).
+  - Change only the scenario/context, proper nouns, and all numeric values while keeping algebraic relationships and difficulty unchanged.
+  - Maintain the same distractor error patterns and labels (A/B/C/D) as in the original.
+  
+  ## DUPLICATION RULES (this should be followed by all the duplicates)
+  1. Identify numeric constants, scenario nouns, named entities, and distractor-error mapping.
+  2. Generate new numeric values that preserve algebraic relationships (ratios, additive patterns, coefficients) and stay within similar range and difficulty.
+  3. Change scenario/context (nouns, items, setting) but keep it plausible and relevant to the same math idea.
+  4. Replace proper nouns with new ones.
+  5. Recompute correct answer and distractors using same mistake types as the original.
+  6. Copy solution steps verbatim except substitute the new numeric values and recomputed results.
+  7. Omit the Key-Idea field in duplicates. Instead insert:
+     **Duplicate built using parent key idea: {{QUESTION_CODE}}**
+     at the start of the markdown body.
+  8. Output must preserve all fields present in the original JSON except Key-Idea.
+  9. Each duplicate JSON element must contain:
+     - "question_code": "{{QUESTION_CODE}}-dup-<n>"
+     - A markdown field (e.g., question1) containing the full duplicate content.
+  10. Duplicates should follow key idea of the parent question.but dont output key idea in the duplicate.
+  
+  ## Handling Additional Notes and/or Files
+
+    Additional Notes may be provided as:
+    - Text only, or
+    - PDF/Image only, or
+    - Both together
+
+    These inputs define how the duplicated question should be modified.
+    They may specify numerical constraints (e.g., “use 3-digit numbers”),
+    contextual changes (e.g., “use a market scenario”), or visual context.
+
+    Unless explicitly stated otherwise:
+    - The core mathematical concept and solution logic must remain the same.
+    - The question structure remains unchanged (same type, options/parts).
+
+    If no modification is specified, the duplicate should remain the same
+    except for permissible variation.
+
+    If both a file and notes are provided:
+    - Notes take priority if there is any conflict.
+    - The file provides contextual/visual source material unless overridden.
+
+  ## Correct Answer Rotation Requirement:
+
+    When generating duplicates, the correct option label must not remain the same as the parent item. For regular MCQs, rotate the correct option to a different label and reassign distractors accordingly while preserving the same error-pattern logic.
+    For Assertion-Reason (A&R) items, apply both label rotation and truth-pattern transformation. If the parent item has Assertion = True and Reason = True (with explanation) and the correct label is A, the duplicate must change to a different correct label (e.g., D), which requires altering the truth relationship. In other words, the duplicate must modify Assertion/Reason statements so their truth values and explanatory relationship match the new correct label. This ensures that in duplicates, the Assertion may become false even if in the parent it was true, and vice versa.
+    Goal: duplicates should not preserve parent correct labels, and A&R duplicates must also change the internal Assertion–Reason truth and explanation relationship to match the new correct label.
+
+  ## OUTPUT FORMAT (STRICT)
+  Return a RAW JSON array. Do NOT wrap the output in markdown code blocks (e.g., ```json ... ```) or any other text. Output ONLY the JSON string.
+  Example element signature:
+  [
+    {
+      "question_code": "{{QUESTION_CODE}}-dup-1",
+      "question1": "## Duplicate built using parent key idea: {{QUESTION_CODE}}\\n\\n<full markdown question body minus key-idea>"
+    }
+  ]
+  ## SCENARIO & UNIT CONSTRAINTS
+    - Scenario changes must remain equivalent in unit type (e.g., speed → speed, mass → mass, money → money).
+    - Do not change domain class (e.g., distance-rate-time cannot become percentage-profit-loss).
+    - Do not introduce extra narrative complexity, new sub-conditions, or domain shifts.
+  ## STRUCTURAL SAFETY GUARD
+    - Do not introduce additional symbols, conditions, constraints, or sub-questions.
+    - Do not merge or split steps.
+  ## QUALITY CHECK (MUST PASS)
+  ✓ Scenario/context changed
+  ✓ All numeric values changed and preserve structure
+  ✓ Same algebraic method and solution
+  ✓ Same distractor error patterns and labels
+  ✓ Key-Idea omitted, replaced by parent-key reference
+  ✓ Valid JSON array output
+  ✓ Difficulty unchanged
+  ✓ Same taxonomy and marks
+
+  IMPORTANT OUTPUT FORMAT RULE:
+
+    • Use ONLY plain Markdown text.
+    • DO NOT use LaTeX or TeX in any form.
+
+    Math formatting rules:
+    • Write all mathematical expressions in readable plain text.
+    • Use standard symbols like + − × ÷ = √ ^ ( ) |.
+    • Use Unicode superscripts/subscripts where appropriate (e.g., x², a³, sin⁻¹).
+    • Write fractions inline using / (e.g., x/a, (a² − x²)¹ᐟ²).
+
+    STRICTLY FORBIDDEN:
+    • Do NOT use $, $$, \( \), or any LaTeX math delimiters.
+    • Do NOT use \frac, \sqrt, \times, \sin, \cos, or any backslash commands.
+    • Do NOT use LaTeX environments or math notation.
+
+    Examples:
+    ✔ Correct: sin⁻¹(x / √(a² − x²)) = cos⁻¹(x / a)
+    ✘ Incorrect: $\sin^{-1}\left(\frac{x}{\sqrt{a^2-x^2}}\right)$
+
+    All output MUST remain valid Markdown and must be copy-paste friendly.
+
+    A sample jason format 
+
+      ## OUTPUT FORMAT (STRICT)
+  Return a RAW JSON array. Do NOT wrap the output in markdown code blocks (e.g., ```json ... ```) or any other text. Output ONLY the JSON string.
+  
+  You MUST return the exact same JSON keys/structure that were provided in the ORIGINAL_QUESTION input (e.g. scenario_text, questions_list, solution, options, etc.), but omit the "key_idea" key.
+  
+  Example structure (Adapt this to whatever keys were in the original question):
+  [
+    {
+      "question_code": "{{QUESTION_CODE}}-dup-1",
+      "scenario_text": "The narrative story (no numbers).",
+      "diagram_description": "Description of the visual setup with values.",
+      "questions_list": [
+        "Sub-question 1",
+        "Sub-question 2..."
+      ],
+      "solution": "Solution for all sub-questions"
+    },
+    {
+      "question_code": "{{QUESTION_CODE}}-dup-2",
+      ... (other keys matching the original question)
+    }
+  ]
+
+  - Only use the other kyes from the original questions only add question code, balance every key should be same 

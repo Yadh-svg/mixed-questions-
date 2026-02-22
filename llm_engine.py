@@ -273,8 +273,8 @@ async def duplicate_questions_async(
     import yaml
     from pathlib import Path
     
-    # Load the duplication prompt template from prompts.yaml
-    prompts_path = Path(__file__).parent / "prompts.yaml"
+    # Load the duplication prompt template from pipeline_prompts.yaml
+    prompts_path = Path(__file__).parent / "pipeline_prompts.yaml"
     with open(prompts_path, 'r', encoding='utf-8') as f:
         prompts = yaml.safe_load(f)
     
@@ -282,9 +282,22 @@ async def duplicate_questions_async(
     
     if not prompt_template:
         return {
-            "error": "Duplication prompt not found in prompts.yaml",
+            "error": "Duplication prompt not found in pipeline_prompts.yaml",
             "duplicates": []
         }
+    
+    # Ensure model is set if not passed
+    if not model:
+        try:
+            config_path = Path(__file__).parent / "pipeline_config.yaml"
+            if config_path.exists():
+                with open(config_path, 'r', encoding='utf-8') as f:
+                    config = yaml.safe_load(f)
+                    model = config.get('stage_2', {}).get('model', 'gemini-2.0-flash')
+            else:
+                model = 'gemini-2.0-flash'
+        except Exception:
+            model = 'gemini-2.0-flash'
     
     # Replace template parameters with actual values
     formatted_prompt = prompt_template.replace("{{QUESTION_CODE}}", question_code)
@@ -369,3 +382,119 @@ async def run_gemini_async(
     Async wrapper for run_gemini.
     """
     return await asyncio.to_thread(run_gemini, prompt, api_key, files, thinking_level, file_metadata, model)
+
+async def regenerate_question_async(
+    math_core_data: Dict[str, Any],
+    question_data: Dict[str, Any],
+    general_config: Dict[str, Any],
+    files: List,
+    previous_question_markdown: str,
+    regeneration_reason: str,
+    api_key: str,
+    model: str = None,
+    question_code: str = "regeneration"
+) -> Dict[str, Any]:
+    """
+    Asynchronously regenerates a single question by bypassing Stage 1 
+    and feeding the explicit regeneration reason to Stage 2 (Writer).
+    """
+    from pipeline_builder import build_writer_prompt, extract_json_from_response
+    import yaml
+    
+    start_time = time.time()
+    logger.info(f"Starting Regeneration for Question")
+    
+    # Inject Model Fallback if missing
+    if not model:
+        try:
+            config_path = Path(__file__).parent / "pipeline_config.yaml"
+            if config_path.exists():
+                with open(config_path, 'r', encoding='utf-8') as f:
+                    config = yaml.safe_load(f)
+                    model = config.get('regeneration', {}).get('model', 'gemini-3-flash-preview')
+            else:
+                model = 'gemini-3-flash-preview'
+        except Exception as e:
+            logger.warning(f"Could not load generation config fallback: {e}")
+            model = 'gemini-3-flash-preview'
+            
+    # Load thinking level
+    thinking_level = "high"
+    try:
+         config_path = Path(__file__).parent / "pipeline_config.yaml"
+         if config_path.exists():
+             with open(config_path, 'r', encoding='utf-8') as f:
+                 config = yaml.safe_load(f)
+                 thinking_level = config.get('regeneration', {}).get('thinking_level', 'high')
+    except Exception:
+        pass
+
+    # Build the specialized Writer prompt using the pipeline builder helper
+    writer_payload = build_writer_prompt(
+        math_core_data=math_core_data,
+        questions=[question_data],
+        general_config=general_config,
+        files=files,
+        previous_batch_metadata=None,
+        regeneration_reason=regeneration_reason,
+        previous_question_markdown=previous_question_markdown
+    )
+    
+    prompt = writer_payload['prompt']
+    combined_files = writer_payload['files']
+    
+    # Save the regeneration prompt for debugging
+    save_prompt(prompt, "regeneration", question_code)
+    
+    # Run Generation
+    result = await run_gemini_async(
+        prompt=prompt,
+        api_key=api_key,
+        files=combined_files,
+        thinking_level=thinking_level,
+        model=model
+    )
+    
+    elapsed = time.time() - start_time
+    
+    if result.get("error"):
+        return result
+        
+    response_text = result.get('text', '')
+    json_data = extract_json_from_response(response_text)
+    
+    if json_data:
+        logger.info(f"Successfully regenerated question structure in {elapsed:.2f}s")
+        
+        # Unpack 3-stage / 2-stage wrapper if present
+        if isinstance(json_data, dict) and 'writer_output' in json_data:
+            json_data = json_data['writer_output']
+            
+        if isinstance(json_data, dict) and 'questions' in json_data:
+            json_data = json_data['questions']
+        elif isinstance(json_data, dict):
+            # Try to grab the first object if it isn't nested right
+            for k,v in json_data.items():
+                if isinstance(v, dict) and any(key in v for key in ['question_text', 'scenario_text', 'options', 'correct_answer', 'final_answer']):
+                    json_data = [v]
+                    break
+            else:
+                json_data = [json_data]
+                
+        if not isinstance(json_data, list):
+             json_data = [json_data]
+             
+        return {
+            "regenerated_data": json_data[0] if json_data else {},
+            "raw_response": response_text,
+            "elapsed": elapsed,
+            "input_tokens": result.get('input_tokens', 0),
+            "output_tokens": result.get('output_tokens', 0)
+        }
+    else:
+        logger.error(f"Failed to extract JSON from regenerated response")
+        return {
+            "error": "Failed to parse JSON out of regeneration response",
+            "raw_response": response_text[:1000],
+            "elapsed": elapsed
+        }

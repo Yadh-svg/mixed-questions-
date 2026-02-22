@@ -1,36 +1,16 @@
 <math_core_generation>
   <context>
-    <grade>Grade 7</grade>
+    <grade>Grade 9</grade>
     <subject>Mathematics</subject>
-    <chapter>.</chapter>
-    <topic>.</topic>
+    <chapter>Arithmetic Progression</chapter>
+    <topic>nth term of an ap</topic>
     <additional_notes></additional_notes>
   </context>
   
   <design_requirements>
     The user needs the following specific questions designed:
     
-    <source_material>
-      <new_concept>
-        
-      </new_concept>
-      
-      <old_concept>
-        
-      </old_concept>
-      
-      <files_uploaded>
-        iemh106 (1).pdf
-      </files_uploaded>
-      
-      <file_instruction>
-        - If files are uploaded, use them as the PRIMARY source for specific question details as indicated in requirements.
-        - 'New Concept' text above is the theoretical basis.
-        - 'Old Concept' is prerequisite knowledge.
-      </file_instruction>
-    </source_material>
-    
-Q1: topic : . , DOK 1 - 1.0 mark , MCQ Type: Auto, Taxonomy: Remembering, Statement Based: NO
+Q1: topic : nth term of an ap , DOK 1 - 1.0 mark , MCQ Type: Auto, Taxonomy: Remembering, Statement Based: NO
   </design_requirements>
   
   <task>  
@@ -82,6 +62,7 @@ Q1: topic : . , DOK 1 - 1.0 mark , MCQ Type: Auto, Taxonomy: Remembering, Statem
   <output_format>
     Return a valid JSON object:
     {
+      
       "math_cores": [
         {
           "id": "Q1",

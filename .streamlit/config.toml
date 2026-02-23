@@ -1,0 +1,12 @@
+[theme]
+base="dark"
+primaryColor="#8B5CF6"
+backgroundColor="#0F172A"
+secondaryBackgroundColor="#1E293B"
+textColor="#F8FAFC"
+font="sans serif"
+
+[server]
+# Prevent editor auto-saves from triggering a full app rerun when idle
+runOnSave = false
+fileWatcherType = "none"

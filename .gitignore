@@ -34,8 +34,8 @@ wheels/
 *.swo
 *~
 
-# Streamlit
-.streamlit/
+# Streamlit - keep secrets private, but allow config.toml to be tracked
+.streamlit/secrets.toml
 
 # Saved prompts (generated files)
 saved_prompts/
@@ -46,5 +46,3 @@ Thumbs.db
 
 # Logs
 *.log
-
-.streamlit/secrets.toml

@@ -22,6 +22,7 @@ import base64
 import re
 import logging
 import json
+import time
 
 # Setup logging
 logger = logging.getLogger(__name__)
@@ -128,6 +129,17 @@ if not st.session_state.authenticated:
                 st.error("❌ Invalid username or password. Please try again.")
     
     st.stop()  # Stop execution until authenticated
+
+# ── Keep-alive: silent ping every 5 min to prevent idle disconnects ──────────
+@st.fragment(run_every="300s")
+def _keep_alive():
+    # Runs only inside this fragment — does NOT rerun the full page.
+    # Session state, inputs, and results are completely unaffected.
+    _ = time.strftime("%H:%M:%S")   # lightweight no-op
+
+_keep_alive()
+# ─────────────────────────────────────────────────────────────────────────────
+
 
 # Initialize history manager (only after authentication)
 if 'history_mgr' not in st.session_state or st.session_state.get('_history_user') != st.session_state.current_user:

@@ -548,7 +548,7 @@ def render_regenerated_question(batch_key: str, question_key: str, render_contex
         # The LLM sometimes returns structured JSON embedded inside a `question1` string value.
         # Unwrap it so we can render it properly instead of displaying raw JSON text.
         _structured_keys = ['scenario_text', 'question_text', 'options', 'solution',
-                            'distractor_analysis', 'correct_answer', 'final_answer', 'questions_list']
+                            'distractor_analysis', 'correct_answer', 'final_answer', 'questions_list', 'answer_key', 'correct_option']
         if not any(k in duplicate for k in _structured_keys):
             for _k, _v in duplicate.items():
                 if _k == 'question_code':
@@ -565,7 +565,7 @@ def render_regenerated_question(batch_key: str, question_key: str, render_contex
         # Detect structured output — covers MCQ, FIB, Descriptive, Case Study, Multi-Part
         is_structured = any(k in duplicate for k in [
             'question_text', 'scenario_text', 'options', 'solution',
-            'distractor_analysis', 'correct_answer', 'final_answer', 'questions_list'
+            'distractor_analysis', 'correct_answer', 'final_answer', 'questions_list', 'answer_key', 'correct_option'
         ])
         
         if is_structured:
@@ -575,7 +575,7 @@ def render_regenerated_question(batch_key: str, question_key: str, render_contex
             handled_keys = [
                 'question_code', 'question_id', 'question_text', 'scenario_text',
                 'scenario_text/question_text', 'options', 'solution', 'distractor_analysis',
-                'correct_option', 'correct_answer', 'final_answer', 'questions_list', 'key_idea'
+                'correct_option', 'correct_answer', 'final_answer', 'questions_list', 'key_idea', 'answer_key'
             ]
             
             for k, v in duplicate.items():
@@ -598,7 +598,8 @@ def render_regenerated_question(batch_key: str, question_key: str, render_contex
             if isinstance(questions_list, list) and questions_list:
                 parts.append("**Sub-questions:**\n")
                 for si, sq in enumerate(questions_list, 1):
-                    parts.append(f"**({chr(96+si)})** {sq}\n")
+                    clean_sq = re.sub(r"^\s*(?:\([a-zA-Z0-9]+\)|[a-zA-Z0-9]+[.)])\s*", "", str(sq))
+                    parts.append(f"**({chr(96+si)})** {clean_sq}\n")
                 parts.append("\n")
 
             # MCQ options
@@ -608,18 +609,22 @@ def render_regenerated_question(batch_key: str, question_key: str, render_contex
                     parts.append(f"- **{opt_k})** {opt_v}")
                 parts.append("\n")
             
+            answer_key = duplicate.get('answer_key', '')
+            if answer_key:
+                parts.append(f"**Answer Key:** {answer_key}\n\n")
+
             correct_opt = duplicate.get('correct_option', '')
-            if correct_opt:
+            if correct_opt and not answer_key:
                 parts.append(f"**Correct Option:** {correct_opt}\n\n")
 
             # FIB correct answer
             correct_answer = duplicate.get('correct_answer', '')
-            if correct_answer:
+            if correct_answer and not answer_key:
                 parts.append(f"**Correct Answer:** {correct_answer}\n\n")
 
             # Descriptive final answer
             final_answer = duplicate.get('final_answer', '')
-            if final_answer:
+            if final_answer and not answer_key:
                 parts.append(f"**Final Answer:** {final_answer}\n\n")
                 
             solution = duplicate.get('solution', '')
@@ -734,7 +739,7 @@ def render_generated_duplicates(batch_key: str, question_key: str, render_contex
             # The LLM sometimes returns structured JSON embedded inside a `question1` string value.
             # Unwrap it so we can render it properly instead of displaying raw JSON text.
             _structured_keys = ['scenario_text', 'question_text', 'options', 'solution',
-                                'distractor_analysis', 'correct_answer', 'final_answer', 'questions_list']
+                                'distractor_analysis', 'correct_answer', 'final_answer', 'questions_list', 'answer_key', 'correct_option']
             if not any(k in duplicate for k in _structured_keys):
                 for _k, _v in duplicate.items():
                     if _k == 'question_code':
@@ -751,7 +756,7 @@ def render_generated_duplicates(batch_key: str, question_key: str, render_contex
             # Detect structured output — covers MCQ, FIB, Descriptive, Case Study, Multi-Part
             is_structured = any(k in duplicate for k in [
                 'question_text', 'scenario_text', 'options', 'solution',
-                'distractor_analysis', 'correct_answer', 'final_answer', 'questions_list'
+                'distractor_analysis', 'correct_answer', 'final_answer', 'questions_list', 'answer_key', 'correct_option'
             ])
             
             if is_structured:
@@ -763,7 +768,7 @@ def render_generated_duplicates(batch_key: str, question_key: str, render_contex
                 handled_keys = [
                     'question_code', 'question_id', 'question_text', 'scenario_text',
                     'scenario_text/question_text', 'options', 'solution', 'distractor_analysis',
-                    'correct_option', 'correct_answer', 'final_answer', 'questions_list', 'key_idea'
+                    'correct_option', 'correct_answer', 'final_answer', 'questions_list', 'key_idea', 'answer_key'
                 ]
 
                 for k, v in duplicate.items():
@@ -786,7 +791,8 @@ def render_generated_duplicates(batch_key: str, question_key: str, render_contex
                 if isinstance(questions_list, list) and questions_list:
                     parts.append("**Sub-questions:**\n")
                     for si, sq in enumerate(questions_list, 1):
-                        parts.append(f"**({chr(96+si)})** {sq}\n")
+                        clean_sq = re.sub(r"^\s*(?:\([a-zA-Z0-9]+\)|[a-zA-Z0-9]+[.)])\s*", "", str(sq))
+                        parts.append(f"**({chr(96+si)})** {clean_sq}\n")
                     parts.append("\n")
 
                 # MCQ options
@@ -796,18 +802,22 @@ def render_generated_duplicates(batch_key: str, question_key: str, render_contex
                         parts.append(f"- **{opt_k})** {opt_v}")
                     parts.append("\n")
                 
+                answer_key = duplicate.get('answer_key', '')
+                if answer_key:
+                    parts.append(f"**Answer Key:** {answer_key}\n\n")
+                
                 correct_opt = duplicate.get('correct_option', '')
-                if correct_opt:
+                if correct_opt and not answer_key:
                     parts.append(f"**Correct Option:** {correct_opt}\n\n")
 
                 # FIB
                 correct_answer = duplicate.get('correct_answer', '')
-                if correct_answer:
+                if correct_answer and not answer_key:
                     parts.append(f"**Correct Answer:** {correct_answer}\n\n")
 
                 # Descriptive
                 final_answer = duplicate.get('final_answer', '')
-                if final_answer:
+                if final_answer and not answer_key:
                     parts.append(f"**Final Answer:** {final_answer}\n\n")
                     
                 solution = duplicate.get('solution', '')
@@ -923,10 +933,12 @@ def render_batch_results(batch_key: str, result_data: Dict[str, Any], render_con
             
             writer_out = parsed_output['writer_output']
             if 'questions' in writer_out:
+                base_type = batch_key.split(' - Batch ')[0] if batch_key else ""
+                
                 for idx, q_item in enumerate(writer_out['questions'], 1):
                     
                     # === MCQ Handling ===
-                    if 'options' in q_item:
+                    if base_type == 'MCQ' or 'options' in q_item:
                         # MCQ Renderer
                         display_item, is_regen = _get_effective_q_item(batch_key, idx, q_item)
                         q_id = display_item.get('question_id', f"Q{idx}")
@@ -955,8 +967,8 @@ def render_batch_results(batch_key: str, result_data: Dict[str, Any], render_con
                             # Answer & Solution
                             with st.expander("💡 View Solution & Analysis", expanded=False):
                                 # Correct Option
-                                correct_opt = display_item.get('correct_option', 'Unknown')
-                                st.success(f"**Correct Option:** {correct_opt}")
+                                correct_opt = display_item.get('answer_key', display_item.get('correct_option', 'Unknown'))
+                                st.success(f"**Answer Key:** {correct_opt}")
                                 
                                 # Solution
                                 if 'solution' in display_item:
@@ -1002,7 +1014,7 @@ def render_batch_results(batch_key: str, result_data: Dict[str, Any], render_con
                             st.markdown("---")
 
                     # === Fill in the Blanks Handling ===
-                    elif 'correct_answer' in q_item:
+                    elif base_type == 'Fill in the Blanks' or ('correct_answer' in q_item or ('answer_key' in q_item and 'questions_list' not in q_item and 'diagram_prompt' not in q_item)):
                          # FIB Renderer
                         display_item, is_regen = _get_effective_q_item(batch_key, idx, q_item)
                         q_id = display_item.get('question_id', f"Q{idx}")
@@ -1024,7 +1036,8 @@ def render_batch_results(batch_key: str, result_data: Dict[str, Any], render_con
                             # Answer & Solution
                             with st.expander("💡 View Solution & Analysis", expanded=False):
                                 # Correct Answer
-                                st.success(f"**Correct Answer:**\n\n{display_item.get('correct_answer', 'N/A')}")
+                                correct_ans = display_item.get('answer_key', display_item.get('correct_answer', 'N/A'))
+                                st.success(f"**Answer Key:**\n\n{correct_ans}")
                                 
                                 # Solution
                                 if 'solution' in display_item:
@@ -1046,7 +1059,7 @@ def render_batch_results(batch_key: str, result_data: Dict[str, Any], render_con
                             st.markdown("---")
 
                     # === Descriptive Handling ===
-                    elif 'final_answer' in q_item:
+                    elif base_type in ('Descriptive', 'Graph Based') or ('final_answer' in q_item or ('answer_key' in q_item and 'questions_list' not in q_item)):
                         # Descriptive Renderer
                         display_item, is_regen = _get_effective_q_item(batch_key, idx, q_item)
                         q_id = display_item.get('question_id', f"Q{idx}")
@@ -1068,7 +1081,8 @@ def render_batch_results(batch_key: str, result_data: Dict[str, Any], render_con
                             # Answer & Solution
                             with st.expander("💡 View Solution & Analysis", expanded=False):
                                 # Final Answer
-                                st.success(f"**Final Answer:**\n\n{display_item.get('final_answer', 'N/A')}")
+                                correct_ans = display_item.get('answer_key', display_item.get('final_answer', 'N/A'))
+                                st.success(f"**Answer Key:**\n\n{correct_ans}")
                                 
                                 # Solution
                                 if 'solution' in display_item:
@@ -1090,7 +1104,7 @@ def render_batch_results(batch_key: str, result_data: Dict[str, Any], render_con
                             st.markdown("---")
 
                     # === Descriptive w/ Subquestions Handling ===
-                    elif 'questions_list' in q_item:
+                    elif base_type in ('Descriptive w/ Subquestions', 'Case Study', 'Multi-Part') or 'questions_list' in q_item:
                          # Descriptive w/ Subquestions (similar to Case Study but slightly different keys)
                         display_item, is_regen = _get_effective_q_item(batch_key, idx, q_item)
                         q_id = display_item.get('question_id', f"Q{idx}")
@@ -1114,14 +1128,16 @@ def render_batch_results(batch_key: str, result_data: Dict[str, Any], render_con
                             if 'questions_list' in display_item:
                                 st.markdown(f"**Sub-questions:**")
                                 for sub_idx, sub_q in enumerate(display_item['questions_list'], 1):
-                                    st.markdown(f"**({chr(96+sub_idx)})** {sub_q}")
+                                    clean_sq = re.sub(r"^\s*(?:\([a-zA-Z0-9]+\)|[a-zA-Z0-9]+[.)])\s*", "", str(sub_q))
+                                    st.markdown(f"**({chr(96+sub_idx)})** {clean_sq}")
                             
                             # Solution & Key Idea
                             render_duplication_controls(batch_key, f"question{idx}", str(idx), render_context)
                             render_generated_duplicates(batch_key, f"question{idx}", render_context)
                             with st.expander("💡 View Solution & Analysis", expanded=False):
-                                if 'final_answer' in display_item:
-                                    st.success(f"**Final Answer:**\n\n{display_item.get('final_answer', 'N/A')}")
+                                correct_ans = display_item.get('answer_key', display_item.get('final_answer', 'N/A'))
+                                if correct_ans != 'N/A' or 'answer_key' in display_item:
+                                    st.success(f"**Answer Key:**\n\n{correct_ans}")
 
                                 if 'solution' in display_item:
                                     st.markdown("#### Solution:")
@@ -1152,7 +1168,8 @@ def render_batch_results(batch_key: str, result_data: Dict[str, Any], render_con
                         if 'questions_list' in q_item:
                             st.markdown(f"**Questions for Scenario {idx}:**")
                             for sub_idx, sub_q in enumerate(q_item['questions_list'], 1):
-                                st.markdown(f"**{sub_idx}.** {sub_q}")
+                                clean_sq = re.sub(r"^\s*(?:\([a-zA-Z0-9]+\)|[a-zA-Z0-9]+[.)])\s*", "", str(sub_q))
+                                st.markdown(f"**{sub_idx}.** {clean_sq}")
                         
                         # Render Solution
                         if 'solution' in q_item and q_item['solution']:

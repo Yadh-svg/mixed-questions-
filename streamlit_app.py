@@ -155,240 +155,79 @@ history_mgr = st.session_state.history_mgr
 # Custom CSS  ChatGPT dark mode style
 st.markdown("""
 <style>
-    /* ChatGPT-style Dark Theme */
+    /* Main theme colors */
     :root {
-        --primary: #10A37F;
-        --background: #212121;
-        --surface: #2F2F2F;
-        --surface-2: #383838;
-        --border: rgba(255, 255, 255, 0.1);
-        --text: #ECECEC;
-        --text-muted: #8E8EA0;
+        --primary-color: #6366f1;
+        --secondary-color: #8b5cf6;
+        --success-color: #10b981;
     }
-
-    /* Global Font */
-    @import url('https://fonts.googleapis.com/css2?family=Shne:wght@400;600;700&family=Inter:wght@400;500;600&display=swap');
-
-    html, body, [class*="css"] {
-        font-family: 'Inter', sans-serif;
-    }
-
-    /* Main background */
-    .stApp {
-        background-color: #212121;
-    }
-
-    /* Header card */
+    
+    /* Header styling */
     .main-header {
-        background: #2F2F2F;
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        padding: 2rem 2.5rem;
-        border-radius: 16px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 2rem;
+        border-radius: 10px;
+        color: white;
         text-align: center;
-        margin-bottom: 1.8rem;
-        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
-        position: relative;
-        overflow: hidden;
+        margin-bottom: 2rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
-
-    .main-header::before {
-        content: '';
-        position: absolute;
-        top: 0; left: 0; right: 0;
-        height: 2px;
-        background: linear-gradient(90deg, transparent, #10A37F, transparent);
-    }
-
+    
     .main-header h1 {
-        color: #ECECEC;
+        margin: 0;
+        font-size: 2.5rem;
         font-weight: 700;
-        font-size: 2.2rem;
-        margin-bottom: 0.4rem;
-        letter-spacing: -0.3px;
     }
-
+    
     .main-header p {
-        color: #8E8EA0;
-        font-size: 1rem;
-        font-weight: 400;
+        margin: 0.5rem 0 0 0;
+        font-size: 1.1rem;
+        opacity: 0.9;
     }
-
-    /* Section Headers */
+    
+    /* Section headers */
     .section-header {
-        background: #2F2F2F;
-        border-left: 3px solid #10A37F;
-        color: #ECECEC;
-        padding: 0.8rem 1.3rem;
+        background: linear-gradient(90deg, #6366f1 0%, #8b5cf6 100%);
+        color: white;
+        padding: 0.75rem 1.5rem;
         border-radius: 8px;
-        margin: 1.6rem 0 1rem 0;
+        margin: 1.5rem 0 1rem 0;
+        font-weight: 600;
+        font-size: 1.2rem;
+    }
+    
+    /* Buttons */
+    .stButton > button {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 0.75rem 2rem;
         font-weight: 600;
         font-size: 1rem;
-        display: flex;
-        align-items: center;
+        transition: all 0.3s ease;
     }
-
-    /* Buttons  ChatGPT green */
-    .stButton > button {
-        background-color: #10A37F;
-        color: #FFFFFF;
-        border: none;
-        border-radius: 8px;
-        padding: 0.6rem 1.6rem;
-        font-weight: 600;
-        font-size: 0.875rem;
-        letter-spacing: 0.2px;
-        transition: background-color 0.2s ease, transform 0.15s ease;
-        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
-    }
-
+    
     .stButton > button:hover {
-        background-color: #0D8C6D;
-        transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(16, 163, 127, 0.25);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
     }
-
-    .stButton > button:active {
-        transform: translateY(0);
-        background-color: #0B7A60;
+    
+    /* Info boxes */
+    .info-box {
+        background: #eff6ff;
+        border-left: 4px solid #3b82f6;
+        padding: 1rem;
+        border-radius: 4px;
+        margin: 1rem 0;
     }
-
-    /* Ghost buttons */
-    div[data-testid="stForm"] .stButton > button[kind="secondary"] {
-        background: transparent;
-        border: 1px solid #10A37F;
-        color: #10A37F;
-    }
-
-    /* Inputs & Selectboxes */
-    .stTextInput > div > div > input,
-    .stSelectbox > div > div > div,
-    .stNumberInput > div > div > input,
-    .stTextArea > div > div > textarea {
-        background-color: #2F2F2F;
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 8px;
-        color: #ECECEC;
-        transition: border-color 0.2s ease;
-    }
-
-    .stTextInput > div > div > input:focus,
-    .stTextArea > div > div > textarea:focus {
-        border-color: #10A37F;
-        box-shadow: 0 0 0 2px rgba(16, 163, 127, 0.2);
-        background-color: #2F2F2F;
-        outline: none;
-    }
-
-    /* Alert / Info / Success / Error boxes */
-    .stAlert {
-        background-color: #2F2F2F;
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        border-radius: 8px;
-    }
-
-    .stSuccess {
-        border-left-color: #10A37F;
-    }
-
-    .stInfo {
-        border-left-color: #6E9FD4;
-    }
-
-    .stError {
-        border-left-color: #E57373;
-    }
-
-    /* Sidebar */
-    section[data-testid="stSidebar"] {
-        background-color: #171717;
-        border-right: 1px solid rgba(255, 255, 255, 0.07);
-    }
-
-    /* Metrics */
-    div[data-testid="stMetricValue"] {
-        font-size: 1.8rem;
-        font-weight: 700;
-        color: #10A37F;
-    }
-
-    /* Expanders */
-    .streamlit-expanderHeader {
-        background-color: #2F2F2F;
-        border-radius: 8px;
-        border: 1px solid rgba(255, 255, 255, 0.07);
-    }
-
-    .streamlit-expanderContent {
-        background-color: transparent;
-        border: none;
-        padding-left: 1rem;
-        border-left: 2px solid rgba(16, 163, 127, 0.25);
-    }
-
-    /* Hide copy buttons */
+    
+    /* Hide copy-to-clipboard buttons */
     button[title="Copy to clipboard"],
     button[data-testid="stCopyButton"],
     .copy-button,
     [data-testid="stMarkdownContainer"] button {
         display: none !important;
-    }
-
-    /* Scrollbar */
-    ::-webkit-scrollbar {
-        width: 6px;
-        height: 6px;
-    }
-
-    ::-webkit-scrollbar-track {
-        background: #171717;
-    }
-
-    ::-webkit-scrollbar-thumb {
-        background: #3A3A3A;
-        border-radius: 4px;
-    }
-
-    ::-webkit-scrollbar-thumb:hover {
-        background: #505050;
-    }
-
-    /* Multiselect tags / chips */
-    span[data-baseweb="tag"] {
-        background-color: #383838 !important;
-        border: 1px solid rgba(16, 163, 127, 0.4) !important;
-        border-radius: 6px !important;
-        color: #ECECEC !important;
-        font-size: 0.82rem !important;
-        padding: 2px 8px !important;
-    }
-
-    /* The  close button inside each tag */
-    span[data-baseweb="tag"] span[role="presentation"] {
-        color: #ECECEC !important;
-        opacity: 0.7;
-    }
-
-    span[data-baseweb="tag"]:hover {
-        background-color: #404040 !important;
-        border-color: #10A37F !important;
-    }
-
-    /* Multiselect input box background */
-    div[data-baseweb="select"] > div {
-        background-color: #2F2F2F !important;
-        border-color: rgba(255, 255, 255, 0.1) !important;
-        border-radius: 8px !important;
-    }
-
-    /* Dropdown option list */
-    ul[data-baseweb="menu"] {
-        background-color: #2F2F2F !important;
-        border: 1px solid rgba(255,255,255,0.1) !important;
-        border-radius: 8px !important;
-    }
-
-    li[role="option"]:hover {
-        background-color: #383838 !important;
     }
 </style>
 """, unsafe_allow_html=True)

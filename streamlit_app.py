@@ -92,7 +92,7 @@ class PastedFile(io.BytesIO):
 # Page configuration
 st.set_page_config(
     page_title="Question Generator",
-    page_icon="📚",
+    page_icon="",
     layout="wide",
     initial_sidebar_state="expanded"
 )
@@ -107,7 +107,7 @@ if 'current_user' not in st.session_state:
 if not st.session_state.authenticated:
     st.markdown("""
     <div class="main-header">
-        <h1>🔐 Login to Question Generator</h1>
+        <h1> Login to Question Generator</h1>
         <p>Please enter your credentials to continue</p>
     </div>
     """, unsafe_allow_html=True)
@@ -123,22 +123,22 @@ if not st.session_state.authenticated:
             if authenticate_user(username, password):
                 st.session_state.authenticated = True
                 st.session_state.current_user = username
-                st.success(f"✅ Welcome, {get_display_name(username)}!")
+                st.success(f" Welcome, {get_display_name(username)}!")
                 st.rerun()
             else:
-                st.error("❌ Invalid username or password. Please try again.")
+                st.error(" Invalid username or password. Please try again.")
     
     st.stop()  # Stop execution until authenticated
 
-# ── Keep-alive: silent ping every 5 min to prevent idle disconnects ──────────
+#  Keep-alive: silent ping every 5 min to prevent idle disconnects 
 @st.fragment(run_every="300s")
 def _keep_alive():
-    # Runs only inside this fragment — does NOT rerun the full page.
+    # Runs only inside this fragment  does NOT rerun the full page.
     # Session state, inputs, and results are completely unaffected.
     _ = time.strftime("%H:%M:%S")   # lightweight no-op
 
 _keep_alive()
-# ─────────────────────────────────────────────────────────────────────────────
+# 
 
 
 # Initialize history manager (only after authentication)
@@ -152,44 +152,41 @@ if 'history_mgr' not in st.session_state or st.session_state.get('_history_user'
 
 history_mgr = st.session_state.history_mgr
 
-# Custom CSS for modern, catchy UI
+# Custom CSS  ChatGPT dark mode style
 st.markdown("""
 <style>
-    /* Modern Dark Theme & Glassmorphism */
+    /* ChatGPT-style Dark Theme */
     :root {
-        --primary: #8B5CF6;
-        --secondary: #EC4899;
-        --accent: #06B6D4;
-        --background: #0F172A;
-        --surface: rgba(30, 41, 59, 0.7);
-        --glass: rgba(255, 255, 255, 0.05);
-        --glass-border: rgba(255, 255, 255, 0.1);
-        --text: #F8FAFC;
+        --primary: #10A37F;
+        --background: #212121;
+        --surface: #2F2F2F;
+        --surface-2: #383838;
+        --border: rgba(255, 255, 255, 0.1);
+        --text: #ECECEC;
+        --text-muted: #8E8EA0;
     }
 
     /* Global Font */
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
-    
+    @import url('https://fonts.googleapis.com/css2?family=Shne:wght@400;600;700&family=Inter:wght@400;500;600&display=swap');
+
     html, body, [class*="css"] {
         font-family: 'Inter', sans-serif;
     }
 
-    /* Main Container Background */
+    /* Main background */
     .stApp {
-        background: radial-gradient(circle at top left, #1e1b4b, #0f172a);
+        background-color: #212121;
     }
 
-    /* Glassmorphic Containers */
+    /* Header card */
     .main-header {
-        background: rgba(139, 92, 246, 0.1);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        border: 1px solid var(--glass-border);
-        padding: 2.5rem;
-        border-radius: 24px;
+        background: #2F2F2F;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        padding: 2rem 2.5rem;
+        border-radius: 16px;
         text-align: center;
-        margin-bottom: 2.5rem;
-        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        margin-bottom: 1.8rem;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
         position: relative;
         overflow: hidden;
     }
@@ -197,169 +194,201 @@ st.markdown("""
     .main-header::before {
         content: '';
         position: absolute;
-        top: -50%;
-        left: -50%;
-        width: 200%;
-        height: 200%;
-        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
-        transform: rotate(30deg);
-        pointer-events: none;
+        top: 0; left: 0; right: 0;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, #10A37F, transparent);
     }
 
     .main-header h1 {
-        background: linear-gradient(to right, #8B5CF6, #EC4899);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        font-weight: 800;
-        font-size: 3rem;
-        margin-bottom: 0.5rem;
-        letter-spacing: -1px;
+        color: #ECECEC;
+        font-weight: 700;
+        font-size: 2.2rem;
+        margin-bottom: 0.4rem;
+        letter-spacing: -0.3px;
     }
 
     .main-header p {
-        color: #94A3B8;
-        font-size: 1.2rem;
+        color: #8E8EA0;
+        font-size: 1rem;
         font-weight: 400;
     }
 
     /* Section Headers */
     .section-header {
-        background: linear-gradient(90deg, rgba(139, 92, 246, 0.2) 0%, rgba(236, 72, 153, 0.2) 100%);
-        border-left: 4px solid #EC4899;
-        color: #F8FAFC;
-        padding: 1rem 1.5rem;
-        border-radius: 12px;
-        margin: 2rem 0 1.5rem 0;
+        background: #2F2F2F;
+        border-left: 3px solid #10A37F;
+        color: #ECECEC;
+        padding: 0.8rem 1.3rem;
+        border-radius: 8px;
+        margin: 1.6rem 0 1rem 0;
         font-weight: 600;
-        font-size: 1.25rem;
+        font-size: 1rem;
         display: flex;
         align-items: center;
-        backdrop-filter: blur(5px);
     }
 
-    /* Modern Buttons */
+    /* Buttons  ChatGPT green */
     .stButton > button {
-        background: linear-gradient(135deg, #8B5CF6 0%, #6366F1 100%);
-        color: white;
+        background-color: #10A37F;
+        color: #FFFFFF;
         border: none;
-        border-radius: 12px;
-        padding: 0.75rem 2rem;
+        border-radius: 8px;
+        padding: 0.6rem 1.6rem;
         font-weight: 600;
-        letter-spacing: 0.5px;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        box-shadow: 0 4px 6px -1px rgba(139, 92, 246, 0.5);
+        font-size: 0.875rem;
+        letter-spacing: 0.2px;
+        transition: background-color 0.2s ease, transform 0.15s ease;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
     }
 
     .stButton > button:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 10px 15px -3px rgba(139, 92, 246, 0.6);
-        background: linear-gradient(135deg, #7C3AED 0%, #4F46E5 100%);
+        background-color: #0D8C6D;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(16, 163, 127, 0.25);
     }
 
     .stButton > button:active {
         transform: translateY(0);
+        background-color: #0B7A60;
     }
 
-    /* Secondary/Ghost Buttons (if any) */
+    /* Ghost buttons */
     div[data-testid="stForm"] .stButton > button[kind="secondary"] {
         background: transparent;
-        border: 1px solid var(--primary);
-        color: var(--primary);
+        border: 1px solid #10A37F;
+        color: #10A37F;
     }
 
     /* Inputs & Selectboxes */
     .stTextInput > div > div > input,
-    .stSelectbox > div > div > div, 
+    .stSelectbox > div > div > div,
     .stNumberInput > div > div > input,
     .stTextArea > div > div > textarea {
-        background-color: rgba(30, 41, 59, 0.6);
-        border: 1px solid rgba(148, 163, 184, 0.2);
-        border-radius: 10px;
-        color: #F8FAFC;
-        transition: all 0.2s ease;
+        background-color: #2F2F2F;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        color: #ECECEC;
+        transition: border-color 0.2s ease;
     }
 
     .stTextInput > div > div > input:focus,
     .stTextArea > div > div > textarea:focus {
-        border-color: #8B5CF6;
-        box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2);
-        background-color: rgba(30, 41, 59, 0.9);
+        border-color: #10A37F;
+        box-shadow: 0 0 0 2px rgba(16, 163, 127, 0.2);
+        background-color: #2F2F2F;
+        outline: none;
     }
 
-    /* Info/Success/Error Boxes */
+    /* Alert / Info / Success / Error boxes */
     .stAlert {
-        background-color: rgba(30, 41, 59, 0.6);
-        border: 1px solid rgba(148, 163, 184, 0.1);
-        backdrop-filter: blur(10px);
-        border-radius: 12px;
-    }
-    
-    .stSuccess {
-        border-left-color: #10B981;
-    }
-    
-    .stInfo {
-        border-left-color: #3B82F6;
-    }
-    
-    .stError {
-        border-left-color: #EF4444;
+        background-color: #2F2F2F;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 8px;
     }
 
-    /* Sidebar Styling */
+    .stSuccess {
+        border-left-color: #10A37F;
+    }
+
+    .stInfo {
+        border-left-color: #6E9FD4;
+    }
+
+    .stError {
+        border-left-color: #E57373;
+    }
+
+    /* Sidebar */
     section[data-testid="stSidebar"] {
-        background-color: rgba(15, 23, 42, 0.95);
-        border-right: 1px solid rgba(255, 255, 255, 0.05);
+        background-color: #171717;
+        border-right: 1px solid rgba(255, 255, 255, 0.07);
     }
 
     /* Metrics */
     div[data-testid="stMetricValue"] {
-        font-size: 2rem;
+        font-size: 1.8rem;
         font-weight: 700;
-        background: linear-gradient(to right, #38BDF8, #818CF8);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
+        color: #10A37F;
     }
 
-    /* Expander */
+    /* Expanders */
     .streamlit-expanderHeader {
-        background-color: rgba(255, 255, 255, 0.03);
-        border-radius: 10px;
-        border: 1px solid rgba(255, 255, 255, 0.05);
+        background-color: #2F2F2F;
+        border-radius: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.07);
     }
-    
+
     .streamlit-expanderContent {
         background-color: transparent;
         border: none;
         padding-left: 1rem;
-        border-left: 2px solid rgba(255, 255, 255, 0.1);
+        border-left: 2px solid rgba(16, 163, 127, 0.25);
     }
 
-    /* Hide unnecessary elements */
+    /* Hide copy buttons */
     button[title="Copy to clipboard"],
     button[data-testid="stCopyButton"],
     .copy-button,
     [data-testid="stMarkdownContainer"] button {
         display: none !important;
     }
-    
+
     /* Scrollbar */
     ::-webkit-scrollbar {
-        width: 8px;
-        height: 8px;
+        width: 6px;
+        height: 6px;
     }
-    
+
     ::-webkit-scrollbar-track {
-        background: #0F172A;
+        background: #171717;
     }
-    
+
     ::-webkit-scrollbar-thumb {
-        background: #334155;
+        background: #3A3A3A;
         border-radius: 4px;
     }
-    
+
     ::-webkit-scrollbar-thumb:hover {
-        background: #475569;
+        background: #505050;
+    }
+
+    /* Multiselect tags / chips */
+    span[data-baseweb="tag"] {
+        background-color: #383838 !important;
+        border: 1px solid rgba(16, 163, 127, 0.4) !important;
+        border-radius: 6px !important;
+        color: #ECECEC !important;
+        font-size: 0.82rem !important;
+        padding: 2px 8px !important;
+    }
+
+    /* The  close button inside each tag */
+    span[data-baseweb="tag"] span[role="presentation"] {
+        color: #ECECEC !important;
+        opacity: 0.7;
+    }
+
+    span[data-baseweb="tag"]:hover {
+        background-color: #404040 !important;
+        border-color: #10A37F !important;
+    }
+
+    /* Multiselect input box background */
+    div[data-baseweb="select"] > div {
+        background-color: #2F2F2F !important;
+        border-color: rgba(255, 255, 255, 0.1) !important;
+        border-radius: 8px !important;
+    }
+
+    /* Dropdown option list */
+    ul[data-baseweb="menu"] {
+        background-color: #2F2F2F !important;
+        border: 1px solid rgba(255,255,255,0.1) !important;
+        border-radius: 8px !important;
+    }
+
+    li[role="option"]:hover {
+        background-color: #383838 !important;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -385,13 +414,13 @@ if 'loaded_run_data' not in st.session_state:
 # Header
 st.markdown("""
 <div class="main-header">
-    <h1>📚 AI Question Generator</h1>
+    <h1> AI Question Generator</h1>
     <p>Generate high-quality educational questions with advanced AI</p>
 </div>
 """, unsafe_allow_html=True)
 
 # Core Skill Extraction Toggle
-st.markdown("### 🔧 Core Skill Extraction")
+st.markdown("###  Core Skill Extraction")
 
 # Check if we have a restored value from history
 if '_restore_core_skill' in st.session_state:
@@ -409,14 +438,14 @@ core_skill_enabled = st.checkbox(
     help="When enabled, extracts metadata (core_equation, solution_pattern, scenario_signature, etc.) from each batch of questions and passes it to subsequent batches to ensure uniqueness and avoid duplicate scenarios."
 )
 if core_skill_enabled:
-    st.info("✅ Core Skill enabled. Sequential processing will be used for batches of the same type to pass metadata between them.")
+    st.info(" Core Skill enabled. Sequential processing will be used for batches of the same type to pass metadata between them.")
 st.markdown("---")
 
 # Sidebar for API configuration
 with st.sidebar:
     # Show current user and logout button
-    st.markdown(f"### 👤 User: {get_display_name(st.session_state.current_user)}")
-    if st.button("🚪 Logout", help="Logout and return to login screen"):
+    st.markdown(f"###  User: {get_display_name(st.session_state.current_user)}")
+    if st.button(" Logout", help="Logout and return to login screen"):
         # Clear authentication state
         st.session_state.authenticated = False
         st.session_state.current_user = None
@@ -427,27 +456,27 @@ with st.sidebar:
         st.rerun()
     
     st.markdown("---")
-    st.markdown("### ⚙️ Configuration")
+    st.markdown("###  Configuration")
     # API Key is now handled via st.secrets
     
     st.markdown("---")
-    st.markdown("### 📊 Statistics")
+    st.markdown("###  Statistics")
     total_q = sum(config.get('count', 0) for config in st.session_state.question_types_config.values())
     st.metric("Total Questions", total_q)
     
     if st.session_state.question_types_config:
         st.markdown("**Question Types:**")
         for qtype, config in st.session_state.question_types_config.items():
-            st.write(f"• {qtype}: {config.get('count', 0)}")
+            st.write(f" {qtype}: {config.get('count', 0)}")
     
     st.markdown("---")
-    st.markdown("### 📚 History (Your Last 10 Runs)")
+    st.markdown("###  History (Your Last 10 Runs)")
     
     # Display history mode if active
     if st.session_state.history_mode == 'loaded':
-        st.info("📂 Viewing loaded run")
+        st.info(" Viewing loaded run")
     elif st.session_state.history_mode == 'duplicate':
-        st.info("📋 Duplicated run - modify and regenerate")
+        st.info(" Duplicated run - modify and regenerate")
     
     # List saved runs
     runs = history_mgr.list_runs()
@@ -470,14 +499,14 @@ with st.sidebar:
                 formatted_time = "Unknown time"
             
             # Display run info with chapter in title
-            with st.expander(f"🕒 {formatted_time} - {chapter}", expanded=False):
+            with st.expander(f" {formatted_time} - {chapter}", expanded=False):
                 st.markdown(f"**Questions:** {total_q}")
                 
                 # Action buttons in a single row
                 col1, col2, col3 = st.columns(3)
                 
                 with col1:
-                    if st.button("📂 Load", key=f"load_{run_id}", help="Load this run"):
+                    if st.button(" Load", key=f"load_{run_id}", help="Load this run"):
                         # Load the run
                         loaded_data = history_mgr.load_run(run_id)
                         
@@ -540,7 +569,7 @@ with st.sidebar:
                             st.rerun()
                 
                 with col2:
-                    if st.button("📋 Dup", key=f"dup_{run_id}", help="Duplicate this run"):
+                    if st.button(" Dup", key=f"dup_{run_id}", help="Duplicate this run"):
                         # Load the run similar to Load but clear output
                         loaded_data = history_mgr.load_run(run_id)
                         
@@ -603,9 +632,9 @@ with st.sidebar:
                             st.rerun()
                 
                 with col3:
-                    if st.button("🗑️", key=f"del_{run_id}", help="Delete this run"):
+                    if st.button("", key=f"del_{run_id}", help="Delete this run"):
                         if history_mgr.delete_run(run_id):
-                            st.toast("Run deleted ✅")
+                            st.toast("Run deleted ")
                             st.rerun()
                         else:
                             st.error("Failed to delete run")
@@ -613,7 +642,7 @@ with st.sidebar:
         st.info("No saved runs yet. Generate questions to save history!")
     
     st.markdown("---")
-    st.markdown("### 🗑️ Reset Tools")
+    st.markdown("###  Reset Tools")
     
     col_clr_in, col_clr_out = st.columns(2)
     with col_clr_in:
@@ -657,7 +686,7 @@ with st.sidebar:
             st.rerun()
 
 # Main content area
-tab1, tab2 = st.tabs(["📝 Configure & Generate", "📄 Results"])
+tab1, tab2 = st.tabs([" Configure & Generate", " Results"])
 
 with tab1:
     st.markdown('<div class="section-header">General Information</div>', unsafe_allow_html=True)
@@ -701,8 +730,8 @@ with tab1:
         )
     
     # Universal file upload option (PDF or Image)
-    st.markdown("### 📄 Universal New Concept File (Optional)")
-    st.info("💡 Upload a PDF or image that will be used for ALL questions that select 'New Concept File' as their source. This is a universal file that applies across all question types.")
+    st.markdown("###  Universal New Concept File (Optional)")
+    st.info(" Upload a PDF or image that will be used for ALL questions that select 'New Concept File' as their source. This is a universal file that applies across all question types.")
     
     col_upload, col_paste = st.columns([3, 1])
     
@@ -729,7 +758,7 @@ with tab1:
 
     with col_paste:
         st.markdown("<br>", unsafe_allow_html=True)  # Align with uploader
-        pasted_content = paste(label="📋 Paste Image", key="universal_paste_btn")
+        pasted_content = paste(label=" Paste Image", key="universal_paste_btn")
     
     # Initialize source if needed
     if 'universal_source' not in st.session_state:
@@ -752,7 +781,7 @@ with tab1:
 
     # Store/Update session state (redundant but safe)
     if universal_pdf:
-        st.success(f"✅ Universal file ready: {universal_pdf.name}")
+        st.success(f" Universal file ready: {universal_pdf.name}")
     else:
         # Ensure consistent state
         st.session_state.universal_pdf = None
@@ -832,7 +861,7 @@ with tab1:
                 'questions': default_questions
             }
         
-        with st.expander(f"⚙️ {qtype} Configuration", expanded=True):
+        with st.expander(f" {qtype} Configuration", expanded=True):
             # Number of questions for this type
             # Set max_value based on question type
             if qtype == "MCQ":
@@ -853,14 +882,14 @@ with tab1:
             with col_max:
                 # Add some spacing to align with the input
                 st.markdown("<br>", unsafe_allow_html=True)
-                if st.button("📊 Max", key=f"max_btn_{qtype}", help=f"Set to maximum ({max_questions})"):
+                if st.button(" Max", key=f"max_btn_{qtype}", help=f"Set to maximum ({max_questions})"):
                     st.session_state[widget_key] = max_questions
                     st.session_state.question_types_config[qtype]['count'] = max_questions
-                    # No explicit st.rerun() needed — Streamlit reruns automatically on button click
+                    # No explicit st.rerun() needed  Streamlit reruns automatically on button click
 
             with col_clear:
                 st.markdown("<br>", unsafe_allow_html=True)
-                if st.button("🗑️", key=f"clear_btn_{qtype}", help=f"Reset {qtype} configuration"):
+                if st.button("", key=f"clear_btn_{qtype}", help=f"Reset {qtype} configuration"):
                     # Reset specific config
                     if qtype in st.session_state.question_types_config:
                         # Reset to default single question
@@ -880,7 +909,7 @@ with tab1:
                         }
                         # Update the number input widget
                         st.session_state[widget_key] = 1
-                        # No explicit st.rerun() needed — Streamlit reruns automatically on button click
+                        # No explicit st.rerun() needed  Streamlit reruns automatically on button click
             
             with col_input:
                 num_questions = st.number_input(
@@ -916,7 +945,7 @@ with tab1:
                 st.markdown("#### MCQ Questions Configuration")
                 for i in range(num_questions):
                     st.markdown(f"**Question {i+1}**")
-                    cols = st.columns([3, 3, 1, 1, 2])
+                    cols = st.columns([3, 2, 1, 1.5, 1.5])
                     
                     with cols[0]:
                         topic = st.text_input(
@@ -981,8 +1010,8 @@ with tab1:
                         "Select new concept source",
                         options=["text", "pdf"],
                         format_func=lambda x: {
-                            "text": "📝 Use Universal Text Concept",
-                            "pdf": "📄 Use Universal File (PDF/Image)"
+                            "text": " Use Universal Text Concept",
+                            "pdf": " Use Universal File (PDF/Image)"
                         }[x],
                         key=f"mcq_new_concept_source_{i}",
                         index=["text", "pdf"].index(
@@ -995,9 +1024,9 @@ with tab1:
                     # Show info message based on selection
                     if new_concept_source == 'pdf':
                         if st.session_state.get('universal_pdf'):
-                            st.info(f"ℹ️ Will use universal file: **{st.session_state.universal_pdf.name}**")
+                            st.info(f" Will use universal file: **{st.session_state.universal_pdf.name}**")
                         else:
-                            st.warning("⚠️ Please upload a Universal File (PDF/Image) in the General Information section above")
+                            st.warning(" Please upload a Universal File (PDF/Image) in the General Information section above")
                         st.session_state.question_types_config[qtype]['questions'][i]['new_concept_pdf'] = None
                     else:
                         st.session_state.question_types_config[qtype]['questions'][i]['new_concept_pdf'] = None
@@ -1044,7 +1073,7 @@ with tab1:
                             )
                         with col_p:
                             st.markdown("<br>", unsafe_allow_html=True)
-                            an_paste = paste(label="📋 Paste", key=f"mcq_paste_{i}")
+                            an_paste = paste(label=" Paste", key=f"mcq_paste_{i}")
                         
                         an_final = None
                         if an_upload:
@@ -1058,7 +1087,7 @@ with tab1:
                         st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_pdf'] = an_final
                         
                         if an_final:
-                            st.success(f"✅ Ready: {an_final.name}")
+                            st.success(f" Ready: {an_final.name}")
                     else:
                          st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_pdf'] = None
                     
@@ -1076,7 +1105,7 @@ with tab1:
             
             elif qtype == "Assertion-Reasoning":
                 st.markdown("#### Assertion-Reasoning Configuration")
-                st.info("ℹ️ Assertion-Reasoning questions have predefined configuration in the prompt. Only specify topics.")
+                st.info(" Assertion-Reasoning questions have predefined configuration in the prompt. Only specify topics.")
                 
                 for i in range(num_questions):
                     topic = st.text_input(
@@ -1093,8 +1122,8 @@ with tab1:
                         "Select new concept source",
                         options=["text", "pdf"],
                         format_func=lambda x: {
-                            "text": "📝 Use Universal Text Concept",
-                            "pdf": "📄 Use Universal File (PDF/Image)"
+                            "text": " Use Universal Text Concept",
+                            "pdf": " Use Universal File (PDF/Image)"
                         }[x],
                         key=f"ar_new_concept_source_{i}",
                         index=["text", "pdf"].index(
@@ -1106,9 +1135,9 @@ with tab1:
                     
                     if new_concept_source == 'pdf':
                         if st.session_state.get('universal_pdf'):
-                            st.info(f"ℹ️ Will use universal file: **{st.session_state.universal_pdf.name}**")
+                            st.info(f" Will use universal file: **{st.session_state.universal_pdf.name}**")
                         else:
-                            st.warning("⚠️ Please upload a Universal File (PDF/Image) in the General Information section above")
+                            st.warning(" Please upload a Universal File (PDF/Image) in the General Information section above")
                         st.session_state.question_types_config[qtype]['questions'][i]['new_concept_pdf'] = None
                     else:
                         st.session_state.question_types_config[qtype]['questions'][i]['new_concept_pdf'] = None
@@ -1145,7 +1174,7 @@ with tab1:
                             )
                         with col_p:
                             st.markdown("<br>", unsafe_allow_html=True)
-                            an_paste = paste(label="📋 Paste", key=f"ar_paste_{i}")
+                            an_paste = paste(label=" Paste", key=f"ar_paste_{i}")
                             
                         an_final = None
                         if an_upload:
@@ -1155,7 +1184,7 @@ with tab1:
 
                         st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_pdf'] = an_final
                         if an_final:
-                            st.success(f"✅ Ready: {an_final.name}")
+                            st.success(f" Ready: {an_final.name}")
                     else:
                         st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_pdf'] = None
 
@@ -1310,8 +1339,8 @@ with tab1:
                         "Select new concept source",
                         options=["text", "pdf"],
                         format_func=lambda x: {
-                            "text": "📝 Use Universal Text Concept",
-                            "pdf": "📄 Use Universal File (PDF/Image)"
+                            "text": " Use Universal Text Concept",
+                            "pdf": " Use Universal File (PDF/Image)"
                         }[x],
                         key=f"fib_new_concept_source_{i}",
                         index=["text", "pdf"].index(
@@ -1323,9 +1352,9 @@ with tab1:
                     
                     if new_concept_source == 'pdf':
                         if st.session_state.get('universal_pdf'):
-                            st.info(f"ℹ️ Will use universal file: **{st.session_state.universal_pdf.name}**")
+                            st.info(f" Will use universal file: **{st.session_state.universal_pdf.name}**")
                         else:
-                            st.warning("⚠️ Please upload a Universal File (PDF/Image) in the General Information section above")
+                            st.warning(" Please upload a Universal File (PDF/Image) in the General Information section above")
                         st.session_state.question_types_config[qtype]['questions'][i]['new_concept_pdf'] = None
                     else:
                         st.session_state.question_types_config[qtype]['questions'][i]['new_concept_pdf'] = None
@@ -1362,7 +1391,7 @@ with tab1:
                             )
                         with col_p:
                             st.markdown("<br>", unsafe_allow_html=True)
-                            an_paste = paste(label="📋 Paste", key=f"fib_paste_{i}")
+                            an_paste = paste(label=" Paste", key=f"fib_paste_{i}")
                             
                         an_final = None
                         if an_upload:
@@ -1372,7 +1401,7 @@ with tab1:
 
                         st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_pdf'] = an_final
                         if an_final:
-                            st.success(f"✅ Ready: {an_final.name}")
+                            st.success(f" Ready: {an_final.name}")
                     else:
                         st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_pdf'] = None
                         
@@ -1392,7 +1421,7 @@ with tab1:
                 st.markdown(f"#### {qtype} Configuration")
                 for i in range(num_questions):
                     st.markdown(f"**Question {i+1}**")
-                    cols = st.columns([2, 2, 1, 1, 2])
+                    cols = st.columns([2, 1.5, 1, 1.5, 1.5])
                     
                     with cols[0]:
                         topic = st.text_input(
@@ -1458,8 +1487,8 @@ with tab1:
                         "Select new concept source",
                         options=["text", "pdf"],
                         format_func=lambda x: {
-                            "text": "📝 Use Universal Text Concept",
-                            "pdf": "📄 Use Universal File (PDF/Image)"
+                            "text": " Use Universal Text Concept",
+                            "pdf": " Use Universal File (PDF/Image)"
                         }[x],
                         key=f"{qtype}_new_concept_source_{i}",
                         index=["text", "pdf"].index(
@@ -1471,9 +1500,9 @@ with tab1:
                     
                     if new_concept_source == 'pdf':
                         if st.session_state.get('universal_pdf'):
-                            st.info(f"ℹ️ Will use universal file: **{st.session_state.universal_pdf.name}**")
+                            st.info(f" Will use universal file: **{st.session_state.universal_pdf.name}**")
                         else:
-                            st.warning("⚠️ Please upload a Universal File (PDF/Image) in the General Information section above")
+                            st.warning(" Please upload a Universal File (PDF/Image) in the General Information section above")
                         st.session_state.question_types_config[qtype]['questions'][i]['new_concept_pdf'] = None
                     else:
                         st.session_state.question_types_config[qtype]['questions'][i]['new_concept_pdf'] = None
@@ -1510,7 +1539,7 @@ with tab1:
                             )
                         with col_p:
                             st.markdown("<br>", unsafe_allow_html=True)
-                            an_paste = paste(label="📋 Paste", key=f"{qtype}_paste_{i}")
+                            an_paste = paste(label=" Paste", key=f"{qtype}_paste_{i}")
                             
                         an_final = None
                         if an_upload:
@@ -1520,7 +1549,7 @@ with tab1:
 
                         st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_pdf'] = an_final
                         if an_final:
-                            st.success(f"✅ Ready: {an_final.name}")
+                            st.success(f" Ready: {an_final.name}")
                     else:
                         st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_pdf'] = None
                         
@@ -1556,8 +1585,8 @@ with tab1:
                         "Select new concept source",
                         options=["text", "pdf"],
                         format_func=lambda x: {
-                            "text": "📝 Use Universal Text Concept",
-                            "pdf": "📄 Use Universal File (PDF/Image)"
+                            "text": " Use Universal Text Concept",
+                            "pdf": " Use Universal File (PDF/Image)"
                         }[x],
                         key=f"case_new_concept_source_{i}",
                         index=["text", "pdf"].index(
@@ -1569,9 +1598,9 @@ with tab1:
                     
                     if new_concept_source == 'pdf':
                         if st.session_state.get('universal_pdf'):
-                            st.info(f"ℹ️ Will use universal file: **{st.session_state.universal_pdf.name}**")
+                            st.info(f" Will use universal file: **{st.session_state.universal_pdf.name}**")
                         else:
-                            st.warning("⚠️ Please upload a Universal File (PDF/Image) in the General Information section above")
+                            st.warning(" Please upload a Universal File (PDF/Image) in the General Information section above")
                         st.session_state.question_types_config[qtype]['questions'][i]['new_concept_pdf'] = None
                     else:
                         st.session_state.question_types_config[qtype]['questions'][i]['new_concept_pdf'] = None
@@ -1610,7 +1639,7 @@ with tab1:
                             )
                         with col_p:
                             st.markdown("<br>", unsafe_allow_html=True)
-                            an_paste = paste(label="📋 Paste", key=f"case_paste_{i}")
+                            an_paste = paste(label=" Paste", key=f"case_paste_{i}")
                         
                         an_final = None
                         if an_upload:
@@ -1620,7 +1649,7 @@ with tab1:
                             
                         st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_pdf'] = an_final
                         if an_final:
-                            st.success(f"✅ Ready: {an_final.name}")
+                            st.success(f" Ready: {an_final.name}")
                     else:
                         st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_pdf'] = None
 
@@ -1714,8 +1743,8 @@ with tab1:
                             "Select new concept source",
                             options=["text", "pdf"],
                             format_func=lambda x: {
-                                "text": "📝 Use Universal Text Concept",
-                                "pdf": "📄 Use Universal File (PDF/Image)"
+                                "text": " Use Universal Text Concept",
+                                "pdf": " Use Universal File (PDF/Image)"
                             }[x],
                             key=f"multipart_new_concept_source_{i}",
                             index=["text", "pdf"].index(
@@ -1727,9 +1756,9 @@ with tab1:
                         
                         if new_concept_source == 'pdf':
                             if st.session_state.get('universal_pdf'):
-                                st.info(f"ℹ️ Will use universal file: **{st.session_state.universal_pdf.name}**")
+                                st.info(f" Will use universal file: **{st.session_state.universal_pdf.name}**")
                             else:
-                                st.warning("⚠️ Please upload a Universal File (PDF/Image) in the General Information section above")
+                                st.warning(" Please upload a Universal File (PDF/Image) in the General Information section above")
                         else:
                             # Explicitly clear stale file reference when switching to text source
                             st.session_state.question_types_config[qtype]['questions'][i]['new_concept_pdf'] = None
@@ -1766,7 +1795,7 @@ with tab1:
                                 )
                             with col_p:
                                 st.markdown("<br>", unsafe_allow_html=True)
-                                an_paste = paste(label="📋 Paste", key=f"multipart_paste_{i}")
+                                an_paste = paste(label=" Paste", key=f"multipart_paste_{i}")
                             
                             an_final = None
                             if an_upload:
@@ -1776,7 +1805,7 @@ with tab1:
                                 
                             st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_pdf'] = an_final
                             if an_final:
-                                st.success(f"✅ Ready: {an_final.name}")
+                                st.success(f" Ready: {an_final.name}")
                         else:
                             st.session_state.question_types_config[qtype]['questions'][i]['additional_notes_pdf'] = None
 
@@ -1877,14 +1906,14 @@ with tab1:
     st.markdown('<div class="section-header">Generate Questions</div>', unsafe_allow_html=True)
     
     if not gemini_api_key:
-        st.warning("⚠️ Please provide a GEMINI_API_KEY in .streamlit/secrets.toml to continue.")
+        st.warning(" Please provide a GEMINI_API_KEY in .streamlit/secrets.toml to continue.")
     else:
         
-        if st.button("🚀 Generate All Questions", type="primary", use_container_width=True):
+        if st.button(" Generate All Questions", type="primary", use_container_width=True):
             if not chapter:
-                st.error("❌ Please enter a chapter name")
+                st.error(" Please enter a chapter name")
             elif not st.session_state.question_types_config:
-                st.error("❌ Please configure at least one question type")
+                st.error(" Please configure at least one question type")
             else:
                 # Validate that all questions have topics
                 missing_topics = []
@@ -1895,7 +1924,7 @@ with tab1:
                             missing_topics.append(f"{qtype} Question {i}")
                 
                 if missing_topics:
-                    st.error(f"❌ Please specify topics for: {', '.join(missing_topics)}")
+                    st.error(f" Please specify topics for: {', '.join(missing_topics)}")
                 else:
                     # Prepare general config
                     config = {
@@ -1922,7 +1951,7 @@ with tab1:
                     
                     if questions_list:
                         # Run async pipeline
-                        with st.spinner("🔄 Starting question generation pipeline..."):
+                        with st.spinner(" Starting question generation pipeline..."):
                             try:
                                 # Import here to avoid circular imports
                                 from batch_processor import process_batches_pipeline
@@ -1982,7 +2011,7 @@ with tab1:
                                     files_dir = history_mgr.get_files_dir(run_id)
                                     files_map = save_all_files(files_dict, files_dir)
                                     
-                                    # Save run — pass same run_id so files folder matches metadata
+                                    # Save run  pass same run_id so files folder matches metadata
                                     saved_run_id = history_mgr.save_run(
                                         session_data=session_data,
                                         output_data=final_results,
@@ -1994,15 +2023,15 @@ with tab1:
                                     st.session_state.history_mode = 'new'
                                     st.session_state.current_run_id = saved_run_id
                                     
-                                    st.success(f"✅ All questions generated successfully! Saved to history. Go to the Results tab to view and manage them.")
+                                    st.success(f" All questions generated successfully! Saved to history. Go to the Results tab to view and manage them.")
                                     
                                 except Exception as save_error:
                                     # Don't fail the whole generation if save fails
-                                    st.warning(f"⚠️ Questions generated but failed to save to history: {str(save_error)}")
-                                    st.success("✅ All questions generated successfully! Go to the Results tab to view and manage them.")
+                                    st.warning(f" Questions generated but failed to save to history: {str(save_error)}")
+                                    st.success(" All questions generated successfully! Go to the Results tab to view and manage them.")
                                 
                             except Exception as e:
-                                st.error(f"❌ Error during generation: {str(e)}")
+                                st.error(f" Error during generation: {str(e)}")
                                 st.exception(e)
                     else:
                         st.warning("No questions found to process.")
@@ -2020,14 +2049,14 @@ with tab2:
         report = st.session_state.duplicate_generation_report
         
         # Display summary
-        st.markdown("### 📊 Generation Report")
+        st.markdown("###  Generation Report")
         if report.get('success'):
-            st.success(f"✅ Successfully generated duplicates for {report['success_count']} question(s).")
+            st.success(f" Successfully generated duplicates for {report['success_count']} question(s).")
         
         if report.get('errors'):
-            st.error(f"❌ Failed to generate duplicates for {len(report['errors'])} question(s).")
+            st.error(f" Failed to generate duplicates for {len(report['errors'])} question(s).")
             for err in report['errors']:
-                st.warning(f"• **{err['key']}**: {err['error']}")
+                st.warning(f" **{err['key']}**: {err['error']}")
         
         # Clear report button
         if st.button("Clear Report", key="clear_dup_report"):
@@ -2042,7 +2071,7 @@ with tab2:
         # Display Total Cost if available
         # total_cost = results.get('_total_cost')
         # if total_cost is not None:
-        #     st.info(f"💰 **Total Pipeline Cost:** ${total_cost:.4f}")
+        #     st.info(f" **Total Pipeline Cost:** ${total_cost:.4f}")
 
         # Import renderer
         from result_renderer import render_batch_results 
@@ -2051,7 +2080,7 @@ with tab2:
         for batch_key, batch_result in results.items():
             if batch_key.startswith('_') or not isinstance(batch_result, dict):
                 continue
-            with st.expander(f"📋 {batch_key}", expanded=True):
+            with st.expander(f" {batch_key}", expanded=True):
                 
                 # Extract raw and validated results
                 raw_res = batch_result.get('raw', {})
@@ -2059,14 +2088,14 @@ with tab2:
                 
                 # Display Validated Content
                 if val_res and not val_res.get('error'):
-                        st.markdown("### ✅ Validated Output")
+                        st.markdown("###  Validated Output")
                         # Use the new renderer with "results" context
                         render_batch_results(batch_key, val_res, render_context="results")
                 elif val_res and val_res.get('error'):
-                        st.error(f"❌ Validation Error: {val_res['error']}")
+                        st.error(f" Validation Error: {val_res['error']}")
                         st.error(val_res.get('text', ''))
                 else:
-                        st.warning("⚠️ Validation step missing or failed silently.")
+                        st.warning(" Validation step missing or failed silently.")
 
                 # Show Metadata
                 st.markdown("---")
@@ -2089,7 +2118,7 @@ with tab2:
             combined_output += final_text
         
         st.download_button(
-            label="📥 Download All Questions",
+            label=" Download All Questions",
             data=combined_output,
             file_name="generated_questions.md",
             mime="text/markdown",
@@ -2099,13 +2128,13 @@ with tab2:
         
         # Add Regenerate Selected Section
         st.markdown("---")
-        st.markdown('<div class="section-header">🔄 Regenerate Selected Questions</div>', unsafe_allow_html=True)
+        st.markdown('<div class="section-header"> Regenerate Selected Questions</div>', unsafe_allow_html=True)
         
         # Check for regeneration selection
         regen_selection = st.session_state.get('regen_selection', set())
         
         if regen_selection:
-            st.info(f"✅ {len(regen_selection)} question(s) selected for regeneration")
+            st.info(f" {len(regen_selection)} question(s) selected for regeneration")
             
             # Show selected questions breakdown
             regen_map = {}
@@ -2118,9 +2147,9 @@ with tab2:
                     regen_map[b_key].append(int(q_num))
             
             for b_key, indices in regen_map.items():
-                st.write(f"• **{b_key}**: Questions {sorted(indices)}")
+                st.write(f" **{b_key}**: Questions {sorted(indices)}")
                 
-            if st.button("♻️ Regenerate Selected", type="primary", use_container_width=True):
+            if st.button(" Regenerate Selected", type="primary", use_container_width=True):
                 # Collect reasons for each selected question
                 regeneration_reasons_map = {}
                 
@@ -2137,7 +2166,7 @@ with tab2:
                             regeneration_reasons_map[item] = "No reason provided"
                 
                 if not gemini_api_key:
-                    st.error("❌ Please enter your Gemini API key in the sidebar")
+                    st.error(" Please enter your Gemini API key in the sidebar")
                 else:
                     with st.spinner("Regenerating specific questions..."):
                         import asyncio
@@ -2209,7 +2238,7 @@ with tab2:
                                                              file_list.append(st.session_state.get('universal_pdf'))
                                                         
                                                         async def run_single_regen(b_key, q_key, mc_data, q_item, reason, q_content_str, file_list):
-                                                            logger.info(f"🔄 Executing Regeneration for {b_key} - {q_key}")
+                                                            logger.info(f" Executing Regeneration for {b_key} - {q_key}")
                                                             res = await regenerate_question_async(
                                                                 math_core_data=mc_data,
                                                                 question_data=q_item,
@@ -2258,7 +2287,7 @@ with tab2:
                                                             q_item_data = q_item if isinstance(q_item, dict) else {"text": str(q_item)}
                                                             
                                                             async def run_single_regen_legacy(b_key, q_key, mc_data, q_item_data, reason, q_content_str, file_list):
-                                                                logger.info(f"🔄 Executing Regeneration for {b_key} - {q_key} (Legacy Fallback)")
+                                                                logger.info(f" Executing Regeneration for {b_key} - {q_key} (Legacy Fallback)")
                                                                 res = await regenerate_question_async(
                                                                     math_core_data=mc_data,
                                                                     question_data=q_item_data,
@@ -2283,7 +2312,7 @@ with tab2:
                             success_count = 0
                             for unique_key, result in regen_results.items():
                                 if result.get('error'):
-                                    st.error(f"❌ Failed to regenerate {unique_key}: {result['error']}")
+                                    st.error(f" Failed to regenerate {unique_key}: {result['error']}")
                                 else:
                                     regen_data = result.get('regenerated_data', {})
                                     if regen_data:
@@ -2293,17 +2322,17 @@ with tab2:
                                         st.session_state[regen_store_key] = regen_data
                                         success_count += 1
                                         
-                                        # Save to txt file in a new folder
-                                        try:
-                                            import os
-                                            import json
-                                            regen_folder = "regenerated_outputs"
-                                            os.makedirs(regen_folder, exist_ok=True)
-                                            regen_file = os.path.join(regen_folder, f"{unique_key}_regenerated.txt")
-                                            with open(regen_file, "w", encoding="utf-8") as rf:
-                                                rf.write(json.dumps(regen_data, indent=2))
-                                        except Exception as e:
-                                            logger.error(f"Failed to save regenerated data to txt: {e}")
+                                        # Save to txt file in a new folder (disabled per user request)
+                                        # try:
+                                        #     import os
+                                        #     import json
+                                        #     regen_folder = "regenerated_outputs"
+                                        #     os.makedirs(regen_folder, exist_ok=True)
+                                        #     regen_file = os.path.join(regen_folder, f"{unique_key}_regenerated.txt")
+                                        #     with open(regen_file, "w", encoding="utf-8") as rf:
+                                        #         rf.write(json.dumps(regen_data, indent=2))
+                                        # except Exception as e:
+                                        #     logger.error(f"Failed to save regenerated data to txt: {e}")
                                             
                                         # Track Cost
                                         from batch_processor import calculate_cost
@@ -2316,7 +2345,7 @@ with tab2:
                                             st.session_state.generated_output['_total_cost'] += q_cost
 
                             if success_count > 0:
-                                st.success(f"✅ Successfully regenerated {success_count} question(s)!")
+                                st.success(f" Successfully regenerated {success_count} question(s)!")
                                 st.session_state.regen_selection = set()
                                 st.rerun()  # Refresh the UI to display expanded versions
 
@@ -2324,11 +2353,11 @@ with tab2:
                             st.error(f"Error running regeneration: {e}")
                             st.exception(e)
         else:
-            st.info("ℹ️ Select questions above using the checkboxes to regenerate specific items.")
+            st.info(" Select questions above using the checkboxes to regenerate specific items.")
 
         # Add Generate Duplicates section
         st.markdown("---")
-        st.markdown('<div class="section-header">🔄 Generate Question Duplicates</div>', unsafe_allow_html=True)
+        st.markdown('<div class="section-header"> Generate Question Duplicates</div>', unsafe_allow_html=True)
         
         # Collect selected questions from checkbox states
         # This happens only when rendering, not when clicking checkboxes
@@ -2359,9 +2388,15 @@ with tab2:
                                 q_num = str(idx)
                                 question_code = f"{batch_key}_q{q_num}"
                                 
-                                # Let's format the q_item dict roughly as markdown for the prompt
-                                # or simply dump it as well-structured JSON string which LLM understands
-                                q_content_str = json.dumps(q_item, indent=2)
+                                # Use regenerated version if available, otherwise use original
+                                regen_store_key = f"regenerated_{batch_key}_{q_key}"
+                                regen_data = st.session_state.get(regen_store_key)
+                                if regen_data and isinstance(regen_data, dict):
+                                    # Exclude internal keys before serialising
+                                    effective = {k: v for k, v in regen_data.items() if k != 'question_code'}
+                                    q_content_str = json.dumps(effective, indent=2)
+                                else:
+                                    q_content_str = json.dumps(q_item, indent=2)
                                 
                                 selected_questions[f"{batch_key}_{q_key}"] = {
                                     'question_key': q_key,
@@ -2397,28 +2432,37 @@ with tab2:
                                 q_num = q_key.replace("question", "").replace("q", "")
                                 question_code = f"{batch_key}_q{q_num}" if q_num else f"{batch_key}_{q_key}"
                                 
+                                # Use regenerated version if available, otherwise use original
+                                regen_store_key = f"regenerated_{batch_key}_{q_key}"
+                                regen_data = st.session_state.get(regen_store_key)
+                                if regen_data and isinstance(regen_data, dict):
+                                    effective = {k: v for k, v in regen_data.items() if k != 'question_code'}
+                                    q_content_str_old = json.dumps(effective, indent=2)
+                                else:
+                                    q_content_str_old = q_content if isinstance(q_content, str) else str(q_content)
+                                
                                 selected_questions[f"{batch_key}_{q_key}"] = {
                                     'question_key': q_key,
                                     'question_code': question_code,
                                     'batch_key': batch_key,
-                                    'markdown_content': q_content if isinstance(q_content, str) else str(q_content),
+                                    'markdown_content': q_content_str_old,
                                     'num_duplicates': st.session_state.get(count_key, 1),
                                     'additional_notes': st.session_state.get(f"duplicate_notes_{batch_key}_{q_key}", ""),
                                     'pdf_file': st.session_state.get(f"duplicate_file_{batch_key}_{q_key}", None)
                                 }
         
         if selected_questions:
-            st.info(f"✅ {len(selected_questions)} question(s) selected for duplication")
+            st.info(f" {len(selected_questions)} question(s) selected for duplication")
             
             # Show which questions are selected
             with st.expander("View Selected Questions", expanded=False):
                 for key, data in selected_questions.items():
-                    st.write(f"• {data['batch_key']} - {data['question_key']} (x{data['num_duplicates']})")
+                    st.write(f" {data['batch_key']} - {data['question_key']} (x{data['num_duplicates']})")
             
             # Generate Duplicates Button
-            if st.button("🚀 Generate Duplicates", type="primary", use_container_width=True):
+            if st.button(" Generate Duplicates", type="primary", use_container_width=True):
                 if not gemini_api_key:
-                    st.error("❌ Please enter your Gemini API key in the sidebar")
+                    st.error(" Please enter your Gemini API key in the sidebar")
                 else:
                     with st.spinner("Generating duplicates... This may take a moment."):
                         import asyncio
@@ -2443,7 +2487,7 @@ with tab2:
                                 """Process a single question's duplication"""
                                 # Debug: Log duplication parameters
                                 pdf_file = data.get('pdf_file', None)
-                                logger.info(f"🔍 DEBUG Duplication - {data['question_code']}: PDF={'✅ Present (' + pdf_file.name + ')' if pdf_file else '❌ Missing'}")
+                                logger.info(f" DEBUG Duplication - {data['question_code']}: PDF={' Present (' + pdf_file.name + ')' if pdf_file else ' Missing'}")
                                 
                                 # Load model configuration
                                 import yaml
@@ -2531,13 +2575,13 @@ with tab2:
                             st.rerun()
                             
                         except Exception as e:
-                            st.error(f"❌ Error during duplication: {str(e)}")
+                            st.error(f" Error during duplication: {str(e)}")
                             st.exception(e)
 
 # Footer
 st.markdown("---")
 st.markdown("""
 <div style="text-align: center; color: #6b7280; padding: 1rem;">
-    <p>Built with ❤️ using Streamlit and Gemini AI</p>
+    <p>Built with  using Streamlit and Gemini AI</p>
 </div>
 """, unsafe_allow_html=True)

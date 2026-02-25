@@ -66,6 +66,29 @@ def save_batch_metadata(metadata: Dict[str, Any], batch_key: str):
         logger.error(f"Failed to save batch metadata: {e}")
 
 
+def save_prompt(prompt_text: str, prompt_type: str, batch_key: str):
+    """
+    Save the final prompt sent to the model to the 'saved_prompts' folder.
+    
+    Files are named: <timestamp>_<prompt_type>_<batch_key>.txt
+    """
+    try:
+        save_dir = Path("saved_prompts")
+        save_dir.mkdir(exist_ok=True)
+        
+        timestamp = time.strftime("%Y%m%d_%H%M%S")
+        safe_key = batch_key.replace(' ', '_').replace('/', '-')
+        filename = f"{timestamp}_{prompt_type}_{safe_key}.txt"
+        file_path = save_dir / filename
+        
+        with open(file_path, "w", encoding="utf-8") as f:
+            f.write(prompt_text)
+            
+        logger.info(f"✅ Saved prompt to {file_path}")
+    except Exception as e:
+        logger.error(f"Failed to save prompt: {e}")
+
+
 def extract_first_json_match(text: str) -> Dict[str, Any]:
     """
     Robustly find the first valid JSON object in the text.
@@ -346,8 +369,8 @@ async def generate_raw_batch(
         is_regeneration = any(q.get('_is_being_regenerated') for q in questions)
         prompt_type = "regeneration" if is_regeneration else "generation"
         
-        # Save prompt for debugging/record
-        # save_prompt(prompt_text, prompt_type, batch_key)
+        # Save final prompt to disk
+        save_prompt(prompt_text, prompt_type, batch_key)
 
         files = prompt_data.get('files', [])
         file_metadata = prompt_data.get('file_metadata', {})

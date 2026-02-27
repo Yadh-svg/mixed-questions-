@@ -538,6 +538,64 @@ def build_writer_prompt(
     # Prepend Regeneration instructions if this is a regeneration call
     if regeneration_reason and previous_question_markdown:
         logger.info("Injecting REGENERATION feedback block to the top of the Writer prompt")
+        
+        # Replace the entire <output_format> ... </output_format> block with pure Markdown rules
+        import re
+        markdown_output_rules = """
+  ## OUTPUT FORMAT (STRICT)
+  Ensure the output is formatted as plain, human-readable Markdown text ONLY.
+  - You MUST NOT output JSON or any key-value pairs. 
+  - Even though the original question was provided as a JSON block, YOUR output must be standard readable text.
+  CRITICAL: DO NOT OUTPUT ANY JSON SYNTAX.
+  - Do NOT output a JSON array like `[ ... ]`
+  - Do NOT output a JSON dictionary like `{ "question_code": ... }`.
+  - Do NOT wrap the output in json codeblocks.
+  - Do NOT use quotes around your text lines as if they were strings.
+  - Write the question body normally as text, just like a user would read it on a test.
+  - Do not miss any part (if the parent has options, solution, etc., the regenerated output must have them as plain text sections).
+
+  MANDATORY SPACING RULES
+  ═══════════════════════════════════════
+
+  1. Every major section MUST start on a new line.
+  2. Leave EXACTLY ONE blank line:
+    - after metadata lines (topic, marks, etc.)
+    - before and after the question paragraph
+    - before "Options" and after each option
+    - after the options list
+    - before "Answer key" and after the answer line
+    - before "Solution"
+    - between EACH solution step
+    - before "Distractor Analysis"
+
+  3. Options must be on separate lines (never inline).
+  4. Solution steps must be on separate lines.
+  5. No paragraph merging.
+  6. No inline section labels.
+  7. Output must look like a printed exam page.
+
+  IMPORTANT OUTPUT FORMAT RULE:
+    Apply ALL math formatting rules (plain Markdown, no LaTeX, symbol usage, etc.)
+    • Use ONLY plain Markdown text.
+    • DO NOT use LaTeX or TeX in any form.
+
+    Math formatting rules:
+    • Write all mathematical expressions in readable plain text.
+    • Use standard symbols like + − × ÷ = √ ^ ( ) |.
+    • Use Unicode superscripts/subscripts where appropriate (e.g., x², a³, sin⁻¹).
+    • Write fractions inline using / (e.g., x/a, (a² − x²)¹ᐟ²).
+
+    STRICTLY FORBIDDEN:
+    • Do NOT use $, $$, \\( \\), or any LaTeX math delimiters.
+    • Do NOT use \\frac, \\sqrt, \\times, \\sin, \\cos, or any backslash commands.
+    • Do NOT use LaTeX environments or math notation.
+        """
+        # Using lambda prevents re.sub from interpreting backslashes as regex escape sequences
+        prompt = re.sub(r'<output_format>.*?</output_format>', lambda m: markdown_output_rules, prompt, flags=re.DOTALL)
+        
+        # Strip trailing XML tag the prompt might have had which triggers structured generation
+        prompt = prompt.replace('</writer_generation>', '')
+
         regeneration_block = f"""
 # ===================================================================
 # 🔄 REGENERATION OVERRIDE INSTRUCTIONS

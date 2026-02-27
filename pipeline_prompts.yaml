@@ -115,7 +115,23 @@ cbs_math_core: |
         - Representation change is allowed ONLY if explicitly required
           in Additional Notes.
 
+      <concept_fidelity_rules>
+        CONCEPT LOCK (MANDATORY):
+        - The Math Core must strictly match the EXACT concept requested by the user.
+        - Do NOT substitute, upgrade, or replace the requested concept with a 
+          related or similar concept — even if the related concept feels more 
+          natural for the structure you are building.
+        - Eg : Common Factors and Common Multiples are DIFFERENT concepts. 
+          Treat them as completely separate. Never swap one for the other.
+        - If the user requests "Common Factors", every sub-question must 
+          be rooted in division and shared divisors — NOT in multiples or 
+          repeated addition patterns.
+        - If the user requests "Common Multiples", every sub-question must 
+          be rooted in repeated addition or skip-counting — NOT in divisors.
+
+      </concept_fidelity_rules>
     </requirements>
+
     <output_format>
       Return a valid JSON object:
       {
@@ -195,7 +211,7 @@ cbs_writer: |
 
         You must analyze these examples carefully and extract the
         intended rules or patterns, then apply them during generation.
-
+        ## IF THE USER WANT ANY OTHER TOPIC OTHER THAN THE MATH CORE DESIGNED (WHICH THE USER mentioned IN ADDITIONAL NOTES) .THEN YOU NEED TO FIND THAT TOPIC FROMTHE PDF AND GIVE QUESTION INSTEAD OF RELYING ON MATH CORE 
         OUTPUT RULES
 
         - Apply all notes when generating questions, options, scenarios,
@@ -346,6 +362,66 @@ cbs_writer: |
                   Never name, hint at, or perform the math inside the scenario.
 
         ═══════════════════════════════════════════
+        THE INVENTED RULE TEST
+        ═══════════════════════════════════════════
+
+        Before finalising, ask:
+        "Does this scenario only work because 
+        a CHARACTER decided to follow a 
+        mathematical rule?"
+
+        ✗ A rickshaw stops at every 4th house 
+          → someone decided that rule
+        ✗ A worker sorts by divisible numbers 
+          → someone decided that rule  
+        ✗ A child collects every 3rd card 
+          → someone decided that rule
+
+        REAL scenarios work because a PHYSICAL 
+        OBJECT has a fixed natural property —
+        not because a person chose a math pattern.
+
+        Tile width is fixed → not a choice.
+        Crate capacity is fixed → not a choice.
+        Packet size is fixed → not a choice.
+
+        If the math exists because a CHARACTER 
+        CHOSE to follow it → banned.
+        If the math exists because an OBJECT 
+        FORCED it → allowed.
+
+        ═══════════════════════════════════════════
+        TOPIC-SPECIFIC BANNED PATTERNS
+        ═══════════════════════════════════════════
+
+        FRACTIONS / RATIO:
+        ✗ "Ravi ate 3/5 of a pizza"
+        WHY: Nobody thinks of food in exact 
+        fractions while eating. Unrealistic action.
+
+        PERCENTAGE:
+        ✗ "A shopkeeper gives exactly 20% discount"
+        WHY: Classic textbook costume. Every 
+        student has seen this 100 times.
+
+        ALGEBRA / EQUATIONS:
+        ✗ "Think of a number, double it, add 5"
+        WHY: Nobody does this in real life. 
+        Pure math wearing no costume at all.
+
+        GEOMETRY / AREA:
+        ✗ "A rectangular garden has length X 
+        and breadth Y"
+        WHY: Gardens aren't introduced this way 
+        in real life. Too abstract and direct.
+
+        SPEED / DISTANCE:
+        ✗ "Two trains leave stations simultaneously"
+        ✗ "A car travels at 60 km/h"
+        WHY: Iconic textbook templates. 
+        Students recognise these instantly.
+
+        ═══════════════════════════════════════════
         PERMANENTLY BANNED — regardless of topic or grade
         ═══════════════════════════════════════════
 
@@ -365,6 +441,39 @@ cbs_writer: |
         ✗ Any situation that only exists because the question needs it to.
           If the situation would disappear without the math → it is banned.
         a boy jumps 12 cm or animals playing ludo wiith childrens, or a persons buys 100 kg of fruits
+
+        ═══════════════════════════════════════════
+        BANNED SCENARIO PATTERNS — WITH REASONS
+        ═══════════════════════════════════════════
+
+        ✗ "Rickshaw A stops at every 4th house, 
+          Rickshaw B stops at every 6th house"
+        WHY: Stopping intervals are a math rule 
+        wearing a delivery costume. Not real.
+
+        ✗ "Letters are sorted into bins based on 
+          codes divisible by 5"
+        WHY: No real sorting system uses 
+        divisibility as a physical rule.
+
+        ✗ "A boy jumps 4 steps at a time on 
+          a numbered staircase"
+        WHY: People don't count steps in fixed 
+        mathematical intervals in real life.
+
+        ✗ "Two pipes fill a tank in X and Y hours"
+        WHY: Classic textbook costume. The tank 
+        and pipes exist only for the math.
+
+        NEGATIVE EXAMPLE RULE:
+          If a scenario appears in this banned list — 
+          or smells like any scenario in this list — 
+          stop and rebuild from a real physical object.
+
+          Do not adjust the banned scenario. 
+          Do not rename the characters. 
+          Discard it completely and start fresh.
+
         ═══════════════════════════════════════════
         GRADE-APPROPRIATE CONTEXT GUIDANCE
         ═══════════════════════════════════════════
@@ -674,9 +783,85 @@ cbs_writer: |
             - whatever you are thinking to make question make it one lvel up so that it will be in proper dok level
       </DOK_level_explanation>
       <knowledge_boundary>
-          Treat the uploaded PDFs/images as the only source of knowledge. Do not use any outside syllabus, curriculum, or textbook knowledge. Do not introduce concepts, terminology, skills, or grade-level content that is not explicitly shown in the uploaded material(for question, solution, key-idea for everything. You cant assume if lhs = rhs is not mentioned in the uploaded material but its proving left side = right side, you cant mention lhs = rhs in any part of the generated material). If the material shows addition, subtraction, even/odd numbers, halving, or true/false reasoning, generate new items only using those same concepts. Do not name properties, laws, or theories unless they are explicitly printed in the PDF/image.
-          Generate new/duplicate questions that match the original item structure, same difficulty level, and same style. Do not increase the grade level or add any new concepts. Do not assume hidden mathematical knowledge. Do not infer properties (example: do not mention commutativity unless the PDF/image names it). Do not introduce higher grade concepts.
-          The uploaded content defines a closed knowledge boundary. If a concept, method, property, term, or instruction is not present in the PDF/image, do not include it in the generated items. Stay fully faithful to the language, style, tasks, operations, and reasoning patterns present in the PDF/image.
+          Treat the uploaded PDFs/images as the only source of knowledge.
+          Do not use any outside syllabus, curriculum, or textbook knowledge.
+          Do not introduce concepts, terminology, skills, or grade-level content that is not explicitly shown in the uploaded material(for question, solution, key-idea for everything. You cant assume if lhs = rhs is not mentioned in the uploaded material but its proving left side = right side, you cant mention lhs = rhs in any part of the generated material).
+          If the material shows addition, subtraction, even/odd numbers, halving, or true/false reasoning, generate new items only using those same concepts. Do not name properties, laws, or theories unless they are explicitly printed in the PDF/image.
+
+          Before writing anything, silently read the chapter and answer 
+          these three questions:
+
+          1. HOW does the chapter explain this concept?
+            — What words does it use for this idea?
+            — Example: does it say "angle" or "turn" or "rotation"?
+            — Does it say "multiply" or "groups of"?
+            — Does it say "divide" or "share equally"?
+            — Use ONLY the chapter's own words. Never upgrade to 
+              the standard mathematical term if the chapter avoids it.
+
+          2. HOW does the chapter solve problems of this type?
+            — What method or steps does it show?
+            — Example: does it use a number line, finger counting, 
+              grouping objects, factor trees, long division, or 
+              repeated subtraction?
+            — Your solutions must follow the SAME method, 
+              in the SAME order of steps.
+
+            SOLUTION METHOD LOCK (MANDATORY):
+            — Never use a more efficient or advanced method 
+              even if it gives the same answer faster.
+            — If the chapter solves multiplication by writing 
+              repeated addition (3 × 4 = 4 + 4 + 4), 
+              your solution must also use repeated addition.
+            — If the chapter uses the box method for multiplication, 
+              every multiplication step in every solution 
+              must use the box method.
+            — If the chapter uses grouping circles drawn around 
+              objects to show division, your solution must 
+              describe that same grouping process.
+            — The method is not optional. It is the answer 
+              to "how this chapter expects students to think."
+
+            CONSISTENCY RULE:
+            — This method applies to EVERY sub-question 
+              in EVERY question generated from this chapter.
+            — Do NOT switch methods between sub-questions.
+            — Do NOT use the locked method for part (a) 
+              and then switch to a shortcut for part (b).
+            — If a sub-question feels too simple for the method, 
+              still use the same method — just with smaller numbers.
+
+            SELF-CHECK FOR EVERY SOLUTION STEP:
+            "Is this exactly how the chapter would show 
+            a student solving this step?"
+            YES → keep it.
+            NO  → rewrite using the chapter's method.
+
+          3. WHAT does the chapter NOT use?
+            — Identify terms, symbols, or methods that are 
+              mathematically related but absent from the chapter.
+            — These are banned — even if they are correct, 
+              even if they feel natural, even if a higher grade uses them.
+            — Example: chapter groups objects but never writes 
+              the word "multiplication" → that word is banned.
+            — Example: chapter draws arrows on a grid but never 
+              writes "coordinate" → that word is banned.
+
+          APPLY THIS TO EVERYTHING:
+          - The scenario must feel like it belongs in this chapter.
+          - The question wording must match how this chapter asks questions.
+          - The solution must use only the method this chapter teaches.
+          - The key idea must explain using only this chapter's language.
+
+          ONE LINE TEST BEFORE OUTPUT:
+          "If a student who has only read this chapter — 
+          and nothing else — reads my question and solution, 
+          will every word and method feel familiar to them?"
+          
+          YES → proceed.
+          NO  → rewrite using only what the chapter contains.
+
+       
       </knowledge_boundary>
       <what_not_to_do>
         - Do not use any physics, chemistry, biology, or other science formulas (e.g., density, force, pressure, velocity).
@@ -707,7 +892,20 @@ cbs_writer: |
         - Even if the provided PDF, New Concept, or key concepts contain proofs, theorems, or derivations, do NOT use them as the basis for a question.
         - You may use the *result* of a theorem/proof for application-based questions, but do not ask the student to reproduce the proof itself.
         - EXCEPTION: You may generate a proof-based question ONLY if the user explicitly requests it in the "Additional Notes" section.
+        - Do NOT generate yes/no questions or any question whose answer 
+          is a binary confirmation (e.g., "Can both be packed equally?", 
+          "Is X divisible by Y?", "Will it fit exactly?"). 
+          These are banned entirely.
 
+        - Do NOT generate questions that ask students to "list all possible 
+          values", "find all factors", "name all cases", or produce any 
+          answer that is a set or collection of multiple values. 
+          Every question must have exactly ONE unique final answer — 
+          a single number, a single value, or a single expression.
+          If the mathematical task naturally produces multiple values 
+          (e.g., all common factors, all solutions), reframe the question 
+          to ask for ONE specific value from that set 
+          (e.g., the greatest, the smallest, the only even one).
       </what_not_to_do>
     </requirements>
     
@@ -831,6 +1029,21 @@ mcq_math_core: |
         - No introduction of methods, representations, or theorem families
           that belong to a different textbook section or later chapter,
           unless explicitly required in Additional Notes.
+      <concept_fidelity_rules>
+        CONCEPT LOCK (MANDATORY):
+        - The Math Core must strictly match the EXACT concept requested by the user.
+        - Do NOT substitute, upgrade, or replace the requested concept with a 
+          related or similar concept — even if the related concept feels more 
+          natural for the structure you are building.
+        - Eg : Common Factors and Common Multiples are DIFFERENT concepts. 
+          Treat them as completely separate. Never swap one for the other.
+        - If the user requests "Common Factors", every sub-question must 
+          be rooted in division and shared divisors — NOT in multiples or 
+          repeated addition patterns.
+        - If the user requests "Common Multiples", every sub-question must 
+          be rooted in repeated addition or skip-counting — NOT in divisors.
+
+      </concept_fidelity_rules>
 
     </requirements>
     
@@ -894,7 +1107,8 @@ mcq_writer: |
         - Both Global and Question-Specific Notes must be followed together.
         - Do NOT ignore one in favor of the other.
         - Integrate all applicable instructions when generating content.
-
+        ## IF THE USER WANT ANY OTHER TOPIC OTHER THAN THE MATH CORE DESIGNED (WHICH THE USER mentioned IN ADDITIONAL NOTES) .THEN YOU NEED TO FIND THAT TOPIC FROMTHE PDF AND GIVE QUESTION INSTEAD OF RELYING ON MATH CORE 
+      
         EXAMPLE-BASED INSTRUCTIONS
 
         Additional Notes may include examples showing:
@@ -1475,6 +1689,66 @@ mcq_writer: |
                   Never name, hint at, or perform the math inside the scenario.
 
         ═══════════════════════════════════════════
+        THE INVENTED RULE TEST
+        ═══════════════════════════════════════════
+
+        Before finalising, ask:
+        "Does this scenario only work because 
+        a CHARACTER decided to follow a 
+        mathematical rule?"
+
+        ✗ A rickshaw stops at every 4th house 
+          → someone decided that rule
+        ✗ A worker sorts by divisible numbers 
+          → someone decided that rule  
+        ✗ A child collects every 3rd card 
+          → someone decided that rule
+
+        REAL scenarios work because a PHYSICAL 
+        OBJECT has a fixed natural property —
+        not because a person chose a math pattern.
+
+        Tile width is fixed → not a choice.
+        Crate capacity is fixed → not a choice.
+        Packet size is fixed → not a choice.
+
+        If the math exists because a CHARACTER 
+        CHOSE to follow it → banned.
+        If the math exists because an OBJECT 
+        FORCED it → allowed.
+
+        ═══════════════════════════════════════════
+        TOPIC-SPECIFIC BANNED PATTERNS
+        ═══════════════════════════════════════════
+
+        FRACTIONS / RATIO:
+        ✗ "Ravi ate 3/5 of a pizza"
+        WHY: Nobody thinks of food in exact 
+        fractions while eating. Unrealistic action.
+
+        PERCENTAGE:
+        ✗ "A shopkeeper gives exactly 20% discount"
+        WHY: Classic textbook costume. Every 
+        student has seen this 100 times.
+
+        ALGEBRA / EQUATIONS:
+        ✗ "Think of a number, double it, add 5"
+        WHY: Nobody does this in real life. 
+        Pure math wearing no costume at all.
+
+        GEOMETRY / AREA:
+        ✗ "A rectangular garden has length X 
+        and breadth Y"
+        WHY: Gardens aren't introduced this way 
+        in real life. Too abstract and direct.
+
+        SPEED / DISTANCE:
+        ✗ "Two trains leave stations simultaneously"
+        ✗ "A car travels at 60 km/h"
+        WHY: Iconic textbook templates. 
+        Students recognise these instantly.
+
+        ═══════════════════════════════════════════
         PERMANENTLY BANNED — regardless of topic or grade
         ═══════════════════════════════════════════
 
@@ -1494,6 +1768,39 @@ mcq_writer: |
         ✗ Any situation that only exists because the question needs it to.
           If the situation would disappear without the math → it is banned.
         a boy jumps 12 cm or animals playing ludo wiith childrens, or a persons buys 100 kg of fruits
+
+        ═══════════════════════════════════════════
+        BANNED SCENARIO PATTERNS — WITH REASONS
+        ═══════════════════════════════════════════
+
+        ✗ "Rickshaw A stops at every 4th house, 
+          Rickshaw B stops at every 6th house"
+        WHY: Stopping intervals are a math rule 
+        wearing a delivery costume. Not real.
+
+        ✗ "Letters are sorted into bins based on 
+          codes divisible by 5"
+        WHY: No real sorting system uses 
+        divisibility as a physical rule.
+
+        ✗ "A boy jumps 4 steps at a time on 
+          a numbered staircase"
+        WHY: People don't count steps in fixed 
+        mathematical intervals in real life.
+
+        ✗ "Two pipes fill a tank in X and Y hours"
+        WHY: Classic textbook costume. The tank 
+        and pipes exist only for the math.
+
+        NEGATIVE EXAMPLE RULE:
+          If a scenario appears in this banned list — 
+          or smells like any scenario in this list — 
+          stop and rebuild from a real physical object.
+
+          Do not adjust the banned scenario. 
+          Do not rename the characters. 
+          Discard it completely and start fresh.
+
         ═══════════════════════════════════════════
         GRADE-APPROPRIATE CONTEXT GUIDANCE
         ═══════════════════════════════════════════
@@ -1660,9 +1967,85 @@ mcq_writer: |
             - whatever you are thinking to make question make it one lvel up so that it will be in proper dok level
       </DOK_level_explanation>
       <knowledge_boundary>
-          Treat the uploaded PDFs/images as the only source of knowledge. Do not use any outside syllabus, curriculum, or textbook knowledge. Do not introduce concepts, terminology, skills, or grade-level content that is not explicitly shown in the uploaded material(for question, solution, key-idea for everything. You cant assume if lhs = rhs is not mentioned in the uploaded material but its proving left side = right side, you cant mention lhs = rhs in any part of the generated material). If the material shows addition, subtraction, even/odd numbers, halving, or true/false reasoning, generate new items only using those same concepts. Do not name properties, laws, or theories unless they are explicitly printed in the PDF/image.
-          Generate new/duplicate questions that match the original item structure, same difficulty level, and same style. Do not increase the grade level or add any new concepts. Do not assume hidden mathematical knowledge. Do not infer properties (example: do not mention commutativity unless the PDF/image names it). Do not introduce higher grade concepts.
-          The uploaded content defines a closed knowledge boundary. If a concept, method, property, term, or instruction is not present in the PDF/image, do not include it in the generated items. Stay fully faithful to the language, style, tasks, operations, and reasoning patterns present in the PDF/image.
+          Treat the uploaded PDFs/images as the only source of knowledge.
+          Do not use any outside syllabus, curriculum, or textbook knowledge.
+          Do not introduce concepts, terminology, skills, or grade-level content that is not explicitly shown in the uploaded material(for question, solution, key-idea for everything. You cant assume if lhs = rhs is not mentioned in the uploaded material but its proving left side = right side, you cant mention lhs = rhs in any part of the generated material).
+          If the material shows addition, subtraction, even/odd numbers, halving, or true/false reasoning, generate new items only using those same concepts. Do not name properties, laws, or theories unless they are explicitly printed in the PDF/image.
+
+          Before writing anything, silently read the chapter and answer 
+          these three questions:
+
+          1. HOW does the chapter explain this concept?
+            — What words does it use for this idea?
+            — Example: does it say "angle" or "turn" or "rotation"?
+            — Does it say "multiply" or "groups of"?
+            — Does it say "divide" or "share equally"?
+            — Use ONLY the chapter's own words. Never upgrade to 
+              the standard mathematical term if the chapter avoids it.
+
+          2. HOW does the chapter solve problems of this type?
+            — What method or steps does it show?
+            — Example: does it use a number line, finger counting, 
+              grouping objects, factor trees, long division, or 
+              repeated subtraction?
+            — Your solutions must follow the SAME method, 
+              in the SAME order of steps.
+
+            SOLUTION METHOD LOCK (MANDATORY):
+            — Never use a more efficient or advanced method 
+              even if it gives the same answer faster.
+            — If the chapter solves multiplication by writing 
+              repeated addition (3 × 4 = 4 + 4 + 4), 
+              your solution must also use repeated addition.
+            — If the chapter uses the box method for multiplication, 
+              every multiplication step in every solution 
+              must use the box method.
+            — If the chapter uses grouping circles drawn around 
+              objects to show division, your solution must 
+              describe that same grouping process.
+            — The method is not optional. It is the answer 
+              to "how this chapter expects students to think."
+
+            CONSISTENCY RULE:
+            — This method applies to EVERY sub-question 
+              in EVERY question generated from this chapter.
+            — Do NOT switch methods between sub-questions.
+            — Do NOT use the locked method for part (a) 
+              and then switch to a shortcut for part (b).
+            — If a sub-question feels too simple for the method, 
+              still use the same method — just with smaller numbers.
+
+            SELF-CHECK FOR EVERY SOLUTION STEP:
+            "Is this exactly how the chapter would show 
+            a student solving this step?"
+            YES → keep it.
+            NO  → rewrite using the chapter's method.
+
+          3. WHAT does the chapter NOT use?
+            — Identify terms, symbols, or methods that are 
+              mathematically related but absent from the chapter.
+            — These are banned — even if they are correct, 
+              even if they feel natural, even if a higher grade uses them.
+            — Example: chapter groups objects but never writes 
+              the word "multiplication" → that word is banned.
+            — Example: chapter draws arrows on a grid but never 
+              writes "coordinate" → that word is banned.
+
+          APPLY THIS TO EVERYTHING:
+          - The scenario must feel like it belongs in this chapter.
+          - The question wording must match how this chapter asks questions.
+          - The solution must use only the method this chapter teaches.
+          - The key idea must explain using only this chapter's language.
+
+          ONE LINE TEST BEFORE OUTPUT:
+          "If a student who has only read this chapter — 
+          and nothing else — reads my question and solution, 
+          will every word and method feel familiar to them?"
+          
+          YES → proceed.
+          NO  → rewrite using only what the chapter contains.
+
+       
       </knowledge_boundary>
       <taxonomy>
         **Taxonomy Lock Rule**
@@ -1702,6 +2085,11 @@ mcq_writer: |
         **CRITICAL - Open-Ended Question Prohibition:**
             Do not create open-ended questions. An open-ended question is any question that requires more than one response, combines multiple tasks in the same item (such as calculate and then compare or decide), or produces multiple outputs in the answer key. Questions that ask students to perform a task and then make an additional decision or conclusion are also considered open-ended. Each question must ask only one thing and produce exactly one final answer only.
             or State the theoram,What can be concluded etc.. should not be asked.
+        - Do NOT generate yes/no questions or any question whose answer 
+          is a binary confirmation (e.g., "Can both be packed equally?", 
+          "Is X divisible by Y?", "Will it fit exactly?"). 
+          These are banned entirely.
+
 
       </what_not_to_do>
        
@@ -1870,7 +2258,21 @@ fib_math_core: |
 
         - Representation change is allowed ONLY if explicitly required
           in Additional Notes.
+      <concept_fidelity_rules>
+        CONCEPT LOCK (MANDATORY):
+        - The Math Core must strictly match the EXACT concept requested by the user.
+        - Do NOT substitute, upgrade, or replace the requested concept with a 
+          related or similar concept — even if the related concept feels more 
+          natural for the structure you are building.
+        - Eg : Common Factors and Common Multiples are DIFFERENT concepts. 
+          Treat them as completely separate. Never swap one for the other.
+        - If the user requests "Common Factors", every sub-question must 
+          be rooted in division and shared divisors — NOT in multiples or 
+          repeated addition patterns.
+        - If the user requests "Common Multiples", every sub-question must 
+          be rooted in repeated addition or skip-counting — NOT in divisors.
 
+      </concept_fidelity_rules>
     </requirements>
     
     <output_format>
@@ -1921,6 +2323,7 @@ fib_writer: |
         - Both Global and Question-Specific Notes must be followed together.
         - Do NOT ignore one in favor of the other.
         - Integrate all applicable instructions when generating content.
+        ## IF THE USER WANT ANY OTHER TOPIC OTHER THAN THE MATH CORE DESIGNED (WHICH THE USER mentioned IN ADDITIONAL NOTES) .THEN YOU NEED TO FIND THAT TOPIC FROMTHE PDF AND GIVE QUESTION INSTEAD OF RELYING ON MATH CORE 
 
         EXAMPLE-BASED INSTRUCTIONS
 
@@ -2318,7 +2721,7 @@ fib_writer: |
       </key_idea rules>
 
             
-        <Scenario Authenticity Rule>
+      <Scenario Authenticity Rule>
 
         Before writing the scenario, the model MUST silently answer this single test question:
 
@@ -2425,6 +2828,66 @@ fib_writer: |
                   Never name, hint at, or perform the math inside the scenario.
 
         ═══════════════════════════════════════════
+        THE INVENTED RULE TEST
+        ═══════════════════════════════════════════
+
+        Before finalising, ask:
+        "Does this scenario only work because 
+        a CHARACTER decided to follow a 
+        mathematical rule?"
+
+        ✗ A rickshaw stops at every 4th house 
+          → someone decided that rule
+        ✗ A worker sorts by divisible numbers 
+          → someone decided that rule  
+        ✗ A child collects every 3rd card 
+          → someone decided that rule
+
+        REAL scenarios work because a PHYSICAL 
+        OBJECT has a fixed natural property —
+        not because a person chose a math pattern.
+
+        Tile width is fixed → not a choice.
+        Crate capacity is fixed → not a choice.
+        Packet size is fixed → not a choice.
+
+        If the math exists because a CHARACTER 
+        CHOSE to follow it → banned.
+        If the math exists because an OBJECT 
+        FORCED it → allowed.
+
+        ═══════════════════════════════════════════
+        TOPIC-SPECIFIC BANNED PATTERNS
+        ═══════════════════════════════════════════
+
+        FRACTIONS / RATIO:
+        ✗ "Ravi ate 3/5 of a pizza"
+        WHY: Nobody thinks of food in exact 
+        fractions while eating. Unrealistic action.
+
+        PERCENTAGE:
+        ✗ "A shopkeeper gives exactly 20% discount"
+        WHY: Classic textbook costume. Every 
+        student has seen this 100 times.
+
+        ALGEBRA / EQUATIONS:
+        ✗ "Think of a number, double it, add 5"
+        WHY: Nobody does this in real life. 
+        Pure math wearing no costume at all.
+
+        GEOMETRY / AREA:
+        ✗ "A rectangular garden has length X 
+        and breadth Y"
+        WHY: Gardens aren't introduced this way 
+        in real life. Too abstract and direct.
+
+        SPEED / DISTANCE:
+        ✗ "Two trains leave stations simultaneously"
+        ✗ "A car travels at 60 km/h"
+        WHY: Iconic textbook templates. 
+        Students recognise these instantly.
+
+        ═══════════════════════════════════════════
         PERMANENTLY BANNED — regardless of topic or grade
         ═══════════════════════════════════════════
 
@@ -2444,6 +2907,39 @@ fib_writer: |
         ✗ Any situation that only exists because the question needs it to.
           If the situation would disappear without the math → it is banned.
         a boy jumps 12 cm or animals playing ludo wiith childrens, or a persons buys 100 kg of fruits
+
+        ═══════════════════════════════════════════
+        BANNED SCENARIO PATTERNS — WITH REASONS
+        ═══════════════════════════════════════════
+
+        ✗ "Rickshaw A stops at every 4th house, 
+          Rickshaw B stops at every 6th house"
+        WHY: Stopping intervals are a math rule 
+        wearing a delivery costume. Not real.
+
+        ✗ "Letters are sorted into bins based on 
+          codes divisible by 5"
+        WHY: No real sorting system uses 
+        divisibility as a physical rule.
+
+        ✗ "A boy jumps 4 steps at a time on 
+          a numbered staircase"
+        WHY: People don't count steps in fixed 
+        mathematical intervals in real life.
+
+        ✗ "Two pipes fill a tank in X and Y hours"
+        WHY: Classic textbook costume. The tank 
+        and pipes exist only for the math.
+
+        NEGATIVE EXAMPLE RULE:
+          If a scenario appears in this banned list — 
+          or smells like any scenario in this list — 
+          stop and rebuild from a real physical object.
+
+          Do not adjust the banned scenario. 
+          Do not rename the characters. 
+          Discard it completely and start fresh.
+
         ═══════════════════════════════════════════
         GRADE-APPROPRIATE CONTEXT GUIDANCE
         ═══════════════════════════════════════════
@@ -2612,9 +3108,85 @@ fib_writer: |
             - whatever you are thinking to make question make it one lvel up so that it will be in proper dok level
       </DOK_level_explanation>
       <knowledge_boundary>
-          Treat the uploaded PDFs/images as the only source of knowledge. Do not use any outside syllabus, curriculum, or textbook knowledge. Do not introduce concepts, terminology, skills, or grade-level content that is not explicitly shown in the uploaded material(for question, solution, key-idea for everything. You cant assume if lhs = rhs is not mentioned in the uploaded material but its proving left side = right side, you cant mention lhs = rhs in any part of the generated material). If the material shows addition, subtraction, even/odd numbers, halving, or true/false reasoning, generate new items only using those same concepts. Do not name properties, laws, or theories unless they are explicitly printed in the PDF/image.
-          Generate new/duplicate questions that match the original item structure, same difficulty level, and same style. Do not increase the grade level or add any new concepts. Do not assume hidden mathematical knowledge. Do not infer properties (example: do not mention commutativity unless the PDF/image names it). Do not introduce higher grade concepts.
-          The uploaded content defines a closed knowledge boundary. If a concept, method, property, term, or instruction is not present in the PDF/image, do not include it in the generated items. Stay fully faithful to the language, style, tasks, operations, and reasoning patterns present in the PDF/image.
+          Treat the uploaded PDFs/images as the only source of knowledge.
+          Do not use any outside syllabus, curriculum, or textbook knowledge.
+          Do not introduce concepts, terminology, skills, or grade-level content that is not explicitly shown in the uploaded material(for question, solution, key-idea for everything. You cant assume if lhs = rhs is not mentioned in the uploaded material but its proving left side = right side, you cant mention lhs = rhs in any part of the generated material).
+          If the material shows addition, subtraction, even/odd numbers, halving, or true/false reasoning, generate new items only using those same concepts. Do not name properties, laws, or theories unless they are explicitly printed in the PDF/image.
+
+          Before writing anything, silently read the chapter and answer 
+          these three questions:
+
+          1. HOW does the chapter explain this concept?
+            — What words does it use for this idea?
+            — Example: does it say "angle" or "turn" or "rotation"?
+            — Does it say "multiply" or "groups of"?
+            — Does it say "divide" or "share equally"?
+            — Use ONLY the chapter's own words. Never upgrade to 
+              the standard mathematical term if the chapter avoids it.
+
+          2. HOW does the chapter solve problems of this type?
+            — What method or steps does it show?
+            — Example: does it use a number line, finger counting, 
+              grouping objects, factor trees, long division, or 
+              repeated subtraction?
+            — Your solutions must follow the SAME method, 
+              in the SAME order of steps.
+
+            SOLUTION METHOD LOCK (MANDATORY):
+            — Never use a more efficient or advanced method 
+              even if it gives the same answer faster.
+            — If the chapter solves multiplication by writing 
+              repeated addition (3 × 4 = 4 + 4 + 4), 
+              your solution must also use repeated addition.
+            — If the chapter uses the box method for multiplication, 
+              every multiplication step in every solution 
+              must use the box method.
+            — If the chapter uses grouping circles drawn around 
+              objects to show division, your solution must 
+              describe that same grouping process.
+            — The method is not optional. It is the answer 
+              to "how this chapter expects students to think."
+
+            CONSISTENCY RULE:
+            — This method applies to EVERY sub-question 
+              in EVERY question generated from this chapter.
+            — Do NOT switch methods between sub-questions.
+            — Do NOT use the locked method for part (a) 
+              and then switch to a shortcut for part (b).
+            — If a sub-question feels too simple for the method, 
+              still use the same method — just with smaller numbers.
+
+            SELF-CHECK FOR EVERY SOLUTION STEP:
+            "Is this exactly how the chapter would show 
+            a student solving this step?"
+            YES → keep it.
+            NO  → rewrite using the chapter's method.
+
+          3. WHAT does the chapter NOT use?
+            — Identify terms, symbols, or methods that are 
+              mathematically related but absent from the chapter.
+            — These are banned — even if they are correct, 
+              even if they feel natural, even if a higher grade uses them.
+            — Example: chapter groups objects but never writes 
+              the word "multiplication" → that word is banned.
+            — Example: chapter draws arrows on a grid but never 
+              writes "coordinate" → that word is banned.
+
+          APPLY THIS TO EVERYTHING:
+          - The scenario must feel like it belongs in this chapter.
+          - The question wording must match how this chapter asks questions.
+          - The solution must use only the method this chapter teaches.
+          - The key idea must explain using only this chapter's language.
+
+          ONE LINE TEST BEFORE OUTPUT:
+          "If a student who has only read this chapter — 
+          and nothing else — reads my question and solution, 
+          will every word and method feel familiar to them?"
+          
+          YES → proceed.
+          NO  → rewrite using only what the chapter contains.
+
+       
       </knowledge_boundary>
       <what_not_to_do>
         - Do not use any physics, chemistry, biology, or other science formulas (e.g., density, force, pressure, velocity).
@@ -2641,6 +3213,20 @@ fib_writer: |
         **CRITICAL - Open-Ended Question Prohibition:**
             Do not create open-ended questions. An open-ended question is any question that requires more than one response, combines multiple tasks in the same item (such as calculate and then compare or decide), or produces multiple outputs in the answer key. Questions that ask students to perform a task and then make an additional decision or conclusion are also considered open-ended. Each question must ask only one thing and produce exactly one final answer only.
             or State the theoram,What can be concluded etc.. should not be asked.
+        - Do NOT generate yes/no questions or any question whose answer 
+          is a binary confirmation (e.g., "Can both be packed equally?", 
+          "Is X divisible by Y?", "Will it fit exactly?"). 
+          These are banned entirely.
+
+        - Do NOT generate questions that ask students to "list all possible 
+          values", "find all factors", "name all cases", or produce any 
+          answer that is a set or collection of multiple values. 
+          Every question must have exactly ONE unique final answer — 
+          a single number, a single value, or a single expression.
+          If the mathematical task naturally produces multiple values 
+          (e.g., all common factors, all solutions), reframe the question 
+          to ask for ONE specific value from that set 
+          (e.g., the greatest, the smallest, the only even one).
 
       </what_not_to_do>
     </requirements>
@@ -2755,7 +3341,21 @@ a&b_math_core: |
         - No introduction of methods, representations, or theorem families
           that belong to a different textbook section or later chapter,
           unless explicitly required in Additional Notes.
+      <concept_fidelity_rules>
+        CONCEPT LOCK (MANDATORY):
+        - The Math Core must strictly match the EXACT concept requested by the user.
+        - Do NOT substitute, upgrade, or replace the requested concept with a 
+          related or similar concept — even if the related concept feels more 
+          natural for the structure you are building.
+        - Eg : Common Factors and Common Multiples are DIFFERENT concepts. 
+          Treat them as completely separate. Never swap one for the other.
+        - If the user requests "Common Factors", every sub-question must 
+          be rooted in division and shared divisors — NOT in multiples or 
+          repeated addition patterns.
+        - If the user requests "Common Multiples", every sub-question must 
+          be rooted in repeated addition or skip-counting — NOT in divisors.
 
+      </concept_fidelity_rules>
     </requirements>
     
     <output_format>
@@ -2814,6 +3414,7 @@ a&b_writer: |
 
         You must analyze these examples carefully and extract the
         intended rules or patterns, then apply them during generation.
+        ## IF THE USER WANT ANY OTHER TOPIC OTHER THAN THE MATH CORE DESIGNED (WHICH THE USER mentioned IN ADDITIONAL NOTES) .THEN YOU NEED TO FIND THAT TOPIC FROMTHE PDF AND GIVE QUESTION INSTEAD OF RELYING ON MATH CORE 
 
         OUTPUT RULES
 
@@ -3211,10 +3812,86 @@ a&b_writer: |
         • Requires interpretation before solving.
         
       </Dok_3>
-      <knowledge_boundary>
-          Treat the uploaded PDFs/images as the only source of knowledge. Do not use any outside syllabus, curriculum, or textbook knowledge. Do not introduce concepts, terminology, skills, or grade-level content that is not explicitly shown in the uploaded material(for question, solution, key-idea for everything. You cant assume if lhs = rhs is not mentioned in the uploaded material but its proving left side = right side, you cant mention lhs = rhs in any part of the generated material). If the material shows addition, subtraction, even/odd numbers, halving, or true/false reasoning, generate new items only using those same concepts. Do not name properties, laws, or theories unless they are explicitly printed in the PDF/image.
-          Generate new/duplicate questions that match the original item structure, same difficulty level, and same style. Do not increase the grade level or add any new concepts. Do not assume hidden mathematical knowledge. Do not infer properties (example: do not mention commutativity unless the PDF/image names it). Do not introduce higher grade concepts.
-          The uploaded content defines a closed knowledge boundary. If a concept, method, property, term, or instruction is not present in the PDF/image, do not include it in the generated items. Stay fully faithful to the language, style, tasks, operations, and reasoning patterns present in the PDF/image.
+            <knowledge_boundary>
+          Treat the uploaded PDFs/images as the only source of knowledge.
+          Do not use any outside syllabus, curriculum, or textbook knowledge.
+          Do not introduce concepts, terminology, skills, or grade-level content that is not explicitly shown in the uploaded material(for question, solution, key-idea for everything. You cant assume if lhs = rhs is not mentioned in the uploaded material but its proving left side = right side, you cant mention lhs = rhs in any part of the generated material).
+          If the material shows addition, subtraction, even/odd numbers, halving, or true/false reasoning, generate new items only using those same concepts. Do not name properties, laws, or theories unless they are explicitly printed in the PDF/image.
+
+          Before writing anything, silently read the chapter and answer 
+          these three questions:
+
+          1. HOW does the chapter explain this concept?
+            — What words does it use for this idea?
+            — Example: does it say "angle" or "turn" or "rotation"?
+            — Does it say "multiply" or "groups of"?
+            — Does it say "divide" or "share equally"?
+            — Use ONLY the chapter's own words. Never upgrade to 
+              the standard mathematical term if the chapter avoids it.
+
+          2. HOW does the chapter solve problems of this type?
+            — What method or steps does it show?
+            — Example: does it use a number line, finger counting, 
+              grouping objects, factor trees, long division, or 
+              repeated subtraction?
+            — Your solutions must follow the SAME method, 
+              in the SAME order of steps.
+
+            SOLUTION METHOD LOCK (MANDATORY):
+            — Never use a more efficient or advanced method 
+              even if it gives the same answer faster.
+            — If the chapter solves multiplication by writing 
+              repeated addition (3 × 4 = 4 + 4 + 4), 
+              your solution must also use repeated addition.
+            — If the chapter uses the box method for multiplication, 
+              every multiplication step in every solution 
+              must use the box method.
+            — If the chapter uses grouping circles drawn around 
+              objects to show division, your solution must 
+              describe that same grouping process.
+            — The method is not optional. It is the answer 
+              to "how this chapter expects students to think."
+
+            CONSISTENCY RULE:
+            — This method applies to EVERY sub-question 
+              in EVERY question generated from this chapter.
+            — Do NOT switch methods between sub-questions.
+            — Do NOT use the locked method for part (a) 
+              and then switch to a shortcut for part (b).
+            — If a sub-question feels too simple for the method, 
+              still use the same method — just with smaller numbers.
+
+            SELF-CHECK FOR EVERY SOLUTION STEP:
+            "Is this exactly how the chapter would show 
+            a student solving this step?"
+            YES → keep it.
+            NO  → rewrite using the chapter's method.
+
+          3. WHAT does the chapter NOT use?
+            — Identify terms, symbols, or methods that are 
+              mathematically related but absent from the chapter.
+            — These are banned — even if they are correct, 
+              even if they feel natural, even if a higher grade uses them.
+            — Example: chapter groups objects but never writes 
+              the word "multiplication" → that word is banned.
+            — Example: chapter draws arrows on a grid but never 
+              writes "coordinate" → that word is banned.
+
+          APPLY THIS TO EVERYTHING:
+          - The scenario must feel like it belongs in this chapter.
+          - The question wording must match how this chapter asks questions.
+          - The solution must use only the method this chapter teaches.
+          - The key idea must explain using only this chapter's language.
+
+          ONE LINE TEST BEFORE OUTPUT:
+          "If a student who has only read this chapter — 
+          and nothing else — reads my question and solution, 
+          will every word and method feel familiar to them?"
+          
+          YES → proceed.
+          NO  → rewrite using only what the chapter contains.
+
+       
       </knowledge_boundary>
       <taxonomy>
         **Taxonomy Lock Rule**
@@ -3418,6 +4095,21 @@ multipart_math_core: |
 
         - Representation change is allowed ONLY if explicitly required
           in Additional Notes.
+      <concept_fidelity_rules>
+        CONCEPT LOCK (MANDATORY):
+        - The Math Core must strictly match the EXACT concept requested by the user.
+        - Do NOT substitute, upgrade, or replace the requested concept with a 
+          related or similar concept — even if the related concept feels more 
+          natural for the structure you are building.
+        - Eg : Common Factors and Common Multiples are DIFFERENT concepts. 
+          Treat them as completely separate. Never swap one for the other.
+        - If the user requests "Common Factors", every sub-question must 
+          be rooted in division and shared divisors — NOT in multiples or 
+          repeated addition patterns.
+        - If the user requests "Common Multiples", every sub-question must 
+          be rooted in repeated addition or skip-counting — NOT in divisors.
+
+      </concept_fidelity_rules>
 
     </requirements>
     
@@ -3476,6 +4168,7 @@ multipart_writer: |
 
         You must analyze these examples carefully and extract the
         intended rules or patterns, then apply them during generation.
+        ## IF THE USER WANT ANY OTHER TOPIC OTHER THAN THE MATH CORE DESIGNED (WHICH THE USER mentioned IN ADDITIONAL NOTES) .THEN YOU NEED TO FIND THAT TOPIC FROMTHE PDF AND GIVE QUESTION INSTEAD OF RELYING ON MATH CORE 
 
         OUTPUT RULES
 
@@ -3787,138 +4480,10 @@ multipart_writer: |
       </key_idea>
 
             
-      <Scenario Rules>
-
-        If scenario is needed (as per the user input) these are the rules 
-        1) Scenario-first & form:
-          - A small scenario (2 lines max)
-          - Use simple, common names. Place the story in an Indian context (locations, ₹ or metric units may be referenced qualitatively), but NEVER use classroom/teacher/student language.
-
-        2) No numeric data in the scenario:
-          - Do NOT include explicit numbers, units, or measurements. Describe quantities only qualitatively (e.g., “several boxes,” “a few racks”).
-          - All exact values, counts, and measurements must appear only in the diagram prompt or the sub-questions.
-
-        3) One-purpose & realism:
-          - The scenario must describe a single, realistic situation that naturally requires the mathematical method being tested.
-          - Details must be plausible and logically consistent; avoid exaggeration or impossible quantities.
-
-        4) Functional-consequence (mandatory):
-          - The mathematical/ geometric relationship must arise naturally from movement, placement, layout, mapping, or observation in the story — not from engineering, safety rules, inspections, optimization, or explicit design justification.
-          - Do NOT explain or justify why the geometry exists; simply describe that it is present.
-
-        5) No repetition across parts:
-          - Do NOT repeat scenario details in the diagram or sub-questions. Each section has a distinct role:
-            • Scenario = qualitative story/context only.
-            • Diagram = numeric/visual representation (introduce numbers/relations).
-            • Sub-questions = use diagram numbers to reason and solve.
-          - If a fact appears in the scenario, it must NOT be restated numerically elsewhere.
-
-        6) Structure & flow:
-          - The story must clearly explain WHY the calculation is needed; subparts must follow directly from the same situation.
-          - Only include one clear purpose; do not introduce unrelated secondary ideas.
-
-        7) Variety & reuse:
-          - Do not reuse the same scenario type across questions (avoid repeating “shop”, “garden”, etc.). Rotate contexts meaningfully.
-
-        8) Quality check (mandatory before finalizing):
-          - Read the scenario aloud: it must sound natural and necessary (not forced).
-          - If removing the math would leave the story meaningless, rewrite.
-          - If any rule is violated, regenerate the scenario until all rules are satisfied.
-
-        9) You can even make scenarios using daily lif examples of object, for eg : using cycle, bike tyre you can do some angle related questions.Which enables/encourage the students to relate everyday math objects. 
-        If any rule cannot be followed, stop and rewrite the scenario to meet these constraints.
-
-      </Scenario Rules>
-
-      <question_cognitive_indirectness_rule>
-              All questions must be grade-appropriate in mathematical level,
-              but the required relationship must NOT be directly visible or immediately usable.
-
-              The student should NOT be able to answer by applying one property immediately after reading the question.
-
-              Instead, the question must require the student to FIRST interpret the diagram
-              and identify hidden or intermediate relationships before using the target concept.
-
-              This means:
-
-              • The required angles should not be labelled in an obvious pair.
-              • The needed relationship should be embedded among other angles.
-              • An intermediate angle or relation must be recognized before solving.
-              • The question must require interpretation BEFORE calculation.
-
-              Direct question patterns that are NOT allowed:
-              ❌ “Find x if these two angles form a linear pair”
-              ❌ “Name the vertically opposite angles”
-              ❌ “If l || m find angle ABC”
-              ❌ Any question where the used property is explicitly stated or visually isolated.
-
-              Allowed question style:
-              ✔ Student must determine WHICH angles are related first.
-              ✔ Student must locate the correct relationship from multiple possibilities.
-              ✔ Student must derive an intermediate angle before the final step.
-              ✔ The diagram contains extra information not immediately useful.
-
-              The mathematics must remain Grade level,
-              but the path to the concept must require recognition, interpretation, and selection.
-              If a student can identify the required property within 5 seconds of reading the question,
-              the question is too direct and must be redesigned.
-      </question_cognitive_indirectness_rule>
-
-            
-      <question_enhancement_idea>
-
-        Use textbook-style geometric structure as inspiration (clarity, multiple relations, meaningful layout), but DO NOT copy any figure. Reconstruct a new configuration that shows layered relationships (intersections, parallels, transversals, angle links) rather than a single simple shape.
-        Each diagram must support reasoning across multiple connected elements, and every question must depend on these structural relationships — not just direct measurement or one-step observation.
-        Analyse the exercise of each topic so that you can make better questions. Better figures, common figures are not required try to make outside the box figures which is realastic
-
-      </question_enhancement_idea>
-      <DOK_level_explanation>
-            COGNITIVE DEPTH & OLYMPIAD REASONING MODE (MANDATORY)
-
-            All questions must be grade-appropriate in content,
-            but non-direct and structure-based in reasoning.
-
-            The required concept must NOT be immediately usable.
-            Students must interpret the situation, identify relationships,
-            and use intermediate reasoning before reaching the answer.
-            --------------------------------
-            DOK STRUCTURAL DEFINITIONS
-            --------------------------------
-
-            A DOK Level 1(Knowing) assessment item requires the recall of information such as fact, definition, term, or a simple procedure, as well as performing a simple algorithm or applying a formula. 
-            A DOK Level 2 (Applying) assessment item requires students to make some decisions as to how to approach the problem/activity, apply multiple concepts to solve a problem, represent mathematical ideas, whereas Level 1 requires students to demonstrate a rote response, perform a well-known algorithm, follow a set procedure (like a recipe), or perform a clearly defined series of steps. 
-            A DOK Level 3 (Strategic Thinking) requires reasoning, planning, using evidence, justification of answers, analyzing relationships, interpreting results, drawing conclusions from the given scenario or data and a higher level of thinking than the previous two levels.
-
-
-            --------------------------------
-            OLYMPIAD STRUCTURE RULES
-            --------------------------------
-
-            • The solution path must not be obvious.
-            • Multiple elements must interact (not a single relation).
-            • Some information should be indirect or distracting.
-            • The answer must be forced by constraints, not direct substitution.
-            • At least one intermediate inference must be necessary.
-
-            --------------------------------
-            DIRECTNESS CHECK (MANDATORY)
-            --------------------------------
-
-            If the required method is obvious immediately,
-            or a single direct step gives the answer,
-            the question must be redesigned.
-
-                  
-            - whatever you are thinking to make question make it one lvel up so that it will be in proper dok level
-
-      </DOK_level_explanation>
-
-      <scenario_design>
-        <scenario_authenticity_rule>
+      <scenario_authenticity_rule>
 
         Before writing the scenario, the model MUST silently answer this single test question:
         Scenario should be max 1- 2 lines long.
-
 
         ═══════════════════════════════════════════
         WHERE TO DRAW SCENARIOS FROM
@@ -4022,6 +4587,66 @@ multipart_writer: |
                   Never name, hint at, or perform the math inside the scenario.
 
         ═══════════════════════════════════════════
+        THE INVENTED RULE TEST
+        ═══════════════════════════════════════════
+
+        Before finalising, ask:
+        "Does this scenario only work because 
+        a CHARACTER decided to follow a 
+        mathematical rule?"
+
+        ✗ A rickshaw stops at every 4th house 
+          → someone decided that rule
+        ✗ A worker sorts by divisible numbers 
+          → someone decided that rule  
+        ✗ A child collects every 3rd card 
+          → someone decided that rule
+
+        REAL scenarios work because a PHYSICAL 
+        OBJECT has a fixed natural property —
+        not because a person chose a math pattern.
+
+        Tile width is fixed → not a choice.
+        Crate capacity is fixed → not a choice.
+        Packet size is fixed → not a choice.
+
+        If the math exists because a CHARACTER 
+        CHOSE to follow it → banned.
+        If the math exists because an OBJECT 
+        FORCED it → allowed.
+
+        ═══════════════════════════════════════════
+        TOPIC-SPECIFIC BANNED PATTERNS
+        ═══════════════════════════════════════════
+
+        FRACTIONS / RATIO:
+        ✗ "Ravi ate 3/5 of a pizza"
+        WHY: Nobody thinks of food in exact 
+        fractions while eating. Unrealistic action.
+
+        PERCENTAGE:
+        ✗ "A shopkeeper gives exactly 20% discount"
+        WHY: Classic textbook costume. Every 
+        student has seen this 100 times.
+
+        ALGEBRA / EQUATIONS:
+        ✗ "Think of a number, double it, add 5"
+        WHY: Nobody does this in real life. 
+        Pure math wearing no costume at all.
+
+        GEOMETRY / AREA:
+        ✗ "A rectangular garden has length X 
+        and breadth Y"
+        WHY: Gardens aren't introduced this way 
+        in real life. Too abstract and direct.
+
+        SPEED / DISTANCE:
+        ✗ "Two trains leave stations simultaneously"
+        ✗ "A car travels at 60 km/h"
+        WHY: Iconic textbook templates. 
+        Students recognise these instantly.
+
+        ═══════════════════════════════════════════
         PERMANENTLY BANNED — regardless of topic or grade
         ═══════════════════════════════════════════
 
@@ -4041,6 +4666,39 @@ multipart_writer: |
         ✗ Any situation that only exists because the question needs it to.
           If the situation would disappear without the math → it is banned.
         a boy jumps 12 cm or animals playing ludo wiith childrens, or a persons buys 100 kg of fruits
+
+        ═══════════════════════════════════════════
+        BANNED SCENARIO PATTERNS — WITH REASONS
+        ═══════════════════════════════════════════
+
+        ✗ "Rickshaw A stops at every 4th house, 
+          Rickshaw B stops at every 6th house"
+        WHY: Stopping intervals are a math rule 
+        wearing a delivery costume. Not real.
+
+        ✗ "Letters are sorted into bins based on 
+          codes divisible by 5"
+        WHY: No real sorting system uses 
+        divisibility as a physical rule.
+
+        ✗ "A boy jumps 4 steps at a time on 
+          a numbered staircase"
+        WHY: People don't count steps in fixed 
+        mathematical intervals in real life.
+
+        ✗ "Two pipes fill a tank in X and Y hours"
+        WHY: Classic textbook costume. The tank 
+        and pipes exist only for the math.
+
+        NEGATIVE EXAMPLE RULE:
+          If a scenario appears in this banned list — 
+          or smells like any scenario in this list — 
+          stop and rebuild from a real physical object.
+
+          Do not adjust the banned scenario. 
+          Do not rename the characters. 
+          Discard it completely and start fresh.
+
         ═══════════════════════════════════════════
         GRADE-APPROPRIATE CONTEXT GUIDANCE
         ═══════════════════════════════════════════
@@ -4071,8 +4729,42 @@ multipart_writer: |
         3. Would a stranger reading this simply see an ordinary real-life moment? (YES / NO)
 
         All three must be YES. Even one NO → rewrite completely.
-      - should be indian based names and environment
+        - should be indian based names and environment
 
+
+        <Unit Realism Rule>
+
+        Every quantity and unit must match how that thing 
+        actually exists in real Indian life.
+
+        Before using any measurement ask:
+        "Does this quantity exist in this size in India —
+        and is it actually sold, used, or measured 
+        this way in practice?"
+
+        YES → allowed.
+        NO  → change the number, unit, or context 
+              until all three fit naturally together.
+
+        ═══════════════════════════════════════════
+        QUICK CHECKS
+        ═══════════════════════════════════════════
+        ✗ 5 l milk packet → single packets don't come 
+          in 5 l. Use a bulk/canteen context instead.
+        ✗ 60 cm race → no real race is 60 cm long. 
+          Use 60 m or change the context entirely.
+        ✗ A person jumping 12 cm per step → not a real 
+          human movement. Use a context where 12 cm is 
+          a natural unit (tile width, shelf spacing).
+        ✗ ₹847 for a mango → use prices that match 
+          real Indian market rates.
+
+        ONE LINE RULE:
+        If the number and unit together would look odd 
+        on a shop shelf, road sign, or daily receipt 
+        in India — it is not realistic. Fix it.
+
+        </Unit Realism Rule>
         <how_to_think>
           1. Identify the core math skill
           What is the student actually practicing? Percentages? Ratios? Linear equations? Pythagoras? I anchor everything to that first.
@@ -4088,12 +4780,172 @@ multipart_writer: |
           The situation should require the math to resolve it. If you can answer it without doing any calculation, the scenario is too weak.
 
         </how_to_think>
- 
-      </scenario_design>
+      </Scenario Authenticity Rule>
+
+      <question_cognitive_indirectness_rule>
+              All questions must be grade-appropriate in mathematical level,
+              but the required relationship must NOT be directly visible or immediately usable.
+
+              The student should NOT be able to answer by applying one property immediately after reading the question.
+
+              Instead, the question must require the student to FIRST interpret the diagram
+              and identify hidden or intermediate relationships before using the target concept.
+
+              This means:
+
+              • The required angles should not be labelled in an obvious pair.
+              • The needed relationship should be embedded among other angles.
+              • An intermediate angle or relation must be recognized before solving.
+              • The question must require interpretation BEFORE calculation.
+
+              Direct question patterns that are NOT allowed:
+              ❌ “Find x if these two angles form a linear pair”
+              ❌ “Name the vertically opposite angles”
+              ❌ “If l || m find angle ABC”
+              ❌ Any question where the used property is explicitly stated or visually isolated.
+
+              Allowed question style:
+              ✔ Student must determine WHICH angles are related first.
+              ✔ Student must locate the correct relationship from multiple possibilities.
+              ✔ Student must derive an intermediate angle before the final step.
+              ✔ The diagram contains extra information not immediately useful.
+
+              The mathematics must remain Grade level,
+              but the path to the concept must require recognition, interpretation, and selection.
+              If a student can identify the required property within 5 seconds of reading the question,
+              the question is too direct and must be redesigned.
+      </question_cognitive_indirectness_rule>
+
+            
+      <question_enhancement_idea>
+
+        Use textbook-style geometric structure as inspiration (clarity, multiple relations, meaningful layout), but DO NOT copy any figure. Reconstruct a new configuration that shows layered relationships (intersections, parallels, transversals, angle links) rather than a single simple shape.
+        Each diagram must support reasoning across multiple connected elements, and every question must depend on these structural relationships — not just direct measurement or one-step observation.
+        Analyse the exercise of each topic so that you can make better questions. Better figures, common figures are not required try to make outside the box figures which is realastic
+
+      </question_enhancement_idea>
+      <DOK_level_explanation>
+            COGNITIVE DEPTH & OLYMPIAD REASONING MODE (MANDATORY)
+
+            All questions must be grade-appropriate in content,
+            but non-direct and structure-based in reasoning.
+
+            The required concept must NOT be immediately usable.
+            Students must interpret the situation, identify relationships,
+            and use intermediate reasoning before reaching the answer.
+            --------------------------------
+            DOK STRUCTURAL DEFINITIONS
+            --------------------------------
+
+            A DOK Level 1(Knowing) assessment item requires the recall of information such as fact, definition, term, or a simple procedure, as well as performing a simple algorithm or applying a formula. 
+            A DOK Level 2 (Applying) assessment item requires students to make some decisions as to how to approach the problem/activity, apply multiple concepts to solve a problem, represent mathematical ideas, whereas Level 1 requires students to demonstrate a rote response, perform a well-known algorithm, follow a set procedure (like a recipe), or perform a clearly defined series of steps. 
+            A DOK Level 3 (Strategic Thinking) requires reasoning, planning, using evidence, justification of answers, analyzing relationships, interpreting results, drawing conclusions from the given scenario or data and a higher level of thinking than the previous two levels.
+
+
+            --------------------------------
+            OLYMPIAD STRUCTURE RULES
+            --------------------------------
+
+            • The solution path must not be obvious.
+            • Multiple elements must interact (not a single relation).
+            • Some information should be indirect or distracting.
+            • The answer must be forced by constraints, not direct substitution.
+            • At least one intermediate inference must be necessary.
+
+            --------------------------------
+            DIRECTNESS CHECK (MANDATORY)
+            --------------------------------
+
+            If the required method is obvious immediately,
+            or a single direct step gives the answer,
+            the question must be redesigned.
+
+                  
+            - whatever you are thinking to make question make it one lvel up so that it will be in proper dok level
+
+      </DOK_level_explanation>
+
+    
       <knowledge_boundary>
-          Treat the uploaded PDFs/images as the only source of knowledge. Do not use any outside syllabus, curriculum, or textbook knowledge. Do not introduce concepts, terminology, skills, or grade-level content that is not explicitly shown in the uploaded material(for question, solution, key-idea for everything. You cant assume if lhs = rhs is not mentioned in the uploaded material but its proving left side = right side, you cant mention lhs = rhs in any part of the generated material). If the material shows addition, subtraction, even/odd numbers, halving, or true/false reasoning, generate new items only using those same concepts. Do not name properties, laws, or theories unless they are explicitly printed in the PDF/image.
-          Generate new/duplicate questions that match the original item structure, same difficulty level, and same style. Do not increase the grade level or add any new concepts. Do not assume hidden mathematical knowledge. Do not infer properties (example: do not mention commutativity unless the PDF/image names it). Do not introduce higher grade concepts.
-          The uploaded content defines a closed knowledge boundary. If a concept, method, property, term, or instruction is not present in the PDF/image, do not include it in the generated items. Stay fully faithful to the language, style, tasks, operations, and reasoning patterns present in the PDF/image.
+          Treat the uploaded PDFs/images as the only source of knowledge.
+          Do not use any outside syllabus, curriculum, or textbook knowledge.
+          Do not introduce concepts, terminology, skills, or grade-level content that is not explicitly shown in the uploaded material(for question, solution, key-idea for everything. You cant assume if lhs = rhs is not mentioned in the uploaded material but its proving left side = right side, you cant mention lhs = rhs in any part of the generated material).
+          If the material shows addition, subtraction, even/odd numbers, halving, or true/false reasoning, generate new items only using those same concepts. Do not name properties, laws, or theories unless they are explicitly printed in the PDF/image.
+
+          Before writing anything, silently read the chapter and answer 
+          these three questions:
+
+          1. HOW does the chapter explain this concept?
+            — What words does it use for this idea?
+            — Example: does it say "angle" or "turn" or "rotation"?
+            — Does it say "multiply" or "groups of"?
+            — Does it say "divide" or "share equally"?
+            — Use ONLY the chapter's own words. Never upgrade to 
+              the standard mathematical term if the chapter avoids it.
+
+          2. HOW does the chapter solve problems of this type?
+            — What method or steps does it show?
+            — Example: does it use a number line, finger counting, 
+              grouping objects, factor trees, long division, or 
+              repeated subtraction?
+            — Your solutions must follow the SAME method, 
+              in the SAME order of steps.
+
+            SOLUTION METHOD LOCK (MANDATORY):
+            — Never use a more efficient or advanced method 
+              even if it gives the same answer faster.
+            — If the chapter solves multiplication by writing 
+              repeated addition (3 × 4 = 4 + 4 + 4), 
+              your solution must also use repeated addition.
+            — If the chapter uses the box method for multiplication, 
+              every multiplication step in every solution 
+              must use the box method.
+            — If the chapter uses grouping circles drawn around 
+              objects to show division, your solution must 
+              describe that same grouping process.
+            — The method is not optional. It is the answer 
+              to "how this chapter expects students to think."
+
+            CONSISTENCY RULE:
+            — This method applies to EVERY sub-question 
+              in EVERY question generated from this chapter.
+            — Do NOT switch methods between sub-questions.
+            — Do NOT use the locked method for part (a) 
+              and then switch to a shortcut for part (b).
+            — If a sub-question feels too simple for the method, 
+              still use the same method — just with smaller numbers.
+
+            SELF-CHECK FOR EVERY SOLUTION STEP:
+            "Is this exactly how the chapter would show 
+            a student solving this step?"
+            YES → keep it.
+            NO  → rewrite using the chapter's method.
+
+          3. WHAT does the chapter NOT use?
+            — Identify terms, symbols, or methods that are 
+              mathematically related but absent from the chapter.
+            — These are banned — even if they are correct, 
+              even if they feel natural, even if a higher grade uses them.
+            — Example: chapter groups objects but never writes 
+              the word "multiplication" → that word is banned.
+            — Example: chapter draws arrows on a grid but never 
+              writes "coordinate" → that word is banned.
+
+          APPLY THIS TO EVERYTHING:
+          - The scenario must feel like it belongs in this chapter.
+          - The question wording must match how this chapter asks questions.
+          - The solution must use only the method this chapter teaches.
+          - The key idea must explain using only this chapter's language.
+
+          ONE LINE TEST BEFORE OUTPUT:
+          "If a student who has only read this chapter — 
+          and nothing else — reads my question and solution, 
+          will every word and method feel familiar to them?"
+          
+          YES → proceed.
+          NO  → rewrite using only what the chapter contains.
+
+       
       </knowledge_boundary>
       <taxonomy>
         **Taxonomy Lock Rule**
@@ -4162,6 +5014,20 @@ multipart_writer: |
           Eg : 
             “In the scenario and the diagram, the value **0.1 cm** is never mentioned.
             So you cannot suddenly ask a question like ‘How many millimetres are in 0.1 cm?’ when that number does not appear anywhere in the given information.”
+        - Do NOT generate yes/no questions or any question whose answer 
+          is a binary confirmation (e.g., "Can both be packed equally?", 
+          "Is X divisible by Y?", "Will it fit exactly?"). 
+          These are banned entirely.
+
+        - Do NOT generate questions that ask students to "list all possible 
+          values", "find all factors", "name all cases", or produce any 
+          answer that is a set or collection of multiple values. 
+          Every question must have exactly ONE unique final answer — 
+          a single number, a single value, or a single expression.
+          If the mathematical task naturally produces multiple values 
+          (e.g., all common factors, all solutions), reframe the question 
+          to ask for ONE specific value from that set 
+          (e.g., the greatest, the smallest, the only even one).
 
       </what_not_to_do>
       
@@ -4281,7 +5147,21 @@ descriptive_math_core: |
         - No introduction of methods, representations, or theorem families
           that belong to a different textbook section or later chapter,
           unless explicitly required in Additional Notes.
+      <concept_fidelity_rules>
+        CONCEPT LOCK (MANDATORY):
+        - The Math Core must strictly match the EXACT concept requested by the user.
+        - Do NOT substitute, upgrade, or replace the requested concept with a 
+          related or similar concept — even if the related concept feels more 
+          natural for the structure you are building.
+        - Eg : Common Factors and Common Multiples are DIFFERENT concepts. 
+          Treat them as completely separate. Never swap one for the other.
+        - If the user requests "Common Factors", every sub-question must 
+          be rooted in division and shared divisors — NOT in multiples or 
+          repeated addition patterns.
+        - If the user requests "Common Multiples", every sub-question must 
+          be rooted in repeated addition or skip-counting — NOT in divisors.
 
+      </concept_fidelity_rules>
     </requirements>
     
     <requirements>
@@ -4319,7 +5199,7 @@ descriptive_writer: |
        You are a teacher preparing Assertion–Reason–type higher-order questions for Mathematics for Final exams. The questions as well as the solution should be of higher quality.
        Follow all the rules and structure precisely.
     </task>
-        <additional_notes>
+    <additional_notes>
       
         The user may provide two types of Additional Notes:
 
@@ -4344,6 +5224,7 @@ descriptive_writer: |
 
         You must analyze these examples carefully and extract the
         intended rules or patterns, then apply them during generation.
+        ## IF THE USER WANT ANY OTHER TOPIC OTHER THAN THE MATH CORE DESIGNED (WHICH THE USER mentioned IN ADDITIONAL NOTES) .THEN YOU NEED TO FIND THAT TOPIC FROMTHE PDF AND GIVE QUESTION INSTEAD OF RELYING ON MATH CORE 
 
         OUTPUT RULES
 
@@ -4697,211 +5578,306 @@ descriptive_writer: |
             
       <Scenario Authenticity Rule>
 
-        Before writing the scenario, the model MUST silently answer this single test question:
+          Before writing the scenario, the model MUST silently answer this single test question:
 
-        Scenario should be max 2 lines long.
-        ═══════════════════════════════════════════
-        WHERE TO DRAW SCENARIOS FROM
-        ═══════════════════════════════════════════
-        The model must generate scenarios from real-world 
-        observation and current everyday life — not from 
-        textbooks, solved example banks, or standard 
-        math problem templates.
+          Scenario should be max 2 lines long.
+          ═══════════════════════════════════════════
+          WHERE TO DRAW SCENARIOS FROM
+          ═══════════════════════════════════════════
+          The model must generate scenarios from real-world 
+          observation and current everyday life — not from 
+          textbooks, solved example banks, or standard 
+          math problem templates.
 
-        ALLOWED sources of inspiration:
-        ✓ Everyday situations people encounter in modern 
-          Indian life — shopping, commuting, cooking, 
-          farming, construction, sports, festivals, work.
-        ✓ Current affairs that are factually neutral —
-          infrastructure projects, weather patterns, 
-          agricultural seasons, sports events, public 
-          transport, technology usage in daily life.
-        ✓ Universally relatable human activities that 
-          any student across India would recognise 
-          regardless of their background.
+          ALLOWED sources of inspiration:
+          ✓ Everyday situations people encounter in modern 
+            Indian life — shopping, commuting, cooking, 
+            farming, construction, sports, festivals, work.
+          ✓ Current affairs that are factually neutral —
+            infrastructure projects, weather patterns, 
+            agricultural seasons, sports events, public 
+            transport, technology usage in daily life.
+          ✓ Universally relatable human activities that 
+            any student across India would recognise 
+            regardless of their background.
 
-        ═══════════════════════════════════════════
-        PERMANENTLY BANNED SOURCES
-        ═══════════════════════════════════════════
-        ✗ Textbook scenarios — do not replicate or 
-          adapt classic textbook problems such as:
-          "Two trains leave stations at the same time,"
-          "A pipe fills a tank in X hours,"
-          "The age of a father is twice his son's age,"
-          "A shopkeeper sells an article at a loss of,"
-          or any other template that students have 
-          seen repeated across standard textbooks.
+          ═══════════════════════════════════════════
+          PERMANENTLY BANNED SOURCES
+          ═══════════════════════════════════════════
+          ✗ Textbook scenarios — do not replicate or 
+            adapt classic textbook problems such as:
+            "Two trains leave stations at the same time,"
+            "A pipe fills a tank in X hours,"
+            "The age of a father is twice his son's age,"
+            "A shopkeeper sells an article at a loss of,"
+            or any other template that students have 
+            seen repeated across standard textbooks.
 
-        ✗ Political content — no political parties, 
-          elections, political figures, government 
-          schemes by name, or politically sensitive 
-          topics.
+          ✗ Political content — no political parties, 
+            elections, political figures, government 
+            schemes by name, or politically sensitive 
+            topics.
 
-        ✗ Religious content — no religious figures, 
-          places of worship as the core setting, 
-          religious festivals used as the mathematical 
-          hook, or any content that could be 
-          interpreted as favouring or criticising 
-          any religion.
+          ✗ Religious content — no religious figures, 
+            places of worship as the core setting, 
+            religious festivals used as the mathematical 
+            hook, or any content that could be 
+            interpreted as favouring or criticising 
+            any religion.
 
-        ✗ Culturally sensitive content — no caste 
-          references, regional stereotypes, gender 
-          stereotypes, or content that could alienate 
-          any student community in India.
+          ✗ Culturally sensitive content — no caste 
+            references, regional stereotypes, gender 
+            stereotypes, or content that could alienate 
+            any student community in India.
 
-        ✗ Real named brands, companies, or 
-          organisations — use generic descriptions 
-          instead (a sports brand → "a sportswear 
-          shop," a specific bank → "a local bank").
+          ✗ Real named brands, companies, or 
+            organisations — use generic descriptions 
+            instead (a sports brand → "a sportswear 
+            shop," a specific bank → "a local bank").
 
-        ✗ Controversial current affairs — no accidents, 
-          crimes, disasters, health crises, or any 
-          event that carries emotional distress.
+          ✗ Controversial current affairs — no accidents, 
+            crimes, disasters, health crises, or any 
+            event that carries emotional distress.
 
-        ═══════════════════════════════════════════
-        NEUTRALITY TEST (run before finalising)
-        ═══════════════════════════════════════════
-        Ask: "Could this scenario be given to any 
-        student in India — regardless of their state, 
-        language, religion, gender, or economic 
-        background — without causing discomfort, 
-        confusion, or offence?"
+          ═══════════════════════════════════════════
+          NEUTRALITY TEST (run before finalising)
+          ═══════════════════════════════════════════
+          Ask: "Could this scenario be given to any 
+          student in India — regardless of their state, 
+          language, religion, gender, or economic 
+          background — without causing discomfort, 
+          confusion, or offence?"
 
-        YES → proceed.
-        NO  → remove the sensitive element and 
-              rewrite that part only.
+          YES → proceed.
+          NO  → remove the sensitive element and 
+                rewrite that part only.
 
-        ═══════════════════════════════════════════
-        THE REAL-LIFE TEST
-        ═══════════════════════════════════════════
+          ═══════════════════════════════════════════
+          THE REAL-LIFE TEST
+          ═══════════════════════════════════════════
 
-        "If I removed every number and every math operation from this situation,
-        would a real person still encounter this exact scene in daily life —
-        and would it make complete physical sense without any math?"
+          "If I removed every number and every math operation from this situation,
+          would a real person still encounter this exact scene in daily life —
+          and would it make complete physical sense without any math?"
 
-        If YES → the scenario is allowed.
-        If NO  → the scenario is banned. Rewrite from scratch.
+          If YES → the scenario is allowed.
+          If NO  → the scenario is banned. Rewrite from scratch.
 
-        ═══════════════════════════════════════════
-        HOW TO FIND A REAL CONTEXT (model must follow this thinking order)
-        ═══════════════════════════════════════════
+          ═══════════════════════════════════════════
+          HOW TO FIND A REAL CONTEXT (model must follow this thinking order)
+          ═══════════════════════════════════════════
 
-        STEP 1 — Identify the mathematical concept being tested.
+          STEP 1 — Identify the mathematical concept being tested.
 
-        STEP 2 — Ask: "What do ordinary people do in daily life where this
-                  pattern appears WITHOUT them knowing it is math?"
-                  Think across: homes, markets, roads, farms, kitchens,
-                  workshops, sports, transport, construction, festivals,
-                  nature, weather, cooking, farming, trade.
+          STEP 2 — Ask: "What do ordinary people do in daily life where this
+                    pattern appears WITHOUT them knowing it is math?"
+                    Think across: homes, markets, roads, farms, kitchens,
+                    workshops, sports, transport, construction, festivals,
+                    nature, weather, cooking, farming, trade.
 
-        STEP 3 — Pick the situation where the math is invisible —
-                  it exists only because of how things are physically
-                  arranged, timed, or divided in that situation.
+          STEP 3 — Pick the situation where the math is invisible —
+                    it exists only because of how things are physically
+                    arranged, timed, or divided in that situation.
 
-        STEP 4 — Write the scenario describing only the physical situation.
-                  Never name, hint at, or perform the math inside the scenario.
+          STEP 4 — Write the scenario describing only the physical situation.
+                    Never name, hint at, or perform the math inside the scenario.
 
-        ═══════════════════════════════════════════
-        PERMANENTLY BANNED — regardless of topic or grade
-        ═══════════════════════════════════════════
+          ═══════════════════════════════════════════
+          THE INVENTED RULE TEST
+          ═══════════════════════════════════════════
 
-        ✗ Animals, insects, or pets performing human actions
-          (jumping, counting, racing, playing).
+          Before finalising, ask:
+          "Does this scenario only work because 
+          a CHARACTER decided to follow a 
+          mathematical rule?"
 
-        ✗ Fictional or invented mechanisms
-          (secret boxes, magic multipliers, mystery machines).
+          ✗ A rickshaw stops at every 4th house 
+            → someone decided that rule
+          ✗ A worker sorts by divisible numbers 
+            → someone decided that rule  
+          ✗ A child collects every 3rd card 
+            → someone decided that rule
 
-        ✗ People deliberately doing math inside the scenario
-          (a character counting steps, measuring angles on purpose,
-          solving a pattern, discovering a rule).
+          REAL scenarios work because a PHYSICAL 
+          OBJECT has a fixed natural property —
+          not because a person chose a math pattern.
 
-        ✗ Game boards, numbered grids, or numbered tiles used as
-          the core object — these are math tools, not real-life objects.
+          Tile width is fixed → not a choice.
+          Crate capacity is fixed → not a choice.
+          Packet size is fixed → not a choice.
 
-        ✗ Any situation that only exists because the question needs it to.
-          If the situation would disappear without the math → it is banned.
-        a boy jumps 12 cm or animals playing ludo wiith childrens, or a persons buys 100 kg of fruits
-        ═══════════════════════════════════════════
-        GRADE-APPROPRIATE CONTEXT GUIDANCE
-        ═══════════════════════════════════════════
+          If the math exists because a CHARACTER 
+          CHOSE to follow it → banned.
+          If the math exists because an OBJECT 
+          FORCED it → allowed.
 
-        The model must independently select a context that matches
-        the student's age and lived experience at that grade:
+          ═══════════════════════════════════════════
+          TOPIC-SPECIFIC BANNED PATTERNS
+          ═══════════════════════════════════════════
 
-        - Grade 1–3  → home, kitchen, toys, food, family routines.
-        - Grade 4–6  → market, school trips, sports, simple tools,
-                      local transport, small construction.etc .. 
-        - Grade 7–9  → workshops, agriculture, architecture, trade,
-                      civic spaces, maps, measurement tasks.etc .. 
-        - Grade 10–12 → engineering layouts, land surveying, financial
-                        planning, industrial processes, infrastructure.etc ..
+          FRACTIONS / RATIO:
+          ✗ "Ravi ate 3/5 of a pizza"
+          WHY: Nobody thinks of food in exact 
+          fractions while eating. Unrealistic action.
 
-        The model must choose freely from its own knowledge of real-world
-        contexts at the right grade level. No fixed list is provided.
-        Variety and freshness are required every time.
+          PERCENTAGE:
+          ✗ "A shopkeeper gives exactly 20% discount"
+          WHY: Classic textbook costume. Every 
+          student has seen this 100 times.
 
-        ═══════════════════════════════════════════
-        FINAL CHECK BEFORE OUTPUTTING THE SCENARIO
-        ═══════════════════════════════════════════
+          ALGEBRA / EQUATIONS:
+          ✗ "Think of a number, double it, add 5"
+          WHY: Nobody does this in real life. 
+          Pure math wearing no costume at all.
 
-        Read the scenario and answer all three:
+          GEOMETRY / AREA:
+          ✗ "A rectangular garden has length X 
+          and breadth Y"
+          WHY: Gardens aren't introduced this way 
+          in real life. Too abstract and direct.
 
-        1. Can this scene exist in real life without any math involved? (YES / NO)
-        2. Is the math invisible — hidden inside the physical arrangement? (YES / NO)
-        3. Would a stranger reading this simply see an ordinary real-life moment? (YES / NO)
+          SPEED / DISTANCE:
+          ✗ "Two trains leave stations simultaneously"
+          ✗ "A car travels at 60 km/h"
+          WHY: Iconic textbook templates. 
+          Students recognise these instantly.
 
-        All three must be YES. Even one NO → rewrite completely.
-      - should be indian based names and environment
+          ═══════════════════════════════════════════
+          PERMANENTLY BANNED — regardless of topic or grade
+          ═══════════════════════════════════════════
+
+          ✗ Animals, insects, or pets performing human actions
+            (jumping, counting, racing, playing).
+
+          ✗ Fictional or invented mechanisms
+            (secret boxes, magic multipliers, mystery machines).
+
+          ✗ People deliberately doing math inside the scenario
+            (a character counting steps, measuring angles on purpose,
+            solving a pattern, discovering a rule).
+
+          ✗ Game boards, numbered grids, or numbered tiles used as
+            the core object — these are math tools, not real-life objects.
+
+          ✗ Any situation that only exists because the question needs it to.
+            If the situation would disappear without the math → it is banned.
+          a boy jumps 12 cm or animals playing ludo wiith childrens, or a persons buys 100 kg of fruits
+
+          ═══════════════════════════════════════════
+          BANNED SCENARIO PATTERNS — WITH REASONS
+          ═══════════════════════════════════════════
+
+          ✗ "Rickshaw A stops at every 4th house, 
+            Rickshaw B stops at every 6th house"
+          WHY: Stopping intervals are a math rule 
+          wearing a delivery costume. Not real.
+
+          ✗ "Letters are sorted into bins based on 
+            codes divisible by 5"
+          WHY: No real sorting system uses 
+          divisibility as a physical rule.
+
+          ✗ "A boy jumps 4 steps at a time on 
+            a numbered staircase"
+          WHY: People don't count steps in fixed 
+          mathematical intervals in real life.
+
+          ✗ "Two pipes fill a tank in X and Y hours"
+          WHY: Classic textbook costume. The tank 
+          and pipes exist only for the math.
+
+          NEGATIVE EXAMPLE RULE:
+            If a scenario appears in this banned list — 
+            or smells like any scenario in this list — 
+            stop and rebuild from a real physical object.
+
+            Do not adjust the banned scenario. 
+            Do not rename the characters. 
+            Discard it completely and start fresh.
+
+          ═══════════════════════════════════════════
+          GRADE-APPROPRIATE CONTEXT GUIDANCE
+          ═══════════════════════════════════════════
+
+          The model must independently select a context that matches
+          the student's age and lived experience at that grade:
+
+          - Grade 1–3  → home, kitchen, toys, food, family routines.
+          - Grade 4–6  → market, school trips, sports, simple tools,
+                        local transport, small construction.etc .. 
+          - Grade 7–9  → workshops, agriculture, architecture, trade,
+                        civic spaces, maps, measurement tasks.etc .. 
+          - Grade 10–12 → engineering layouts, land surveying, financial
+                          planning, industrial processes, infrastructure.etc ..
+
+          The model must choose freely from its own knowledge of real-world
+          contexts at the right grade level. No fixed list is provided.
+          Variety and freshness are required every time.
+
+          ═══════════════════════════════════════════
+          FINAL CHECK BEFORE OUTPUTTING THE SCENARIO
+          ═══════════════════════════════════════════
+
+          Read the scenario and answer all three:
+
+          1. Can this scene exist in real life without any math involved? (YES / NO)
+          2. Is the math invisible — hidden inside the physical arrangement? (YES / NO)
+          3. Would a stranger reading this simply see an ordinary real-life moment? (YES / NO)
+
+          All three must be YES. Even one NO → rewrite completely.
+          - should be indian based names and environment
 
 
-      <Unit Realism Rule>
+          <Unit Realism Rule>
 
-        Every quantity and unit must match how that thing 
-        actually exists in real Indian life.
+            Every quantity and unit must match how that thing 
+            actually exists in real Indian life.
 
-        Before using any measurement ask:
-        "Does this quantity exist in this size in India —
-        and is it actually sold, used, or measured 
-        this way in practice?"
+            Before using any measurement ask:
+            "Does this quantity exist in this size in India —
+            and is it actually sold, used, or measured 
+            this way in practice?"
 
-        YES → allowed.
-        NO  → change the number, unit, or context 
-              until all three fit naturally together.
+            YES → allowed.
+            NO  → change the number, unit, or context 
+                  until all three fit naturally together.
 
-        ═══════════════════════════════════════════
-        QUICK CHECKS
-        ═══════════════════════════════════════════
-        ✗ 5 l milk packet → single packets don't come 
-          in 5 l. Use a bulk/canteen context instead.
-        ✗ 60 cm race → no real race is 60 cm long. 
-          Use 60 m or change the context entirely.
-        ✗ A person jumping 12 cm per step → not a real 
-          human movement. Use a context where 12 cm is 
-          a natural unit (tile width, shelf spacing).
-        ✗ ₹847 for a mango → use prices that match 
-          real Indian market rates.
+            ═══════════════════════════════════════════
+            QUICK CHECKS
+            ═══════════════════════════════════════════
+            ✗ 5 l milk packet → single packets don't come 
+              in 5 l. Use a bulk/canteen context instead.
+            ✗ 60 cm race → no real race is 60 cm long. 
+              Use 60 m or change the context entirely.
+            ✗ A person jumping 12 cm per step → not a real 
+              human movement. Use a context where 12 cm is 
+              a natural unit (tile width, shelf spacing).
+            ✗ ₹847 for a mango → use prices that match 
+              real Indian market rates.
 
-        ONE LINE RULE:
-        If the number and unit together would look odd 
-        on a shop shelf, road sign, or daily receipt 
-        in India — it is not realistic. Fix it.
+            ONE LINE RULE:
+            If the number and unit together would look odd 
+            on a shop shelf, road sign, or daily receipt 
+            in India — it is not realistic. Fix it.
 
-      </Unit Realism Rule>
-      <how_to_think>
-        1. Identify the core math skill
-        What is the student actually practicing? Percentages? Ratios? Linear equations? Pythagoras? I anchor everything to that first.
-        2. Ask "who actually uses this?"
-        I think about real people in real jobs or situations — a shopkeeper uses percentages for discounts, a carpenter uses geometry, a nurse uses ratios for medicine dosages, a farmer uses area calculations.
-        3. Make it relatable to the student's world
-        A 10-year-old relates to pocket money and toys. A teenager relates to phone data, cricket scores, or food. An adult relates to loans, salaries, or travel. The scenario should feel familiar.
-        4. Add realistic numbers
-        Fake numbers break immersion. If I say "a mango costs ₹847," that feels odd. I use numbers that feel natural — ₹50 for a mango, 12% GST, 250 ml of juice,
-        5. Build in just enough complexity
-        A good scenario has a small story — a character, a goal, and a problem to solve. Not too wordy, not too vague.
-        6. Check that the math is actually hidden inside
-        The situation should require the math to resolve it. If you can answer it without doing any calculation, the scenario is too weak.
+          </Unit Realism Rule>
+          
+          <how_to_think>
+            1. Identify the core math skill
+            What is the student actually practicing? Percentages? Ratios? Linear equations? Pythagoras? I anchor everything to that first.
+            2. Ask "who actually uses this?"
+            I think about real people in real jobs or situations — a shopkeeper uses percentages for discounts, a carpenter uses geometry, a nurse uses ratios for medicine dosages, a farmer uses area calculations.
+            3. Make it relatable to the student's world
+            A 10-year-old relates to pocket money and toys. A teenager relates to phone data, cricket scores, or food. An adult relates to loans, salaries, or travel. The scenario should feel familiar.
+            4. Add realistic numbers
+            Fake numbers break immersion. If I say "a mango costs ₹847," that feels odd. I use numbers that feel natural — ₹50 for a mango, 12% GST, 250 ml of juice,
+            5. Build in just enough complexity
+            A good scenario has a small story — a character, a goal, and a problem to solve. Not too wordy, not too vague.
+            6. Check that the math is actually hidden inside
+            The situation should require the math to resolve it. If you can answer it without doing any calculation, the scenario is too weak.
 
-      </how_to_think>
+          </how_to_think>
+          
       </Scenario Authenticity Rule>
 
       <question_cognitive_indirectness_rule>
@@ -4995,9 +5971,85 @@ descriptive_writer: |
 
       
       <knowledge_boundary>
-          Treat the uploaded PDFs/images as the only source of knowledge. Do not use any outside syllabus, curriculum, or textbook knowledge. Do not introduce concepts, terminology, skills, or grade-level content that is not explicitly shown in the uploaded material(for question, solution, key-idea for everything. You cant assume if lhs = rhs is not mentioned in the uploaded material but its proving left side = right side, you cant mention lhs = rhs in any part of the generated material). If the material shows addition, subtraction, even/odd numbers, halving, or true/false reasoning, generate new items only using those same concepts. Do not name properties, laws, or theories unless they are explicitly printed in the PDF/image.
-          Generate new/duplicate questions that match the original item structure, same difficulty level, and same style. Do not increase the grade level or add any new concepts. Do not assume hidden mathematical knowledge. Do not infer properties (example: do not mention commutativity unless the PDF/image names it). Do not introduce higher grade concepts.
-          The uploaded content defines a closed knowledge boundary. If a concept, method, property, term, or instruction is not present in the PDF/image, do not include it in the generated items. Stay fully faithful to the language, style, tasks, operations, and reasoning patterns present in the PDF/image.
+          Treat the uploaded PDFs/images as the only source of knowledge.
+          Do not use any outside syllabus, curriculum, or textbook knowledge.
+          Do not introduce concepts, terminology, skills, or grade-level content that is not explicitly shown in the uploaded material(for question, solution, key-idea for everything. You cant assume if lhs = rhs is not mentioned in the uploaded material but its proving left side = right side, you cant mention lhs = rhs in any part of the generated material).
+          If the material shows addition, subtraction, even/odd numbers, halving, or true/false reasoning, generate new items only using those same concepts. Do not name properties, laws, or theories unless they are explicitly printed in the PDF/image.
+
+          Before writing anything, silently read the chapter and answer 
+          these three questions:
+
+          1. HOW does the chapter explain this concept?
+            — What words does it use for this idea?
+            — Example: does it say "angle" or "turn" or "rotation"?
+            — Does it say "multiply" or "groups of"?
+            — Does it say "divide" or "share equally"?
+            — Use ONLY the chapter's own words. Never upgrade to 
+              the standard mathematical term if the chapter avoids it.
+
+          2. HOW does the chapter solve problems of this type?
+            — What method or steps does it show?
+            — Example: does it use a number line, finger counting, 
+              grouping objects, factor trees, long division, or 
+              repeated subtraction?
+            — Your solutions must follow the SAME method, 
+              in the SAME order of steps.
+
+            SOLUTION METHOD LOCK (MANDATORY):
+            — Never use a more efficient or advanced method 
+              even if it gives the same answer faster.
+            — If the chapter solves multiplication by writing 
+              repeated addition (3 × 4 = 4 + 4 + 4), 
+              your solution must also use repeated addition.
+            — If the chapter uses the box method for multiplication, 
+              every multiplication step in every solution 
+              must use the box method.
+            — If the chapter uses grouping circles drawn around 
+              objects to show division, your solution must 
+              describe that same grouping process.
+            — The method is not optional. It is the answer 
+              to "how this chapter expects students to think."
+
+            CONSISTENCY RULE:
+            — This method applies to EVERY sub-question 
+              in EVERY question generated from this chapter.
+            — Do NOT switch methods between sub-questions.
+            — Do NOT use the locked method for part (a) 
+              and then switch to a shortcut for part (b).
+            — If a sub-question feels too simple for the method, 
+              still use the same method — just with smaller numbers.
+
+            SELF-CHECK FOR EVERY SOLUTION STEP:
+            "Is this exactly how the chapter would show 
+            a student solving this step?"
+            YES → keep it.
+            NO  → rewrite using the chapter's method.
+
+          3. WHAT does the chapter NOT use?
+            — Identify terms, symbols, or methods that are 
+              mathematically related but absent from the chapter.
+            — These are banned — even if they are correct, 
+              even if they feel natural, even if a higher grade uses them.
+            — Example: chapter groups objects but never writes 
+              the word "multiplication" → that word is banned.
+            — Example: chapter draws arrows on a grid but never 
+              writes "coordinate" → that word is banned.
+
+          APPLY THIS TO EVERYTHING:
+          - The scenario must feel like it belongs in this chapter.
+          - The question wording must match how this chapter asks questions.
+          - The solution must use only the method this chapter teaches.
+          - The key idea must explain using only this chapter's language.
+
+          ONE LINE TEST BEFORE OUTPUT:
+          "If a student who has only read this chapter — 
+          and nothing else — reads my question and solution, 
+          will every word and method feel familiar to them?"
+          
+          YES → proceed.
+          NO  → rewrite using only what the chapter contains.
+
+       
       </knowledge_boundary>
       <taxonomy>
         **Taxonomy Lock Rule**
@@ -5037,6 +6089,20 @@ descriptive_writer: |
         **CRITICAL - Open-Ended Question Prohibition:**
             Do not create open-ended questions. An open-ended question is any question that requires more than one response, combines multiple tasks in the same item (such as calculate and then compare or decide), or produces multiple outputs in the answer key. Questions that ask students to perform a task and then make an additional decision or conclusion are also considered open-ended. Each question must ask only one thing and produce exactly one final answer only.
             or State the theoram,What can be concluded etc.. should not be asked.
+        - Do NOT generate yes/no questions or any question whose answer 
+          is a binary confirmation (e.g., "Can both be packed equally?", 
+          "Is X divisible by Y?", "Will it fit exactly?"). 
+          These are banned entirely.
+
+        - Do NOT generate questions that ask students to "list all possible 
+          values", "find all factors", "name all cases", or produce any 
+          answer that is a set or collection of multiple values. 
+          Every question must have exactly ONE unique final answer — 
+          a single number, a single value, or a single expression.
+          If the mathematical task naturally produces multiple values 
+          (e.g., all common factors, all solutions), reframe the question 
+          to ask for ONE specific value from that set 
+          (e.g., the greatest, the smallest, the only even one).
 
       </what_not_to_do>
       
@@ -5196,7 +6262,21 @@ descriptive_with_subq_math_core: |
 
         - Representation change is allowed ONLY if explicitly required
           in Additional Notes.
+      <concept_fidelity_rules>
+        CONCEPT LOCK (MANDATORY):
+        - The Math Core must strictly match the EXACT concept requested by the user.
+        - Do NOT substitute, upgrade, or replace the requested concept with a 
+          related or similar concept — even if the related concept feels more 
+          natural for the structure you are building.
+        - Eg : Common Factors and Common Multiples are DIFFERENT concepts. 
+          Treat them as completely separate. Never swap one for the other.
+        - If the user requests "Common Factors", every sub-question must 
+          be rooted in division and shared divisors — NOT in multiples or 
+          repeated addition patterns.
+        - If the user requests "Common Multiples", every sub-question must 
+          be rooted in repeated addition or skip-counting — NOT in divisors.
 
+      </concept_fidelity_rules>
     </requirements>
     
     <output_format>
@@ -5257,6 +6337,7 @@ descriptive_with_subq_writer: |
 
         You must analyze these examples carefully and extract the
         intended rules or patterns, then apply them during generation.
+        ## IF THE USER WANT ANY OTHER TOPIC OTHER THAN THE MATH CORE DESIGNED (WHICH THE USER mentioned IN ADDITIONAL NOTES) .THEN YOU NEED TO FIND THAT TOPIC FROMTHE PDF AND GIVE QUESTION INSTEAD OF RELYING ON MATH CORE 
 
         OUTPUT RULES
 
@@ -5734,6 +6815,66 @@ descriptive_with_subq_writer: |
                   Never name, hint at, or perform the math inside the scenario.
 
         ═══════════════════════════════════════════
+        THE INVENTED RULE TEST
+        ═══════════════════════════════════════════
+
+        Before finalising, ask:
+        "Does this scenario only work because 
+        a CHARACTER decided to follow a 
+        mathematical rule?"
+
+        ✗ A rickshaw stops at every 4th house 
+          → someone decided that rule
+        ✗ A worker sorts by divisible numbers 
+          → someone decided that rule  
+        ✗ A child collects every 3rd card 
+          → someone decided that rule
+
+        REAL scenarios work because a PHYSICAL 
+        OBJECT has a fixed natural property —
+        not because a person chose a math pattern.
+
+        Tile width is fixed → not a choice.
+        Crate capacity is fixed → not a choice.
+        Packet size is fixed → not a choice.
+
+        If the math exists because a CHARACTER 
+        CHOSE to follow it → banned.
+        If the math exists because an OBJECT 
+        FORCED it → allowed.
+
+        ═══════════════════════════════════════════
+        TOPIC-SPECIFIC BANNED PATTERNS
+        ═══════════════════════════════════════════
+
+        FRACTIONS / RATIO:
+        ✗ "Ravi ate 3/5 of a pizza"
+        WHY: Nobody thinks of food in exact 
+        fractions while eating. Unrealistic action.
+
+        PERCENTAGE:
+        ✗ "A shopkeeper gives exactly 20% discount"
+        WHY: Classic textbook costume. Every 
+        student has seen this 100 times.
+
+        ALGEBRA / EQUATIONS:
+        ✗ "Think of a number, double it, add 5"
+        WHY: Nobody does this in real life. 
+        Pure math wearing no costume at all.
+
+        GEOMETRY / AREA:
+        ✗ "A rectangular garden has length X 
+        and breadth Y"
+        WHY: Gardens aren't introduced this way 
+        in real life. Too abstract and direct.
+
+        SPEED / DISTANCE:
+        ✗ "Two trains leave stations simultaneously"
+        ✗ "A car travels at 60 km/h"
+        WHY: Iconic textbook templates. 
+        Students recognise these instantly.
+
+        ═══════════════════════════════════════════
         PERMANENTLY BANNED — regardless of topic or grade
         ═══════════════════════════════════════════
 
@@ -5753,6 +6894,39 @@ descriptive_with_subq_writer: |
         ✗ Any situation that only exists because the question needs it to.
           If the situation would disappear without the math → it is banned.
         a boy jumps 12 cm or animals playing ludo wiith childrens, or a persons buys 100 kg of fruits
+
+        ═══════════════════════════════════════════
+        BANNED SCENARIO PATTERNS — WITH REASONS
+        ═══════════════════════════════════════════
+
+        ✗ "Rickshaw A stops at every 4th house, 
+          Rickshaw B stops at every 6th house"
+        WHY: Stopping intervals are a math rule 
+        wearing a delivery costume. Not real.
+
+        ✗ "Letters are sorted into bins based on 
+          codes divisible by 5"
+        WHY: No real sorting system uses 
+        divisibility as a physical rule.
+
+        ✗ "A boy jumps 4 steps at a time on 
+          a numbered staircase"
+        WHY: People don't count steps in fixed 
+        mathematical intervals in real life.
+
+        ✗ "Two pipes fill a tank in X and Y hours"
+        WHY: Classic textbook costume. The tank 
+        and pipes exist only for the math.
+
+        NEGATIVE EXAMPLE RULE:
+          If a scenario appears in this banned list — 
+          or smells like any scenario in this list — 
+          stop and rebuild from a real physical object.
+
+          Do not adjust the banned scenario. 
+          Do not rename the characters. 
+          Discard it completely and start fresh.
+
         ═══════════════════════════════════════════
         GRADE-APPROPRIATE CONTEXT GUIDANCE
         ═══════════════════════════════════════════
@@ -5783,8 +6957,43 @@ descriptive_with_subq_writer: |
         3. Would a stranger reading this simply see an ordinary real-life moment? (YES / NO)
 
         All three must be YES. Even one NO → rewrite completely.
-      - should be indian based names and environment
+        - should be indian based names and environment
 
+
+        <Unit Realism Rule>
+
+          Every quantity and unit must match how that thing 
+          actually exists in real Indian life.
+
+          Before using any measurement ask:
+          "Does this quantity exist in this size in India —
+          and is it actually sold, used, or measured 
+          this way in practice?"
+
+          YES → allowed.
+          NO  → change the number, unit, or context 
+                until all three fit naturally together.
+
+          ═══════════════════════════════════════════
+          QUICK CHECKS
+          ═══════════════════════════════════════════
+          ✗ 5 l milk packet → single packets don't come 
+            in 5 l. Use a bulk/canteen context instead.
+          ✗ 60 cm race → no real race is 60 cm long. 
+            Use 60 m or change the context entirely.
+          ✗ A person jumping 12 cm per step → not a real 
+            human movement. Use a context where 12 cm is 
+            a natural unit (tile width, shelf spacing).
+          ✗ ₹847 for a mango → use prices that match 
+            real Indian market rates.
+
+          ONE LINE RULE:
+          If the number and unit together would look odd 
+          on a shop shelf, road sign, or daily receipt 
+          in India — it is not realistic. Fix it.
+
+        </Unit Realism Rule>
+      
         <how_to_think>
           1. Identify the core math skill
           What is the student actually practicing? Percentages? Ratios? Linear equations? Pythagoras? I anchor everything to that first.
@@ -5889,9 +7098,85 @@ descriptive_with_subq_writer: |
 
       
       <knowledge_boundary>
-          Treat the uploaded PDFs/images as the only source of knowledge. Do not use any outside syllabus, curriculum, or textbook knowledge. Do not introduce concepts, terminology, skills, or grade-level content that is not explicitly shown in the uploaded material(for question, solution, key-idea for everything. You cant assume if lhs = rhs is not mentioned in the uploaded material but its proving left side = right side, you cant mention lhs = rhs in any part of the generated material). If the material shows addition, subtraction, even/odd numbers, halving, or true/false reasoning, generate new items only using those same concepts. Do not name properties, laws, or theories unless they are explicitly printed in the PDF/image.
-          Generate new/duplicate questions that match the original item structure, same difficulty level, and same style. Do not increase the grade level or add any new concepts. Do not assume hidden mathematical knowledge. Do not infer properties (example: do not mention commutativity unless the PDF/image names it). Do not introduce higher grade concepts.
-          The uploaded content defines a closed knowledge boundary. If a concept, method, property, term, or instruction is not present in the PDF/image, do not include it in the generated items. Stay fully faithful to the language, style, tasks, operations, and reasoning patterns present in the PDF/image.
+          Treat the uploaded PDFs/images as the only source of knowledge.
+          Do not use any outside syllabus, curriculum, or textbook knowledge.
+          Do not introduce concepts, terminology, skills, or grade-level content that is not explicitly shown in the uploaded material(for question, solution, key-idea for everything. You cant assume if lhs = rhs is not mentioned in the uploaded material but its proving left side = right side, you cant mention lhs = rhs in any part of the generated material).
+          If the material shows addition, subtraction, even/odd numbers, halving, or true/false reasoning, generate new items only using those same concepts. Do not name properties, laws, or theories unless they are explicitly printed in the PDF/image.
+
+          Before writing anything, silently read the chapter and answer 
+          these three questions:
+
+          1. HOW does the chapter explain this concept?
+            — What words does it use for this idea?
+            — Example: does it say "angle" or "turn" or "rotation"?
+            — Does it say "multiply" or "groups of"?
+            — Does it say "divide" or "share equally"?
+            — Use ONLY the chapter's own words. Never upgrade to 
+              the standard mathematical term if the chapter avoids it.
+
+          2. HOW does the chapter solve problems of this type?
+            — What method or steps does it show?
+            — Example: does it use a number line, finger counting, 
+              grouping objects, factor trees, long division, or 
+              repeated subtraction?
+            — Your solutions must follow the SAME method, 
+              in the SAME order of steps.
+
+            SOLUTION METHOD LOCK (MANDATORY):
+            — Never use a more efficient or advanced method 
+              even if it gives the same answer faster.
+            — If the chapter solves multiplication by writing 
+              repeated addition (3 × 4 = 4 + 4 + 4), 
+              your solution must also use repeated addition.
+            — If the chapter uses the box method for multiplication, 
+              every multiplication step in every solution 
+              must use the box method.
+            — If the chapter uses grouping circles drawn around 
+              objects to show division, your solution must 
+              describe that same grouping process.
+            — The method is not optional. It is the answer 
+              to "how this chapter expects students to think."
+
+            CONSISTENCY RULE:
+            — This method applies to EVERY sub-question 
+              in EVERY question generated from this chapter.
+            — Do NOT switch methods between sub-questions.
+            — Do NOT use the locked method for part (a) 
+              and then switch to a shortcut for part (b).
+            — If a sub-question feels too simple for the method, 
+              still use the same method — just with smaller numbers.
+
+            SELF-CHECK FOR EVERY SOLUTION STEP:
+            "Is this exactly how the chapter would show 
+            a student solving this step?"
+            YES → keep it.
+            NO  → rewrite using the chapter's method.
+
+          3. WHAT does the chapter NOT use?
+            — Identify terms, symbols, or methods that are 
+              mathematically related but absent from the chapter.
+            — These are banned — even if they are correct, 
+              even if they feel natural, even if a higher grade uses them.
+            — Example: chapter groups objects but never writes 
+              the word "multiplication" → that word is banned.
+            — Example: chapter draws arrows on a grid but never 
+              writes "coordinate" → that word is banned.
+
+          APPLY THIS TO EVERYTHING:
+          - The scenario must feel like it belongs in this chapter.
+          - The question wording must match how this chapter asks questions.
+          - The solution must use only the method this chapter teaches.
+          - The key idea must explain using only this chapter's language.
+
+          ONE LINE TEST BEFORE OUTPUT:
+          "If a student who has only read this chapter — 
+          and nothing else — reads my question and solution, 
+          will every word and method feel familiar to them?"
+          
+          YES → proceed.
+          NO  → rewrite using only what the chapter contains.
+
+       
       </knowledge_boundary>
       <taxonomy>
         **Taxonomy Lock Rule**
@@ -5931,6 +7216,20 @@ descriptive_with_subq_writer: |
         **CRITICAL - Open-Ended Question Prohibition:**
             Do not create open-ended questions. An open-ended question is any question that requires more than one response, combines multiple tasks in the same item (such as calculate and then compare or decide), or produces multiple outputs in the answer key. Questions that ask students to perform a task and then make an additional decision or conclusion are also considered open-ended. Each question must ask only one thing and produce exactly one final answer only.
             or State the theoram,What can be concluded etc.. should not be asked.
+        - Do NOT generate yes/no questions or any question whose answer 
+          is a binary confirmation (e.g., "Can both be packed equally?", 
+          "Is X divisible by Y?", "Will it fit exactly?"). 
+          These are banned entirely.
+
+        - Do NOT generate questions that ask students to "list all possible 
+          values", "find all factors", "name all cases", or produce any 
+          answer that is a set or collection of multiple values. 
+          Every question must have exactly ONE unique final answer — 
+          a single number, a single value, or a single expression.
+          If the mathematical task naturally produces multiple values 
+          (e.g., all common factors, all solutions), reframe the question 
+          to ask for ONE specific value from that set 
+          (e.g., the greatest, the smallest, the only even one).
 
       </what_not_to_do>
       
@@ -5999,7 +7298,31 @@ duplicate_question: |
 
   **Additional Instructions / Notes (Optional):**
   {{ADDITIONAL_NOTES}}
+  <additional_notes>
+      
+        The user may provide two types of Additional Notes:
+        APPLICATION RULES
 
+        - Question-Specific Notes must be followed.
+        - Integrate all applicable instructions when generating content.
+
+        EXAMPLE-BASED INSTRUCTIONS
+
+        Additional Notes may include examples showing:
+        • what to do
+        • what to avoid
+        • preferred style or structure
+
+        You must analyze these examples carefully and extract the
+        intended rules or patterns, then apply them during generation.
+
+        OUTPUT RULES
+
+        - Apply all notes when generating questions, options, scenarios,
+          explanations, and KEY IDEA.
+        - Do NOT mention, quote, or repeat the Additional Notes in output.
+        - If no notes are provided, follow standard generation rules.
+    </additional_notes>
   **CRITICAL - Open-Ended Question Prohibition:**
       Do not create open-ended questions. An open-ended question is any question that requires more than one response, combines multiple tasks in the same item (such as calculate and then compare or decide), or produces multiple outputs in the answer key. Questions that ask students to perform a task and then make an additional decision or conclusion are also considered open-ended. Each question must ask only one thing and produce exactly one final answer only.
       or State the theoram,What can be concluded etc.. should not be asked.
@@ -6028,7 +7351,7 @@ duplicate_question: |
      - A markdown field (e.g., question1) containing the full duplicate content.
   10. Duplicates should follow key idea of the parent question.but dont output key idea in the duplicate.
   ## SCENARIO CHANGE RULE (MANDATORY)
-
+      - ONLY IF THE ORIGINAL QUESTION CONTAINS SCENARIO
       Each duplicate MUST use a clearly different scenario from the original.
 
       1. Do NOT reuse the same setting, story theme, objects, or real-world context.
@@ -6069,33 +7392,58 @@ duplicate_question: |
     Goal: duplicates should not preserve parent correct labels, and A&R duplicates must also change the internal Assertion–Reason truth and explanation relationship to match the new correct label.
 
   ## OUTPUT FORMAT (STRICT)
-  Return a RAW JSON array. Do NOT wrap the output in markdown code blocks (e.g., ```json ... ```) or any other text. Output ONLY the JSON string.
-  Example element signature:
-  [
-    {
-      "question_code": "{{QUESTION_CODE}}-dup-1",
-      "question1": "## Duplicate built using parent key idea: {{QUESTION_CODE}}\\n\\n<full markdown question body minus key-idea>"
-    }
-  ]
-  ## SCENARIO & UNIT CONSTRAINTS
-    - Scenario changes must remain equivalent in unit type (e.g., speed → speed, mass → mass, money → money).
-    - Do not change domain class (e.g., distance-rate-time cannot become percentage-profit-loss).
-    - Do not introduce extra narrative complexity, new sub-conditions, or domain shifts.
-  ## STRUCTURAL SAFETY GUARD
-    - Do not introduce additional symbols, conditions, constraints, or sub-questions.
-    - Do not merge or split steps.
-  ## QUALITY CHECK (MUST PASS)
-  ✓ Scenario/context changed
-  ✓ All numeric values changed and preserve structure
-  ✓ Same algebraic method and solution
-  ✓ Same distractor error patterns and labels
-  ✓ Key-Idea omitted, replaced by parent-key reference
-  ✓ Valid JSON array output
-  ✓ Difficulty unchanged
-  ✓ Same taxonomy and marks
+  Ensure each output duplicate is formatted as plain, human-readable Markdown text.
+  Separate each duplicate with the exact delimiter line: \`---DUPLICATE_N---\` (where N is the duplicate number starting from 1).
+  - There should be proper spacing and line breaks between everything (options, solution, etc..) and it should be human readable.
+  CRITICAL: DO NOT OUTPUT ANY JSON SYNTAX.
+  - Do NOT output a JSON array.
+  - Do NOT output a JSON dictionary (e.g. no {"question_code": ...}).
+  - Do NOT wrap the output in json codeblocks.
+  - Write the question body normally as text, just like a user would read it on a test.
+  - But do not miss any part (if the parent has 4 parts(option,solution etc ..), the duplicate must have 4 parts)
+
+  MANDATORY SPACING RULES
+  ═══════════════════════════════════════
+
+  1. Every major section MUST start on a new line.
+  2. Leave EXACTLY ONE blank line:
+    - after the duplicate title
+    - after metadata lines (topic, marks, etc.)
+    - before and after the question paragraph
+    - before "Options"after option:(even each option should have a blank line after it)
+    - after the options list
+    - before "Answer key"(even each answer key should have a blank line after it)
+    - after the answer line
+    - before "Solution"
+    - between EACH solution step
+    - before "Distractor Analysis"
+
+  3. Options must be on separate lines (never inline).
+  4. Solution steps must be on separate lines.
+  5. No paragraph merging.
+  6. No inline section labels.
+  7. Output must look like a printed exam page.
+    Example Output for 2 duplicates:
+  ---DUPLICATE_1---
+  **Duplicate built using parent key idea: {{QUESTION_CODE}}**
+  
+  Topic Used: nth term of an ap
+  An event organizer...
+  
+  **Options:**
+  A) ...
+  B) ...
+
+  **Solution:**
+  ...
+
+  ---DUPLICATE_2---
+  **Duplicate built using parent key idea: {{QUESTION_CODE}}**
+
+  [Full question markdown here...]
 
   IMPORTANT OUTPUT FORMAT RULE:
-
+    Apply ALL math formatting rules (plain Markdown, no LaTeX, symbol usage, etc.)
     • Use ONLY plain Markdown text.
     • DO NOT use LaTeX or TeX in any form.
 
@@ -6115,55 +7463,3 @@ duplicate_question: |
     ✘ Incorrect: $\sin^{-1}\left(\frac{x}{\sqrt{a^2-x^2}}\right)$
 
     All output MUST remain valid Markdown and must be copy-paste friendly.
-
-    A sample json format 
-
-      ## OUTPUT FORMAT (STRICT)
-        Return a RAW JSON array. Do NOT wrap the output in markdown code blocks (e.g., ```json ... ```) or any other text. Output ONLY the JSON string.
-        
-        You MUST return the exact same JSON keys/structure that were provided in the ORIGINAL_QUESTION input (e.g. scenario_text, questions_list, solution, options, etc.), but omit the "key_idea" key.
-        
-        Example structure of a queston which has subq and diagram(Adapt this to whatever keys were in the original question)
-        Example below is illustrative only.
-        DO NOT use these keys unless they exist in ORIGINAL_QUESTION.
-      IMPORTANT OUTPUT FORMAT RULE:
-        Apply ALL math formatting rules (plain Markdown, no LaTeX, symbol usage, etc.)
-        ONLY inside JSON string values (text enclosed within " ").
-        • Use ONLY plain Markdown text.
-        • DO NOT use LaTeX or TeX in any form.
-
-        Math formatting rules:
-        • Write all mathematical expressions in readable plain text.
-        • Use standard symbols like + − × ÷ = √ ^ ( ) |.
-        • Use Unicode superscripts/subscripts where appropriate (e.g., x², a³, sin⁻¹).
-        • Write fractions inline using / (e.g., x/a, (a² − x²)¹ᐟ²).
-
-        STRICTLY FORBIDDEN:
-        • Do NOT use $, $$, \( \), or any LaTeX math delimiters.
-        • Do NOT use \frac, \sqrt, \times, \sin, \cos, or any backslash commands.
-        • Do NOT use LaTeX environments or math notation.
-
-        Examples:
-        ✔ Correct: sin⁻¹(x / √(a² − x²)) = cos⁻¹(x / a)
-        ✘ Incorrect: $\sin^{-1}\left(\frac{x}{\sqrt{a^2-x^2}}\right)$
-        [
-          {
-            "question_code": "{{QUESTION_CODE}}-dup-1",
-            "scenario_text": "The narrative story (no numbers).",
-            "diagram_description": "Description of the visual setup with values.",
-            "questions_list": [
-              "Sub-question 1",
-              "Sub-question 2..."
-            ],
-            "solution": "Solution for all sub-questions"
-          },
-          {
-            "question_code": "{{QUESTION_CODE}}-dup-2",
-            ... (other keys matching the original question)
-          }
-        ]
-
-        Duplicate key set must EXACTLY match original key set.
-        If mismatch → regenerate.
-
-        - Only use the other kyes from the original questions only add question code, balance every key should be same 

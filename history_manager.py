@@ -291,3 +291,23 @@ class HistoryManager:
             Path to the files directory
         """
         return self.history_dir / run_id / "files"
+        
+    def clear_all_runs(self) -> int:
+        """
+        Delete all history runs for the current user.
+        
+        Returns:
+            Number of runs deleted
+        """
+        try:
+            runs = self.list_runs()
+            count = 0
+            for run in runs:
+                run_id = run.get("run_id")
+                if run_id and self.delete_run(run_id):
+                    count += 1
+            logger.info(f"Cleared all {count} runs for user {self.username}")
+            return count
+        except Exception as e:
+            logger.error(f"Error clearing all runs for user {self.username}: {e}")
+            return 0

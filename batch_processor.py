@@ -661,26 +661,105 @@ async def process_single_batch_flow(
             # The pipeline returns: {scenario, question, solution, analysis, _pipeline_metadata}
             # We need to convert this to match the expected format
             
+            # --- STAGE 4.5: VALIDATION (Only after writer stage) ---
+            validated_payload = {
+                'text': json.dumps(pipeline_result, indent=2),
+                'elapsed': 0,
+                'batch_key': batch_key,
+                'input_tokens': 0,
+                'output_tokens': 0
+            }
+            
+            # Extract questions and format for validation
+            if 'writer_output' in pipeline_result and 'questions' in pipeline_result['writer_output']:
+                questions_data = pipeline_result['writer_output']['questions']
+                
+                # Format into combined text
+                combined_questions_text = ""
+                for idx, q_dict in enumerate(questions_data, 1):
+                    combined_questions_text += f"\n--- Question {idx} ---\n"
+                    combined_questions_text += json.dumps(q_dict, indent=2)
+                
+                # Prepare combined context
+                combined_context = f"Topic: {questions[0].get('topic', 'N/A')}\n"
+                
+                # Fetch validation config mapping
+                structure_map = {
+                    "MCQ": "structure_MCQ",
+                    "Fill in the Blanks": "structure_FIB",
+                    "Case Study": "structure_Case_Study",
+                    "Multi-Part": "structure_Multi_Part",
+                    "Assertion-Reasoning": "structure_AR",
+                    "Descriptive": "structure_Descriptive",
+                    "Descriptive w/ Subquestions": "structure_Descriptive_w_subq"
+                }
+                base_type_key = batch_key.split(' - Batch ')[0]
+                struct_rule_key = structure_map.get(base_type_key)
+                
+                if isinstance(validation_prompt_template, dict):
+                    validation_config = validation_prompt_template
+                    prompt_template = validation_config.get('validation_prompt', '')
+                else:
+                    prompt_template = validation_prompt_template
+                    validation_config = {}
+        
+                structure_format = validation_config.get(struct_rule_key, "Return a valid JSON object.")
+                
+                # Construct Batched Validation Prompt
+                val_prompt = prompt_template.replace("{{GENERATED_CONTENT}}", combined_questions_text)
+                val_prompt = val_prompt.replace("{{INPUT_CONTEXT}}", combined_context)
+                val_prompt = val_prompt.replace("{{OUTPUT_FORMAT_RULES}}", structure_format)
+                
+                # Save the validation prompt
+                if 'prompts_dir' in locals() and prompts_dir:
+                    try:
+                        with open(prompts_dir / "stage3_validation_prompt.txt", "w", encoding="utf-8") as f:
+                            f.write(val_prompt)
+                    except Exception as e:
+                        logger.error(f"[{batch_key}] Failed to save validation prompt: {e}")
+                
+                logger.info(f"[{batch_key}] Starting validation on {len(questions_data)} newly generated questions...")
+                val_files = [] 
+                val_file_metadata = {'source_type': 'None (Validation)', 'filenames': []}
+                
+                try:
+                    v_res = await validate_batch(batch_key, val_prompt, general_config, val_files, val_file_metadata)
+                    logger.info(f"[{batch_key}] Batched validation finished. Time: {v_res.get('elapsed', 0):.2f}s")
+                    
+                    raw_val_text = v_res.get('text', '')
+                    data = extract_first_json_match(raw_val_text)
+                    
+                    if data:
+                        # Append the validated data to the pipeline result wrapper
+                        pipeline_result['validation_output'] = data
+                        validated_payload = {
+                            'text': json.dumps(pipeline_result, indent=2),
+                            'elapsed': v_res.get('elapsed', 0),
+                            'batch_key': batch_key,
+                            'input_tokens': v_res.get('input_tokens', 0),
+                            'output_tokens': v_res.get('output_tokens', 0),
+                            'thought_tokens': v_res.get('thought_tokens', 0),
+                            'billed_output_tokens': v_res.get('billed_output_tokens', 0)
+                        }
+                    else:
+                        logger.warning(f"[{batch_key}] Failed to parse validation response as JSON. Keeping original output.")
+                except Exception as e:
+                    logger.error(f"[{batch_key}] Batched validation failed: {e}")
+            
             pipeline_payload = {
                 'raw': {
                     'text': json.dumps(pipeline_result, indent=2),
-                    'elapsed': 0,  # Time tracked within pipeline
+                    'elapsed': 0,
                     'batch_key': batch_key,
                     'input_tokens': pipeline_result['_pipeline_metadata']['total_tokens']['input'],
                     'output_tokens': pipeline_result['_pipeline_metadata']['total_tokens']['output'],
                     'thought_tokens': 0,
                     'billed_output_tokens': pipeline_result['_pipeline_metadata']['total_tokens']['output']
                 },
-                'validated': {
-                    'text': json.dumps(pipeline_result, indent=2),
-                    'elapsed': 0,
-                    'batch_key': batch_key,
-                    'input_tokens': 0,
-                    'output_tokens': 0
-                },
+                'validated': validated_payload,
                 'core_skill_metadata': pipeline_result['_pipeline_metadata'].get('core_skill_data', {}),
-                '_pipeline_output': pipeline_result,  # Store full pipeline structure
-                '_prompts_dir': str(prompts_dir)  # Store prompts directory path
+                '_pipeline_output': pipeline_result,
+                '_prompts_dir': str(prompts_dir)
             }
             
             # Save detailed batch output for debugging/analysis

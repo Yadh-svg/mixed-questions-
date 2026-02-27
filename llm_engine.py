@@ -24,41 +24,43 @@ file_read_lock = threading.Lock()
 
 def save_prompt(prompt: str, prompt_type: str, identifier: str):
     """
-    Save the final prompt to a file in prompt_logs directory.
+    Save the final prompt to a file in prompt_logs directory. (Disabled by user request)
     """
-    try:
-        log_dir = Path("prompt_logs")
-        log_dir.mkdir(exist_ok=True)
-        
-        timestamp = time.strftime("%Y%m%d_%H%M%S")
-        filename = f"{timestamp}_{prompt_type}_{identifier.replace(' ', '_')}.txt"
-        file_path = log_dir / filename
-        
-        with open(file_path, "w", encoding="utf-8") as f:
-            f.write(prompt)
-        
-        logger.info(f"Saved {prompt_type} prompt to {file_path}")
-    except Exception as e:
-        logger.error(f"Failed to save prompt: {e}")
+    pass
+    # try:
+    #     log_dir = Path("prompt_logs")
+    #     log_dir.mkdir(exist_ok=True)
+    #     
+    #     timestamp = time.strftime("%Y%m%d_%H%M%S")
+    #     filename = f"{timestamp}_{prompt_type}_{identifier.replace(' ', '_')}.txt"
+    #     file_path = log_dir / filename
+    #     
+    #     with open(file_path, "w", encoding="utf-8") as f:
+    #         f.write(prompt)
+    #     
+    #     logger.info(f"Saved {prompt_type} prompt to {file_path}")
+    # except Exception as e:
+    #     logger.error(f"Failed to save prompt: {e}")
 
 def save_response(response_text: str, response_type: str, identifier: str):
     """
-    Save the raw LLM response to a file in response_logs directory.
+    Save the raw LLM response to a file in response_logs directory. (Disabled by user request)
     """
-    try:
-        log_dir = Path("response_logs")
-        log_dir.mkdir(exist_ok=True)
-        
-        timestamp = time.strftime("%Y%m%d_%H%M%S")
-        filename = f"{timestamp}_{response_type}_{identifier.replace(' ', '_')}.txt"
-        file_path = log_dir / filename
-        
-        with open(file_path, "w", encoding="utf-8") as f:
-            f.write(response_text)
-        
-        logger.info(f"Saved {response_type} response to {file_path}")
-    except Exception as e:
-        logger.error(f"Failed to save response: {e}")
+    pass
+    # try:
+    #     log_dir = Path("response_logs")
+    #     log_dir.mkdir(exist_ok=True)
+    #     
+    #     timestamp = time.strftime("%Y%m%d_%H%M%S")
+    #     filename = f"{timestamp}_{response_type}_{identifier.replace(' ', '_')}.txt"
+    #     file_path = log_dir / filename
+    #     
+    #     with open(file_path, "w", encoding="utf-8") as f:
+    #         f.write(response_text)
+    #     
+    #     logger.info(f"Saved {response_type} response to {file_path}")
+    # except Exception as e:
+    #     logger.error(f"Failed to save response: {e}")
 
 def upload_files_to_gemini(files: List, api_key: str) -> List:
     """
@@ -305,8 +307,8 @@ async def duplicate_questions_async(
     formatted_prompt = formatted_prompt.replace("{{ORIGINAL_QUESTION}}", original_question_markdown)
     formatted_prompt = formatted_prompt.replace("{{ADDITIONAL_NOTES}}", additional_notes)
     
-    # Save prompt for debugging (Disabled per user request)
-    # save_prompt(formatted_prompt, "duplication", question_code)
+    # Save prompt for debugging
+    save_prompt(formatted_prompt, "duplication", question_code)
     
     # Prepare files list if PDF is provided
     files_to_upload = [pdf_file] if pdf_file else None
@@ -331,39 +333,42 @@ async def duplicate_questions_async(
             "elapsed": result.get('elapsed', 0)
         }
     
-    # Parse the JSON response
-    import json
+    # Parse the delimited markdown response
     import re
     
     response_text = result.get('text', '')
     
-    # Try to extract JSON array from response
-    try:
-        # Look for JSON array pattern
-        json_match = re.search(r'\[\s*\{.*?\}\s*\]', response_text, re.DOTALL)
-        if json_match:
-            duplicates_array = json.loads(json_match.group(0))
-            logger.info(f"Successfully parsed {len(duplicates_array)} duplicates")
-            return {
-                "duplicates": duplicates_array,
-                "elapsed": result.get('elapsed', 0),
-                "input_tokens": result.get('input_tokens', 0),
-                "output_tokens": result.get('output_tokens', 0),
-                "thought_tokens": result.get('thought_tokens', 0),
-                "billed_output_tokens": result.get('billed_output_tokens', 0)
+    # Split the response on the ---DUPLICATE_N--- marker
+    # The regex looks for ---DUPLICATE_\d+--- anywhere in the text
+    blocks = re.split(r'---DUPLICATE_\d+---', response_text)
+    
+    # Filter out any empty blocks (usually the text before the first marker)
+    duplicates_list = [block.strip() for block in blocks if block.strip()]
+    
+    if duplicates_list:
+        logger.info(f"Successfully extracted {len(duplicates_list)} duplicate raw markdown blocks")
+        
+        # Package into the expected structure: {"question_code": ..., "markdown": ...}
+        duplicates_array = [
+            {
+                "question_code": f"{question_code}-dup-{i+1}",
+                "markdown": block
             }
-        else:
-            logger.warning("No JSON array found in response")
-            return {
-                "error": "Could not parse JSON response",
-                "raw_response": response_text[:500],  # First 500 chars for debugging
-                "duplicates": [],
-                "elapsed": result.get('elapsed', 0)
-            }
-    except json.JSONDecodeError as e:
-        logger.error(f"JSON parsing error: {e}")
+            for i, block in enumerate(duplicates_list)
+        ]
+        
         return {
-            "error": f"JSON parsing failed: {str(e)}",
+            "duplicates": duplicates_array,
+            "elapsed": result.get('elapsed', 0),
+            "input_tokens": result.get('input_tokens', 0),
+            "output_tokens": result.get('output_tokens', 0),
+            "thought_tokens": result.get('thought_tokens', 0),
+            "billed_output_tokens": result.get('billed_output_tokens', 0)
+        }
+    else:
+        logger.warning(f"Failed to find any delimited duplicates in response")
+        return {
+            "error": "Could not extract duplicates from response using delimiter",
             "raw_response": response_text[:500],
             "duplicates": [],
             "elapsed": result.get('elapsed', 0)
@@ -443,8 +448,8 @@ async def regenerate_question_async(
     prompt = writer_payload['prompt']
     combined_files = writer_payload['files']
     
-    # Save the regeneration prompt for debugging (Disabled per user request)
-    # save_prompt(prompt, "regeneration", question_code)
+    # Save the regeneration prompt for debugging
+    save_prompt(prompt, "regeneration", question_code)
     
     # Run Generation
     result = await run_gemini_async(
@@ -461,40 +466,35 @@ async def regenerate_question_async(
         return result
         
     response_text = result.get('text', '')
-    json_data = extract_json_from_response(response_text)
     
-    if json_data:
-        logger.info(f"Successfully regenerated question structure in {elapsed:.2f}s")
-        
-        # Unpack 3-stage / 2-stage wrapper if present
-        if isinstance(json_data, dict) and 'writer_output' in json_data:
-            json_data = json_data['writer_output']
+    if response_text:
+        # Save the regeneration output to a file (Disabled by user request)
+        # output_dir = os.path.join(os.getcwd(), 'prompt_logs', 'regeneration_output')
+        # os.makedirs(output_dir, exist_ok=True)
+        # from datetime import datetime
+        # timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        # safe_key = question_code.replace(" ", "_")
+        # output_path = os.path.join(output_dir, f"{timestamp}_{safe_key}_output.md")
+        # try:
+        #     with open(output_path, 'w', encoding='utf-8') as f:
+        #         f.write(response_text)
+        #     logger.info(f"Saved regeneration output to {output_path}")
+        # except Exception as e:
+        #     logger.error(f"Failed to save regeneration output: {e}")
             
-        if isinstance(json_data, dict) and 'questions' in json_data:
-            json_data = json_data['questions']
-        elif isinstance(json_data, dict):
-            # Try to grab the first object if it isn't nested right
-            for k,v in json_data.items():
-                if isinstance(v, dict) and any(key in v for key in ['question_text', 'scenario_text', 'options', 'correct_answer', 'final_answer']):
-                    json_data = [v]
-                    break
-            else:
-                json_data = [json_data]
-                
-        if not isinstance(json_data, list):
-             json_data = [json_data]
-             
+        logger.info(f"Successfully regenerated question in {elapsed:.2f}s")
+        
         return {
-            "regenerated_data": json_data[0] if json_data else {},
+            "regenerated_data": {"markdown": response_text},
             "raw_response": response_text,
             "elapsed": elapsed,
             "input_tokens": result.get('input_tokens', 0),
             "output_tokens": result.get('output_tokens', 0)
         }
     else:
-        logger.error(f"Failed to extract JSON from regenerated response")
+        logger.error(f"Failed to get regenerated response text")
         return {
-            "error": "Failed to parse JSON out of regeneration response",
-            "raw_response": response_text[:1000],
+            "error": "Failed to generate text for regeneration",
+            "raw_response": response_text,
             "elapsed": elapsed
         }

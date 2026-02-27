@@ -47,3 +47,13 @@ duplication:
   thinking_level: "low"
   top_p: 0.95
   top_k: 40
+
+# ===================================================================
+# STAGE 4: ANALYSIS (VALIDATION)
+# ===================================================================
+analysis:
+  model: "gemini-3-flash-preview"
+  temperature: 0.7
+  thinking_level: "high"
+  top_p: 0.95
+  top_k: 40

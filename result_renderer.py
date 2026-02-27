@@ -214,7 +214,7 @@ def normalize_llm_output_to_questions(text: str) -> Dict[str, str]:
     return questions
 
 
-def render_markdown_question(question_key: str, markdown_content: str, question_type: str, batch_key: str = "", render_context: str = "results"):
+def render_markdown_question(question_key: str, markdown_content: str, question_type: str, batch_key: str = "", render_context: str = "results", is_regenerated: bool = False):
     """
     Render a single question from its markdown content.
     
@@ -224,6 +224,7 @@ def render_markdown_question(question_key: str, markdown_content: str, question_
         question_type: The question type from batch_key
         batch_key: The batch identifier for session state management
         render_context: Context identifier ("progressive" or "results") to prevent duplicate keys
+        is_regenerated: Whether to flag this as a regenerated question
     """
     # Extract question number from key (e.g., "question1" -> "1")
     q_num = question_key.replace("question", "").replace("q", "")
@@ -266,7 +267,8 @@ def render_markdown_question(question_key: str, markdown_content: str, question_
             )
         
         with col2:
-            st.markdown(f"### {emoji} Question {q_num}")
+            regen_tag = " 🔄 *(Regenerated)*" if is_regenerated else ""
+            st.markdown(f"### {emoji} Question {q_num}{regen_tag}")
             
             # Check for "newly generated" flag
             # We need to peek at the question data. Since we only have markdown_content here which might be a string,
@@ -433,9 +435,13 @@ def render_markdown_question(question_key: str, markdown_content: str, question_
         
         for i, duplicate in enumerate(st.session_state[duplicates_key], 1):
             dup_question_key = duplicate.get('question_code', f'{question_key}-dup-{i}')
-            # Get the markdown content from the duplicate (usually second key after question_code)
-            dup_content_key = [k for k in duplicate.keys() if k != 'question_code'][0] if len(duplicate.keys()) > 1 else 'question1'
-            dup_markdown = duplicate.get(dup_content_key, str(duplicate))
+            
+            # Get the markdown content from the duplicate
+            if 'markdown' in duplicate:
+                dup_markdown = duplicate['markdown']
+            else:
+                dup_content_key = [k for k in duplicate.keys() if k != 'question_code'][0] if len(duplicate.keys()) > 1 else 'question1'
+                dup_markdown = duplicate.get(dup_content_key, str(duplicate))
             
             # Create layout with copy button for duplicate
             dup_col1, dup_col2 = st.columns([0.9, 0.1])
@@ -521,143 +527,7 @@ def render_markdown_question(question_key: str, markdown_content: str, question_
                 """
                 components.html(dup_copy_html, height=60)
                 
-    # Render Regenerated Question at the very bottom (if available)
-    if render_context == "results":
-        render_regenerated_question(batch_key, question_key, render_context)
-
-
-
-
-def render_regenerated_question(batch_key: str, question_key: str, render_context: str = "results"):
-    """Render previously regenerated questions underneath the original."""
-    if render_context != "results":
-        return
-        
-    import html
-    import streamlit as st
-    import json
-    
-    regenerated_key = f"regenerated_{batch_key}_{question_key}"
-    
-    if regenerated_key in st.session_state and st.session_state[regenerated_key]:
-        st.markdown("")
-        st.markdown(f"**🔄 Regenerated Version**")
-        
-        duplicate = st.session_state[regenerated_key]
-        
-        # The LLM sometimes returns structured JSON embedded inside a `question1` string value.
-        # Unwrap it so we can render it properly instead of displaying raw JSON text.
-        _structured_keys = ['scenario_text', 'question_text', 'options', 'solution',
-                            'distractor_analysis', 'correct_answer', 'final_answer', 'questions_list', 'answer_key', 'correct_option']
-        if not any(k in duplicate for k in _structured_keys):
-            for _k, _v in duplicate.items():
-                if _k == 'question_code':
-                    continue
-                if isinstance(_v, str) and _v.strip().startswith('{'):
-                    try:
-                        _inner = json.loads(_v)
-                        if isinstance(_inner, dict) and any(k2 in _inner for k2 in _structured_keys):
-                            duplicate = _inner
-                            break
-                    except json.JSONDecodeError:
-                        pass
-
-        # Detect structured output — covers MCQ, FIB, Descriptive, Case Study, Multi-Part
-        is_structured = any(k in duplicate for k in [
-            'question_text', 'scenario_text', 'options', 'solution',
-            'distractor_analysis', 'correct_answer', 'final_answer', 'questions_list', 'answer_key', 'correct_option'
-        ])
-        
-        if is_structured:
-            parts = []
-            top_note = ""
-            
-            handled_keys = [
-                'question_code', 'question_id', 'question_text', 'scenario_text',
-                'scenario_text/question_text', 'options', 'solution', 'distractor_analysis',
-                'correct_option', 'correct_answer', 'final_answer', 'questions_list', 'key_idea', 'answer_key'
-            ]
-            
-            for k, v in duplicate.items():
-                if k not in handled_keys and isinstance(v, str):
-                    top_note += f"**{k}**: {v}\n\n"
-            if top_note:
-                parts.append(top_note)
-            
-            # Scenario or question stem
-            q_text = (
-                duplicate.get('scenario_text/question_text')
-                or duplicate.get('scenario_text')
-                or duplicate.get('question_text', '')
-            )
-            if q_text:
-                parts.append(f"**{q_text}**\n\n")
-
-            # Sub-questions (Case Study, Multi-Part, Descriptive w/ Sub)
-            questions_list = duplicate.get('questions_list', [])
-            if isinstance(questions_list, list) and questions_list:
-                parts.append("**Sub-questions:**\n")
-                for si, sq in enumerate(questions_list, 1):
-                    clean_sq = re.sub(r"^\s*(?:\([a-zA-Z0-9]+\)|[a-zA-Z0-9]+[.)])\s*", "", str(sq))
-                    parts.append(f"**({chr(96+si)})** {clean_sq}\n")
-                parts.append("\n")
-
-            # MCQ options
-            options = duplicate.get('options', {})
-            if isinstance(options, dict) and options:
-                for opt_k, opt_v in options.items():
-                    parts.append(f"- **{opt_k})** {opt_v}")
-                parts.append("\n")
-            
-            answer_key = duplicate.get('answer_key', '')
-            if answer_key:
-                parts.append(f"**Answer Key:** {answer_key}\n\n")
-
-            correct_opt = duplicate.get('correct_option', '')
-            if correct_opt and not answer_key:
-                parts.append(f"**Correct Option:** {correct_opt}\n\n")
-
-            # FIB correct answer
-            correct_answer = duplicate.get('correct_answer', '')
-            if correct_answer and not answer_key:
-                parts.append(f"**Correct Answer:** {correct_answer}\n\n")
-
-            # Descriptive final answer
-            final_answer = duplicate.get('final_answer', '')
-            if final_answer and not answer_key:
-                parts.append(f"**Final Answer:** {final_answer}\n\n")
-                
-            solution = duplicate.get('solution', '')
-            if solution:
-                parts.append(f"**Solution:**\n{solution}\n\n")
-                
-            distractors = duplicate.get('distractor_analysis', [])
-            if isinstance(distractors, list) and distractors:
-                parts.append("**Distractor Analysis:**\n")
-                parts.append("| Option | Misconception |")
-                parts.append("| :--- | :--- |")
-                for dist in distractors:
-                    if isinstance(dist, dict):
-                        opt = str(dist.get('Option', '')).replace('|', '\\|')
-                        misc = str(dist.get('Misconception', '')).replace('|', '\\|')
-                        parts.append(f"| **{opt}** | {misc} |")
-                    else:
-                        val = str(dist).replace('|', '\\|')
-                        parts.append(f"| | {val} |")
-                parts.append("\n\n")
-                
-            key_idea = duplicate.get('key_idea', '')
-            if key_idea:
-                parts.append(f"**Key Idea:**\n{key_idea}\n\n")
-            
-            dup_markdown = "\n".join(parts)
-        else:
-            dup_content_key = [k for k in duplicate.keys() if k != 'question_code'][0] if len(duplicate.keys()) > 1 else 'question1'
-            dup_markdown = duplicate.get(dup_content_key, str(duplicate))
-            
-        with st.expander(f"✨ Regenerated Output", expanded=True):
-            st.markdown(dup_markdown)
-        st.markdown("---")
+    # Render Regenerated Question at the very bottom (if available) - REMOVED for inline replacement
 
 
 
@@ -842,9 +712,12 @@ def render_generated_duplicates(batch_key: str, question_key: str, render_contex
                 
                 dup_markdown = "\n".join(parts)
             else:
-                # Fallback to older text-based markdown blob
-                dup_content_key = [k for k in duplicate.keys() if k != 'question_code'][0] if len(duplicate.keys()) > 1 else 'question1'
-                dup_markdown = duplicate.get(dup_content_key, str(duplicate))
+                # Fallback to older text-based markdown blob or the new delimited markdown format
+                if 'markdown' in duplicate:
+                    dup_markdown = duplicate['markdown']
+                else:
+                    dup_content_key = [k for k in duplicate.keys() if k != 'question_code'][0] if len(duplicate.keys()) > 1 else 'question1'
+                    dup_markdown = duplicate.get(dup_content_key, str(duplicate))
                 
             dup_col1, dup_col2 = st.columns([0.9, 0.1])
             
@@ -880,19 +753,15 @@ def render_generated_duplicates(batch_key: str, question_key: str, render_contex
 
 def _get_effective_q_item(batch_key: str, idx: int, original_q_item: dict) -> tuple:
     """
-    Return (effective_q_item, is_regenerated).
-    If a regenerated version exists in session state, return that dict.
-    Otherwise return the original.
+    Return (effective_q_item_or_string, is_regenerated).
+    If a regenerated version exists in session state (as Markdown text), return that string.
+    Otherwise return the original dict.
     """
     regen_key = f"regenerated_{batch_key}_question{idx}"
     regen_data = st.session_state.get(regen_key)
-    if regen_data and isinstance(regen_data, dict):
-        # The regenerated data is a flat dict. Re-use it as the effective question.
-        # Some keys to ignore that are not question fields:
-        _skip = {'question_code'}
-        effective = {k: v for k, v in regen_data.items() if k not in _skip}
-        if effective:  # Only use if it actually has content
-            return effective, True
+    if regen_data and isinstance(regen_data, dict) and 'markdown' in regen_data:
+        # The regenerated data is now stored as { "markdown": "..." } from `llm_engine.py`
+        return regen_data['markdown'], True
     return original_q_item, False
 
 
@@ -931,255 +800,292 @@ def render_batch_results(batch_key: str, result_data: Dict[str, Any], render_con
         if isinstance(parsed_output, dict) and 'writer_output' in parsed_output:
             st.markdown("### 🎯 Generated Content")
             
-            writer_out = parsed_output['writer_output']
-            if 'questions' in writer_out:
-                base_type = batch_key.split(' - Batch ')[0] if batch_key else ""
+            # --- RENDER VALIDATED OUTPUT (IF AVAILABLE) ---
+            if 'validation_output' in parsed_output and parsed_output['validation_output']:
+                st.success("✅ Showing Validated Output")
+                val_data = parsed_output['validation_output']
                 
-                for idx, q_item in enumerate(writer_out['questions'], 1):
-                    
-                    # === MCQ Handling ===
-                    if base_type == 'MCQ' or 'options' in q_item:
-                        # MCQ Renderer
-                        display_item, is_regen = _get_effective_q_item(batch_key, idx, q_item)
-                        q_id = display_item.get('question_id', f"Q{idx}")
-                        with st.container():
-                            header = f"### ❓ Question {idx} ({q_id})"
-                            if is_regen:
-                                header += "  🔄 *(Regenerated)*"
-                            st.markdown(header)
-                            
-                            # Question Text
-                            st.markdown(f"**{display_item.get('question_text', '')}**")
-                            
-                            # Diagram prompt
-                            if 'diagram_prompt' in display_item:
-                                st.info(f"🖼️ **Diagram Request:** {display_item['diagram_prompt']}")
-                                
-                            # Options
-                            opts = display_item.get('options', {})
-                            if opts:
-                                st.markdown("#### Options:")
-                                for opt_key, opt_val in opts.items():
-                                    st.markdown(f"- **{opt_key}:** {opt_val}")
-                            
-                            render_duplication_controls(batch_key, f'question{idx}', str(idx), render_context)
-                            render_generated_duplicates(batch_key, f'question{idx}', render_context)
-                            # Answer & Solution
-                            with st.expander("💡 View Solution & Analysis", expanded=False):
-                                # Correct Option
-                                correct_opt = display_item.get('answer_key', display_item.get('correct_option', 'Unknown'))
-                                st.success(f"**Answer Key:** {correct_opt}")
-                                
-                                # Solution
-                                if 'solution' in display_item:
-                                    st.markdown("#### Solution:")
-                                    st.markdown(display_item['solution'])
-                                
-                                # Key Idea
-                                if 'key_idea' in display_item:
-                                    st.markdown("####   Key Idea:")
-                                    st.info(display_item['key_idea'])
-                                    
-                                # Distractor Analysis
-                                if 'distractor_analysis' in display_item:
-                                    st.markdown("#### 🚫 Distractor Analysis:")
-                                    da_content = display_item['distractor_analysis']
-                                    
-                                    if isinstance(da_content, list):
-                                        # Convert list of dicts to markdown table
-                                        # Expecting: [{'Option': '...', 'Misconception': '...'}, ...]
-                                        md_table = "| Option | Misconception |\n|---|---|\n"
-                                        for da_row in da_content:
-                                            if isinstance(da_row, dict):
-                                                opt = da_row.get('Option', '') or da_row.get('option', '')
-                                                # Handle potential variations in keys
-                                                misc = da_row.get('Misconception', '') or da_row.get('misconception', '') or da_row.get('Explanation', '') or da_row.get('explanation', '')
-                                                md_table += f"| {opt} | {misc} |\n"
-                                            else:
-                                                # If row is a string, just append
-                                                md_table += f"| - | {da_row} |\n"
-                                        st.markdown(md_table)
-                                    else:
-                                        # Default string rendering
-                                        st.markdown(da_content)
-                                    
-                                # Metadata
-                                st.markdown("---")
-                                cols = st.columns(4)
-                                cols[0].metric("DOK Level", display_item.get('dok_level', 'N/A'))
-                                cols[1].metric("Taxonomy", display_item.get('taxonomy', 'N/A'))
-                                cols[2].metric("Marks", display_item.get('mark', 'N/A'))
-                                cols[3].metric("Type", display_item.get('mcq_type', 'N/A'))
-                                
-                            st.markdown("---")
-
-                    # === Fill in the Blanks Handling ===
-                    elif base_type == 'Fill in the Blanks' or ('correct_answer' in q_item or ('answer_key' in q_item and 'questions_list' not in q_item and 'diagram_prompt' not in q_item)):
-                         # FIB Renderer
-                        display_item, is_regen = _get_effective_q_item(batch_key, idx, q_item)
-                        q_id = display_item.get('question_id', f"Q{idx}")
-                        with st.container():
-                            header = f"### 📝 Question {idx} ({q_id})"
-                            if is_regen:
-                                header += "  🔄 *(Regenerated)*"
-                            st.markdown(header)
-                            
-                            # Question Text
-                            st.markdown(f"**{display_item.get('question_text', '')}**")
-                            
-                            # Diagram prompt
-                            if 'diagram_prompt' in display_item:
-                                st.info(f"🖼️ **Diagram Request:** {display_item['diagram_prompt']}")
-                            
-                            render_duplication_controls(batch_key, f'question{idx}', str(idx), render_context)
-                            render_generated_duplicates(batch_key, f'question{idx}', render_context)
-                            # Answer & Solution
-                            with st.expander("💡 View Solution & Analysis", expanded=False):
-                                # Correct Answer
-                                correct_ans = display_item.get('answer_key', display_item.get('correct_answer', 'N/A'))
-                                st.success(f"**Answer Key:**\n\n{correct_ans}")
-                                
-                                # Solution
-                                if 'solution' in display_item:
-                                    st.markdown("#### Solution:")
-                                    st.markdown(display_item['solution'])
-                                
-                                # Key Idea
-                                if 'key_idea' in display_item:
-                                    st.markdown("####   Key Idea:")
-                                    st.info(display_item['key_idea'])
-                                    
-                                # Metadata
-                                st.markdown("---")
-                                cols = st.columns(3)
-                                cols[0].metric("DOK Level", display_item.get('dok_level', 'N/A'))
-                                cols[1].metric("Taxonomy", display_item.get('taxonomy', 'N/A'))
-                                cols[2].metric("Marks", display_item.get('mark', 'N/A'))
-                                
-                            st.markdown("---")
-
-                    # === Descriptive Handling ===
-                    elif base_type in ('Descriptive', 'Graph Based') or ('final_answer' in q_item or ('answer_key' in q_item and 'questions_list' not in q_item)):
-                        # Descriptive Renderer
-                        display_item, is_regen = _get_effective_q_item(batch_key, idx, q_item)
-                        q_id = display_item.get('question_id', f"Q{idx}")
-                        with st.container():
-                            header = f"### ✍️ Question {idx} ({q_id})"
-                            if is_regen:
-                                header += "  🔄 *(Regenerated)*"
-                            st.markdown(header)
-                            
-                            # Question Text
-                            st.markdown(f"**{display_item.get('question_text', '')}**")
-                            
-                            # Diagram prompt
-                            if 'diagram_prompt' in display_item and display_item['diagram_prompt'] != "No diagram":
-                                st.info(f"🖼️ **Diagram Request:** {display_item['diagram_prompt']}")
-                            
-                            render_duplication_controls(batch_key, f'question{idx}', str(idx), render_context)
-                            render_generated_duplicates(batch_key, f'question{idx}', render_context)
-                            # Answer & Solution
-                            with st.expander("💡 View Solution & Analysis", expanded=False):
-                                # Final Answer
-                                correct_ans = display_item.get('answer_key', display_item.get('final_answer', 'N/A'))
-                                st.success(f"**Answer Key:**\n\n{correct_ans}")
-                                
-                                # Solution
-                                if 'solution' in display_item:
-                                    st.markdown("#### Solution:")
-                                    st.markdown(display_item['solution'])
-                                
-                                # Key Idea
-                                if 'key_idea' in display_item:
-                                    st.markdown("####   Key Idea:")
-                                    st.info(display_item['key_idea'])
-                                    
-                                # Metadata (if available separately, otherwise it's in text)
-                                st.markdown("---")
-                                cols = st.columns(3)
-                                cols[0].metric("DOK Level", display_item.get('dok_level', 'N/A'))
-                                cols[1].metric("Taxonomy", display_item.get('taxonomy', 'N/A'))
-                                cols[2].metric("Marks", display_item.get('mark', 'N/A'))
-                                
-                            st.markdown("---")
-
-                    # === Descriptive w/ Subquestions Handling ===
-                    elif base_type in ('Descriptive w/ Subquestions', 'Case Study', 'Multi-Part') or 'questions_list' in q_item:
-                         # Descriptive w/ Subquestions (similar to Case Study but slightly different keys)
-                        display_item, is_regen = _get_effective_q_item(batch_key, idx, q_item)
-                        q_id = display_item.get('question_id', f"Q{idx}")
-                        
-                        # Handle the weird key "scenario_text/question_text"
-                        scenario_txt = display_item.get('scenario_text/question_text') or display_item.get('scenario_text') or display_item.get('question_text') or ''
-                        
-                        with st.container():
-                            header = f"### 📄 Question {idx} ({q_id})"
-                            if is_regen:
-                                header += "  🔄 *(Regenerated)*"
-                            st.markdown(header)
-                            
-                            # Scenario/Question Text
-                            with st.expander(f"Scenario / Context", expanded=True):
-                                st.markdown(scenario_txt)
-                                if 'diagram_description' in display_item:
-                                    st.info(f"**Diagram:** {display_item['diagram_description']}")
-                            
-                            # Sub-questions
-                            if 'questions_list' in display_item:
-                                st.markdown(f"**Sub-questions:**")
-                                for sub_idx, sub_q in enumerate(display_item['questions_list'], 1):
-                                    clean_sq = re.sub(r"^\s*(?:\([a-zA-Z0-9]+\)|[a-zA-Z0-9]+[.)])\s*", "", str(sub_q))
-                                    st.markdown(f"**({chr(96+sub_idx)})** {clean_sq}")
-                            
-                            # Solution & Key Idea
-                            render_duplication_controls(batch_key, f"question{idx}", str(idx), render_context)
-                            render_generated_duplicates(batch_key, f"question{idx}", render_context)
-                            with st.expander("💡 View Solution & Analysis", expanded=False):
-                                correct_ans = display_item.get('answer_key', display_item.get('final_answer', 'N/A'))
-                                if correct_ans != 'N/A' or 'answer_key' in display_item:
-                                    st.success(f"**Answer Key:**\n\n{correct_ans}")
-
-                                if 'solution' in display_item:
-                                    st.markdown("#### Solution:")
-                                    st.markdown(display_item['solution'])
-                                
-                                if 'key_idea' in display_item:
-                                    st.markdown("#### Key Idea:")
-                                    st.info(display_item['key_idea'])
-                                    
-                                # Metadata
-                                st.markdown("---")
-                                cols = st.columns(3)
-                                cols[0].metric("DOK Level", display_item.get('dok_level', 'N/A'))
-                                cols[1].metric("Taxonomy", display_item.get('taxonomy', 'N/A'))
-                                cols[2].metric("Marks", display_item.get('mark', 'N/A'))
-                                
+                # Sort questions by number (question1, question2, ...)
+                sorted_keys = sorted(
+                    [k for k in val_data.keys() if re.match(r'^(question|q)\d+$', k, re.IGNORECASE)],
+                    key=lambda x: int(re.search(r'\d+', x).group()) if re.search(r'\d+', x) else 0
+                )
+                
+                for i, q_key in enumerate(sorted_keys, 1):
+                    if i > 1:
                         st.markdown("---")
-
-                    # === Case Study Handling (Existing) ===
-                    elif 'scenario_text' in q_item:
-                        # Render Scenario
-                        with st.expander(f"Scenario {idx}", expanded=True):
-                            st.markdown(q_item['scenario_text'])
-                            if 'diagram_description' in q_item:
-                                st.info(f"**Diagram:** {q_item['diagram_description']}")
+                    
+                    
+                    # Intercept regenerated text
+                    regen_key = f"regenerated_{batch_key}_{q_key}"
+                    regen_data = st.session_state.get(regen_key)
+                    is_regen = False
+                    if regen_data and isinstance(regen_data, dict) and 'markdown' in regen_data:
+                        markdown_content = regen_data['markdown']
+                        is_regen = True
+                    else:
+                        markdown_content = val_data[q_key]
+                    
+                    # Ensure it's a string
+                    if not isinstance(markdown_content, str):
+                        # Attempt to extract string if it's a dict
+                        if isinstance(markdown_content, dict):
+                            extracted = markdown_content.get('content') or markdown_content.get('value') or markdown_content.get('markdown') or markdown_content.get('text')
+                            if isinstance(extracted, str):
+                                markdown_content = extracted
+                            else:
+                                markdown_content = json.dumps(markdown_content, indent=2)
+                        else:
+                            markdown_content = str(markdown_content)
+                            
+                    # Unescape just in case
+                    try:
+                        markdown_content = unescape_json_string(markdown_content)
+                    except Exception:
+                        pass
                         
-                        # Render Questions
-                        if 'questions_list' in q_item:
-                            st.markdown(f"**Questions for Scenario {idx}:**")
-                            for sub_idx, sub_q in enumerate(q_item['questions_list'], 1):
-                                clean_sq = re.sub(r"^\s*(?:\([a-zA-Z0-9]+\)|[a-zA-Z0-9]+[.)])\s*", "", str(sub_q))
-                                st.markdown(f"**{sub_idx}.** {clean_sq}")
+                    render_markdown_question(q_key, markdown_content, batch_key, batch_key, render_context, is_regen)
+                    
+                st.markdown("---")
+            else:
+                 st.info("Validation output not found. Showing raw writer output.")
+                 
+            # --- RENDER ORIGINAL WRITER OUTPUT ---
+            with st.expander("🔍 View Original Structured Output (Before Validation)", expanded=not bool(parsed_output.get('validation_output'))):
+                writer_out = parsed_output['writer_output']
+                if 'questions' in writer_out:
+                    base_type = batch_key.split(' - Batch ')[0] if batch_key else ""
+                    
+                    for idx, q_item in enumerate(writer_out['questions'], 1):
                         
-                        # Render Solution
-                        if 'solution' in q_item and q_item['solution']:
-                            with st.expander(f"💡 Solution", expanded=False):
-                                st.markdown(q_item['solution'])
-
-                        # Render Key Idea
-                        if 'key_idea' in q_item and q_item['key_idea']:
-                            with st.expander(f"  Key Idea", expanded=False):
-                                st.markdown(q_item['key_idea'])
+                        # === MCQ Handling ===
+                        if base_type == 'MCQ' or 'options' in q_item:
+                            # MCQ Renderer
+                            display_item, is_regen = _get_effective_q_item(batch_key, idx, q_item)
+                            
+                            if is_regen:
+                                with st.expander(f"Question {idx} 🔄 (Regenerated)", expanded=True):
+                                    render_markdown_question(f"question{idx}", display_item, batch_key, batch_key, f"{render_context}_writer_mcq", is_regenerated=True)
+                            else:
+                                q_id = display_item.get('question_id', f"Q{idx}")
+                                with st.container():
+                                    header = f"#### ❓ Question {idx} ({q_id})"
+                                    st.markdown(header)
+                                    
+                                    # Question Text
+                                    st.markdown(f"**{display_item.get('question_text', '')}**")
+                                    
+                                    # Diagram prompt
+                                    if 'diagram_prompt' in display_item:
+                                        st.info(f"🖼️ **Diagram Request:** {display_item['diagram_prompt']}")
+                                        
+                                    # Options
+                                    opts = display_item.get('options', {})
+                                    if opts:
+                                        st.markdown("**Options:**")
+                                        for opt_key, opt_val in opts.items():
+                                            st.markdown(f"- **{opt_key}:** {opt_val}")
+                                
+                                # Answer & Solution
+                                with st.expander("💡 View Solution & Analysis", expanded=False):
+                                    # Correct Option
+                                    correct_opt = display_item.get('answer_key', display_item.get('correct_option', 'Unknown'))
+                                    st.success(f"**Answer Key:** {correct_opt}")
+                                    
+                                    # Solution
+                                    if 'solution' in display_item:
+                                        st.markdown("**Solution:**")
+                                        st.markdown(display_item['solution'])
+                                    
+                                    # Key Idea
+                                    if 'key_idea' in display_item:
+                                        st.markdown("**Key Idea:**")
+                                        st.info(display_item['key_idea'])
+                                        
+                                    # Distractor Analysis
+                                    if 'distractor_analysis' in display_item:
+                                        st.markdown("**🚫 Distractor Analysis:**")
+                                        da_content = display_item['distractor_analysis']
+                                        
+                                        if isinstance(da_content, list):
+                                            md_table = "| Option | Misconception |\n|---|---|\n"
+                                            for da_row in da_content:
+                                                if isinstance(da_row, dict):
+                                                    opt = da_row.get('Option', '') or da_row.get('option', '')
+                                                    misc = da_row.get('Misconception', '') or da_row.get('misconception', '') or da_row.get('Explanation', '') or da_row.get('explanation', '')
+                                                    md_table += f"| {opt} | {misc} |\n"
+                                                else:
+                                                    md_table += f"| - | {da_row} |\n"
+                                            st.markdown(md_table)
+                                        else:
+                                            st.markdown(da_content)
+                                        
+                                    st.markdown("---")
+                                    cols = st.columns(4)
+                                    cols[0].metric("DOK Level", display_item.get('dok_level', 'N/A'))
+                                    cols[1].metric("Taxonomy", display_item.get('taxonomy', 'N/A'))
+                                    cols[2].metric("Marks", display_item.get('mark', 'N/A'))
+                                    cols[3].metric("Type", display_item.get('mcq_type', 'N/A'))
+                                    
+                                st.markdown("---")
+    
+                        elif base_type == 'Fill in the Blanks' or ('correct_answer' in q_item or ('answer_key' in q_item and 'questions_list' not in q_item and 'diagram_prompt' not in q_item)):
+                            display_item, is_regen = _get_effective_q_item(batch_key, idx, q_item)
+                            
+                            if is_regen:
+                                with st.expander(f"Question {idx} 🔄 (Regenerated)", expanded=True):
+                                    render_markdown_question(f"question{idx}", display_item, batch_key, batch_key, f"{render_context}_writer_fib", is_regenerated=True)
+                            else:
+                                q_id = display_item.get('question_id', f"Q{idx}")
+                                with st.container():
+                                    header = f"#### � Question {idx} ({q_id})"
+                                    st.markdown(header)
+                                    
+                                    # Question Text
+                                    st.markdown(f"**{display_item.get('question_text', '')}**")
+                                    
+                                    # Diagram prompt
+                                    if 'diagram_prompt' in display_item:
+                                        st.info(f"🖼️ **Diagram Request:** {display_item['diagram_prompt']}")
+                                    
+                                    # Answer & Solution
+                                    with st.expander("💡 View Solution & Analysis", expanded=False):
+                                        # Correct Answer
+                                        correct_ans = display_item.get('answer_key', display_item.get('correct_answer', 'N/A'))
+                                        st.success(f"**Answer Key:**\n\n{correct_ans}")
+                                        
+                                        # Solution
+                                        if 'solution' in display_item:
+                                            st.markdown("**Solution:**")
+                                            st.markdown(display_item['solution'])
+                                        
+                                        # Key Idea
+                                        if 'key_idea' in display_item:
+                                            st.markdown("**Key Idea:**")
+                                            st.info(display_item['key_idea'])
+                                            
+                                        st.markdown("---")
+                                        cols = st.columns(3)
+                                        cols[0].metric("DOK Level", display_item.get('dok_level', 'N/A'))
+                                        cols[1].metric("Taxonomy", display_item.get('taxonomy', 'N/A'))
+                                        cols[2].metric("Marks", display_item.get('mark', 'N/A'))
+                                        
+                                    st.markdown("---")
+    
+                        elif base_type in ('Descriptive', 'Graph Based') or ('final_answer' in q_item or ('answer_key' in q_item and 'questions_list' not in q_item)):
+                            display_item, is_regen = _get_effective_q_item(batch_key, idx, q_item)
+                            
+                            if is_regen:
+                                with st.expander(f"Question {idx} 🔄 (Regenerated)", expanded=True):
+                                    render_markdown_question(f"question{idx}", display_item, batch_key, batch_key, f"{render_context}_writer_desc", is_regenerated=True)
+                            else:
+                                q_id = display_item.get('question_id', f"Q{idx}")
+                                with st.container():
+                                    header = f"#### ✍️ Question {idx} ({q_id})"
+                                    st.markdown(header)
+                                    
+                                    # Question Text
+                                    st.markdown(f"**{display_item.get('question_text', '')}**")
+                                    
+                                    # Diagram prompt
+                                    if 'diagram_prompt' in display_item and display_item['diagram_prompt'] != "No diagram":
+                                        st.info(f"🖼️ **Diagram Request:** {display_item['diagram_prompt']}")
+                                    
+                                    # Answer & Solution
+                                    with st.expander("💡 View Solution & Analysis", expanded=False):
+                                        # Final Answer
+                                        correct_ans = display_item.get('answer_key', display_item.get('final_answer', 'N/A'))
+                                        st.success(f"**Answer Key:**\n\n{correct_ans}")
+                                        
+                                        # Solution
+                                        if 'solution' in display_item:
+                                            st.markdown("**Solution:**")
+                                            st.markdown(display_item['solution'])
+                                        
+                                        # Key Idea
+                                        if 'key_idea' in display_item:
+                                            st.markdown("**Key Idea:**")
+                                            st.info(display_item['key_idea'])
+                                            
+                                        st.markdown("---")
+                                        cols = st.columns(3)
+                                        cols[0].metric("DOK Level", display_item.get('dok_level', 'N/A'))
+                                        cols[1].metric("Taxonomy", display_item.get('taxonomy', 'N/A'))
+                                        cols[2].metric("Marks", display_item.get('mark', 'N/A'))
+                                        
+                                    st.markdown("---")
+    
+                        elif base_type in ('Descriptive w/ Subquestions', 'Case Study', 'Multi-Part') or 'questions_list' in q_item:
+                            display_item, is_regen = _get_effective_q_item(batch_key, idx, q_item)
+                            
+                            if is_regen:
+                                with st.expander(f"Question {idx} 🔄 (Regenerated)", expanded=True):
+                                    render_markdown_question(f"question{idx}", display_item, batch_key, batch_key, f"{render_context}_writer_multi", is_regenerated=True)
+                            else:
+                                q_id = display_item.get('question_id', f"Q{idx}")
+                                
+                                scenario_txt = display_item.get('scenario_text/question_text') or display_item.get('scenario_text') or display_item.get('question_text') or ''
+                                
+                                with st.container():
+                                    header = f"#### 📄 Question {idx} ({q_id})"
+                                    st.markdown(header)
+                                    
+                                    # Scenario/Question Text
+                                    with st.expander(f"Scenario / Context", expanded=True):
+                                        st.markdown(scenario_txt)
+                                        if 'diagram_description' in display_item:
+                                            st.info(f"**Diagram:** {display_item['diagram_description']}")
+                                    
+                                    # Sub-questions
+                                    if 'questions_list' in display_item:
+                                        st.markdown(f"**Sub-questions:**")
+                                        for sub_idx, sub_q in enumerate(display_item['questions_list'], 1):
+                                            clean_sq = re.sub(r"^\s*(?:\([a-zA-Z0-9]+\)|[a-zA-Z0-9]+[.)])\s*", "", str(sub_q))
+                                            st.markdown(f"**({chr(96+sub_idx)})** {clean_sq}")
+                                    
+                                    # Solution & Key Idea
+                                    with st.expander("💡 View Solution & Analysis", expanded=False):
+                                        correct_ans = display_item.get('answer_key', display_item.get('final_answer', 'N/A'))
+                                        if correct_ans != 'N/A' or 'answer_key' in display_item:
+                                            st.success(f"**Answer Key:**\n\n{correct_ans}")
+        
+                                        if 'solution' in display_item:
+                                            st.markdown("**Solution:**")
+                                            st.markdown(display_item['solution'])
+                                        
+                                        if 'key_idea' in display_item:
+                                            st.markdown("**Key Idea:**")
+                                            st.info(display_item['key_idea'])
+                                            
+                                        st.markdown("---")
+                                        cols = st.columns(3)
+                                        cols[0].metric("DOK Level", display_item.get('dok_level', 'N/A'))
+                                        cols[1].metric("Taxonomy", display_item.get('taxonomy', 'N/A'))
+                                        cols[2].metric("Marks", display_item.get('mark', 'N/A'))
+                                        
+                                st.markdown("---")
+    
+                        # === Case Study Handling (Fallback) ===
+                        elif 'scenario_text' in q_item:
+                            with st.expander(f"Scenario {idx}", expanded=True):
+                                st.markdown(q_item['scenario_text'])
+                                if 'diagram_description' in q_item:
+                                    st.info(f"**Diagram:** {q_item['diagram_description']}")
+                            
+                            if 'questions_list' in q_item:
+                                st.markdown(f"**Questions for Scenario {idx}:**")
+                                for sub_idx, sub_q in enumerate(q_item['questions_list'], 1):
+                                    clean_sq = re.sub(r"^\s*(?:\([a-zA-Z0-9]+\)|[a-zA-Z0-9]+[.)])\s*", "", str(sub_q))
+                                    st.markdown(f"**{sub_idx}.** {clean_sq}")
+                            
+                            if 'solution' in q_item and q_item['solution']:
+                                with st.expander(f"💡 Solution", expanded=False):
+                                    st.markdown(q_item['solution'])
+    
+                            if 'key_idea' in q_item and q_item['key_idea']:
+                                with st.expander(f"Key Idea", expanded=False):
+                                    st.markdown(q_item['key_idea'])
+            
             # Display metadata is removed for cleaner UI
             return
 
@@ -1274,8 +1180,16 @@ def render_batch_results(batch_key: str, result_data: Dict[str, Any], render_con
         # Invariant check (should never fail after normalization)
         assert isinstance(markdown_content, str), f"Normalization failed: {q_key} is not a string"
         
+        # Check if regenerated
+        regen_key = f"regenerated_{batch_key}_{q_key}"
+        regen_data = st.session_state.get(regen_key)
+        is_regen = False
+        if regen_data and isinstance(regen_data, dict) and 'markdown' in regen_data:
+            markdown_content = regen_data['markdown']
+            is_regen = True
+        
         # Render markdown directly - no JSON parsing, no guessing
-        render_markdown_question(q_key, markdown_content, batch_key, batch_key, render_context)
+        render_markdown_question(q_key, markdown_content, batch_key, batch_key, render_context, is_regen)
     
     # Add spacing at the end
     st.markdown("")

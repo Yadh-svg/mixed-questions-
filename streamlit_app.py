@@ -477,6 +477,14 @@ with st.sidebar:
                             st.rerun()
                         else:
                             st.error("Failed to delete run")
+        st.markdown("---")
+        if st.button("🗑️ Clear All History", help="Delete all saved runs permanently", type="primary"):
+            count = history_mgr.clear_all_runs()
+            if count > 0:
+                st.toast(f"✅ Cleared {count} runs!")
+                st.rerun()
+            else:
+                st.info("No runs to clear or an error occurred.")
     else:
         st.info("No saved runs yet. Generate questions to save history!")
     
@@ -2161,17 +2169,17 @@ with tab2:
                                         st.session_state[regen_store_key] = regen_data
                                         success_count += 1
                                         
-                                        # Save to txt file in a new folder (disabled per user request)
-                                        # try:
-                                        #     import os
-                                        #     import json
-                                        #     regen_folder = "regenerated_outputs"
-                                        #     os.makedirs(regen_folder, exist_ok=True)
-                                        #     regen_file = os.path.join(regen_folder, f"{unique_key}_regenerated.txt")
-                                        #     with open(regen_file, "w", encoding="utf-8") as rf:
-                                        #         rf.write(json.dumps(regen_data, indent=2))
-                                        # except Exception as e:
-                                        #     logger.error(f"Failed to save regenerated data to txt: {e}")
+                                        # Save to txt file in a new folder
+                                        try:
+                                            import os
+                                            regen_folder = "prompt_logs/regeneration_output"
+                                            os.makedirs(regen_folder, exist_ok=True)
+                                            # Using a consistent naming style
+                                            regen_file = os.path.join(regen_folder, f"{unique_key}_regenerated.md")
+                                            with open(regen_file, "w", encoding="utf-8") as rf:
+                                                rf.write(regen_data.get('markdown', str(regen_data)))
+                                        except Exception as e:
+                                            logger.error(f"Failed to save regenerated data to txt: {e}")
                                             
                                         # Track Cost
                                         from batch_processor import calculate_cost
@@ -2230,10 +2238,8 @@ with tab2:
                                 # Use regenerated version if available, otherwise use original
                                 regen_store_key = f"regenerated_{batch_key}_{q_key}"
                                 regen_data = st.session_state.get(regen_store_key)
-                                if regen_data and isinstance(regen_data, dict):
-                                    # Exclude internal keys before serialising
-                                    effective = {k: v for k, v in regen_data.items() if k != 'question_code'}
-                                    q_content_str = json.dumps(effective, indent=2)
+                                if regen_data and isinstance(regen_data, dict) and 'markdown' in regen_data:
+                                    q_content_str = str(regen_data['markdown'])
                                 else:
                                     q_content_str = json.dumps(q_item, indent=2)
                                 
@@ -2271,12 +2277,10 @@ with tab2:
                                 q_num = q_key.replace("question", "").replace("q", "")
                                 question_code = f"{batch_key}_q{q_num}" if q_num else f"{batch_key}_{q_key}"
                                 
-                                # Use regenerated version if available, otherwise use original
                                 regen_store_key = f"regenerated_{batch_key}_{q_key}"
                                 regen_data = st.session_state.get(regen_store_key)
-                                if regen_data and isinstance(regen_data, dict):
-                                    effective = {k: v for k, v in regen_data.items() if k != 'question_code'}
-                                    q_content_str_old = json.dumps(effective, indent=2)
+                                if regen_data and isinstance(regen_data, dict) and 'markdown' in regen_data:
+                                    q_content_str_old = str(regen_data['markdown'])
                                 else:
                                     q_content_str_old = q_content if isinstance(q_content, str) else str(q_content)
                                 

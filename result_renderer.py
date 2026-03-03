@@ -424,7 +424,13 @@ def render_markdown_question(question_key: str, markdown_content: str, question_
     # Render the markdown content directly
     # Fix: Replace single newlines with double newlines for proper markdown rendering
     # This ensures OPTIONS and other sections render with proper line breaks
-    rendered_content = markdown_content.replace('\n', '  \n')
+    
+    # Normalize Windows line endings (important safeguard)
+    markdown_content = markdown_content.replace('\r\n', '\n')
+    
+    # Convert ONLY isolated single newlines into Markdown hard breaks
+    rendered_content = re.sub(r'(?<!\n)\n(?!\n)', '  \n', markdown_content)
+    
     st.markdown(rendered_content)
     
     # Display duplicates if they exist (only in results context)
@@ -1194,4 +1200,146 @@ def render_batch_results(batch_key: str, result_data: Dict[str, Any], render_con
     # Add spacing at the end
     st.markdown("")
     st.markdown("")
+
+
+def generate_markdown_for_download(batch_key: str, result_data: Dict[str, Any]) -> str:
+    """
+    Convert a batch result into a clean, human-readable Markdown document
+    suitable for download and pasting into Word / Google Docs.
+
+    Priority:
+      1. validation_output  (pre-formatted markdown strings from the validator)
+      2. writer_output      (structured JSON dicts → formatted markdown)
+      3. normalize_llm_output_to_questions fallback (old pipeline format)
+    """
+    text_content = result_data.get('text', '')
+    if not text_content:
+        return ""
+
+    lines = []
+
+    try:
+        parsed = json.loads(text_content)
+    except json.JSONDecodeError:
+        parsed = None
+
+    # ------------------------------------------------------------------ #
+    # PATH 1 – 3-stage pipeline: validation_output contains {qX: markdown}
+    # ------------------------------------------------------------------ #
+    if isinstance(parsed, dict) and 'writer_output' in parsed:
+        val_data = parsed.get('validation_output') or {}
+        writer_questions = parsed.get('writer_output', {}).get('questions', [])
+
+        if val_data:
+            sorted_keys = sorted(
+                [k for k in val_data.keys() if re.match(r'^(question|q)\d+$', k, re.IGNORECASE)],
+                key=lambda x: int(re.search(r'\d+', x).group()) if re.search(r'\d+', x) else 0
+            )
+            for i, q_key in enumerate(sorted_keys, 1):
+                if i > 1:
+                    lines.append("\n---\n")
+                lines.append(f"## Question {i}\n")
+
+                # Check if this question has been regenerated
+                regen_key = f"regenerated_{batch_key}_{q_key}"
+                regen_data = st.session_state.get(regen_key)
+                if regen_data and isinstance(regen_data, dict) and 'markdown' in regen_data:
+                    md = regen_data['markdown']
+                    lines.append("*(Regenerated)*\n")
+                else:
+                    md = val_data[q_key]
+                    if not isinstance(md, str):
+                        md = json.dumps(md, indent=2)
+                    try:
+                        md = unescape_json_string(md)
+                    except Exception:
+                        pass
+
+                lines.append(md.strip())
+                lines.append("")
+            return "\n".join(lines)
+
+        # No validation_output — fall back to formatting writer_output questions
+        if writer_questions:
+            base_type = batch_key.split(' - Batch ')[0] if batch_key else ""
+            for i, q_item in enumerate(writer_questions, 1):
+                if i > 1:
+                    lines.append("\n---\n")
+                lines.append(f"## Question {i}\n")
+
+                q_text = q_item.get('question_text', q_item.get('scenario_text/question_text', q_item.get('scenario_text', '')))
+                if q_text:
+                    lines.append(f"**{q_text}**\n")
+
+                # OPTIONS (MCQ)
+                opts = q_item.get('options', {})
+                if isinstance(opts, dict) and opts:
+                    lines.append("\n**OPTIONS**\n")
+                    for opt_k, opt_v in opts.items():
+                        lines.append(f"{opt_k}) {opt_v}")
+                    lines.append("")
+
+                # Sub-questions (Case Study / Multi-Part)
+                ql = q_item.get('questions_list', [])
+                if isinstance(ql, list) and ql:
+                    lines.append("\n**Sub-questions:**\n")
+                    for si, sq in enumerate(ql, 1):
+                        clean_sq = re.sub(r"^\s*(?:\([a-zA-Z0-9]+\)|[a-zA-Z0-9]+[.)]) *", "", str(sq))
+                        lines.append(f"({chr(96+si)}) {clean_sq}")
+                    lines.append("")
+
+                # ANSWER KEY
+                answer = (q_item.get('answer_key')
+                          or q_item.get('correct_option')
+                          or q_item.get('correct_answer')
+                          or q_item.get('final_answer', ''))
+                if answer:
+                    lines.append(f"\n**ANSWER KEY**\n\n{answer}\n")
+
+                # SOLUTION
+                sol = q_item.get('solution', '')
+                if sol:
+                    lines.append(f"\n**SOLUTION**\n\n{sol}\n")
+
+                # DISTRACTOR ANALYSIS (MCQ)
+                da = q_item.get('distractor_analysis', [])
+                if isinstance(da, list) and da:
+                    lines.append("\n**DISTRACTOR ANALYSIS**\n")
+                    for row in da:
+                        if isinstance(row, dict):
+                            opt = row.get('Option & Error Type', row.get('Option', ''))
+                            misc = row.get('Misconception', row.get('Explanation', ''))
+                            lines.append(f"- **{opt}**: {misc}")
+                        else:
+                            lines.append(f"- {row}")
+                    lines.append("")
+
+                # KEY IDEA
+                ki = q_item.get('key_idea', '')
+                if ki:
+                    lines.append(f"\n**KEY IDEA**\n\n{ki}\n")
+
+            return "\n".join(lines)
+
+    # ------------------------------------------------------------------ #
+    # PATH 2 – normalizer (old 2-stage / raw validator output)
+    # ------------------------------------------------------------------ #
+    questions_dict = normalize_llm_output_to_questions(text_content)
+    if questions_dict:
+        sorted_keys = sorted(
+            questions_dict.keys(),
+            key=lambda x: int(re.search(r'\d+', x).group()) if re.search(r'\d+', x) else 0
+        )
+        for i, q_key in enumerate(sorted_keys, 1):
+            if i > 1:
+                lines.append("\n---\n")
+            lines.append(f"## Question {i}\n")
+            lines.append(questions_dict[q_key].strip())
+            lines.append("")
+        return "\n".join(lines)
+
+    # ------------------------------------------------------------------ #
+    # PATH 3 – absolute fallback: return raw text as-is
+    # ------------------------------------------------------------------ #
+    return text_content
 

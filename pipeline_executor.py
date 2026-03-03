@@ -130,9 +130,9 @@ async def run_stage_pipeline(
         prompt_data_2 = build_writer_prompt(math_core_data, questions, general_config, files, previous_batch_metadata)
         
         # Save prompt (Disabled by user request)
-        # if save_prompts_dir:
-        #     with open(save_prompts_dir / "stage2_writer_prompt.txt", "w", encoding="utf-8") as f:
-        #         f.write(prompt_data_2['prompt'])
+        if save_prompts_dir:
+            with open(save_prompts_dir / "stage2_writer_prompt.txt", "w", encoding="utf-8") as f:
+                f.write(prompt_data_2['prompt'])
                 
         result_2 = await run_gemini_async(
             prompt=prompt_data_2['prompt'],

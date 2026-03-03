@@ -1885,6 +1885,21 @@ with tab1:
         # Progressive rendering already displays results during generation
         # No need to duplicate the display here anymore
 
+    st.markdown("---")
+    if st.button("Go to Result Tab ➡️", use_container_width=True):
+        js = '''
+        <script>
+            var tabs = window.parent.document.querySelectorAll('button[data-baseweb="tab"]');
+            for (var i = 0; i < tabs.length; i++) {
+                if (tabs[i].innerText.includes('Results')) {
+                    tabs[i].click();
+                    break;
+                }
+            }
+        </script>
+        '''
+        st.components.v1.html(js, height=0)
+
 
 with tab2:
     st.markdown('<div class="section-header">Previously Generated Questions</div>', unsafe_allow_html=True)
@@ -1950,25 +1965,28 @@ with tab2:
         # Download option
         st.markdown("---")
         
-        # Combine all results
+        # Combine all results as clean, rendered Markdown
+        from result_renderer import generate_markdown_for_download
         combined_output = ""
         for batch_key, batch_result in results.items():
             if batch_key.startswith('_') or not isinstance(batch_result, dict):
                 continue
             val_res = batch_result.get('validated', {})
             raw_res = batch_result.get('raw', {})
-            final_text = val_res.get('text', '') if val_res else raw_res.get('text', 'Error')
+            # Prefer validated output; fall back to raw
+            result_data = val_res if (val_res and not val_res.get('error')) else raw_res
 
-            combined_output += f"\n\n{'='*80}\n"
-            combined_output += f"BATCH: {batch_key}\n"
-            combined_output += f"{'='*80}\n\n"
-            combined_output += final_text
+            batch_md = generate_markdown_for_download(batch_key, result_data)
+            if batch_md:
+                combined_output += f"\n\n# BATCH: {batch_key}\n\n"
+                combined_output += batch_md
+                combined_output += "\n"
         
         st.download_button(
             label=" Download All Questions",
-            data=combined_output,
-            file_name="generated_questions.md",
-            mime="text/markdown",
+            data=combined_output.strip(),
+            file_name="generated_questions.txt",
+            mime="text/plain",
             use_container_width=True,
             key="download_inline_results"
         )
@@ -2169,17 +2187,16 @@ with tab2:
                                         st.session_state[regen_store_key] = regen_data
                                         success_count += 1
                                         
-                                        # Save to txt file in a new folder
-                                        try:
-                                            import os
-                                            regen_folder = "prompt_logs/regeneration_output"
-                                            os.makedirs(regen_folder, exist_ok=True)
-                                            # Using a consistent naming style
-                                            regen_file = os.path.join(regen_folder, f"{unique_key}_regenerated.md")
-                                            with open(regen_file, "w", encoding="utf-8") as rf:
-                                                rf.write(regen_data.get('markdown', str(regen_data)))
-                                        except Exception as e:
-                                            logger.error(f"Failed to save regenerated data to txt: {e}")
+                                        # Save to txt file (disabled)
+                                        # try:
+                                        #     import os
+                                        #     regen_folder = "prompt_logs/regeneration_output"
+                                        #     os.makedirs(regen_folder, exist_ok=True)
+                                        #     regen_file = os.path.join(regen_folder, f"{unique_key}_regenerated.md")
+                                        #     with open(regen_file, "w", encoding="utf-8") as rf:
+                                        #         rf.write(regen_data.get('markdown', str(regen_data)))
+                                        # except Exception as e:
+                                        #     logger.error(f"Failed to save regenerated data to txt: {e}")
                                             
                                         # Track Cost
                                         from batch_processor import calculate_cost
@@ -2420,6 +2437,21 @@ with tab2:
                         except Exception as e:
                             st.error(f" Error during duplication: {str(e)}")
                             st.exception(e)
+
+    st.markdown("---")
+    if st.button("⬅️ Go to Configure and Generate Page", use_container_width=True):
+        js = '''
+        <script>
+            var tabs = window.parent.document.querySelectorAll('button[data-baseweb="tab"]');
+            for (var i = 0; i < tabs.length; i++) {
+                if (tabs[i].innerText.includes('Configure & Generate')) {
+                    tabs[i].click();
+                    break;
+                }
+            }
+        </script>
+        '''
+        st.components.v1.html(js, height=0)
 
 # Footer
 st.markdown("---")

@@ -108,7 +108,8 @@ validation_prompt: |
     7. SOLUTION CHECK
       - Fix arithmetic / simple computational mistakes in solution steps. Update final answer accordingly.
       - If the solution method is conceptually incorrect, attempt a minimal one-line correction to the method if that corrects it while preserving structure. If a minimal correction cannot fix the conceptual error without changing structure, perform the best conservative in-structure repair possible (rewrite solution steps to the correct method while keeping structure intact) .
-      - Do not remove marks from the solution 
+      - Do not remove marks from the solution (Only for descriptive and descriptive with subparts )
+      - mark splits should not appear in between solution (Only for descriptive and descriptive with subparts)
     8. DISTRACTORS (MCQ / ASSERTION_REASON)
       - Each distractor must map to one distinct error type among {Conceptual, Computational, Communicational, Comprehension}.
       - You may rewrite distractor wording or apply small numeric perturbations (<20% change) to achieve distinct error types, but you MUST NOT change the correct option or the number of options.
@@ -493,7 +494,7 @@ validation_prompt: |
       2. Use your thinking space to verify logic, checking solutions, and refining the markdown structure.
       3. Produce a single clean final question item followed by its solution structure and metadata in the final response.
     # Keu idea should be there for all the type of questions 
-    ## vALIDATION REPORT :
+    ## VALIDATION REPORT :
       - Should be at the end, it should be the last thing 
       - Add validation report along with the markdown in the quuestion key (validation report contains the reason if you are changing any questions)
 

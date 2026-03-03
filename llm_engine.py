@@ -307,8 +307,8 @@ async def duplicate_questions_async(
     formatted_prompt = formatted_prompt.replace("{{ORIGINAL_QUESTION}}", original_question_markdown)
     formatted_prompt = formatted_prompt.replace("{{ADDITIONAL_NOTES}}", additional_notes)
     
-    # Save prompt for debugging
-    save_prompt(formatted_prompt, "duplication", question_code)
+    # Save prompt for debugging (disabled)
+    # save_prompt(formatted_prompt, "duplication", question_code)
     
     # Prepare files list if PDF is provided
     files_to_upload = [pdf_file] if pdf_file else None
@@ -448,8 +448,8 @@ async def regenerate_question_async(
     prompt = writer_payload['prompt']
     combined_files = writer_payload['files']
     
-    # Save the regeneration prompt for debugging
-    save_prompt(prompt, "regeneration", question_code)
+    # Save the regeneration prompt for debugging (disabled)
+    # save_prompt(prompt, "regeneration", question_code)
     
     # Run Generation
     result = await run_gemini_async(

@@ -743,45 +743,166 @@ cbs_writer: |
 
         - you should use indian names and environments
       </question_enhancement_idea>
-      <DOK_level_explanation>
-            COGNITIVE DEPTH & OLYMPIAD REASONING MODE (MANDATORY)
+      <DOK_rigor_enforcement>
 
-            All questions must be grade-appropriate in content,
-            but non-direct and structure-based in reasoning.
+        THIS BLOCK IS MANDATORY. Apply before finalising any question.
 
-            The required concept must NOT be immediately usable.
-            Students must interpret the situation, identify relationships,
-            and use intermediate reasoning before reaching the answer.
+        ════════════════════════════════════════════
+        THE CORE PROBLEM TO AVOID
+        ════════════════════════════════════════════
 
-            --------------------------------
-            DOK STRUCTURAL DEFINITIONS
-            --------------------------------
+        The model's natural tendency is to:
+        1. Generate a question it finds easy to write.
+        2. Then label it with the requested DOK level.
 
-            A DOK Level 1(Knowing) assessment item requires the recall of information such as fact, definition, term, or a simple procedure, as well as performing a simple algorithm or applying a formula. 
-            A DOK Level 2 (Applying) assessment item requires students to make some decisions as to how to approach the problem/activity, apply multiple concepts to solve a problem, represent mathematical ideas, whereas Level 1 requires students to demonstrate a rote response, perform a well-known algorithm, follow a set procedure (like a recipe), or perform a clearly defined series of steps. 
-            A DOK Level 3 (Strategic Thinking) requires reasoning, planning, using evidence, justification of answers, analyzing relationships, interpreting results, drawing conclusions from the given scenario or data and a higher level of thinking than the previous two levels.
+        This is BANNED.
 
-            --------------------------------
-            OLYMPIAD STRUCTURE RULES
-            --------------------------------
+        The correct order is:
+        1. Read the DOK level required.
+        2. Identify what KIND of thinking that DOK demands.
+        3. Design the question so that thinking is FORCED.
+        4. Verify it passes the gate below before outputting.
 
-            • The solution path must not be obvious.
-            • Multiple elements must interact (not a single relation).
-            • Some information should be indirect or distracting.
-            • The answer must be forced by constraints, not direct substitution.
-            • At least one intermediate inference must be necessary.
+        ════════════════════════════════════════════
+        DOK LEVEL THINKING FINGERPRINTS
+        ════════════════════════════════════════════
 
-            --------------------------------
-            DIRECTNESS CHECK (MANDATORY)
-            --------------------------------
+        Before writing the question, silently name the
+        EXACT thinking action the student must perform.
 
-            If the required method is obvious immediately,
-            or a single direct step gives the answer,
-            the question must be redesigned.
+        DOK 1 — The student:
+          • Recalls a single fact, definition, or formula.
+          • Applies one known procedure with no decisions.
+          • Arrives at the answer in ONE direct step.
+          Fingerprint: "I remember → I apply → I answer."
 
-                  
-            - whatever you are thinking to make question make it one lvel up so that it will be in proper dok level
-      </DOK_level_explanation>
+        DOK 2 — The student MUST:
+          • Identify WHICH concept or relationship applies
+            (this choice is not given in the question).
+          • Use TWO OR MORE connected steps where the
+            output of one step feeds into the next.
+          • The path is not visible until the student
+            interprets the situation first.
+          Fingerprint: "I interpret → I decide → I calculate → I answer."
+          HARD RULE: If the student can answer without
+          making an interpretive decision first → it is DOK 1.
+          Rewrite.
+
+        DOK 3 — The student MUST:
+          • Work through an incomplete path where at least
+            ONE intermediate value or relationship is
+            hidden and must be derived first.
+          • The final answer depends on correctly chaining
+            two or more inferences — not just two steps.
+          • Some information in the question may be
+            indirect, requiring interpretation before use.
+          • The student cannot begin computing immediately
+            after reading — they must plan the route first.
+          Fingerprint: "I analyse → I find a hidden link →
+          I derive an intermediate result → I use it →
+          I reach the answer."
+          HARD RULE: If there is no hidden intermediate
+          result the student must derive → it is DOK 2.
+          Rewrite.
+
+        ════════════════════════════════════════════
+        MANDATORY PRE-OUTPUT GATE (run for EVERY question)
+        ════════════════════════════════════════════
+
+        After drafting the question, answer ALL questions
+        in the gate for the requested DOK level.
+        Even ONE "NO" → DISCARD and rewrite from scratch.
+
+        --- DOK 2 GATE ---
+        Gate Q1: Does the student need to identify WHICH
+                concept or relationship applies, rather
+                than being told directly?
+                YES / NO
+
+        Gate Q2: Are there at least TWO dependent steps
+                where step 2 cannot begin without the
+                result of step 1?
+                YES / NO
+
+        Gate Q3: Can the student answer by applying a
+                single memorised rule immediately?
+                (If YES → it is DOK 1. Rewrite.)
+                YES / NO  ← must be NO to pass
+
+        --- DOK 3 GATE ---
+        Gate Q1: Is there at least one intermediate value
+                or relationship that is NOT named in the
+                question and must be derived by the student?
+                YES / NO
+
+        Gate Q2: Does the solution require chaining
+                two or more inferences (not just two steps)?
+                YES / NO
+
+        Gate Q3: Would a student need to PLAN their
+                approach before computing?
+                YES / NO
+
+        Gate Q4: Can the student begin calculating
+                immediately after reading the question?
+                (If YES → it is DOK 2. Rewrite.)
+                YES / NO  ← must be NO to pass
+
+        ════════════════════════════════════════════
+        THE SINGLE STEP TEST (apply to ALL DOK 2 and DOK 3)
+        ════════════════════════════════════════════
+
+        Read your drafted question.
+        Ask: "If I gave this question to a student who
+        knows the topic well, could they write the answer
+        in under 10 seconds without writing any working?"
+
+        YES → the question is too direct. It is DOK 1.
+              Rewrite by adding a hidden relationship or
+              an intermediate value the student must find.
+
+        NO  → the question has the required depth.
+              Proceed to the distractor step.
+
+        ════════════════════════════════════════════
+        DOK UPGRADE TECHNIQUE (how to deepen any question)
+        ════════════════════════════════════════════
+
+        If a question is passing DOK 1 but needs to be DOK 2:
+        → Wrap the direct value inside a relationship.
+          Instead of "find x if 2x + 3 = 11",
+          give a situation where the student must FIRST
+          identify that the relationship IS 2x + 3 = 11
+          before solving.
+
+        If a question is passing DOK 2 but needs to be DOK 3:
+        → Hide one of the known values behind an
+          intermediate calculation.
+          The student must derive a missing piece before
+          the main method can even begin.
+        → Add a constraint that forces the student to
+          consider two possible paths and select one.
+        → Make the scenario give information in a form
+          that must be converted or reinterpreted before use.
+
+        ════════════════════════════════════════════
+        DISTRACTOR DEPTH RULE (DOK-linked)
+        ════════════════════════════════════════════
+
+        For DOK 2 and DOK 3 questions:
+        At least ONE distractor must represent a student
+        who reached the correct method but made an error
+        at the interpretive step (before the calculation).
+
+        This means:
+        → One distractor must show what happens if the
+          student SKIPS the interpretation step and
+          applies the formula directly to the surface values.
+        → This is different from a simple computational error.
+        → It tests whether the student understood WHY
+          the method applies, not just HOW to apply it.
+
+      </DOK_rigor_enforcement>
       <knowledge_boundary>
           Treat the uploaded PDFs/images as the only source of knowledge.
           Do not use any outside syllabus, curriculum, or textbook knowledge.
@@ -907,7 +1028,27 @@ cbs_writer: |
           to ask for ONE specific value from that set 
           (e.g., the greatest, the smallest, the only even one).
       </what_not_to_do>
+      <PDF_USE_RESTRICTION>
+        A textbook PDF may be provided as reference. Its permitted and banned uses are strictly defined:
+
+        PERMITTED — use the PDF ONLY for:
+        ✓ Identifying the exact concept and its formal definition
+        ✓ Understanding the scope of the topic (what is and isn't in this chapter)
+        ✓ Confirming which subtopics belong to this section
+        ✓ Verifying correct mathematical notation for this level
+
+        BANNED — never use the PDF for:
+        ✗ Scenario ideas — do NOT borrow or adapt any scenario, story, or context from the PDF
+        ✗ Numbers or values — do NOT reuse or slightly modify numerical values from examples
+        ✗ Question structure — do NOT mirror the structure of any solved example or exercise
+        ✗ Problem framing — do NOT use the same setup even if you change the characters or objects
+
+        If a scenario idea came from looking at the PDF — discard it.
+        Build the scenario from real-world observation only, as defined in the Scenario Authenticity Rules.
+        The PDF is a concept map, not a scenario source.
+      </PDF_USE_RESTRICTION>
     </requirements>
+
     
     <output_format>
       Return a valid JSON object 
@@ -1491,6 +1632,8 @@ mcq_writer: |
           - All numbered statements (I, II, III, IV) must be **directly derived from this stem**.
           - Statements must NOT be independent or unrelated facts.
           - Each statement should test interpretation, evaluation, or application of the given stem.
+          - The stem contains **four statements** (Statement I, Statement II, Statement III, Statement IV).
+          - There should be 4 options .
 
           ### Statement Structure
           - Provide **multiple numbered statements** (e.g., I, II, III, IV).
@@ -1533,7 +1676,71 @@ mcq_writer: |
               - DOK 2 questions involve **identifying the correct combination of statements** (e.g., I & III, II & IV).
               - Students are expected to evaluate and compare multiple statements, but **no justification or reasoning** should be required.
 
+                  
+            ### Mandatory Distractor Analysis for DOK 2 questions for grade 6 and upper (for statement based questions)
 
+              When providing distractor analysis for DOK 2 grade 6 adn upper questions, follow the format and rules below strictly.
+
+              #### Core Requirement
+              The distractor analysis MUST:
+              1. State which statements were correctly identified as true.
+              2. Explicitly state any true statement that the student failed to identify.
+              3. Explicitly explain why any incorrect statement was mistakenly identified as true.
+
+              #### Mandatory Structure
+              Use the exact narrative structure below (modify only statement numbers and reasons):
+
+              "You have identified that Statement ___ is true.  
+              But you missed to identify that Statement ___ is also a true statement.  
+              You might have thought so since ___ (reason category: computational / conceptual / communication / comprehension).  
+              Also, you thought that Statement ___ is a correct statement since ___ (specific reason)."
+
+              #### If Multiple Statements Are Correctly Identified
+              - Clearly acknowledge all correctly identified statements.
+              - Then address each incorrectly identified statement individually with a reason.
+
+              #### Reason Specification Rules
+              - Reasons must be **specific and concrete**, not vague.
+              - Acceptable examples include:
+                - You might have misunderstood a parallelogram as a square.
+                - You might have forgotten to apply the theorem.
+                - You might have added instead of subtracting.
+                - You might have missed noticing a condition in the question.
+                - You might be unaware of the relevant property or rule.
+              - Always classify the error under one of the following:
+                **computational / conceptual / communication / comprehension**
+
+              #### Output Constraint
+              - Do NOT change the tone or structure.
+              - Do NOT omit either:
+                - the reason for missing a true statement, or
+                - the reason for selecting a false statement.
+              - This format is mandatory for all statement-based distractor analyses.
+
+            **CRITICAL Distractor Analysis Requirements:**
+            - **Maximum Length**: Each distractor rationale must be **4 lines maximum** (total for all three sub-sections combined)
+            - **Child-Friendly Language**: Use simple, age-appropriate language suitable for {{Grade}}
+            - **Concise and Clear**: No verbose explanations - keep it short and focused
+            - **Educational Tone**: Be supportive, not condescending
+            - Do NOT say: "You correctly identified that…" for an incorrect option
+            - Include mathematical notation when needed, but keep it minimal
+            - Do Not explicitly say  "Why students might select this" , "What's wrong with this approach" , "Correct approach" in the distractor analysis (you are the one who is explaining the distractor analysis)
+            - Make sure each distractor analysis is unique and addresses a different type of error
+            - Make sure each distractor analysis is of maximum 4 lines
+
+            Error-Type Diversity Rule (MANDATORY):
+              Each of the three distractors must be based on a different error type.
+              No two distractors may rely on the same underlying mistake, even if expressed differently.
+
+            **Example:**
+                | Distractors | Misconception |
+                |------------|----------------|
+                | B – Conceptual error | You correctly identified that Statement I is true, but you might have misunderstood the term “first five.” The sum of the first five consecutive odd numbers (1 + 3 + 5 + 7 + 9) is 25, not 4³ = 64. Since Statement II is mathematically incorrect, this option is incorrect as a whole. |
+                | C – Computational Error   | You correctly identified that Statement I is true, but you might have assumed that the sum of any three odd numbers always equals 3³ = 27. For example, 1 + 3 + 5 equals 9, not 27. Because Statement III is incorrect, this option is incorrect. |
+                | D – Comprehension Error | You correctly identified that Statement I is true, but you might have misunderstood two ideas: believing that any three odd numbers always sum to 27, and assuming that the sum of consecutive odd numbers is always odd. For example, 1 + 3 = 4 (even). Since Statement III and Statement IV are both incorrect, this option is wrong. |
+
+
+            ---
 
        </statement_based_Mcq>
 
@@ -1927,45 +2134,166 @@ mcq_writer: |
 
       </question_enhancement_idea>
 
-       <DOK_level_explanation>
-            COGNITIVE DEPTH & OLYMPIAD REASONING MODE (MANDATORY)
+      <DOK_rigor_enforcement>
 
-            All questions must be grade-appropriate in content,
-            but non-direct and structure-based in reasoning.
+        THIS BLOCK IS MANDATORY. Apply before finalising any question.
 
-            The required concept must NOT be immediately usable.
-            Students must interpret the situation, identify relationships,
-            and use intermediate reasoning before reaching the answer.
+        ════════════════════════════════════════════
+        THE CORE PROBLEM TO AVOID
+        ════════════════════════════════════════════
 
-            --------------------------------
-            DOK STRUCTURAL DEFINITIONS
-            --------------------------------
+        The model's natural tendency is to:
+        1. Generate a question it finds easy to write.
+        2. Then label it with the requested DOK level.
 
-            A DOK Level 1(Knowing) assessment item requires the recall of information such as fact, definition, term, or a simple procedure, as well as performing a simple algorithm or applying a formula. 
-            A DOK Level 2 (Applying) assessment item requires students to make some decisions as to how to approach the problem/activity, apply multiple concepts to solve a problem, represent mathematical ideas, whereas Level 1 requires students to demonstrate a rote response, perform a well-known algorithm, follow a set procedure (like a recipe), or perform a clearly defined series of steps. 
-            A DOK Level 3 (Strategic Thinking) requires reasoning, planning, using evidence, justification of answers, analyzing relationships, interpreting results, drawing conclusions from the given scenario or data and a higher level of thinking than the previous two levels.
+        This is BANNED.
 
-            --------------------------------
-            OLYMPIAD STRUCTURE RULES
-            --------------------------------
+        The correct order is:
+        1. Read the DOK level required.
+        2. Identify what KIND of thinking that DOK demands.
+        3. Design the question so that thinking is FORCED.
+        4. Verify it passes the gate below before outputting.
 
-            • The solution path must not be obvious.
-            • Multiple elements must interact (not a single relation).
-            • Some information should be indirect or distracting.
-            • The answer must be forced by constraints, not direct substitution.
-            • At least one intermediate inference must be necessary.
+        ════════════════════════════════════════════
+        DOK LEVEL THINKING FINGERPRINTS
+        ════════════════════════════════════════════
 
-            --------------------------------
-            DIRECTNESS CHECK (MANDATORY)
-            --------------------------------
+        Before writing the question, silently name the
+        EXACT thinking action the student must perform.
 
-            If the required method is obvious immediately,
-            or a single direct step gives the answer,
-            the question must be redesigned.
+        DOK 1 — The student:
+          • Recalls a single fact, definition, or formula.
+          • Applies one known procedure with no decisions.
+          • Arrives at the answer in ONE direct step.
+          Fingerprint: "I remember → I apply → I answer."
 
-                  
-            - whatever you are thinking to make question make it one lvel up so that it will be in proper dok level
-      </DOK_level_explanation>
+        DOK 2 — The student MUST:
+          • Identify WHICH concept or relationship applies
+            (this choice is not given in the question).
+          • Use TWO OR MORE connected steps where the
+            output of one step feeds into the next.
+          • The path is not visible until the student
+            interprets the situation first.
+          Fingerprint: "I interpret → I decide → I calculate → I answer."
+          HARD RULE: If the student can answer without
+          making an interpretive decision first → it is DOK 1.
+          Rewrite.
+
+        DOK 3 — The student MUST:
+          • Work through an incomplete path where at least
+            ONE intermediate value or relationship is
+            hidden and must be derived first.
+          • The final answer depends on correctly chaining
+            two or more inferences — not just two steps.
+          • Some information in the question may be
+            indirect, requiring interpretation before use.
+          • The student cannot begin computing immediately
+            after reading — they must plan the route first.
+          Fingerprint: "I analyse → I find a hidden link →
+          I derive an intermediate result → I use it →
+          I reach the answer."
+          HARD RULE: If there is no hidden intermediate
+          result the student must derive → it is DOK 2.
+          Rewrite.
+
+        ════════════════════════════════════════════
+        MANDATORY PRE-OUTPUT GATE (run for EVERY question)
+        ════════════════════════════════════════════
+
+        After drafting the question, answer ALL questions
+        in the gate for the requested DOK level.
+        Even ONE "NO" → DISCARD and rewrite from scratch.
+
+        --- DOK 2 GATE ---
+        Gate Q1: Does the student need to identify WHICH
+                concept or relationship applies, rather
+                than being told directly?
+                YES / NO
+
+        Gate Q2: Are there at least TWO dependent steps
+                where step 2 cannot begin without the
+                result of step 1?
+                YES / NO
+
+        Gate Q3: Can the student answer by applying a
+                single memorised rule immediately?
+                (If YES → it is DOK 1. Rewrite.)
+                YES / NO  ← must be NO to pass
+
+        --- DOK 3 GATE ---
+        Gate Q1: Is there at least one intermediate value
+                or relationship that is NOT named in the
+                question and must be derived by the student?
+                YES / NO
+
+        Gate Q2: Does the solution require chaining
+                two or more inferences (not just two steps)?
+                YES / NO
+
+        Gate Q3: Would a student need to PLAN their
+                approach before computing?
+                YES / NO
+
+        Gate Q4: Can the student begin calculating
+                immediately after reading the question?
+                (If YES → it is DOK 2. Rewrite.)
+                YES / NO  ← must be NO to pass
+
+        ════════════════════════════════════════════
+        THE SINGLE STEP TEST (apply to ALL DOK 2 and DOK 3)
+        ════════════════════════════════════════════
+
+        Read your drafted question.
+        Ask: "If I gave this question to a student who
+        knows the topic well, could they write the answer
+        in under 10 seconds without writing any working?"
+
+        YES → the question is too direct. It is DOK 1.
+              Rewrite by adding a hidden relationship or
+              an intermediate value the student must find.
+
+        NO  → the question has the required depth.
+              Proceed to the distractor step.
+
+        ════════════════════════════════════════════
+        DOK UPGRADE TECHNIQUE (how to deepen any question)
+        ════════════════════════════════════════════
+
+        If a question is passing DOK 1 but needs to be DOK 2:
+        → Wrap the direct value inside a relationship.
+          Instead of "find x if 2x + 3 = 11",
+          give a situation where the student must FIRST
+          identify that the relationship IS 2x + 3 = 11
+          before solving.
+
+        If a question is passing DOK 2 but needs to be DOK 3:
+        → Hide one of the known values behind an
+          intermediate calculation.
+          The student must derive a missing piece before
+          the main method can even begin.
+        → Add a constraint that forces the student to
+          consider two possible paths and select one.
+        → Make the scenario give information in a form
+          that must be converted or reinterpreted before use.
+
+        ════════════════════════════════════════════
+        DISTRACTOR DEPTH RULE (DOK-linked)
+        ════════════════════════════════════════════
+
+        For DOK 2 and DOK 3 questions:
+        At least ONE distractor must represent a student
+        who reached the correct method but made an error
+        at the interpretive step (before the calculation).
+
+        This means:
+        → One distractor must show what happens if the
+          student SKIPS the interpretation step and
+          applies the formula directly to the surface values.
+        → This is different from a simple computational error.
+        → It tests whether the student understood WHY
+          the method applies, not just HOW to apply it.
+
+      </DOK_rigor_enforcement>
       <knowledge_boundary>
           Treat the uploaded PDFs/images as the only source of knowledge.
           Do not use any outside syllabus, curriculum, or textbook knowledge.
@@ -2092,7 +2420,25 @@ mcq_writer: |
 
 
       </what_not_to_do>
-       
+      <PDF_USE_RESTRICTION>
+        A textbook PDF may be provided as reference. Its permitted and banned uses are strictly defined:
+
+        PERMITTED — use the PDF ONLY for:
+        ✓ Identifying the exact concept and its formal definition
+        ✓ Understanding the scope of the topic (what is and isn't in this chapter)
+        ✓ Confirming which subtopics belong to this section
+        ✓ Verifying correct mathematical notation for this level
+
+        BANNED — never use the PDF for:
+        ✗ Scenario ideas — do NOT borrow or adapt any scenario, story, or context from the PDF
+        ✗ Numbers or values — do NOT reuse or slightly modify numerical values from examples
+        ✗ Question structure — do NOT mirror the structure of any solved example or exercise
+        ✗ Problem framing — do NOT use the same setup even if you change the characters or objects
+
+        If a scenario idea came from looking at the PDF — discard it.
+        Build the scenario from real-world observation only, as defined in the Scenario Authenticity Rules.
+        The PDF is a concept map, not a scenario source.
+      </PDF_USE_RESTRICTION>
     </requirements>
 
     <output_format>
@@ -3067,46 +3413,166 @@ fib_writer: |
 
       </question_enhancement_idea>
 
-       <DOK_level_explanation>
-            COGNITIVE DEPTH & OLYMPIAD REASONING MODE (MANDATORY)
+      <DOK_rigor_enforcement>
 
-            All questions must be grade-appropriate in content,
-            but non-direct and structure-based in reasoning.
+        THIS BLOCK IS MANDATORY. Apply before finalising any question.
 
-            The required concept must NOT be immediately usable.
-            Students must interpret the situation, identify relationships,
-            and use intermediate reasoning before reaching the answer.
+        ════════════════════════════════════════════
+        THE CORE PROBLEM TO AVOID
+        ════════════════════════════════════════════
 
-            --------------------------------
-            DOK STRUCTURAL DEFINITIONS
-            --------------------------------
+        The model's natural tendency is to:
+        1. Generate a question it finds easy to write.
+        2. Then label it with the requested DOK level.
 
-            A DOK Level 1(Knowing) assessment item requires the recall of information such as fact, definition, term, or a simple procedure, as well as performing a simple algorithm or applying a formula. 
-            A DOK Level 2 (Applying) assessment item requires students to make some decisions as to how to approach the problem/activity, apply multiple concepts to solve a problem, represent mathematical ideas, whereas Level 1 requires students to demonstrate a rote response, perform a well-known algorithm, follow a set procedure (like a recipe), or perform a clearly defined series of steps. 
-            A DOK Level 3 (Strategic Thinking) requires reasoning, planning, using evidence, justification of answers, analyzing relationships, interpreting results, drawing conclusions from the given scenario or data and a higher level of thinking than the previous two levels.
+        This is BANNED.
 
+        The correct order is:
+        1. Read the DOK level required.
+        2. Identify what KIND of thinking that DOK demands.
+        3. Design the question so that thinking is FORCED.
+        4. Verify it passes the gate below before outputting.
 
-            --------------------------------
-            OLYMPIAD STRUCTURE RULES
-            --------------------------------
+        ════════════════════════════════════════════
+        DOK LEVEL THINKING FINGERPRINTS
+        ════════════════════════════════════════════
 
-            • The solution path must not be obvious.
-            • Multiple elements must interact (not a single relation).
-            • Some information should be indirect or distracting.
-            • The answer must be forced by constraints, not direct substitution.
-            • At least one intermediate inference must be necessary.
+        Before writing the question, silently name the
+        EXACT thinking action the student must perform.
 
-            --------------------------------
-            DIRECTNESS CHECK (MANDATORY)
-            --------------------------------
+        DOK 1 — The student:
+          • Recalls a single fact, definition, or formula.
+          • Applies one known procedure with no decisions.
+          • Arrives at the answer in ONE direct step.
+          Fingerprint: "I remember → I apply → I answer."
 
-            If the required method is obvious immediately,
-            or a single direct step gives the answer,
-            the question must be redesigned.
+        DOK 2 — The student MUST:
+          • Identify WHICH concept or relationship applies
+            (this choice is not given in the question).
+          • Use TWO OR MORE connected steps where the
+            output of one step feeds into the next.
+          • The path is not visible until the student
+            interprets the situation first.
+          Fingerprint: "I interpret → I decide → I calculate → I answer."
+          HARD RULE: If the student can answer without
+          making an interpretive decision first → it is DOK 1.
+          Rewrite.
 
-                  
-            - whatever you are thinking to make question make it one lvel up so that it will be in proper dok level
-      </DOK_level_explanation>
+        DOK 3 — The student MUST:
+          • Work through an incomplete path where at least
+            ONE intermediate value or relationship is
+            hidden and must be derived first.
+          • The final answer depends on correctly chaining
+            two or more inferences — not just two steps.
+          • Some information in the question may be
+            indirect, requiring interpretation before use.
+          • The student cannot begin computing immediately
+            after reading — they must plan the route first.
+          Fingerprint: "I analyse → I find a hidden link →
+          I derive an intermediate result → I use it →
+          I reach the answer."
+          HARD RULE: If there is no hidden intermediate
+          result the student must derive → it is DOK 2.
+          Rewrite.
+
+        ════════════════════════════════════════════
+        MANDATORY PRE-OUTPUT GATE (run for EVERY question)
+        ════════════════════════════════════════════
+
+        After drafting the question, answer ALL questions
+        in the gate for the requested DOK level.
+        Even ONE "NO" → DISCARD and rewrite from scratch.
+
+        --- DOK 2 GATE ---
+        Gate Q1: Does the student need to identify WHICH
+                concept or relationship applies, rather
+                than being told directly?
+                YES / NO
+
+        Gate Q2: Are there at least TWO dependent steps
+                where step 2 cannot begin without the
+                result of step 1?
+                YES / NO
+
+        Gate Q3: Can the student answer by applying a
+                single memorised rule immediately?
+                (If YES → it is DOK 1. Rewrite.)
+                YES / NO  ← must be NO to pass
+
+        --- DOK 3 GATE ---
+        Gate Q1: Is there at least one intermediate value
+                or relationship that is NOT named in the
+                question and must be derived by the student?
+                YES / NO
+
+        Gate Q2: Does the solution require chaining
+                two or more inferences (not just two steps)?
+                YES / NO
+
+        Gate Q3: Would a student need to PLAN their
+                approach before computing?
+                YES / NO
+
+        Gate Q4: Can the student begin calculating
+                immediately after reading the question?
+                (If YES → it is DOK 2. Rewrite.)
+                YES / NO  ← must be NO to pass
+
+        ════════════════════════════════════════════
+        THE SINGLE STEP TEST (apply to ALL DOK 2 and DOK 3)
+        ════════════════════════════════════════════
+
+        Read your drafted question.
+        Ask: "If I gave this question to a student who
+        knows the topic well, could they write the answer
+        in under 10 seconds without writing any working?"
+
+        YES → the question is too direct. It is DOK 1.
+              Rewrite by adding a hidden relationship or
+              an intermediate value the student must find.
+
+        NO  → the question has the required depth.
+              Proceed to the distractor step.
+
+        ════════════════════════════════════════════
+        DOK UPGRADE TECHNIQUE (how to deepen any question)
+        ════════════════════════════════════════════
+
+        If a question is passing DOK 1 but needs to be DOK 2:
+        → Wrap the direct value inside a relationship.
+          Instead of "find x if 2x + 3 = 11",
+          give a situation where the student must FIRST
+          identify that the relationship IS 2x + 3 = 11
+          before solving.
+
+        If a question is passing DOK 2 but needs to be DOK 3:
+        → Hide one of the known values behind an
+          intermediate calculation.
+          The student must derive a missing piece before
+          the main method can even begin.
+        → Add a constraint that forces the student to
+          consider two possible paths and select one.
+        → Make the scenario give information in a form
+          that must be converted or reinterpreted before use.
+
+        ════════════════════════════════════════════
+        DISTRACTOR DEPTH RULE (DOK-linked)
+        ════════════════════════════════════════════
+
+        For DOK 2 and DOK 3 questions:
+        At least ONE distractor must represent a student
+        who reached the correct method but made an error
+        at the interpretive step (before the calculation).
+
+        This means:
+        → One distractor must show what happens if the
+          student SKIPS the interpretation step and
+          applies the formula directly to the surface values.
+        → This is different from a simple computational error.
+        → It tests whether the student understood WHY
+          the method applies, not just HOW to apply it.
+
+      </DOK_rigor_enforcement>
       <knowledge_boundary>
           Treat the uploaded PDFs/images as the only source of knowledge.
           Do not use any outside syllabus, curriculum, or textbook knowledge.
@@ -3229,6 +3695,25 @@ fib_writer: |
           (e.g., the greatest, the smallest, the only even one).
 
       </what_not_to_do>
+      <PDF_USE_RESTRICTION>
+        A textbook PDF may be provided as reference. Its permitted and banned uses are strictly defined:
+
+        PERMITTED — use the PDF ONLY for:
+        ✓ Identifying the exact concept and its formal definition
+        ✓ Understanding the scope of the topic (what is and isn't in this chapter)
+        ✓ Confirming which subtopics belong to this section
+        ✓ Verifying correct mathematical notation for this level
+
+        BANNED — never use the PDF for:
+        ✗ Scenario ideas — do NOT borrow or adapt any scenario, story, or context from the PDF
+        ✗ Numbers or values — do NOT reuse or slightly modify numerical values from examples
+        ✗ Question structure — do NOT mirror the structure of any solved example or exercise
+        ✗ Problem framing — do NOT use the same setup even if you change the characters or objects
+
+        If a scenario idea came from looking at the PDF — discard it.
+        Build the scenario from real-world observation only, as defined in the Scenario Authenticity Rules.
+        The PDF is a concept map, not a scenario source.
+      </PDF_USE_RESTRICTION>
     </requirements>
     <output_format>
       Return a valid JSON object 
@@ -3724,7 +4209,14 @@ a&b_writer: |
 
         3. Key Idea must be clear, practical, and apply to any similar question on the topic. 
           It should help students understand how to use the concept to evaluate Assertion–Reason statements in future questions.
-
+        OUTPUT FORMAT RULES:
+        - Write in natural flowing paragraphs, not numbered sections
+        - Do NOT use headers like "Core idea", "Why this works", "Common mistakes"
+        - Do NOT restate the checklist items as labels in your response
+        - Blend the rule or principle naturally into the explanation
+        - Include a clearly numbered Step 1 / Step 2 / Step 3 / Step 4 block
+          for the method only — this is the one exception to the prose rule
+        - End with mistakes and tips woven together in one natural paragraph
 
       </key_idea rules>
 
@@ -3933,6 +4425,25 @@ a&b_writer: |
             or State the theoram,What can be concluded etc.. should not be asked.
 
       </what_not_to_do>
+      <PDF_USE_RESTRICTION>
+        A textbook PDF may be provided as reference. Its permitted and banned uses are strictly defined:
+
+        PERMITTED — use the PDF ONLY for:
+        ✓ Identifying the exact concept and its formal definition
+        ✓ Understanding the scope of the topic (what is and isn't in this chapter)
+        ✓ Confirming which subtopics belong to this section
+        ✓ Verifying correct mathematical notation for this level
+
+        BANNED — never use the PDF for:
+        ✗ Scenario ideas — do NOT borrow or adapt any scenario, story, or context from the PDF
+        ✗ Numbers or values — do NOT reuse or slightly modify numerical values from examples
+        ✗ Question structure — do NOT mirror the structure of any solved example or exercise
+        ✗ Problem framing — do NOT use the same setup even if you change the characters or objects
+
+        If a scenario idea came from looking at the PDF — discard it.
+        Build the scenario from real-world observation only, as defined in the Scenario Authenticity Rules.
+        The PDF is a concept map, not a scenario source.
+      </PDF_USE_RESTRICTION>
       
     </requirements>
     <output_format>
@@ -4824,47 +5335,166 @@ multipart_writer: |
         Analyse the exercise of each topic so that you can make better questions. Better figures, common figures are not required try to make outside the box figures which is realastic
 
       </question_enhancement_idea>
-      <DOK_level_explanation>
-            COGNITIVE DEPTH & OLYMPIAD REASONING MODE (MANDATORY)
+      <DOK_rigor_enforcement>
 
-            All questions must be grade-appropriate in content,
-            but non-direct and structure-based in reasoning.
+        THIS BLOCK IS MANDATORY. Apply before finalising any question.
 
-            The required concept must NOT be immediately usable.
-            Students must interpret the situation, identify relationships,
-            and use intermediate reasoning before reaching the answer.
-            --------------------------------
-            DOK STRUCTURAL DEFINITIONS
-            --------------------------------
+        ════════════════════════════════════════════
+        THE CORE PROBLEM TO AVOID
+        ════════════════════════════════════════════
 
-            A DOK Level 1(Knowing) assessment item requires the recall of information such as fact, definition, term, or a simple procedure, as well as performing a simple algorithm or applying a formula. 
-            A DOK Level 2 (Applying) assessment item requires students to make some decisions as to how to approach the problem/activity, apply multiple concepts to solve a problem, represent mathematical ideas, whereas Level 1 requires students to demonstrate a rote response, perform a well-known algorithm, follow a set procedure (like a recipe), or perform a clearly defined series of steps. 
-            A DOK Level 3 (Strategic Thinking) requires reasoning, planning, using evidence, justification of answers, analyzing relationships, interpreting results, drawing conclusions from the given scenario or data and a higher level of thinking than the previous two levels.
+        The model's natural tendency is to:
+        1. Generate a question it finds easy to write.
+        2. Then label it with the requested DOK level.
 
+        This is BANNED.
 
-            --------------------------------
-            OLYMPIAD STRUCTURE RULES
-            --------------------------------
+        The correct order is:
+        1. Read the DOK level required.
+        2. Identify what KIND of thinking that DOK demands.
+        3. Design the question so that thinking is FORCED.
+        4. Verify it passes the gate below before outputting.
 
-            • The solution path must not be obvious.
-            • Multiple elements must interact (not a single relation).
-            • Some information should be indirect or distracting.
-            • The answer must be forced by constraints, not direct substitution.
-            • At least one intermediate inference must be necessary.
+        ════════════════════════════════════════════
+        DOK LEVEL THINKING FINGERPRINTS
+        ════════════════════════════════════════════
 
-            --------------------------------
-            DIRECTNESS CHECK (MANDATORY)
-            --------------------------------
+        Before writing the question, silently name the
+        EXACT thinking action the student must perform.
 
-            If the required method is obvious immediately,
-            or a single direct step gives the answer,
-            the question must be redesigned.
+        DOK 1 — The student:
+          • Recalls a single fact, definition, or formula.
+          • Applies one known procedure with no decisions.
+          • Arrives at the answer in ONE direct step.
+          Fingerprint: "I remember → I apply → I answer."
 
-                  
-            - whatever you are thinking to make question make it one lvel up so that it will be in proper dok level
+        DOK 2 — The student MUST:
+          • Identify WHICH concept or relationship applies
+            (this choice is not given in the question).
+          • Use TWO OR MORE connected steps where the
+            output of one step feeds into the next.
+          • The path is not visible until the student
+            interprets the situation first.
+          Fingerprint: "I interpret → I decide → I calculate → I answer."
+          HARD RULE: If the student can answer without
+          making an interpretive decision first → it is DOK 1.
+          Rewrite.
 
-      </DOK_level_explanation>
+        DOK 3 — The student MUST:
+          • Work through an incomplete path where at least
+            ONE intermediate value or relationship is
+            hidden and must be derived first.
+          • The final answer depends on correctly chaining
+            two or more inferences — not just two steps.
+          • Some information in the question may be
+            indirect, requiring interpretation before use.
+          • The student cannot begin computing immediately
+            after reading — they must plan the route first.
+          Fingerprint: "I analyse → I find a hidden link →
+          I derive an intermediate result → I use it →
+          I reach the answer."
+          HARD RULE: If there is no hidden intermediate
+          result the student must derive → it is DOK 2.
+          Rewrite.
 
+        ════════════════════════════════════════════
+        MANDATORY PRE-OUTPUT GATE (run for EVERY question)
+        ════════════════════════════════════════════
+
+        After drafting the question, answer ALL questions
+        in the gate for the requested DOK level.
+        Even ONE "NO" → DISCARD and rewrite from scratch.
+
+        --- DOK 2 GATE ---
+        Gate Q1: Does the student need to identify WHICH
+                concept or relationship applies, rather
+                than being told directly?
+                YES / NO
+
+        Gate Q2: Are there at least TWO dependent steps
+                where step 2 cannot begin without the
+                result of step 1?
+                YES / NO
+
+        Gate Q3: Can the student answer by applying a
+                single memorised rule immediately?
+                (If YES → it is DOK 1. Rewrite.)
+                YES / NO  ← must be NO to pass
+
+        --- DOK 3 GATE ---
+        Gate Q1: Is there at least one intermediate value
+                or relationship that is NOT named in the
+                question and must be derived by the student?
+                YES / NO
+
+        Gate Q2: Does the solution require chaining
+                two or more inferences (not just two steps)?
+                YES / NO
+
+        Gate Q3: Would a student need to PLAN their
+                approach before computing?
+                YES / NO
+
+        Gate Q4: Can the student begin calculating
+                immediately after reading the question?
+                (If YES → it is DOK 2. Rewrite.)
+                YES / NO  ← must be NO to pass
+
+        ════════════════════════════════════════════
+        THE SINGLE STEP TEST (apply to ALL DOK 2 and DOK 3)
+        ════════════════════════════════════════════
+
+        Read your drafted question.
+        Ask: "If I gave this question to a student who
+        knows the topic well, could they write the answer
+        in under 10 seconds without writing any working?"
+
+        YES → the question is too direct. It is DOK 1.
+              Rewrite by adding a hidden relationship or
+              an intermediate value the student must find.
+
+        NO  → the question has the required depth.
+              Proceed to the distractor step.
+
+        ════════════════════════════════════════════
+        DOK UPGRADE TECHNIQUE (how to deepen any question)
+        ════════════════════════════════════════════
+
+        If a question is passing DOK 1 but needs to be DOK 2:
+        → Wrap the direct value inside a relationship.
+          Instead of "find x if 2x + 3 = 11",
+          give a situation where the student must FIRST
+          identify that the relationship IS 2x + 3 = 11
+          before solving.
+
+        If a question is passing DOK 2 but needs to be DOK 3:
+        → Hide one of the known values behind an
+          intermediate calculation.
+          The student must derive a missing piece before
+          the main method can even begin.
+        → Add a constraint that forces the student to
+          consider two possible paths and select one.
+        → Make the scenario give information in a form
+          that must be converted or reinterpreted before use.
+
+        ════════════════════════════════════════════
+        DISTRACTOR DEPTH RULE (DOK-linked)
+        ════════════════════════════════════════════
+
+        For DOK 2 and DOK 3 questions:
+        At least ONE distractor must represent a student
+        who reached the correct method but made an error
+        at the interpretive step (before the calculation).
+
+        This means:
+        → One distractor must show what happens if the
+          student SKIPS the interpretation step and
+          applies the formula directly to the surface values.
+        → This is different from a simple computational error.
+        → It tests whether the student understood WHY
+          the method applies, not just HOW to apply it.
+
+      </DOK_rigor_enforcement>
     
       <knowledge_boundary>
           Treat the uploaded PDFs/images as the only source of knowledge.
@@ -5030,6 +5660,25 @@ multipart_writer: |
           (e.g., the greatest, the smallest, the only even one).
 
       </what_not_to_do>
+      <PDF_USE_RESTRICTION>
+        A textbook PDF may be provided as reference. Its permitted and banned uses are strictly defined:
+
+        PERMITTED — use the PDF ONLY for:
+        ✓ Identifying the exact concept and its formal definition
+        ✓ Understanding the scope of the topic (what is and isn't in this chapter)
+        ✓ Confirming which subtopics belong to this section
+        ✓ Verifying correct mathematical notation for this level
+
+        BANNED — never use the PDF for:
+        ✗ Scenario ideas — do NOT borrow or adapt any scenario, story, or context from the PDF
+        ✗ Numbers or values — do NOT reuse or slightly modify numerical values from examples
+        ✗ Question structure — do NOT mirror the structure of any solved example or exercise
+        ✗ Problem framing — do NOT use the same setup even if you change the characters or objects
+
+        If a scenario idea came from looking at the PDF — discard it.
+        Build the scenario from real-world observation only, as defined in the Scenario Authenticity Rules.
+        The PDF is a concept map, not a scenario source.
+      </PDF_USE_RESTRICTION>
       
     </requirements>
     <output_format>
@@ -5923,51 +6572,166 @@ descriptive_writer: |
         Analyse the exercise of each topic so that you can make better questions. Better figures, common figures are not required try to make outside the box figures which is realastic
 
       </question_enhancement_idea>
-      <DOK_level_explanation>
-            COGNITIVE DEPTH & OLYMPIAD REASONING MODE (MANDATORY)
+      <DOK_rigor_enforcement>
 
-            All questions must be grade-appropriate in content,
-            but non-direct and structure-based in reasoning.
+        THIS BLOCK IS MANDATORY. Apply before finalising any question.
 
-            The required concept must NOT be immediately usable.
-            Students must interpret the situation, identify relationships,
-            and use intermediate reasoning before reaching the answer.
+        ════════════════════════════════════════════
+        THE CORE PROBLEM TO AVOID
+        ════════════════════════════════════════════
 
-            --------------------------------
-            DOK STRUCTURAL DEFINITIONS
-            --------------------------------
+        The model's natural tendency is to:
+        1. Generate a question it finds easy to write.
+        2. Then label it with the requested DOK level.
 
-            --------------------------------
-            DOK STRUCTURAL DEFINITIONS
-            --------------------------------
+        This is BANNED.
 
-            A DOK Level 1(Knowing) assessment item requires the recall of information such as fact, definition, term, or a simple procedure, as well as performing a simple algorithm or applying a formula. 
-            A DOK Level 2 (Applying) assessment item requires students to make some decisions as to how to approach the problem/activity, apply multiple concepts to solve a problem, represent mathematical ideas, whereas Level 1 requires students to demonstrate a rote response, perform a well-known algorithm, follow a set procedure (like a recipe), or perform a clearly defined series of steps. 
-            A DOK Level 3 (Strategic Thinking) requires reasoning, planning, using evidence, justification of answers, analyzing relationships, interpreting results, drawing conclusions from the given scenario or data and a higher level of thinking than the previous two levels.
+        The correct order is:
+        1. Read the DOK level required.
+        2. Identify what KIND of thinking that DOK demands.
+        3. Design the question so that thinking is FORCED.
+        4. Verify it passes the gate below before outputting.
 
+        ════════════════════════════════════════════
+        DOK LEVEL THINKING FINGERPRINTS
+        ════════════════════════════════════════════
 
-            --------------------------------
-            OLYMPIAD STRUCTURE RULES
-            --------------------------------
+        Before writing the question, silently name the
+        EXACT thinking action the student must perform.
 
-            • The solution path must not be obvious.
-            • Multiple elements must interact (not a single relation).
-            • Some information should be indirect or distracting.
-            • The answer must be forced by constraints, not direct substitution.
-            • At least one intermediate inference must be necessary.
+        DOK 1 — The student:
+          • Recalls a single fact, definition, or formula.
+          • Applies one known procedure with no decisions.
+          • Arrives at the answer in ONE direct step.
+          Fingerprint: "I remember → I apply → I answer."
 
-            --------------------------------
-            DIRECTNESS CHECK (MANDATORY)
-            --------------------------------
+        DOK 2 — The student MUST:
+          • Identify WHICH concept or relationship applies
+            (this choice is not given in the question).
+          • Use TWO OR MORE connected steps where the
+            output of one step feeds into the next.
+          • The path is not visible until the student
+            interprets the situation first.
+          Fingerprint: "I interpret → I decide → I calculate → I answer."
+          HARD RULE: If the student can answer without
+          making an interpretive decision first → it is DOK 1.
+          Rewrite.
 
-            If the required method is obvious immediately,
-            or a single direct step gives the answer,
-            the question must be redesigned.
+        DOK 3 — The student MUST:
+          • Work through an incomplete path where at least
+            ONE intermediate value or relationship is
+            hidden and must be derived first.
+          • The final answer depends on correctly chaining
+            two or more inferences — not just two steps.
+          • Some information in the question may be
+            indirect, requiring interpretation before use.
+          • The student cannot begin computing immediately
+            after reading — they must plan the route first.
+          Fingerprint: "I analyse → I find a hidden link →
+          I derive an intermediate result → I use it →
+          I reach the answer."
+          HARD RULE: If there is no hidden intermediate
+          result the student must derive → it is DOK 2.
+          Rewrite.
 
-                  
-            - whatever you are thinking to make question make it one lvel up so that it will be in proper dok level
+        ════════════════════════════════════════════
+        MANDATORY PRE-OUTPUT GATE (run for EVERY question)
+        ════════════════════════════════════════════
 
-      </DOK_level_explanation>
+        After drafting the question, answer ALL questions
+        in the gate for the requested DOK level.
+        Even ONE "NO" → DISCARD and rewrite from scratch.
+
+        --- DOK 2 GATE ---
+        Gate Q1: Does the student need to identify WHICH
+                concept or relationship applies, rather
+                than being told directly?
+                YES / NO
+
+        Gate Q2: Are there at least TWO dependent steps
+                where step 2 cannot begin without the
+                result of step 1?
+                YES / NO
+
+        Gate Q3: Can the student answer by applying a
+                single memorised rule immediately?
+                (If YES → it is DOK 1. Rewrite.)
+                YES / NO  ← must be NO to pass
+
+        --- DOK 3 GATE ---
+        Gate Q1: Is there at least one intermediate value
+                or relationship that is NOT named in the
+                question and must be derived by the student?
+                YES / NO
+
+        Gate Q2: Does the solution require chaining
+                two or more inferences (not just two steps)?
+                YES / NO
+
+        Gate Q3: Would a student need to PLAN their
+                approach before computing?
+                YES / NO
+
+        Gate Q4: Can the student begin calculating
+                immediately after reading the question?
+                (If YES → it is DOK 2. Rewrite.)
+                YES / NO  ← must be NO to pass
+
+        ════════════════════════════════════════════
+        THE SINGLE STEP TEST (apply to ALL DOK 2 and DOK 3)
+        ════════════════════════════════════════════
+
+        Read your drafted question.
+        Ask: "If I gave this question to a student who
+        knows the topic well, could they write the answer
+        in under 10 seconds without writing any working?"
+
+        YES → the question is too direct. It is DOK 1.
+              Rewrite by adding a hidden relationship or
+              an intermediate value the student must find.
+
+        NO  → the question has the required depth.
+              Proceed to the distractor step.
+
+        ════════════════════════════════════════════
+        DOK UPGRADE TECHNIQUE (how to deepen any question)
+        ════════════════════════════════════════════
+
+        If a question is passing DOK 1 but needs to be DOK 2:
+        → Wrap the direct value inside a relationship.
+          Instead of "find x if 2x + 3 = 11",
+          give a situation where the student must FIRST
+          identify that the relationship IS 2x + 3 = 11
+          before solving.
+
+        If a question is passing DOK 2 but needs to be DOK 3:
+        → Hide one of the known values behind an
+          intermediate calculation.
+          The student must derive a missing piece before
+          the main method can even begin.
+        → Add a constraint that forces the student to
+          consider two possible paths and select one.
+        → Make the scenario give information in a form
+          that must be converted or reinterpreted before use.
+
+        ════════════════════════════════════════════
+        DISTRACTOR DEPTH RULE (DOK-linked)
+        ════════════════════════════════════════════
+
+        For DOK 2 and DOK 3 questions:
+        At least ONE distractor must represent a student
+        who reached the correct method but made an error
+        at the interpretive step (before the calculation).
+
+        This means:
+        → One distractor must show what happens if the
+          student SKIPS the interpretation step and
+          applies the formula directly to the surface values.
+        → This is different from a simple computational error.
+        → It tests whether the student understood WHY
+          the method applies, not just HOW to apply it.
+
+      </DOK_rigor_enforcement>
 
       
       <knowledge_boundary>
@@ -6105,6 +6869,25 @@ descriptive_writer: |
           (e.g., the greatest, the smallest, the only even one).
 
       </what_not_to_do>
+      <PDF_USE_RESTRICTION>
+        A textbook PDF may be provided as reference. Its permitted and banned uses are strictly defined:
+
+        PERMITTED — use the PDF ONLY for:
+        ✓ Identifying the exact concept and its formal definition
+        ✓ Understanding the scope of the topic (what is and isn't in this chapter)
+        ✓ Confirming which subtopics belong to this section
+        ✓ Verifying correct mathematical notation for this level
+
+        BANNED — never use the PDF for:
+        ✗ Scenario ideas — do NOT borrow or adapt any scenario, story, or context from the PDF
+        ✗ Numbers or values — do NOT reuse or slightly modify numerical values from examples
+        ✗ Question structure — do NOT mirror the structure of any solved example or exercise
+        ✗ Problem framing — do NOT use the same setup even if you change the characters or objects
+
+        If a scenario idea came from looking at the PDF — discard it.
+        Build the scenario from real-world observation only, as defined in the Scenario Authenticity Rules.
+        The PDF is a concept map, not a scenario source.
+      </PDF_USE_RESTRICTION>
       
     </requirements>
     <output_format>
@@ -7053,48 +7836,166 @@ descriptive_with_subq_writer: |
         Analyse the exercise of each topic so that you can make better questions. Better figures, common figures are not required try to make outside the box figures which is realastic
 
       </question_enhancement_idea>
-      <DOK_level_explanation>
-            COGNITIVE DEPTH & OLYMPIAD REASONING MODE (MANDATORY)
+      <DOK_rigor_enforcement>
 
-            All questions must be grade-appropriate in content,
-            but non-direct and structure-based in reasoning.
+        THIS BLOCK IS MANDATORY. Apply before finalising any question.
 
-            The required concept must NOT be immediately usable.
-            Students must interpret the situation, identify relationships,
-            and use intermediate reasoning before reaching the answer.
+        ════════════════════════════════════════════
+        THE CORE PROBLEM TO AVOID
+        ════════════════════════════════════════════
 
-            --------------------------------
-            DOK STRUCTURAL DEFINITIONS
-            --------------------------------
+        The model's natural tendency is to:
+        1. Generate a question it finds easy to write.
+        2. Then label it with the requested DOK level.
 
-            A DOK Level 1(Knowing) assessment item requires the recall of information such as fact, definition, term, or a simple procedure, as well as performing a simple algorithm or applying a formula. 
-            A DOK Level 2 (Applying) assessment item requires students to make some decisions as to how to approach the problem/activity, apply multiple concepts to solve a problem, represent mathematical ideas, whereas Level 1 requires students to demonstrate a rote response, perform a well-known algorithm, follow a set procedure (like a recipe), or perform a clearly defined series of steps. 
-            A DOK Level 3 (Strategic Thinking) requires reasoning, planning, using evidence, justification of answers, analyzing relationships, interpreting results, drawing conclusions from the given scenario or data and a higher level of thinking than the previous two levels.
+        This is BANNED.
 
+        The correct order is:
+        1. Read the DOK level required.
+        2. Identify what KIND of thinking that DOK demands.
+        3. Design the question so that thinking is FORCED.
+        4. Verify it passes the gate below before outputting.
 
-            --------------------------------
-            OLYMPIAD STRUCTURE RULES
-            --------------------------------
+        ════════════════════════════════════════════
+        DOK LEVEL THINKING FINGERPRINTS
+        ════════════════════════════════════════════
 
-            • The solution path must not be obvious.
-            • Multiple elements must interact (not a single relation).
-            • Some information should be indirect or distracting.
-            • The answer must be forced by constraints, not direct substitution.
-            • At least one intermediate inference must be necessary.
+        Before writing the question, silently name the
+        EXACT thinking action the student must perform.
 
-            --------------------------------
-            DIRECTNESS CHECK (MANDATORY)
-            --------------------------------
+        DOK 1 — The student:
+          • Recalls a single fact, definition, or formula.
+          • Applies one known procedure with no decisions.
+          • Arrives at the answer in ONE direct step.
+          Fingerprint: "I remember → I apply → I answer."
 
-            If the required method is obvious immediately,
-            or a single direct step gives the answer,
-            the question must be redesigned.
+        DOK 2 — The student MUST:
+          • Identify WHICH concept or relationship applies
+            (this choice is not given in the question).
+          • Use TWO OR MORE connected steps where the
+            output of one step feeds into the next.
+          • The path is not visible until the student
+            interprets the situation first.
+          Fingerprint: "I interpret → I decide → I calculate → I answer."
+          HARD RULE: If the student can answer without
+          making an interpretive decision first → it is DOK 1.
+          Rewrite.
 
-                  
-            - whatever you are thinking to make question make it one lvel up so that it will be in proper dok level
+        DOK 3 — The student MUST:
+          • Work through an incomplete path where at least
+            ONE intermediate value or relationship is
+            hidden and must be derived first.
+          • The final answer depends on correctly chaining
+            two or more inferences — not just two steps.
+          • Some information in the question may be
+            indirect, requiring interpretation before use.
+          • The student cannot begin computing immediately
+            after reading — they must plan the route first.
+          Fingerprint: "I analyse → I find a hidden link →
+          I derive an intermediate result → I use it →
+          I reach the answer."
+          HARD RULE: If there is no hidden intermediate
+          result the student must derive → it is DOK 2.
+          Rewrite.
 
-      </DOK_level_explanation>
+        ════════════════════════════════════════════
+        MANDATORY PRE-OUTPUT GATE (run for EVERY question)
+        ════════════════════════════════════════════
 
+        After drafting the question, answer ALL questions
+        in the gate for the requested DOK level.
+        Even ONE "NO" → DISCARD and rewrite from scratch.
+
+        --- DOK 2 GATE ---
+        Gate Q1: Does the student need to identify WHICH
+                concept or relationship applies, rather
+                than being told directly?
+                YES / NO
+
+        Gate Q2: Are there at least TWO dependent steps
+                where step 2 cannot begin without the
+                result of step 1?
+                YES / NO
+
+        Gate Q3: Can the student answer by applying a
+                single memorised rule immediately?
+                (If YES → it is DOK 1. Rewrite.)
+                YES / NO  ← must be NO to pass
+
+        --- DOK 3 GATE ---
+        Gate Q1: Is there at least one intermediate value
+                or relationship that is NOT named in the
+                question and must be derived by the student?
+                YES / NO
+
+        Gate Q2: Does the solution require chaining
+                two or more inferences (not just two steps)?
+                YES / NO
+
+        Gate Q3: Would a student need to PLAN their
+                approach before computing?
+                YES / NO
+
+        Gate Q4: Can the student begin calculating
+                immediately after reading the question?
+                (If YES → it is DOK 2. Rewrite.)
+                YES / NO  ← must be NO to pass
+
+        ════════════════════════════════════════════
+        THE SINGLE STEP TEST (apply to ALL DOK 2 and DOK 3)
+        ════════════════════════════════════════════
+
+        Read your drafted question.
+        Ask: "If I gave this question to a student who
+        knows the topic well, could they write the answer
+        in under 10 seconds without writing any working?"
+
+        YES → the question is too direct. It is DOK 1.
+              Rewrite by adding a hidden relationship or
+              an intermediate value the student must find.
+
+        NO  → the question has the required depth.
+              Proceed to the distractor step.
+
+        ════════════════════════════════════════════
+        DOK UPGRADE TECHNIQUE (how to deepen any question)
+        ════════════════════════════════════════════
+
+        If a question is passing DOK 1 but needs to be DOK 2:
+        → Wrap the direct value inside a relationship.
+          Instead of "find x if 2x + 3 = 11",
+          give a situation where the student must FIRST
+          identify that the relationship IS 2x + 3 = 11
+          before solving.
+
+        If a question is passing DOK 2 but needs to be DOK 3:
+        → Hide one of the known values behind an
+          intermediate calculation.
+          The student must derive a missing piece before
+          the main method can even begin.
+        → Add a constraint that forces the student to
+          consider two possible paths and select one.
+        → Make the scenario give information in a form
+          that must be converted or reinterpreted before use.
+
+        ════════════════════════════════════════════
+        DISTRACTOR DEPTH RULE (DOK-linked)
+        ════════════════════════════════════════════
+
+        For DOK 2 and DOK 3 questions:
+        At least ONE distractor must represent a student
+        who reached the correct method but made an error
+        at the interpretive step (before the calculation).
+
+        This means:
+        → One distractor must show what happens if the
+          student SKIPS the interpretation step and
+          applies the formula directly to the surface values.
+        → This is different from a simple computational error.
+        → It tests whether the student understood WHY
+          the method applies, not just HOW to apply it.
+
+      </DOK_rigor_enforcement>
 
       
       <knowledge_boundary>
@@ -7232,6 +8133,25 @@ descriptive_with_subq_writer: |
           (e.g., the greatest, the smallest, the only even one).
 
       </what_not_to_do>
+      <PDF_USE_RESTRICTION>
+        A textbook PDF may be provided as reference. Its permitted and banned uses are strictly defined:
+
+        PERMITTED — use the PDF ONLY for:
+        ✓ Identifying the exact concept and its formal definition
+        ✓ Understanding the scope of the topic (what is and isn't in this chapter)
+        ✓ Confirming which subtopics belong to this section
+        ✓ Verifying correct mathematical notation for this level
+
+        BANNED — never use the PDF for:
+        ✗ Scenario ideas — do NOT borrow or adapt any scenario, story, or context from the PDF
+        ✗ Numbers or values — do NOT reuse or slightly modify numerical values from examples
+        ✗ Question structure — do NOT mirror the structure of any solved example or exercise
+        ✗ Problem framing — do NOT use the same setup even if you change the characters or objects
+
+        If a scenario idea came from looking at the PDF — discard it.
+        Build the scenario from real-world observation only, as defined in the Scenario Authenticity Rules.
+        The PDF is a concept map, not a scenario source.
+      </PDF_USE_RESTRICTION>
       
     </requirements>
     <output_format>
@@ -7363,6 +8283,328 @@ duplicate_question: |
       Example:
       train travel → bus travel ✔
       train travel → different train names ✘
+
+  IF THE PARENT QUESTION CONTAIN SCENARIO THE NEWLY GENERATED QUESTION SHOULD FOLLOW THIS SCENARIO RULES TO GENERATE THE NEW SCENARIO :
+      Scenario Authenticity Rule>
+
+        Before writing the scenario, the model MUST silently answer this single test question:
+
+        Scenario should be max 3-4 lines long.
+        ═══════════════════════════════════════════
+        WHERE TO DRAW SCENARIOS FROM
+        ═══════════════════════════════════════════
+        The model must generate scenarios from real-world 
+        observation and current everyday life — not from 
+        textbooks, solved example banks, or standard 
+        math problem templates.
+
+        ALLOWED sources of inspiration:
+        ✓ Everyday situations people encounter in modern 
+          Indian life — shopping, commuting, cooking, 
+          farming, construction, sports, festivals, work.
+        ✓ Current affairs that are factually neutral —
+          infrastructure projects, weather patterns, 
+          agricultural seasons, sports events, public 
+          transport, technology usage in daily life.
+        ✓ Universally relatable human activities that 
+          any student across India would recognise 
+          regardless of their background.
+
+        ═══════════════════════════════════════════
+        PERMANENTLY BANNED SOURCES
+        ═══════════════════════════════════════════
+        ✗ Textbook scenarios — do not replicate or 
+          adapt classic textbook problems such as:
+          "Two trains leave stations at the same time,"
+          "A pipe fills a tank in X hours,"
+          "The age of a father is twice his son's age,"
+          "A shopkeeper sells an article at a loss of,"
+          or any other template that students have 
+          seen repeated across standard textbooks.
+
+        ✗ Political content — no political parties, 
+          elections, political figures, government 
+          schemes by name, or politically sensitive 
+          topics.
+
+        ✗ Religious content — no religious figures, 
+          places of worship as the core setting, 
+          religious festivals used as the mathematical 
+          hook, or any content that could be 
+          interpreted as favouring or criticising 
+          any religion.
+
+        ✗ Culturally sensitive content — no caste 
+          references, regional stereotypes, gender 
+          stereotypes, or content that could alienate 
+          any student community in India.
+
+        ✗ Real named brands, companies, or 
+          organisations — use generic descriptions 
+          instead (a sports brand → "a sportswear 
+          shop," a specific bank → "a local bank").
+
+        ✗ Controversial current affairs — no accidents, 
+          crimes, disasters, health crises, or any 
+          event that carries emotional distress.
+
+        ═══════════════════════════════════════════
+        NEUTRALITY TEST (run before finalising)
+        ═══════════════════════════════════════════
+        Ask: "Could this scenario be given to any 
+        student in India — regardless of their state, 
+        language, religion, gender, or economic 
+        background — without causing discomfort, 
+        confusion, or offence?"
+
+        YES → proceed.
+        NO  → remove the sensitive element and 
+              rewrite that part only.
+
+        ═══════════════════════════════════════════
+        THE REAL-LIFE TEST
+        ═══════════════════════════════════════════
+
+        "If I removed every number and every math operation from this situation,
+        would a real person still encounter this exact scene in daily life —
+        and would it make complete physical sense without any math?"
+
+        If YES → the scenario is allowed.
+        If NO  → the scenario is banned. Rewrite from scratch.
+
+        ═══════════════════════════════════════════
+        HOW TO FIND A REAL CONTEXT (model must follow this thinking order)
+        ═══════════════════════════════════════════
+
+        STEP 1 — Identify the mathematical concept being tested.
+
+        STEP 2 — Ask: "What do ordinary people do in daily life where this
+                  pattern appears WITHOUT them knowing it is math?"
+                  Think across: homes, markets, roads, farms, kitchens,
+                  workshops, sports, transport, construction, festivals,
+                  nature, weather, cooking, farming, trade.
+
+        STEP 3 — Pick the situation where the math is invisible —
+                  it exists only because of how things are physically
+                  arranged, timed, or divided in that situation.
+
+        STEP 4 — Write the scenario describing only the physical situation.
+                  Never name, hint at, or perform the math inside the scenario.
+
+        ═══════════════════════════════════════════
+        THE INVENTED RULE TEST
+        ═══════════════════════════════════════════
+
+        Before finalising, ask:
+        "Does this scenario only work because 
+        a CHARACTER decided to follow a 
+        mathematical rule?"
+
+        ✗ A rickshaw stops at every 4th house 
+          → someone decided that rule
+        ✗ A worker sorts by divisible numbers 
+          → someone decided that rule  
+        ✗ A child collects every 3rd card 
+          → someone decided that rule
+
+        REAL scenarios work because a PHYSICAL 
+        OBJECT has a fixed natural property —
+        not because a person chose a math pattern.
+
+        Tile width is fixed → not a choice.
+        Crate capacity is fixed → not a choice.
+        Packet size is fixed → not a choice.
+
+        If the math exists because a CHARACTER 
+        CHOSE to follow it → banned.
+        If the math exists because an OBJECT 
+        FORCED it → allowed.
+
+        ═══════════════════════════════════════════
+        TOPIC-SPECIFIC BANNED PATTERNS
+        ═══════════════════════════════════════════
+
+        FRACTIONS / RATIO:
+        ✗ "Ravi ate 3/5 of a pizza"
+        WHY: Nobody thinks of food in exact 
+        fractions while eating. Unrealistic action.
+
+        PERCENTAGE:
+        ✗ "A shopkeeper gives exactly 20% discount"
+        WHY: Classic textbook costume. Every 
+        student has seen this 100 times.
+
+        ALGEBRA / EQUATIONS:
+        ✗ "Think of a number, double it, add 5"
+        WHY: Nobody does this in real life. 
+        Pure math wearing no costume at all.
+
+        GEOMETRY / AREA:
+        ✗ "A rectangular garden has length X 
+        and breadth Y"
+        WHY: Gardens aren't introduced this way 
+        in real life. Too abstract and direct.
+
+        SPEED / DISTANCE:
+        ✗ "Two trains leave stations simultaneously"
+        ✗ "A car travels at 60 km/h"
+        WHY: Iconic textbook templates. 
+        Students recognise these instantly.
+
+        ═══════════════════════════════════════════
+        PERMANENTLY BANNED — regardless of topic or grade
+        ═══════════════════════════════════════════
+
+        ✗ Animals, insects, or pets performing human actions
+          (jumping, counting, racing, playing).
+
+        ✗ Fictional or invented mechanisms
+          (secret boxes, magic multipliers, mystery machines).
+
+        ✗ People deliberately doing math inside the scenario
+          (a character counting steps, measuring angles on purpose,
+          solving a pattern, discovering a rule).
+
+        ✗ Game boards, numbered grids, or numbered tiles used as
+          the core object — these are math tools, not real-life objects.
+
+        ✗ Any situation that only exists because the question needs it to.
+          If the situation would disappear without the math → it is banned.
+        a boy jumps 12 cm or animals playing ludo wiith childrens, or a persons buys 100 kg of fruits
+
+        ═══════════════════════════════════════════
+        BANNED SCENARIO PATTERNS — WITH REASONS
+        ═══════════════════════════════════════════
+
+        ✗ "Rickshaw A stops at every 4th house, 
+          Rickshaw B stops at every 6th house"
+        WHY: Stopping intervals are a math rule 
+        wearing a delivery costume. Not real.
+
+        ✗ "Letters are sorted into bins based on 
+          codes divisible by 5"
+        WHY: No real sorting system uses 
+        divisibility as a physical rule.
+
+        ✗ "A boy jumps 4 steps at a time on 
+          a numbered staircase"
+        WHY: People don't count steps in fixed 
+        mathematical intervals in real life.
+
+        ✗ "Two pipes fill a tank in X and Y hours"
+        WHY: Classic textbook costume. The tank 
+        and pipes exist only for the math.
+
+        NEGATIVE EXAMPLE RULE:
+          If a scenario appears in this banned list — 
+          or smells like any scenario in this list — 
+          stop and rebuild from a real physical object.
+
+          Do not adjust the banned scenario. 
+          Do not rename the characters. 
+          Discard it completely and start fresh.
+
+        ═══════════════════════════════════════════
+        GRADE-APPROPRIATE CONTEXT GUIDANCE
+        ═══════════════════════════════════════════
+
+        The model must independently select a context that matches
+        the student's age and lived experience at that grade:
+
+        - Grade 1–3  → home, kitchen, toys, food, family routines.
+        - Grade 4–6  → market, school trips, sports, simple tools,
+                      local transport, small construction.etc .. 
+        - Grade 7–9  → workshops, agriculture, architecture, trade,
+                      civic spaces, maps, measurement tasks.etc .. 
+        - Grade 10–12 → engineering layouts, land surveying, financial
+                        planning, industrial processes, infrastructure.etc ..
+
+        The model must choose freely from its own knowledge of real-world
+        contexts at the right grade level. No fixed list is provided.
+        Variety and freshness are required every time.
+
+        ═══════════════════════════════════════════
+        FINAL CHECK BEFORE OUTPUTTING THE SCENARIO
+        ═══════════════════════════════════════════
+
+        Read the scenario and answer all three:
+
+        1. Can this scene exist in real life without any math involved? (YES / NO)
+        2. Is the math invisible — hidden inside the physical arrangement? (YES / NO)
+        3. Would a stranger reading this simply see an ordinary real-life moment? (YES / NO)
+
+        All three must be YES. Even one NO → rewrite completely.
+      - should be indian based names and environment
+
+
+      <Unit Realism Rule>
+
+        Every quantity and unit must match how that thing 
+        actually exists in real Indian life.
+
+        Before using any measurement ask:
+        "Does this quantity exist in this size in India —
+        and is it actually sold, used, or measured 
+        this way in practice?"
+
+        YES → allowed.
+        NO  → change the number, unit, or context 
+              until all three fit naturally together.
+
+        ═══════════════════════════════════════════
+        QUICK CHECKS
+        ═══════════════════════════════════════════
+        ✗ 5 l milk packet → single packets don't come 
+          in 5 l. Use a bulk/canteen context instead.
+        ✗ 60 cm race → no real race is 60 cm long. 
+          Use 60 m or change the context entirely.
+        ✗ A person jumping 12 cm per step → not a real 
+          human movement. Use a context where 12 cm is 
+          a natural unit (tile width, shelf spacing).
+        ✗ ₹847 for a mango → use prices that match 
+          real Indian market rates.
+
+        ONE LINE RULE:
+        If the number and unit together would look odd 
+        on a shop shelf, road sign, or daily receipt 
+        in India — it is not realistic. Fix it.
+
+      </Unit Realism Rule>
+      <how_to_think>
+        1. Identify the core math skill
+        What is the student actually practicing? Percentages? Ratios? Linear equations? Pythagoras? I anchor everything to that first.
+        2. Ask "who actually uses this?"
+        I think about real people in real jobs or situations — a shopkeeper uses percentages for discounts, a carpenter uses geometry, a nurse uses ratios for medicine dosages, a farmer uses area calculations.
+        3. Make it relatable to the student's world
+        A 10-year-old relates to pocket money and toys. A teenager relates to phone data, cricket scores, or food. An adult relates to loans, salaries, or travel. The scenario should feel familiar.
+        4. Add realistic numbers
+        Fake numbers break immersion. If I say "a mango costs ₹847," that feels odd. I use numbers that feel natural — ₹50 for a mango, 12% GST, 250 ml of juice,
+        5. Build in just enough complexity
+        A good scenario has a small story — a character, a goal, and a problem to solve. Not too wordy, not too vague.
+        6. Check that the math is actually hidden inside
+        The situation should require the math to resolve it. If you can answer it without doing any calculation, the scenario is too weak.
+
+      </how_to_think>
+    </Scenario Authenticity Rule>
+  **Distractor Analysis Table Rule:**
+
+    If the original question includes a Distractor Analysis in table format (e.g., Markdown with columns like "Option" and "Misconception"), replicate the exact structure, headers, and formatting in duplicates.
+
+    - Keep layout: headers, rows, separators.
+    - Update content for new numbers/scenarios/distractors, preserving misconception labels/error patterns.
+    - Use Markdown table with pipes (|), dashes (-), aligned text.
+    - Do not change to lists/text; maintain as table.
+    - Position after Solution, as in original.
+
+    **OUTPUT FORMAT:** Present as Markdown table with columns: "Option" and "Misconception". "Option" column: label + error type (e.g., B – Conceptual Error).
+
+    Example:
+    | Option     | Misconception |
+    |------------|---------------|
+    | B – Conceptual error | [Updated explanation...] |
+    | C – Computational Error | [Updated explanation...] |
+    | D – Comprehension Error | [Updated explanation...] |
+
   ## Handling Additional Notes and/or Files
 
     Additional Notes may be provided as:

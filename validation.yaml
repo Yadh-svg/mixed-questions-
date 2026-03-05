@@ -108,8 +108,8 @@ validation_prompt: |
     7. SOLUTION CHECK
       - Fix arithmetic / simple computational mistakes in solution steps. Update final answer accordingly.
       - If the solution method is conceptually incorrect, attempt a minimal one-line correction to the method if that corrects it while preserving structure. If a minimal correction cannot fix the conceptual error without changing structure, perform the best conservative in-structure repair possible (rewrite solution steps to the correct method while keeping structure intact) .
-      - Do not remove marks from the solution (Only for descriptive and descriptive with subparts )
-      - mark splits should not appear in between solution (Only for descriptive and descriptive with subparts)
+      - Do not remove marks from the solution
+      - mark splits should not appear in between solution
     8. DISTRACTORS (MCQ / ASSERTION_REASON)
       - Each distractor must map to one distinct error type among {Conceptual, Computational, Communicational, Comprehension}.
       - You may rewrite distractor wording or apply small numeric perturbations (<20% change) to achieve distinct error types, but you MUST NOT change the correct option or the number of options.
@@ -123,7 +123,7 @@ validation_prompt: |
         D. Comprehension Error — correct mathematics but misinterpreting the question, instructions, or required outcome.
       - If changes are there after changing output the distractor analysis in table format 
       - If the distractor analysis is not in table format then change it to table format  
-      - You need to 
+      - If the error types are not one among these you need to change that also 
     9. DUPLICATE CHECK — SOLVING-PATTERN DIVERSITY + AUTO-REWRITE
 
     - Duplicate checking applies to both literal duplication and solving-pattern duplication (same reasoning chain, same strategy, same inference route, or same story-template).

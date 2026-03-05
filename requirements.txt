@@ -3,3 +3,5 @@ google-genai>=0.2.0
 python-dotenv>=1.0.0
 pyyaml>=6.0
 st-img-pastebutton
+google-api-python-client>=2.0.0
+sarvamai>=0.1.0

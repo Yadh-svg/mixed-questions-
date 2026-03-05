@@ -8,6 +8,7 @@ import json
 import re
 import html
 from typing import Dict, List, Any, Optional
+from youtube_helper import fetch_yt_videos_for_question
 
 
 def extract_json_objects(text: str) -> List[Dict[str, Any]]:
@@ -256,7 +257,7 @@ def render_markdown_question(question_key: str, markdown_content: str, question_
     # Only show duplication controls in "results" context, not in progressive rendering
     if render_context == "results":
         # Question header with checkbox (using Streamlit's built-in state management)
-        col1, col2, col3, col4 = st.columns([0.6, 2.5, 1.5, 0.6])
+        col1, col2, col3, col4, col5 = st.columns([0.6, 2.5, 1.5, 0.6, 0.6])
         
         with col1:
             # Checkbox state is automatically managed by Streamlit via the key parameter
@@ -414,6 +415,19 @@ def render_markdown_question(question_key: str, markdown_content: str, question_
             </script>
             """
             components.html(copy_html, height=55)
+
+        with col5:
+            # YouTube video retrieval button
+            yt_btn_key = f"yt_btn_{render_context}_{batch_key}_{question_key}"
+            if st.button("Find YT video 🎬", key=yt_btn_key, help="Find YouTube videos for this question"):
+                with st.spinner("Searching YouTube..."):
+                    grade = st.session_state.get("general_grade", "")
+                    yt_query, yt_result = fetch_yt_videos_for_question(markdown_content, grade=grade)
+                    st.session_state[f"yt_results_{render_context}_{batch_key}_{question_key}"] = {
+                        "query": yt_query,
+                        "result": yt_result
+                    }
+
     else:
         # Progressive rendering - no duplication controls
         st.markdown(f"### {emoji} Question {q_num}")
@@ -432,7 +446,27 @@ def render_markdown_question(question_key: str, markdown_content: str, question_
     rendered_content = re.sub(r'(?<!\n)\n(?!\n)', '  \n', markdown_content)
     
     st.markdown(rendered_content)
-    
+
+    # ----- YouTube results (only in results context) -----
+    if render_context == "results":
+        yt_state_key = f"yt_results_{render_context}_{batch_key}_{question_key}"
+        yt_data = st.session_state.get(yt_state_key)
+        if yt_data:
+            yt_result = yt_data.get("result", {})
+            with st.expander(f"🎬 YouTube Videos for: *{yt_data.get('query', '')}*", expanded=True):
+                status = yt_result.get("status", "error")
+                if status == "quota_limit":
+                    st.warning(yt_result.get("message", "🚫 Daily YouTube quota exhausted. Try again tomorrow!"))
+                elif status == "error":
+                    st.error(yt_result.get("message", "An error occurred while fetching videos."))
+                else:
+                    videos = yt_result.get("data", [])
+                    if videos:
+                        for v in videos:
+                            st.markdown(f"- [{v['title']}]({v['url']})")
+                    else:
+                        st.warning("No videos found. Try a different question or check your YouTube API key.")
+
     # Display duplicates if they exist (only in results context)
     if render_context == "results" and st.session_state[duplicates_key]:
         st.markdown("")
@@ -725,7 +759,7 @@ def render_generated_duplicates(batch_key: str, question_key: str, render_contex
                     dup_content_key = [k for k in duplicate.keys() if k != 'question_code'][0] if len(duplicate.keys()) > 1 else 'question1'
                     dup_markdown = duplicate.get(dup_content_key, str(duplicate))
                 
-            dup_col1, dup_col2 = st.columns([0.9, 0.1])
+            dup_col1, dup_col2, dup_col3 = st.columns([0.85, 0.075, 0.075])
             
             with dup_col1:
                 with st.expander(f"Duplicate {i} - {dup_question_key}", expanded=False):
@@ -755,7 +789,35 @@ def render_generated_duplicates(batch_key: str, question_key: str, render_contex
                 </script>
                 """
                 components.html(dup_copy_html, height=60)
-        st.markdown("---")
+
+            with dup_col3:
+                yt_dup_btn_key = f"yt_dup_btn_{render_context}_{batch_key}_{question_key}_{i}"
+                if st.button("Find YT video 🎬", key=yt_dup_btn_key, help=f"Find YouTube videos for Duplicate {i}"):
+                    with st.spinner("Searching YouTube..."):
+                        grade = st.session_state.get("general_grade", "")
+                        yt_query, yt_result = fetch_yt_videos_for_question(dup_markdown, grade=grade)
+                        st.session_state[f"yt_results_dup_{render_context}_{batch_key}_{question_key}_{i}"] = {
+                            "query": yt_query,
+                            "result": yt_result
+                        }
+
+                yt_dup_data = st.session_state.get(f"yt_results_dup_{render_context}_{batch_key}_{question_key}_{i}")
+                if yt_dup_data:
+                    with st.expander(f"🎬 YT: *{yt_dup_data.get('query', '')}*", expanded=True):
+                        dup_result = yt_dup_data.get("result", {})
+                        status = dup_result.get("status", "error")
+                        if status == "quota_limit":
+                            st.warning(dup_result.get("message", "🚫 Daily YouTube quota exhausted. Try again tomorrow!"))
+                        elif status == "error":
+                            st.error(dup_result.get("message", "An error occurred while fetching videos."))
+                        else:
+                            dup_videos = dup_result.get("data", [])
+                            if dup_videos:
+                                for v in dup_videos:
+                                    st.markdown(f"- [{v['title']}]({v['url']})")
+                            else:
+                                st.warning("No videos found.")
+
 
 def _get_effective_q_item(batch_key: str, idx: int, original_q_item: dict) -> tuple:
     """

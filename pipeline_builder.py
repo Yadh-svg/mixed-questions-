@@ -614,7 +614,7 @@ This is for regenerating.
 3. DO NOT change the format or anything else. ONLY change what the user explicitly says.
 4. The rules in this prompt below (like Scenario Rules, Balance Rules) are just for checking; apply them to change the question ONLY if the user explicitly asked to change anything from them (e.g. if the user says "add a scenario", then use the Scenario Rules).
 5. You need to output everything not only what you hace changed(for eg : if you change any name is scenario as user says, not only ouptu scenario and solution, you need to outptu the whole thing)
-5. Output the exact same JSON format requested below.
+5. Return the full question in plain, human-readable Markdown text as specified in the OUTPUT FORMAT.
 
 # ===================================================================
 # ORIGINAL PROMPT TEMPLATE FOLLOWS

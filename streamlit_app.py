@@ -2084,8 +2084,15 @@ with tab2:
                                                         logger.warning(f"-> Found matching question index: {idx}")
                                                         q_key = f"question{idx}"
                                                         question_code = f"{b_key}_q{idx}"
-                                                        import json
-                                                        q_content_str = json.dumps(q_item, indent=2)
+                                                        # Use regenerated version if available, otherwise use original JSON
+                                                        regen_store_key = f"regenerated_{b_key}_{q_key}"
+                                                        regen_data = st.session_state.get(regen_store_key)
+                                                        if regen_data and isinstance(regen_data, dict) and 'markdown' in regen_data:
+                                                            q_content_str = str(regen_data['markdown'])
+                                                            logger.info(f"Using previously regenerated markdown for {b_key}_{q_key}")
+                                                        else:
+                                                            import json
+                                                            q_content_str = json.dumps(q_item, indent=2)
                                                         
                                                         # Try to align the Math Core with the Question Index
                                                         mc_data = {}
@@ -2134,8 +2141,14 @@ with tab2:
                                                         match = re.search(r'\d+', q_key_iter)
                                                         if match and match.group() == str(q_num):
                                                             q_key = f"question{q_num}"
-                                                            import json
-                                                            q_content_str = json.dumps(q_item, indent=2)
+                                                            regen_store_key = f"regenerated_{b_key}_{q_key}"
+                                                            regen_data = st.session_state.get(regen_store_key)
+                                                            if regen_data and isinstance(regen_data, dict) and 'markdown' in regen_data:
+                                                                q_content_str = str(regen_data['markdown'])
+                                                                logger.info(f"Using previously regenerated markdown for {b_key}_{q_key} (Legacy Fallback)")
+                                                            else:
+                                                                import json
+                                                                q_content_str = json.dumps(q_item, indent=2)
                                                             
                                                             # We don't have separate Math Core out of the old system easily, but the Writer 
                                                             # prompt still needs it. We pass an empty dict and Gemini will adapt.

@@ -194,7 +194,10 @@ cbs_writer: |
           Apply to ALL generated questions and related content.
 
         2. QUESTION-SPECIFIC NOTES (e.g., “Specific Note for Q1”)  
-          Apply only to that particular question.
+            Apply only to that particular question.
+            These instructions apply only to the specific question being processed.
+            If the user provides reference PDFs or images and asks for similar questions, you must analyze the provided material and generate questions based on it.
+            Include a diagram prompt when required to replicate or support the structure of the original question.
 
         APPLICATION RULES
 
@@ -648,6 +651,29 @@ cbs_writer: |
                       
       </sub-question rules>
 
+      <question_clarity_rule>
+          Short and direct refers to wording only. The cognitive demand must still match the assigned DOK level. A DOK 3 question can be brief in wording but deep in thinking required..
+
+          BANNED:
+          ✗ Long multi-clause sentences
+          ✗ Lengthy setup before reaching the actual question
+          ✗ Combining multiple conditions into one sentence
+          ✗ Repeating information already given in the scenario
+          ✗ Using difficult or uncommon words to make the question feel harder
+            (e.g., "ascertain", "elucidate", "deduce", "magnitude", "aforementioned")
+            Replace with: "find", "explain", "figure out", "value", "the above"
+
+          REQUIRED:
+          ✓ One idea per sentence
+          ✓ Simple everyday words a student at this grade would know
+          ✓ The actual question must be clear on the first read
+          ✓ Difficulty must come from the MATH — not from the wording
+
+          SELF-CHECK before finalising:
+          "Can a student read this question once and immediately know what they need to find?"
+          YES → proceed. NO → shorten the sentences and replace any difficult words.
+      </question_clarity_rule>
+
       <answer_key_rules>
          Answer Key
 
@@ -804,6 +830,11 @@ cbs_writer: |
           HARD RULE: If there is no hidden intermediate
           result the student must derive → it is DOK 2.
           Rewrite.
+        — DOK level enforcement takes priority over solution method simplicity.
+        — "Using only the chapter's method" means the OPERATIONS and TOOLS are locked.
+          It does NOT mean the reasoning path must be short or direct.
+        — You may increase DOK depth by introducing a REASONING LAYER before the
+          chapter method is applied — not by repeating the operation more times.
 
         ════════════════════════════════════════════
         MANDATORY PRE-OUTPUT GATE (run for EVERY question)
@@ -1241,7 +1272,11 @@ mcq_writer: |
           Apply to ALL generated questions and related content.
 
         2. QUESTION-SPECIFIC NOTES (e.g., “Specific Note for Q1”)  
-          Apply only to that particular question.
+            Apply only to that particular question.
+            These instructions apply only to the specific question being processed.
+            If the user provides reference PDFs or images and asks for similar questions, you must analyze the provided material and generate questions based on it.
+            Include a diagram prompt when required to replicate or support the structure of the original question.
+            
 
         APPLICATION RULES
 
@@ -2124,6 +2159,28 @@ mcq_writer: |
               the question is too direct and must be redesigned.
 
       </question_cognitive_indirectness_rule>
+      <question_clarity_rule>
+          QShort and direct refers to wording only. The cognitive demand must still match the assigned DOK level. A DOK 3 question can be brief in wording but deep in thinking required.
+
+          BANNED:
+          ✗ Long multi-clause sentences
+          ✗ Lengthy setup before reaching the actual question
+          ✗ Combining multiple conditions into one sentence
+          ✗ Repeating information already given in the scenario
+          ✗ Using difficult or uncommon words to make the question feel harder
+            (e.g., "ascertain", "elucidate", "deduce", "magnitude", "aforementioned")
+            Replace with: "find", "explain", "figure out", "value", "the above"
+
+          REQUIRED:
+          ✓ One idea per sentence
+          ✓ Simple everyday words a student at this grade would know
+          ✓ The actual question must be clear on the first read
+          ✓ Difficulty must come from the MATH — not from the wording
+
+          SELF-CHECK before finalising:
+          "Can a student read this question once and immediately know what they need to find?"
+          YES → proceed. NO → shorten the sentences and replace any difficult words.
+      </question_clarity_rule>
 
             
       <question_enhancement_idea>
@@ -2195,6 +2252,11 @@ mcq_writer: |
           HARD RULE: If there is no hidden intermediate
           result the student must derive → it is DOK 2.
           Rewrite.
+        — DOK level enforcement takes priority over solution method simplicity.
+        — "Using only the chapter's method" means the OPERATIONS and TOOLS are locked.
+          It does NOT mean the reasoning path must be short or direct.
+        — You may increase DOK depth by introducing a REASONING LAYER before the
+          chapter method is applied — not by repeating the operation more times.
 
         ════════════════════════════════════════════
         MANDATORY PRE-OUTPUT GATE (run for EVERY question)
@@ -2662,7 +2724,11 @@ fib_writer: |
           Apply to ALL generated questions and related content.
 
         2. QUESTION-SPECIFIC NOTES (e.g., “Specific Note for Q1”)  
-          Apply only to that particular question.
+            Apply only to that particular question.
+            These instructions apply only to the specific question being processed.
+            If the user provides reference PDFs or images and asks for similar questions, you must analyze the provided material and generate questions based on it.
+            Include a diagram prompt when required to replicate or support the structure of the original question.
+            
 
         APPLICATION RULES
 
@@ -2991,6 +3057,28 @@ fib_writer: |
           - DO NOT restart numbering for each subpart
       
       </fib_subpart_specs>
+      <question_clarity_rule>
+          Short and direct refers to wording only. The cognitive demand must still match the assigned DOK level. A DOK 3 question can be brief in wording but deep in thinking required.
+
+          BANNED:
+          ✗ Long multi-clause sentences
+          ✗ Lengthy setup before reaching the actual question
+          ✗ Combining multiple conditions into one sentence
+          ✗ Repeating information already given in the scenario
+          ✗ Using difficult or uncommon words to make the question feel harder
+            (e.g., "ascertain", "elucidate", "deduce", "magnitude", "aforementioned")
+            Replace with: "find", "explain", "figure out", "value", "the above"
+
+          REQUIRED:
+          ✓ One idea per sentence
+          ✓ Simple everyday words a student at this grade would know
+          ✓ The actual question must be clear on the first read
+          ✓ Difficulty must come from the MATH — not from the wording
+
+          SELF-CHECK before finalising:
+          "Can a student read this question once and immediately know what they need to find?"
+          YES → proceed. NO → shorten the sentences and replace any difficult words.
+      </question_clarity_rule>
 
       
       <answer_key_rules>
@@ -3474,6 +3562,11 @@ fib_writer: |
           HARD RULE: If there is no hidden intermediate
           result the student must derive → it is DOK 2.
           Rewrite.
+        — DOK level enforcement takes priority over solution method simplicity.
+        — "Using only the chapter's method" means the OPERATIONS and TOOLS are locked.
+          It does NOT mean the reasoning path must be short or direct.
+        — You may increase DOK depth by introducing a REASONING LAYER before the
+          chapter method is applied — not by repeating the operation more times.
 
         ════════════════════════════════════════════
         MANDATORY PRE-OUTPUT GATE (run for EVERY question)
@@ -3874,15 +3967,18 @@ a&b_writer: |
        Follow all the rules and structure precisely.
     </task>
 
-        <additional_notes>
+    <additional_notes>
       
         The user may provide two types of Additional Notes:
 
         1. GLOBAL NOTES  
           Apply to ALL generated questions and related content.
-
         2. QUESTION-SPECIFIC NOTES (e.g., “Specific Note for Q1”)  
-          Apply only to that particular question.
+            Apply only to that particular question.
+            These instructions apply only to the specific question being processed.
+            If the user provides reference PDFs or images and asks for similar questions, you must analyze the provided material and generate questions based on it.
+            Include a diagram prompt when required to replicate or support the structure of the original question.
+            
 
         APPLICATION RULES
 
@@ -4289,7 +4385,28 @@ a&b_writer: |
               the question is too direct and must be redesigned.
 
       </question_cognitive_indirectness_rule>
+      <question_clarity_rule>
+          Short and direct refers to wording only. The cognitive demand must still match the assigned DOK level. A DOK 3 question can be brief in wording but deep in thinking required.
 
+          BANNED:
+          ✗ Long multi-clause sentences
+          ✗ Lengthy setup before reaching the actual question
+          ✗ Combining multiple conditions into one sentence
+          ✗ Repeating information already given in the scenario
+          ✗ Using difficult or uncommon words to make the question feel harder
+            (e.g., "ascertain", "elucidate", "deduce", "magnitude", "aforementioned")
+            Replace with: "find", "explain", "figure out", "value", "the above"
+
+          REQUIRED:
+          ✓ One idea per sentence
+          ✓ Simple everyday words a student at this grade would know
+          ✓ The actual question must be clear on the first read
+          ✓ Difficulty must come from the MATH — not from the wording
+
+          SELF-CHECK before finalising:
+          "Can a student read this question once and immediately know what they need to find?"
+          YES → proceed. NO → shorten the sentences and replace any difficult words.
+      </question_clarity_rule>
       <Dok_3>
 
         DOK 3 (Reasoning): Focuses on multi-step problem-solving requiring justification of answers, analyzing relationships, interpreting results, and drawing conclusions from the given scenario or data.
@@ -4304,7 +4421,7 @@ a&b_writer: |
         • Requires interpretation before solving.
         
       </Dok_3>
-            <knowledge_boundary>
+      <knowledge_boundary>
           Treat the uploaded PDFs/images as the only source of knowledge.
           Do not use any outside syllabus, curriculum, or textbook knowledge.
           Do not introduce concepts, terminology, skills, or grade-level content that is not explicitly shown in the uploaded material(for question, solution, key-idea for everything. You cant assume if lhs = rhs is not mentioned in the uploaded material but its proving left side = right side, you cant mention lhs = rhs in any part of the generated material).
@@ -4662,8 +4779,11 @@ multipart_writer: |
           Apply to ALL generated questions and related content.
 
         2. QUESTION-SPECIFIC NOTES (e.g., “Specific Note for Q1”)  
-          Apply only to that particular question.
-
+            Apply only to that particular question.
+            These instructions apply only to the specific question being processed.
+            If the user provides reference PDFs or images and asks for similar questions, you must analyze the provided material and generate questions based on it.
+            Include a diagram prompt when required to replicate or support the structure of the original question.
+            
         APPLICATION RULES
 
         - Both Global and Question-Specific Notes must be followed together.
@@ -5326,7 +5446,28 @@ multipart_writer: |
               If a student can identify the required property within 5 seconds of reading the question,
               the question is too direct and must be redesigned.
       </question_cognitive_indirectness_rule>
+      <question_clarity_rule>
+          Short and direct refers to wording only. The cognitive demand must still match the assigned DOK level. A DOK 3 question can be brief in wording but deep in thinking required.
 
+          BANNED:
+          ✗ Long multi-clause sentences
+          ✗ Lengthy setup before reaching the actual question
+          ✗ Combining multiple conditions into one sentence
+          ✗ Repeating information already given in the scenario
+          ✗ Using difficult or uncommon words to make the question feel harder
+            (e.g., "ascertain", "elucidate", "deduce", "magnitude", "aforementioned")
+            Replace with: "find", "explain", "figure out", "value", "the above"
+
+          REQUIRED:
+          ✓ One idea per sentence
+          ✓ Simple everyday words a student at this grade would know
+          ✓ The actual question must be clear on the first read
+          ✓ Difficulty must come from the MATH — not from the wording
+
+          SELF-CHECK before finalising:
+          "Can a student read this question once and immediately know what they need to find?"
+          YES → proceed. NO → shorten the sentences and replace any difficult words.
+      </question_clarity_rule>
             
       <question_enhancement_idea>
 
@@ -5396,6 +5537,11 @@ multipart_writer: |
           HARD RULE: If there is no hidden intermediate
           result the student must derive → it is DOK 2.
           Rewrite.
+        — DOK level enforcement takes priority over solution method simplicity.
+        — "Using only the chapter's method" means the OPERATIONS and TOOLS are locked.
+          It does NOT mean the reasoning path must be short or direct.
+        — You may increase DOK depth by introducing a REASONING LAYER before the
+          chapter method is applied — not by repeating the operation more times.
 
         ════════════════════════════════════════════
         MANDATORY PRE-OUTPUT GATE (run for EVERY question)
@@ -5856,7 +6002,11 @@ descriptive_writer: |
           Apply to ALL generated questions and related content.
 
         2. QUESTION-SPECIFIC NOTES (e.g., “Specific Note for Q1”)  
-          Apply only to that particular question.
+            Apply only to that particular question.
+            These instructions apply only to the specific question being processed.
+            If the user provides reference PDFs or images and asks for similar questions, you must analyze the provided material and generate questions based on it.
+            Include a diagram prompt when required to replicate or support the structure of the original question.
+            
 
         APPLICATION RULES
 
@@ -6572,6 +6722,28 @@ descriptive_writer: |
         Analyse the exercise of each topic so that you can make better questions. Better figures, common figures are not required try to make outside the box figures which is realastic
 
       </question_enhancement_idea>
+      <question_clarity_rule>
+          Short and direct refers to wording only. The cognitive demand must still match the assigned DOK level. A DOK 3 question can be brief in wording but deep in thinking required.
+
+          BANNED:
+          ✗ Long multi-clause sentences
+          ✗ Lengthy setup before reaching the actual question
+          ✗ Combining multiple conditions into one sentence
+          ✗ Repeating information already given in the scenario
+          ✗ Using difficult or uncommon words to make the question feel harder
+            (e.g., "ascertain", "elucidate", "deduce", "magnitude", "aforementioned")
+            Replace with: "find", "explain", "figure out", "value", "the above"
+
+          REQUIRED:
+          ✓ One idea per sentence
+          ✓ Simple everyday words a student at this grade would know
+          ✓ The actual question must be clear on the first read
+          ✓ Difficulty must come from the MATH — not from the wording
+
+          SELF-CHECK before finalising:
+          "Can a student read this question once and immediately know what they need to find?"
+          YES → proceed. NO → shorten the sentences and replace any difficult words.
+      </question_clarity_rule>
       <DOK_rigor_enforcement>
 
         THIS BLOCK IS MANDATORY. Apply before finalising any question.
@@ -6633,6 +6805,11 @@ descriptive_writer: |
           HARD RULE: If there is no hidden intermediate
           result the student must derive → it is DOK 2.
           Rewrite.
+        — DOK level enforcement takes priority over solution method simplicity.
+        — "Using only the chapter's method" means the OPERATIONS and TOOLS are locked.
+          It does NOT mean the reasoning path must be short or direct.
+        — You may increase DOK depth by introducing a REASONING LAYER before the
+          chapter method is applied — not by repeating the operation more times.
 
         ════════════════════════════════════════════
         MANDATORY PRE-OUTPUT GATE (run for EVERY question)
@@ -7103,7 +7280,11 @@ descriptive_with_subq_writer: |
           Apply to ALL generated questions and related content.
 
         2. QUESTION-SPECIFIC NOTES (e.g., “Specific Note for Q1”)  
-          Apply only to that particular question.
+            Apply only to that particular question.
+            These instructions apply only to the specific question being processed.
+            If the user provides reference PDFs or images and asks for similar questions, you must analyze the provided material and generate questions based on it.
+            Include a diagram prompt when required to replicate or support the structure of the original question.
+            
 
         APPLICATION RULES
 
@@ -7828,7 +8009,28 @@ descriptive_with_subq_writer: |
 
       </question_cognitive_indirectness_rule>
 
-            
+      <question_clarity_rule>
+          Short and direct refers to wording only. The cognitive demand must still match the assigned DOK level. A DOK 3 question can be brief in wording but deep in thinking required.
+
+          BANNED:
+          ✗ Long multi-clause sentences
+          ✗ Lengthy setup before reaching the actual question
+          ✗ Combining multiple conditions into one sentence
+          ✗ Repeating information already given in the scenario
+          ✗ Using difficult or uncommon words to make the question feel harder
+            (e.g., "ascertain", "elucidate", "deduce", "magnitude", "aforementioned")
+            Replace with: "find", "explain", "figure out", "value", "the above"
+
+          REQUIRED:
+          ✓ One idea per sentence
+          ✓ Simple everyday words a student at this grade would know
+          ✓ The actual question must be clear on the first read
+          ✓ Difficulty must come from the MATH — not from the wording
+
+          SELF-CHECK before finalising:
+          "Can a student read this question once and immediately know what they need to find?"
+          YES → proceed. NO → shorten the sentences and replace any difficult words.
+      </question_clarity_rule>          
       <question_enhancement_idea>
 
         Use textbook-style geometric structure as inspiration (clarity, multiple relations, meaningful layout), but DO NOT copy any figure. Reconstruct a new configuration that shows layered relationships (intersections, parallels, transversals, angle links) rather than a single simple shape.
@@ -7897,6 +8099,11 @@ descriptive_with_subq_writer: |
           HARD RULE: If there is no hidden intermediate
           result the student must derive → it is DOK 2.
           Rewrite.
+        — DOK level enforcement takes priority over solution method simplicity.
+        — "Using only the chapter's method" means the OPERATIONS and TOOLS are locked.
+          It does NOT mean the reasoning path must be short or direct.
+        — You may increase DOK depth by introducing a REASONING LAYER before the
+          chapter method is applied — not by repeating the operation more times.
 
         ════════════════════════════════════════════
         MANDATORY PRE-OUTPUT GATE (run for EVERY question)

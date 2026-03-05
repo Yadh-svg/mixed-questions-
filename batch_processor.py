@@ -242,8 +242,8 @@ async def generate_raw_batch(
         is_regeneration = any(q.get('_is_being_regenerated') for q in questions)
         prompt_type = "regeneration" if is_regeneration else "generation"
         
-        # Save final prompt to disk
-        save_prompt(prompt_text, prompt_type, batch_key)
+        # Save final prompt to disk — DISABLED
+        # save_prompt(prompt_text, prompt_type, batch_key)
 
         files = prompt_data.get('files', [])
         file_metadata = prompt_data.get('file_metadata', {})
@@ -515,18 +515,14 @@ async def process_single_batch_flow(
             files_data = get_files(questions, general_config)
             files = files_data.get('files', [])  # Extract the actual file list
             
-            # Create directory for saving prompts
-            from pathlib import Path
-            prompts_dir = Path("pipeline_outputs") / batch_key.replace(" - ", "_").replace(" ", "_")
-            prompts_dir.mkdir(parents=True, exist_ok=True)
-            logger.info(f"💾 Created prompts directory: {prompts_dir}")
+            # Prompt saving disabled — no pipeline_outputs directory needed
             
-            # Run the full 4-stage pipeline with prompt saving
+            # Run the full 4-stage pipeline
             pipeline_result = await run_stage_pipeline(
                 questions, 
                 general_config, 
                 files,
-                save_prompts_dir=prompts_dir,
+                save_prompts_dir=None,
                 previous_batch_metadata=previous_batch_metadata
             )
             
@@ -583,13 +579,7 @@ async def process_single_batch_flow(
                 val_prompt = val_prompt.replace("{{INPUT_CONTEXT}}", combined_context)
                 val_prompt = val_prompt.replace("{{OUTPUT_FORMAT_RULES}}", structure_format)
                 
-                # Save the validation prompt
-                if 'prompts_dir' in locals() and prompts_dir:
-                    try:
-                        with open(prompts_dir / "stage3_validation_prompt.txt", "w", encoding="utf-8") as f:
-                            f.write(val_prompt)
-                    except Exception as e:
-                        logger.error(f"[{batch_key}] Failed to save validation prompt: {e}")
+                # Validation prompt saving disabled
                 
                 logger.info(f"[{batch_key}] Starting validation on {len(questions_data)} newly generated questions...")
                 val_files = [] 
@@ -631,22 +621,10 @@ async def process_single_batch_flow(
                 },
                 'validated': validated_payload,
                 'core_skill_metadata': pipeline_result['_pipeline_metadata'].get('core_skill_data', {}),
-                '_pipeline_output': pipeline_result,
-                '_prompts_dir': str(prompts_dir)
+                '_pipeline_output': pipeline_result
             }
             
-            # Save detailed batch output for debugging/analysis
-            try:
-                output_dir = Path("batch_outputs")
-                output_dir.mkdir(exist_ok=True)
-                clean_key = batch_key.replace(" ", "_").replace("-", "_")
-                output_file = output_dir / f"{clean_key}_full_output.json"
-                
-                with open(output_file, "w", encoding="utf-8") as f:
-                    json.dump(pipeline_payload, f, indent=2)
-                logger.info(f"Saved full batch output to {output_file}")
-            except Exception as e:
-                logger.error(f"Failed to save full batch output: {e}")
+            # Batch output saving disabled
 
             # Use the extracted metadata for the return value
             return {batch_key: pipeline_payload, '_metadata': pipeline_payload['core_skill_metadata']}

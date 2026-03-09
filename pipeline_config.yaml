@@ -1,59 +1,86 @@
 # ===================================================================
 # PIPELINE MODEL CONFIGURATION
 # ===================================================================
-# 
-# This file controls the model settings for each stage of the 
-# 4-stage question generation pipeline.
 #
-# You can customize:
-# - model: Which Gemini model to use
-# - temperature: Creativity level (0.0 = deterministic, 2.0 = creative)
-# - thinking_level: How much time the model spends thinking (low/medium/high, or null for non-thinking models)
-# - top_p: Nucleus sampling (optional)
-# - top_k: Top-k sampling (optional)
+# Controls model, provider, and generation settings for each pipeline stage.
+#
+# provider: "gemini" → uses Gemini API (google-genai)
+#           "openai" → uses OpenAI Responses API (openai SDK)
+#
+# For Gemini stages:
+#   thinking_level: "high" | "medium" | "low" | null (null = no thinking)
+#
+# For OpenAI stages:
+#   reasoning_effort: "high" | "medium" | "low" (controls internal reasoning)
+#   thinking_level is ignored for OpenAI stages
 # ===================================================================
 
 # ===================================================================
-# STAGE 1: MATH CORE (ARCHITECT)
+# STAGE 1: MATH CORE (ARCHITECT) — Topic extraction from PDF
+# Uses Gemini Flash Lite (fast, cheap, structured JSON output)
 # ===================================================================
 math_core:
+  provider: "gemini"
   model: "gemini-2.5-flash-lite-preview-09-2025"
   temperature: 0.2
   thinking_level: null
   top_p: 0.90
   top_k: 40
-  
-  # Notes:
-  # - The Architect needs HIGH reasoning to design valid math structures.
-  # - Use a thinking model here.
 
 # ===================================================================
-# STAGE 2: WRITER (SCENARIO + QUESTION)
+# STAGE 2: WRITER (SCENARIO + QUESTION GENERATOR)
+# Uses Gemini (or GPT-4.1) via configured provider
 # ===================================================================
 writer:
+  provider: "gemini"
   model: "gemini-3-flash-preview"
-  temperature: 0.7
+  temperature: 0.3
   thinking_level: "high"
-  top_p: 0.95
-  top_k: 40
-  
-  
-# ===================================================================
-# STAGE 5: DUPLICATION
-# ===================================================================
-duplication:
-  model: "gemini-3-flash-preview"
-  temperature: 0.7
-  thinking_level: "low"
-  top_p: 0.95
-  top_k: 40
 
 # ===================================================================
-# STAGE 4: ANALYSIS (VALIDATION)
+# STAGE 2.5: DOK 3 UPGRADER (STRENGTHENS DOK 3 QUESTIONS)
+# Triggered only if DOK 3 is present in the batch.
+# Uses same model as Writer.
 # ===================================================================
-analysis:
+dok_upgrader:
+  provider: "gemini"
+  model: "gemini-3-flash-preview"
+  temperature: 0.3
+  thinking_level: "high"
+
+# ===================================================================
+# STAGE 3: SOLUTION (KEY IDEA, STEPS, SOLUTION)
+# Uses Gemini Flash (good at structured analytical output)
+# ===================================================================
+solution:
+  provider: "gemini"
+  model: "gemini-3.1-flash-lite-preview"
+  temperature: 0.3
+  thinking_level: null
+
+# ===================================================================
+# DUPLICATION
+# ===================================================================
+duplication:
+  provider: "gemini"
+  model: "gemini-3-flash-preview"
+  temperature: 0.7
+  thinking_level: null
+
+# ===================================================================
+# REGENERATION
+# ===================================================================
+regeneration:
+  provider: "gemini"
   model: "gemini-3-flash-preview"
   temperature: 0.7
   thinking_level: "high"
-  top_p: 0.95
-  top_k: 40
+
+# ===================================================================
+# ANALYSIS (legacy — kept for backward compatibility)
+# ===================================================================
+analysis:
+  provider: "gemini"
+  model: "gemini-3-flash-preview"
+  temperature: 0.7
+  thinking_level: "high"

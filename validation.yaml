@@ -8,7 +8,9 @@ validation_prompt: |
     {{GENERATED_CONTENT}}
 
   - YOU MAIN AIM IS TO VALIDATE THE DOK LEVEL AND CORRECT IT WHILE THE OTHER THINGS ARE ALSO IMPORTANT.
-  - GLOBAL DISTRACTOR LINGUISTIC STYLE RULE (only forMCQ / A&R)
+  - GLOBAL DISTRACTOR LINGUISTIC STYLE RULE (only for MCQ / A&R)
+        HARD RULE: Distractor analysis is FORBIDDEN for Case Study, FIB, Descriptive, Multi-Part, and Descriptive-with-Subquestions question types. If distractor analysis appears in any of these, remove it entirely.
+        STRICT -  Dont add distractor analysis for any other question, Distractor analysis is only for MCQ and A&R questions.
 
         For MCQ and Assertion-Reason questions, distractor analysis for each incorrect option must use a second-person pedagogical style that explains the student's likely reasoning path.
         If distractor analysis is missing or incomplete, you must generate it based on the option content and the corresponding error pattern.
@@ -419,64 +421,62 @@ validation_prompt: |
     
     ## KEY IDEA RULES (MANDATORY – EDUCATIONAL, STRICT FORMAT)
 
-          You must write a KEY IDEA meant for a weak or struggling student.
+      You must write a KEY IDEA meant for a weak or struggling student.
 
-          ASSUME:
-          - The student has NEVER seen this topic before.
-          - The student does NOT know any technical or mathematical terminology.
+      ASSUME:
+      - The student has NEVER seen this topic before.
+      - The student does NOT know any technical or mathematical terminology.
 
-          HARD RULES (DO NOT VIOLATE):
-          - Do NOT mention any numbers, symbols, variables, equations, diagrams, or values from the question.
-          - Do NOT use advanced or textbook-style language.
-          - Do NOT write in a single flowing paragraph.
-          - Do NOT skip or merge sections.
-          - The explanation must work for ANY similar question of this type.
+      HARD RULES (DO NOT VIOLATE):
+      - Do NOT mention any numbers, symbols, variables, equations, diagrams, or values from the question.
+      - Do NOT use advanced or textbook-style language.
+      - Do NOT write in a single flowing paragraph. Each section MUST be separated by a blank line.
+      - Do NOT skip or merge sections.
+      - The explanation must work for ANY similar question of this type.
+      - NEVER collapse the KEY IDEA into a paragraph. Numbered steps and bullet points are MANDATORY.
+      - Do NOT print any section header labels (such as "What kind of problems", "Core idea", "Why this works", "Common mistakes", "Tips"). Write the content directly without naming the section.
 
-          LANGUAGE RULES:
-          - Use very simple, school-level English.
-          - Prefer short sentences.
-          - If a word sounds technical, explain it immediately or avoid it.
-          - Write as if you are teaching a confused student one-on-one.
+      LANGUAGE RULES:
+      - Use very simple, school-level English.
+      - Prefer short sentences.
+      - If a word sounds technical, explain it immediately or avoid it.
+      - Write as if you are teaching a confused student one-on-one.
 
-          --------------------------------------------------
+      --------------------------------------------------
 
-          REQUIRED STRUCTURE (WRITE EXACTLY IN THIS ORDER):
+      REQUIRED OUTPUT STRUCTURE — FOLLOW THIS ORDER EXACTLY:
 
-          KEY IDEA
+      **KEY IDEA**
 
-          1. What kind of problems these are  
-          Explain in simple words what these questions are generally asking the student to understand or find.
+      [2–3 sentences: what these questions generally ask the student to find or understand. No header label.]
 
-          2. Core idea behind these problems  
-          Explain the main idea from the beginning, as if the student has zero background knowledge.
+      [2–3 sentences: explain the main idea from scratch, assuming zero background. No header label.]
 
-          3. Why this idea works  
-          Explain logically why this method makes sense in real understanding, not just as a rule to memorize.
-        
-          4. General step-by-step method  
-          Write this as clearly numbered steps:
-          Step 1:  
-          Step 2:  
-          Step 3:  
-          Step 4:  
+      [2–3 sentences: explain logically why this method makes sense — not just a rule to memorize. No header label.]
 
-          Each step must describe ONE clear action the student should take.
+      Step 1: [One clear action]
+      Step 2: [One clear action]
+      Step 3: [One clear action]
+      Step 4: [One clear action]
 
-          5. Common mistakes students make  
-          Mention at least two common mistakes and explain why students make them.
+      - [Common mistake 1 and why students make it]
+      - [Common mistake 2 and why students make it]
 
-          6. Tips to avoid these mistakes  
-          Give simple, practical tips written directly for a student.
-          **- Do NOT explicitly break the explanation into “What kind of problems”, “Core idea”,"Common mistakes students make  " or “Why this works”.
-            Do NOT restate or refer to the given question (Why this idea works .. etc ). **
-          --------------------------------------------------
+      - [Practical tip 1 written directly to the student]
+      - [Practical tip 2 written directly to the student]
 
-          QUALITY CHECK (MANDATORY):
-          - Minimum length: 6–8 full sentences.
-          - The explanation must be reusable for any similar problem.
-          - If the explanation sounds suitable for a strong student, rewrite it to be simpler.
+      --------------------------------------------------
 
+      ENFORCEMENT:
+      - ALL seven blocks above must appear in every KEY IDEA, in this exact order.
+      - Steps must use "Step 1, Step 2..." format — not bullets or prose.
+      - The two mistake bullets and two tip bullets must each be on their own lines.
+      - Do NOT label or introduce any block with a heading or title.
+      - Minimum total length: 6–8 full sentences.
+      - If any block is missing, collapsed into a paragraph, or given a section header label, the output is INVALID.
+    ## Topic name should be same as it is given in the question
     ## Distractor analysis table structure :
+      APPLIES ONLY TO: MCQ and Assertion-Reason. EXCLUDED types: Case Study, FIB, Descriptive, Descriptive-with-Subquestions, Multi-Part — distractor analysis must be completely absent from these.
       Generate the distractor analysis table using Word-compatible Markdown. Use full column separators, padded cells, and extended dash lines so Word recognizes it as a table. Do not use compact ‘|---|---|’ separators. Each column must have descriptive headers and consistent spacing
       Given below is the distractor analysis table with proper spacing and Word recognizable format, Make sure the table format will be like this
       ### DISTRACTOR ANALYSIS
@@ -568,12 +568,26 @@ structure_Case_Study: |
   - Topic, Scenario/context, Diagram prompt (if applicable), Sub-questions with parts (a,b,c),
     Answer key for each part, Detailed solutions with step-by-step working, Key idea, Marks and DOK levels
   
-  Format with headers (##, ###) for sections like Scenario, Questions, Solutions.
+  CRITICAL: FORMAT : 
+            Scenario
+            Diagram
+            Sub-questions (a,b,c)
+
+            ANSWER KEY
+            (a)
+            (b)
+            (c)
+
+            SOLUTION
+            Step-by-step explanation
+
+            KEY IDEA
+            Concept explanation.
   - Whatever inside the question key shouldnt be in json format it should be in markdown format everything inside " " 
 
   EXAMPLE OUTPUT FORMAT:
   {
-    "question1": "# Arithmetic Progressions\n\n## Scenario\nA factory produces items following an arithmetic progression pattern. The production starts with 5 items on day 1 and increases by 3 items each day.\n\n## Diagram\n*Bar chart showing production: Day 1: 5 items, Day 2: 8 items, Day 3: 11 items, continuing the pattern*\n\n## Questions\n**(a)** Find the production on the 5th day. (1 mark, DOK 1)\n\n**(b)** Calculate the total production in the first 10 days. (2 marks, DOK 2)\n\n## Answer Key\n**(a)** 17 items\n\n**(b)** 125 items\n\n## Solutions\n\n### Part (a) [1 mark, DOK 1]\nGiven: First term a = 5, common difference d = 3\n\nUsing a_n = a + (n-1)d\n\na_5 = 5 + (5-1)×3\na_5 = 5 + 12\na_5 = 17 items\n\n### Part (b) [2 marks, DOK 2]\nUsing sum formula S_n = (n/2)(2a + (n-1)d)\n\nS_10 = (10/2)(2×5 + (10-1)×3)\nS_10 = 5(10 + 27)\nS_10 = 5 × 37\nS_10 = 185 items\n\nOr using S_n = (n/2)(first term + last term):\nS_10 = (10/2)(5 + 17)\nS_10 = 125 items\n\n### Key Idea\nFor case study problems involving arithmetic progressions, identify the first term and common difference from the context, then apply the appropriate formulas for nth term or sum based on what the question asks.",
+    "question1": "# Topic Name\n\n## Scenario\n...\n\n## Diagram\n...\n\n## Sub-questions\n\n**(a)** ...\n\n**(b)** ...\n\n---\n\n## ANSWER KEY\n(a) A\n(b) 24\n\n## SOLUTION\nStep 1: ...\nStep 2: ...\nStep 3: ...\n\n## KEY IDEA\nExplanation of the core concept and common mistakes."
     "question2": "..."
   }
 
@@ -609,12 +623,13 @@ structure_Multi_Part: |
     Answers for each part, Marks and DOK levels for each part, Detailed solution for each part,
     Distractor analysis (if applicable), Key idea/concept
   
-  Format with headers for sections. Parts labeled as **(a)**, **(b)**.
+  CRITICAL: You MUST format the output SEQUENTIALLY. Do NOT group all questions together and all solutions together. For each sub-question, immediately follow it with its corresponding Answer and Solution.
+  Format with headers for major sections. Parts labeled as **(a)**, **(b)**.
   - Whatever inside the question key shouldnt be in json format it should be in markdown format everything inside " " 
   
   EXAMPLE OUTPUT FORMAT:
   {
-    "question1": "# nth term of AP\n\n*Number-based multi-part*\n\nConsider the arithmetic progression: 3, 7, 11, 15, ...\n\n**(a)** Find the 8th term. (1 mark, DOK 1)\n\n**(b)** Which term of this AP is 51? (2 marks, DOK 2)\n\n## Answers\n**(a)** 31\n\n**(b)** 13th term\n\n## Solutions\n\n### Part (a) [1 mark, DOK 1]\nGiven AP: 3, 7, 11, 15, ...\n\nFirst term a = 3\nCommon difference d = 7 - 3 = 4\n\nUsing a_n = a + (n-1)d\n\na_8 = 3 + (8-1)×4\na_8 = 3 + 28\na_8 = 31\n\n### Part (b) [2 marks, DOK 2]\nWe need to find n when a_n = 51\n\nUsing a_n = a + (n-1)d\n51 = 3 + (n-1)×4\n51 - 3 = (n-1)×4\n48 = (n-1)×4\n12 = n-1\nn = 13\n\nTherefore, 51 is the 13th term.\n\n### Key Idea\nFor multi-part AP problems, first identify the first term and common difference. Use the direct formula a_n = a + (n-1)d when finding a specific term, and solve the same formula for n when finding which term has a given value.",
+    "question1": "# nth term of AP\n\n*Number-based multi-part*\n\nConsider the arithmetic progression: 3, 7, 11, 15, ...\n\n## Sub-questions & Solutions\n\n**(a)** Find the 8th term. (1 mark, DOK 1)\n\n**Answer:** 31\n\n**Solution:**\nFirst term a = 3\nCommon difference d = 7 - 3 = 4\nUsing a_n = a + (n-1)d\na_8 = 3 + (8-1)×4\na_8 = 3 + 28\na_8 = 31\n\n---\n\n**(b)** Which term of this AP is 51? (2 marks, DOK 2)\n\n**Answer:** 13th term\n\n**Solution:**\nWe need to find n when a_n = 51\nUsing a_n = a + (n-1)d\n51 = 3 + (n-1)×4\n51 - 3 = (n-1)×4\n48 = (n-1)×4\n12 = n-1\nn = 13\nTherefore, 51 is the 13th term.\n\n## Key Idea\nFor multi-part AP problems, first identify the first term and common difference. Use the direct formula a_n = a + (n-1)d when finding a specific term, and solve the same formula for n when finding which term has a given value.",
     "question2": "..."
   }
 
@@ -670,10 +685,11 @@ structure_Descriptive_w_subq: |
   - Topic, Scenario/context, Diagram prompt (if applicable), Main question text, Sub-questions (clearly labeled),
     Answers for each sub-question, Detailed solutions, Key idea/concept
   
+  CRITICAL: You MUST format the output SEQUENTIALLY. Do NOT group all questions together and all solutions together. For each sub-question, immediately follow it with its corresponding Answer and Solution.
   Format with headers. Sub-questions as **(i)**, **(ii)**.
   
   EXAMPLE OUTPUT FORMAT:
   {
-    "question1": "# AP Applications\n\n## Context\nA theater is being designed with seating arranged in rows. The architect plans the seating in an arithmetic progression pattern where the first row has 20 seats, and each subsequent row has 2 more seats than the previous row.\n\n## Diagram\n*Side view of theater showing rows: Row 1 with 20 seats, Row 2 with 22 seats, Row 3 with 24 seats, continuing upward*\n\n## Questions\n**(i)** How many seats will be in the 10th row?\n\n**(ii)** What is the total seating capacity in the first 10 rows?\n\n## Answers\n**(i)** 38 seats\n\n**(ii)** 290 seats\n\n## Solutions\n\n### Part (i)\nGiven:\n- First row (a) = 20 seats\n- Common difference (d) = 2 seats\n- Row number (n) = 10\n\nUsing the nth term formula:\na_n = a + (n-1)d\n\na_10 = 20 + (10-1)×2\na_10 = 20 + 9×2\na_10 = 20 + 18\na_10 = 38 seats\n\n### Part (ii)\nUsing the sum formula S_n = (n/2)(first term + last term)\n\nWe know:\n- First term = 20\n- Last term (10th row) = 38\n- Number of rows = 10\n\nS_10 = (10/2)(20 + 38)\nS_10 = 5 × 58\nS_10 = 290 seats\n\nAlternatively, using S_n = (n/2)(2a + (n-1)d):\nS_10 = (10/2)(2×20 + 9×2)\nS_10 = 5(40 + 18)\nS_10 = 290 seats\n\n### Key Idea\nFor real-world AP applications with sub-questions, identify the first term and common difference from the context, then apply appropriate formulas - nth term formula for finding specific terms, and sum formula for finding totals.",
+    "question1": "# AP Applications\n\n## Context\nA theater is being designed with seating arranged in rows. The architect plans the seating in an arithmetic progression pattern where the first row has 20 seats, and each subsequent row has 2 more seats than the previous row.\n\n## Diagram\n*Side view of theater showing rows: Row 1 with 20 seats, Row 2 with 22 seats, Row 3 with 24 seats, continuing upward*\n\n## Sub-questions & Solutions\n\n**(i)** How many seats will be in the 10th row?\n\n**Answer:** 38 seats\n\n**Solution:**\nGiven:\n- First row (a) = 20 seats\n- Common difference (d) = 2 seats\n- Row number (n) = 10\nUsing the nth term formula:\na_n = a + (n-1)d\na_10 = 20 + (10-1)×2\na_10 = 20 + 18\na_10 = 38 seats\n\n---\n\n**(ii)** What is the total seating capacity in the first 10 rows?\n\n**Answer:** 290 seats\n\n**Solution:**\nUsing the sum formula S_n = (n/2)(first term + last term)\nWe know:\n- First term = 20\n- Last term (10th row) = 38\n- Number of rows = 10\nS_10 = (10/2)(20 + 38)\nS_10 = 5 × 58\nS_10 = 290 seats\n\n## Key Idea\nFor real-world AP applications with sub-questions, identify the first term and common difference from the context, then apply appropriate formulas - nth term formula for finding specific terms, and sum formula for finding totals.",
     "question2": "..."
   }

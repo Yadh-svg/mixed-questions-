@@ -24,43 +24,15 @@ file_read_lock = threading.Lock()
 
 def save_prompt(prompt: str, prompt_type: str, identifier: str):
     """
-    Save the final prompt to a file in prompt_logs directory. (Disabled by user request)
+    Save the final prompt to a file in prompt_logs directory. (DISABLED)
     """
-    pass
-    # try:
-    #     log_dir = Path("prompt_logs")
-    #     log_dir.mkdir(exist_ok=True)
-    #     
-    #     timestamp = time.strftime("%Y%m%d_%H%M%S")
-    #     filename = f"{timestamp}_{prompt_type}_{identifier.replace(' ', '_')}.txt"
-    #     file_path = log_dir / filename
-    #     
-    #     with open(file_path, "w", encoding="utf-8") as f:
-    #         f.write(prompt)
-    #     
-    #     logger.info(f"Saved {prompt_type} prompt to {file_path}")
-    # except Exception as e:
-    #     logger.error(f"Failed to save prompt: {e}")
+    return
 
 def save_response(response_text: str, response_type: str, identifier: str):
     """
-    Save the raw LLM response to a file in response_logs directory. (Disabled by user request)
+    Save the raw LLM response to a file in response_logs directory. (DISABLED)
     """
-    pass
-    # try:
-    #     log_dir = Path("response_logs")
-    #     log_dir.mkdir(exist_ok=True)
-    #     
-    #     timestamp = time.strftime("%Y%m%d_%H%M%S")
-    #     filename = f"{timestamp}_{response_type}_{identifier.replace(' ', '_')}.txt"
-    #     file_path = log_dir / filename
-    #     
-    #     with open(file_path, "w", encoding="utf-8") as f:
-    #         f.write(response_text)
-    #     
-    #     logger.info(f"Saved {response_type} response to {file_path}")
-    # except Exception as e:
-    #     logger.error(f"Failed to save response: {e}")
+    return
 
 def upload_files_to_gemini(files: List, api_key: str) -> List:
     """
@@ -127,7 +99,8 @@ def run_gemini(
     files: Optional[List] = None,
     thinking_level: str = "high",
     file_metadata: Optional[Dict[str, Any]] = None,
-    model: str = None
+    model: str = None,
+    system_prompt: Optional[str] = None
 ) -> Dict[str, Any]:
     """
     Run Gemini model with optional PDF/image files using File API.
@@ -139,6 +112,7 @@ def run_gemini(
         thinking_level: Level of reasoning for Gemini thinking models (e.g., "high", "medium", "low")
         file_metadata: Metadata about files (source_type, filenames)
         model: Gemini model to use (Required)
+        system_prompt: Optional system instruction to set model behavior
         
     Returns:
         Dictionary with text, error, elapsed time, and token counts
@@ -177,16 +151,18 @@ def run_gemini(
         
         contents.append(prompt)
         
-        # Build generation config - only add thinking config if thinking_level is provided
+        # Build generation config
         # Some models don't support thinking mode (e.g., gemini-2.5-flash-lite-preview-09-2025)
+        # We also support system_instruction for better control.
+        config_kwargs = {}
         if thinking_level:
-            config = types.GenerateContentConfig(
-                thinking_config=types.ThinkingConfig(
-                    thinking_level=thinking_level
-                )
+            config_kwargs["thinking_config"] = types.ThinkingConfig(
+                thinking_level=thinking_level
             )
-        else:
-            config = None
+        if system_prompt:
+            config_kwargs["system_instruction"] = system_prompt
+            
+        config = types.GenerateContentConfig(**config_kwargs) if config_kwargs else None
         
         # Using stream=True to be consistent with previous implementation
         stream = client.models.generate_content_stream(
@@ -213,18 +189,21 @@ def run_gemini(
         
         # Extract token usage for cost calculation
         if usage_metadata:
-            out["input_tokens"] = getattr(usage_metadata, 'prompt_token_count', 0) or 0
-            out["output_tokens"] = getattr(usage_metadata, 'candidates_token_count', 0) or 0
-            # Handle possible pluralization variations in different SDK versions
-            # For non-thinking models, thought_tokens might be None, so use 0 as default
-            thought_tokens = getattr(usage_metadata, 'thought_token_count', 
-                                   getattr(usage_metadata, 'thoughts_token_count', 0))
-            out["thought_tokens"] = thought_tokens if thought_tokens is not None else 0
+            params = {
+                'input': getattr(usage_metadata, 'prompt_token_count', 0) or 0,
+                'candidates': getattr(usage_metadata, 'candidates_token_count', 0) or 0,
+                'thought': getattr(usage_metadata, 'thought_token_count', 
+                                 getattr(usage_metadata, 'thoughts_token_count', 0)) or 0
+            }
+            
+            out["input_tokens"] = params['input']
+            out["thought_tokens"] = params['thought']
+            # Standardize: output_tokens includes thought tokens (like OpenAI)
+            out["output_tokens"] = params['candidates'] + params['thought']
             out["total_tokens"] = getattr(usage_metadata, 'total_token_count', 0) or 0
             
-            # User wants to treat thinking tokens as output tokens
-            # Total Billed Output Tokens = candidates + thought
-            out["billed_output_tokens"] = out["output_tokens"] + out["thought_tokens"]
+            # For backward compatibility or explicit billed tracking
+            out["billed_output_tokens"] = out["output_tokens"]
             
             logger.info(f"Gemini completed | Chunks: {chunk_count} | Tokens: {out['total_tokens']} "
                        f"(in: {out['input_tokens']}, out: {out['output_tokens']}, thought: {out['thought_tokens']}) | "
@@ -256,7 +235,8 @@ async def duplicate_questions_async(
     api_key: str,
     additional_notes: str = "",
     pdf_file: Optional[Any] = None,
-    model: str = None
+    model: str = None,
+    thinking_level: Optional[str] = None
 ) -> Dict[str, Any]:
     """
     Generate duplicate versions of a question with different numbers and scenarios.
@@ -268,6 +248,8 @@ async def duplicate_questions_async(
         api_key: Gemini API key
         additional_notes: Optional additional instructions for duplication
         pdf_file: Optional file object (PDF/Image) for context
+        model: Gemini model to use
+        thinking_level: Optional thinking level (high, medium, low, or None)
         
     Returns:
         Dictionary with 'duplicates' (list of duplicate question objects) and metadata
@@ -288,18 +270,21 @@ async def duplicate_questions_async(
             "duplicates": []
         }
     
-    # Ensure model is set if not passed
+    # Ensure model and thinking_level are set if not passed
+    config_data = {}
+    try:
+        config_path = Path(__file__).parent / "pipeline_config.yaml"
+        if config_path.exists():
+            with open(config_path, 'r', encoding='utf-8') as f:
+                config_data = yaml.safe_load(f)
+    except Exception:
+        pass
+
     if not model:
-        try:
-            config_path = Path(__file__).parent / "pipeline_config.yaml"
-            if config_path.exists():
-                with open(config_path, 'r', encoding='utf-8') as f:
-                    config = yaml.safe_load(f)
-                    model = config.get('stage_2', {}).get('model', 'gemini-2.0-flash')
-            else:
-                model = 'gemini-2.0-flash'
-        except Exception:
-            model = 'gemini-2.0-flash'
+        model = config_data.get('duplication', {}).get('model', 'gemini-3-flash-preview')
+    
+    if thinking_level is None:
+        thinking_level = config_data.get('duplication', {}).get('thinking_level', 'high')
     
     # Replace template parameters with actual values
     formatted_prompt = prompt_template.replace("{{QUESTION_CODE}}", question_code)
@@ -307,20 +292,20 @@ async def duplicate_questions_async(
     formatted_prompt = formatted_prompt.replace("{{ORIGINAL_QUESTION}}", original_question_markdown)
     formatted_prompt = formatted_prompt.replace("{{ADDITIONAL_NOTES}}", additional_notes)
     
-    # Save prompt for debugging (disabled)
-    # save_prompt(formatted_prompt, "duplication", question_code)
+    # Save prompt for debugging
+    save_prompt(formatted_prompt, "duplication", question_code)
     
     # Prepare files list if PDF is provided
     files_to_upload = [pdf_file] if pdf_file else None
     
-    # Call Gemini 2.5 Pro with higher thinking budget for better quality
-    logger.info(f"Generating {num_duplicates} duplicate(s) for question {question_code}")
+    # Call Gemini
+    logger.info(f"Generating {num_duplicates} duplicate(s) for question {question_code} using model: {model}")
     
     result = await run_gemini_async(
         prompt=formatted_prompt,
         api_key=api_key,
         files=files_to_upload,
-        thinking_level="high",
+        thinking_level=thinking_level,
         file_metadata={'source_type': 'duplicate_context', 'filenames': [getattr(pdf_file, 'name', 'file')]} if pdf_file else None,
         model=model
     )
@@ -337,6 +322,8 @@ async def duplicate_questions_async(
     import re
     
     response_text = result.get('text', '')
+    # Save raw response for debugging
+    save_response(response_text, "duplication", question_code)
     
     # Split the response on the ---DUPLICATE_N--- marker
     # The regex looks for ---DUPLICATE_\d+--- anywhere in the text
@@ -381,12 +368,146 @@ async def run_gemini_async(
     files: Optional[List] = None,
     thinking_level: str = "high",
     file_metadata: Optional[Dict[str, Any]] = None,
-    model: str = None
+    model: str = None,
+    system_prompt: Optional[str] = None
 ) -> Dict[str, Any]:
     """
     Async wrapper for run_gemini.
     """
-    return await asyncio.to_thread(run_gemini, prompt, api_key, files, thinking_level, file_metadata, model)
+    return await asyncio.to_thread(run_gemini, prompt, api_key, files, thinking_level, file_metadata, model, system_prompt)
+
+
+def run_openai(
+    system_prompt: str,
+    user_prompt: str,
+    api_key: str,
+    model: str = "gpt-4.1",
+    temperature: float = 1.0,
+    reasoning_effort: str = None
+) -> Dict[str, Any]:
+    """
+    Run OpenAI model using the Responses API.
+
+    Uses the OpenAI Responses API (client.responses.create) which supports
+    structured reasoning via the `reasoning.effort` parameter.
+
+    Args:
+        system_prompt: System-level instructions for the model.
+        user_prompt:   User-facing content / data prompt.
+        api_key:       OpenAI API key.
+        model:         Model name (e.g. 'gpt-4.1').
+        temperature:   Sampling temperature.
+        reasoning_effort: Reasoning effort level: 'high' | 'medium' | 'low' | None.
+                          When set, enables internal chain-of-thought (like thinking mode).
+
+    Returns:
+        Dict with keys: text, error, elapsed, input_tokens, output_tokens.
+    """
+    from openai import OpenAI
+
+    out = {"text": "", "error": None, "elapsed": 0,
+           "input_tokens": 0, "output_tokens": 0,
+           "thought_tokens": 0, "total_tokens": 0}
+    start = time.time()
+
+    try:
+        client = OpenAI(api_key=api_key)
+
+        logger.info(f"Starting OpenAI | Model: {model} | Reasoning effort: {reasoning_effort}")
+
+        # Build kwargs
+        create_kwargs = {
+            "model": model,
+            "input": [
+                {"role": "system", "content": system_prompt},
+                {"role": "user",   "content": user_prompt}
+            ]
+        }
+        
+        # Only add temperature if it's a model that supports it (most reasoning models don't)
+        if temperature and not model.startswith(('gpt-5', 'o1', 'o3')):
+            create_kwargs["temperature"] = temperature
+
+        # Add reasoning if effort is specified
+        if reasoning_effort:
+            create_kwargs["reasoning"] = {"effort": reasoning_effort}
+
+        response = client.responses.create(**create_kwargs)
+
+        # Extract text — Responses API returns output items
+        output_text = ""
+        output_items = getattr(response, "output", [])
+        
+        # Fix for 'NoneType' object is not iterable
+        if output_items is None:
+            output_items = []
+            
+        for item in output_items:
+            # Handle object-based responses correctly
+            if hasattr(item, "content") and item.content:
+                for block in item.content:
+                    if getattr(block, "type", "") == "output_text":
+                        output_text += getattr(block, "text", "")
+            # Handle direct dictionary structures (like the one provided in JSON)
+            elif isinstance(item, dict) and 'content' in item:
+                for block in item.get('content', []):
+                    if isinstance(block, dict) and block.get('type') == 'output_text':
+                        output_text += block.get('text', '')
+            # Fallback: direct text attribute
+            elif hasattr(item, "text") and item.text:
+                output_text += item.text
+            # Fallback for choices (in case it behaves like chat completions)
+            elif hasattr(item, "message") and hasattr(item.message, "content"):
+                output_text += item.message.content or ""
+
+        # Ultimate fallback if output array was empty or logic missed it
+        if not output_text and hasattr(response, "choices"):
+            output_text = response.choices[0].message.content or ""
+            
+        out["text"] = output_text
+
+        # Token usage
+        usage = getattr(response, "usage", None)
+        if usage:
+            out["input_tokens"]  = getattr(usage, "input_tokens", getattr(usage, "prompt_tokens", 0)) or 0
+            out["output_tokens"] = getattr(usage, "output_tokens", getattr(usage, "completion_tokens", 0)) or 0
+            # Reasoning tokens are billed as output
+            reasoning_tokens = getattr(usage, "output_tokens_details", getattr(usage, "completion_tokens_details", None))
+            if reasoning_tokens:
+                out["thought_tokens"] = getattr(reasoning_tokens, "reasoning_tokens", 0) or 0
+            out["total_tokens"] = out["input_tokens"] + out["output_tokens"]
+
+        logger.info(
+            f"OpenAI completed | Tokens: {out['total_tokens']} "
+            f"(in: {out['input_tokens']}, out: {out['output_tokens']}, "
+            f"reasoning: {out['thought_tokens']}) | Time: {time.time() - start:.2f}s"
+        )
+
+    except Exception as e:
+        logger.error(f"OpenAI execution failed: {e}")
+        out["error"] = str(e)
+        out["text"]  = f"[OpenAI Error] {e}"
+
+    finally:
+        out["elapsed"] = time.time() - start
+
+    return out
+
+
+async def run_openai_async(
+    system_prompt: str,
+    user_prompt: str,
+    api_key: str,
+    model: str = "gpt-4.1",
+    temperature: float = 1.0,
+    reasoning_effort: str = None
+) -> Dict[str, Any]:
+    """
+    Async wrapper for run_openai.
+    """
+    return await asyncio.to_thread(
+        run_openai, system_prompt, user_prompt, api_key, model, temperature, reasoning_effort
+    )
 
 async def regenerate_question_async(
     math_core_data: Dict[str, Any],
@@ -400,11 +521,13 @@ async def regenerate_question_async(
     question_code: str = "regeneration"
 ) -> Dict[str, Any]:
     """
-    Asynchronously regenerates a single question by bypassing Stage 1 
-    and feeding the explicit regeneration reason to Stage 2 (Writer).
+    Asynchronously regenerates a single question by using a specific regeneration
+    prompt format and bypasses standard generation, then immediately validates the output.
     """
-    from pipeline_builder import build_writer_prompt, extract_json_from_response
+    from pipeline_builder import build_regeneration_prompt, extract_json_from_response
     import yaml
+    import json
+    import os
     
     start_time = time.time()
     logger.info(f"Starting Regeneration for Question")
@@ -434,22 +557,16 @@ async def regenerate_question_async(
     except Exception:
         pass
 
-    # Build the specialized Writer prompt using the pipeline builder helper
-    writer_payload = build_writer_prompt(
-        math_core_data=math_core_data,
-        questions=[question_data],
-        general_config=general_config,
-        files=files,
-        previous_batch_metadata=None,
+    # Build the specialized Regeneration prompt
+    regen_payload = build_regeneration_prompt(
+        previous_question_markdown=previous_question_markdown,
         regeneration_reason=regeneration_reason,
-        previous_question_markdown=previous_question_markdown
+        general_config=general_config,
+        files=files
     )
     
-    prompt = writer_payload['prompt']
-    combined_files = writer_payload['files']
-    
-    # Save the regeneration prompt for debugging (disabled)
-    # save_prompt(prompt, "regeneration", question_code)
+    prompt = regen_payload['prompt']
+    combined_files = regen_payload['files']
     
     # Run Generation
     result = await run_gemini_async(
@@ -457,10 +574,11 @@ async def regenerate_question_async(
         api_key=api_key,
         files=combined_files,
         thinking_level=thinking_level,
-        model=model
+        model=model,
+        system_prompt=regen_payload.get('system_prompt')
     )
     
-    elapsed = time.time() - start_time
+    elapsed_gen = time.time() - start_time
     
     if result.get("error"):
         return result
@@ -468,33 +586,82 @@ async def regenerate_question_async(
     response_text = result.get('text', '')
     
     if response_text:
-        # Save the regeneration output to a file (Disabled by user request)
-        # output_dir = os.path.join(os.getcwd(), 'prompt_logs', 'regeneration_output')
-        # os.makedirs(output_dir, exist_ok=True)
-        # from datetime import datetime
-        # timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        # safe_key = question_code.replace(" ", "_")
-        # output_path = os.path.join(output_dir, f"{timestamp}_{safe_key}_output.md")
-        # try:
-        #     with open(output_path, 'w', encoding='utf-8') as f:
-        #         f.write(response_text)
-        #     logger.info(f"Saved regeneration output to {output_path}")
-        # except Exception as e:
-        #     logger.error(f"Failed to save regeneration output: {e}")
-            
-        logger.info(f"Successfully regenerated question in {elapsed:.2f}s")
+        logger.info(f"Successfully generated draft regenerated question in {elapsed_gen:.2f}s, starting Validation")
         
-        return {
-            "regenerated_data": {"markdown": response_text},
-            "raw_response": response_text,
-            "elapsed": elapsed,
-            "input_tokens": result.get('input_tokens', 0),
-            "output_tokens": result.get('output_tokens', 0)
-        }
+        # Load validation prompts
+        try:
+            prompt_path = os.path.join(os.path.dirname(__file__), 'validation.yaml')
+            with open(prompt_path, 'r', encoding='utf-8') as f:
+                val_prompts = yaml.safe_load(f)
+                
+            val_sys = val_prompts.get('validation_prompt', '')
+            
+            q_type = question_data.get('type', 'Case Study')
+            format_key = 'structure_Case_Study'
+            if 'mcq' in q_type.lower():
+                format_key = 'structure_MCQ'
+            elif 'fill' in q_type.lower() or 'fib' in q_type.lower():
+                format_key = 'structure_FIB'
+            elif 'multi' in q_type.lower() and 'part' in q_type.lower():
+                format_key = 'structure_Multi_Part'
+            elif 'descriptive' in q_type.lower():
+                if 'sub' in q_type.lower():
+                    format_key = 'structure_Descriptive_w_subq'
+                else:
+                    format_key = 'structure_Descriptive'
+            elif 'assertion' in q_type.lower() or 'reasoning' in q_type.lower():
+                format_key = 'structure_AR'
+                
+            format_rules = val_prompts.get(format_key, '')
+            val_sys = val_sys.replace("{{OUTPUT_FORMAT_RULES}}", format_rules)
+            
+            # Wrap generated text in JSON array format for validation
+            generated_json_str = json.dumps({"question1": response_text}, ensure_ascii=False)
+            val_sys = val_sys.replace("{{GENERATED_CONTENT}}", generated_json_str)
+            
+            val_result = await run_gemini_async(
+                prompt=val_sys,
+                api_key=api_key,
+                files=[],
+                thinking_level="low",
+                model=model,
+                system_prompt="You are a strict Question Validator & Minimal-Repair Agent."
+            )
+            
+            val_text = val_result.get('text', '')
+            final_markdown = response_text
+            
+            if val_text:
+                extracted = extract_json_from_response(val_text)
+                if extracted and isinstance(extracted, dict):
+                    for k, v in extracted.items():
+                        final_markdown = v
+                        break
+            
+            total_elapsed = time.time() - start_time
+            logger.info(f"Validation completed. Total regeneration took {total_elapsed:.2f}s")
+            
+            return {
+                "regenerated_data": {"markdown": final_markdown},
+                "raw_response": final_markdown,
+                "elapsed": total_elapsed,
+                "input_tokens": result.get('input_tokens', 0) + val_result.get('input_tokens', 0),
+                "output_tokens": result.get('output_tokens', 0) + val_result.get('output_tokens', 0)
+            }
+            
+        except Exception as e:
+            logger.error(f"Validation failed during regeneration: {e}")
+            return {
+                "regenerated_data": {"markdown": response_text},
+                "raw_response": response_text,
+                "elapsed": time.time() - start_time,
+                "input_tokens": result.get('input_tokens', 0),
+                "output_tokens": result.get('output_tokens', 0)
+            }
     else:
         logger.error(f"Failed to get regenerated response text")
         return {
             "error": "Failed to generate text for regeneration",
             "raw_response": response_text,
-            "elapsed": elapsed
+            "elapsed": time.time() - start_time
         }

@@ -68,25 +68,9 @@ def save_batch_metadata(metadata: Dict[str, Any], batch_key: str):
 
 def save_prompt(prompt_text: str, prompt_type: str, batch_key: str):
     """
-    Save the final prompt sent to the model to the 'saved_prompts' folder.
-    
-    Files are named: <timestamp>_<prompt_type>_<batch_key>.txt
+    Save the final prompt sent to the model to the 'saved_prompts' folder. (DISABLED)
     """
-    try:
-        save_dir = Path("saved_prompts")
-        save_dir.mkdir(exist_ok=True)
-        
-        timestamp = time.strftime("%Y%m%d_%H%M%S")
-        safe_key = batch_key.replace(' ', '_').replace('/', '-')
-        filename = f"{timestamp}_{prompt_type}_{safe_key}.txt"
-        file_path = save_dir / filename
-        
-        with open(file_path, "w", encoding="utf-8") as f:
-            f.write(prompt_text)
-            
-        logger.info(f"✅ Saved prompt to {file_path}")
-    except Exception as e:
-        logger.error(f"Failed to save prompt: {e}")
+    return
 
 
 def extract_first_json_match(text: str) -> Dict[str, Any]:
@@ -306,7 +290,7 @@ async def validate_batch(
         api_key = general_config['api_key']
         
         # Save validation prompt for debugging/record
-        # save_prompt(validation_prompt_text, "validation", batch_key)
+        save_prompt(validation_prompt_text, "validation", batch_key)
         
         # Call Gemini API for validation with files if available
         result = await run_gemini_async(
@@ -319,8 +303,8 @@ async def validate_batch(
         )
         
         # Save validation response for debugging/record
-        # if 'text' in result and result['text']:
-        #     save_response(result['text'], "validation", batch_key)
+        if 'text' in result and result['text']:
+            save_response(result['text'], "validation", batch_key)
         
         result['batch_key'] = batch_key
         return result
@@ -515,14 +499,15 @@ async def process_single_batch_flow(
             files_data = get_files(questions, general_config)
             files = files_data.get('files', [])  # Extract the actual file list
             
-            # Prompt saving disabled — no pipeline_outputs directory needed
+            # Create a debug directory for this run's prompt/output logs (DISABLED)
+            save_prompts_dir = None
             
             # Run the full 4-stage pipeline
             pipeline_result = await run_stage_pipeline(
                 questions, 
                 general_config, 
                 files,
-                save_prompts_dir=None,
+                save_prompts_dir=save_prompts_dir,
                 previous_batch_metadata=previous_batch_metadata
             )
             
@@ -579,7 +564,8 @@ async def process_single_batch_flow(
                 val_prompt = val_prompt.replace("{{INPUT_CONTEXT}}", combined_context)
                 val_prompt = val_prompt.replace("{{OUTPUT_FORMAT_RULES}}", structure_format)
                 
-                # Validation prompt saving disabled
+                # Save validation prompt for pipeline mode
+                save_prompt(val_prompt, "pipeline_validation", batch_key)
                 
                 logger.info(f"[{batch_key}] Starting validation on {len(questions_data)} newly generated questions...")
                 val_files = [] 
@@ -616,7 +602,7 @@ async def process_single_batch_flow(
                     'batch_key': batch_key,
                     'input_tokens': pipeline_result['_pipeline_metadata']['total_tokens']['input'],
                     'output_tokens': pipeline_result['_pipeline_metadata']['total_tokens']['output'],
-                    'thought_tokens': 0,
+                    'thought_tokens': pipeline_result['_pipeline_metadata']['total_tokens'].get('thought', 0),
                     'billed_output_tokens': pipeline_result['_pipeline_metadata']['total_tokens']['output']
                 },
                 'validated': validated_payload,

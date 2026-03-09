@@ -420,7 +420,7 @@ def render_markdown_question(question_key: str, markdown_content: str, question_
             # YouTube video retrieval button
             yt_btn_key = f"yt_btn_{render_context}_{batch_key}_{question_key}"
             if st.button("Find YT video 🎬", key=yt_btn_key, help="Find YouTube videos for this question"):
-                with st.spinner("Searching YouTube..."):
+                with st.spinner("🧠 Using Gemini to find best video..."):
                     grade = st.session_state.get("general_grade", "")
                     yt_query, yt_result = fetch_yt_videos_for_question(markdown_content, grade=grade)
                     st.session_state[f"yt_results_{render_context}_{batch_key}_{question_key}"] = {
@@ -793,7 +793,7 @@ def render_generated_duplicates(batch_key: str, question_key: str, render_contex
             with dup_col3:
                 yt_dup_btn_key = f"yt_dup_btn_{render_context}_{batch_key}_{question_key}_{i}"
                 if st.button("Find YT video 🎬", key=yt_dup_btn_key, help=f"Find YouTube videos for Duplicate {i}"):
-                    with st.spinner("Searching YouTube..."):
+                    with st.spinner("🧠 Using Gemini to find best video..."):
                         grade = st.session_state.get("general_grade", "")
                         yt_query, yt_result = fetch_yt_videos_for_question(dup_markdown, grade=grade)
                         st.session_state[f"yt_results_dup_{render_context}_{batch_key}_{question_key}_{i}"] = {
@@ -1098,28 +1098,37 @@ def render_batch_results(batch_key: str, result_data: Dict[str, Any], render_con
                                     header = f"#### 📄 Question {idx} ({q_id})"
                                     st.markdown(header)
                                     
-                                    # Scenario/Question Text
+                                    # Scenario/Context block
                                     with st.expander(f"Scenario / Context", expanded=True):
                                         st.markdown(scenario_txt)
                                         if 'diagram_description' in display_item:
                                             st.info(f"**Diagram:** {display_item['diagram_description']}")
                                     
-                                    # Sub-questions
+                                    # Parse interleaved solutions if available
+                                    sol_text = display_item.get('solution', '')
+                                    ans_key_text = display_item.get('answer_key', display_item.get('final_answer', ''))
+                                    
+                                    # Sub-questions block
                                     if 'questions_list' in display_item:
                                         st.markdown(f"**Sub-questions:**")
                                         for sub_idx, sub_q in enumerate(display_item['questions_list'], 1):
                                             clean_sq = re.sub(r"^\s*(?:\([a-zA-Z0-9]+\)|[a-zA-Z0-9]+[.)])\s*", "", str(sub_q))
-                                            st.markdown(f"**({chr(96+sub_idx)})** {clean_sq}")
+                                            part_label = chr(96+sub_idx)
+                                            st.markdown(f"**({part_label})** {clean_sq}")
+                                            
+                                            # Interleaved display (Attempting to find answers/solutions for this specific part)
+                                            # We just put an empty container if the solution is a bulk string, 
+                                            # or we can display the whole solution at the end 
                                     
-                                    # Solution & Key Idea
+                                    # Solution & Key Idea (Since LLM might return it as a bulk string despite instructions, 
+                                    # we display it here. The true sequential output happens in standard Validation.)
                                     with st.expander("💡 View Solution & Analysis", expanded=False):
-                                        correct_ans = display_item.get('answer_key', display_item.get('final_answer', 'N/A'))
-                                        if correct_ans != 'N/A' or 'answer_key' in display_item:
-                                            st.success(f"**Answer Key:**\n\n{correct_ans}")
+                                        if ans_key_text and ans_key_text != 'N/A':
+                                            st.success(f"**Answer Key:**\n\n{ans_key_text}")
         
-                                        if 'solution' in display_item:
+                                        if sol_text:
                                             st.markdown("**Solution:**")
-                                            st.markdown(display_item['solution'])
+                                            st.markdown(sol_text)
                                         
                                         if 'key_idea' in display_item:
                                             st.markdown("**Key Idea:**")
@@ -1146,13 +1155,13 @@ def render_batch_results(batch_key: str, result_data: Dict[str, Any], render_con
                                     clean_sq = re.sub(r"^\s*(?:\([a-zA-Z0-9]+\)|[a-zA-Z0-9]+[.)])\s*", "", str(sub_q))
                                     st.markdown(f"**{sub_idx}.** {clean_sq}")
                             
-                            if 'solution' in q_item and q_item['solution']:
+                            if 'solution' in display_item and display_item['solution']:
                                 with st.expander(f"💡 Solution", expanded=False):
-                                    st.markdown(q_item['solution'])
+                                    st.markdown(display_item['solution'])
     
-                            if 'key_idea' in q_item and q_item['key_idea']:
+                            if 'key_idea' in display_item and display_item['key_idea']:
                                 with st.expander(f"Key Idea", expanded=False):
-                                    st.markdown(q_item['key_idea'])
+                                    st.markdown(display_item['key_idea'])
             
             # Display metadata is removed for cleaner UI
             return
@@ -1364,16 +1373,19 @@ def generate_markdown_for_download(batch_key: str, result_data: Dict[str, Any]) 
                     lines.append(f"\n**SOLUTION**\n\n{sol}\n")
 
                 # DISTRACTOR ANALYSIS (MCQ)
-                da = q_item.get('distractor_analysis', [])
-                if isinstance(da, list) and da:
+                da = q_item.get('distractor_analysis')
+                if da:
                     lines.append("\n**DISTRACTOR ANALYSIS**\n")
-                    for row in da:
-                        if isinstance(row, dict):
-                            opt = row.get('Option & Error Type', row.get('Option', ''))
-                            misc = row.get('Misconception', row.get('Explanation', ''))
-                            lines.append(f"- **{opt}**: {misc}")
-                        else:
-                            lines.append(f"- {row}")
+                    if isinstance(da, list):
+                        for row in da:
+                            if isinstance(row, dict):
+                                opt = row.get('Option & Error Type', row.get('Option', ''))
+                                misc = row.get('Misconception', row.get('Explanation', ''))
+                                lines.append(f"- **{opt}**: {misc}")
+                            else:
+                                lines.append(f"- {row}")
+                    else:
+                        lines.append(str(da))
                     lines.append("")
 
                 # KEY IDEA

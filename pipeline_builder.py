@@ -23,11 +23,22 @@ with open(PIPELINE_PROMPTS_FILE, 'r', encoding='utf-8') as f:
 
 GENERATION_PIPELINE_MODE = "MATH_FIRST"  # Updated mode
 
-def get_files(questions: List[Dict[str, Any]], general_config: Dict[str, Any]) -> Dict[str, Any]:
+def get_files(
+    questions: List[Dict[str, Any]], 
+    general_config: Dict[str, Any],
+    include_universal: bool = True,
+    include_additional: bool = True
+) -> Dict[str, Any]:
     """
     Extract PDF and image files from questions in the batch.
     - Universal file is used for all questions with 'pdf' as new concept source
     - Per-question files are only for additional notes
+    
+    Args:
+        questions: List of question configs
+        general_config: Global config
+        include_universal: Whether to include the universal new concept file
+        include_additional: Whether to include question-specific additional note files
     
     Returns:
         Dictionary with 'files' (list), 'source_type', and 'filenames'
@@ -41,7 +52,7 @@ def get_files(questions: List[Dict[str, Any]], general_config: Dict[str, Any]) -
     has_file_new_concept = any(q.get('new_concept_source') == 'pdf' for q in questions)
     
     # Add universal file if it exists and at least one question uses file as new concept source
-    if universal_file and has_file_new_concept:
+    if include_universal and universal_file and has_file_new_concept:
         files.append(universal_file)
         filename = getattr(universal_file, 'name', 'universal_new_concept_file')
         filenames.append(filename)
@@ -49,15 +60,16 @@ def get_files(questions: List[Dict[str, Any]], general_config: Dict[str, Any]) -
         logger.info(f"Using universal file: {filename}")
     
     # Collect additional notes files from questions
-    for q in questions:
-        # Check for additional notes file
-        additional_notes_file = q.get('additional_notes_pdf')  # Keep key name for backward compatibility
-        if additional_notes_file and additional_notes_file not in files:  # Avoid duplicates
-            files.append(additional_notes_file)
-            filename = getattr(additional_notes_file, 'name', 'uploaded_file')
-            filenames.append(filename)
-            source_types.add('Additional Notes File')
-            logger.info(f"Adding question specific file: {filename}")
+    if include_additional:
+        for q in questions:
+            # Check for additional notes file
+            additional_notes_file = q.get('additional_notes_pdf')  # Keep key name for backward compatibility
+            if additional_notes_file and additional_notes_file not in files:  # Avoid duplicates
+                files.append(additional_notes_file)
+                filename = getattr(additional_notes_file, 'name', 'uploaded_file')
+                filenames.append(filename)
+                source_types.add('Additional Notes File')
+                logger.debug(f"Adding question specific file: {filename}")
     
     # Determine overall source type
     if files:
@@ -232,7 +244,7 @@ def _format_question_requirement(q: Dict[str, Any], index: int, batch_type: str)
             p_marks = sp.get('marks', 1.0)
             if str(p_dok).isdigit():
                 p_dok = f"DOK {p_dok}"
-            sub_details.append(f"{j} - {p_dok} - {p_marks} mark")
+            sub_details.append(f"Sub-question {j} Requirements: {p_dok}, {p_marks} marks")
     else:
         # Fallback if no specific subpart config
         q_dok = q.get('dok', 1)
@@ -241,10 +253,10 @@ def _format_question_requirement(q: Dict[str, Any], index: int, batch_type: str)
             q_dok = f"DOK {q_dok}"
             
         if count == 1:
-            sub_details.append(f"1 - {q_dok} - {q_marks} mark")
+            sub_details.append(f"Sub-question 1 Requirements: {q_dok}, {q_marks} marks")
         else:
             for j in range(1, int(count) + 1):
-                sub_details.append(f"{j} - {q_dok} - {q_marks} mark")
+                sub_details.append(f"Sub-question {j} Requirements: {q_dok}, {q_marks} marks")
 
     details_str = " , ".join(sub_details)
     
@@ -311,11 +323,12 @@ def build_math_core_prompt(
 ) -> Dict[str, Any]:
     """Build prompt for Stage 1: Math Core (Architect)."""
     batch_type = _get_batch_type(questions)
-    prompt_key = f"{batch_type}_math_core"
+    # Always use the general math core extraction prompt
+    prompt_key = "general_math_core_extraction"
     
-    logger.info(f"Building Math Core prompt ({batch_type}) for {len(questions)} questions")
+    logger.info(f"Building General Math Core Extraction prompt for {len(questions)} questions")
     
-    template = PIPELINE_PROMPTS.get(prompt_key, PIPELINE_PROMPTS.get('cbs_math_core'))
+    template = PIPELINE_PROMPTS.get(prompt_key)
     
     # Build detailed requirements for each question
     req_list = []
@@ -341,7 +354,7 @@ def build_math_core_prompt(
     old_concept = general_config.get('old_concept', 'N/A').strip()
     
     # Get File Info to build context
-    file_info = get_files(questions, general_config)
+    file_info = get_files(questions, general_config, include_universal=True, include_additional=True)
     files = file_info['files']
     filenames = file_info['filenames']
     
@@ -429,7 +442,15 @@ def build_writer_prompt(
     regeneration_reason: str = None,
     previous_question_markdown: str = None
 ) -> Dict[str, Any]:
-    """Build prompt for Stage 2: Writer (Scenario + Question)."""
+    """Build prompt for Stage 2: Writer (Scenario + Question).
+    
+    Returns a dict with:
+        - system_prompt: Role/identity instructions (for OpenAI system role)
+        - user_prompt:   The full content prompt (for OpenAI user role)
+        - prompt:        Combined fallback for Gemini callers
+        - files:         Files to pass to the model
+        - file_metadata: Metadata about files
+    """
     batch_type = _get_batch_type(questions)
     prompt_key = f"{batch_type}_writer"
     
@@ -439,6 +460,35 @@ def build_writer_prompt(
     template = PIPELINE_PROMPTS.get(prompt_key, PIPELINE_PROMPTS.get('cbs_writer'))
     
     math_core_json = json.dumps(math_core_data, indent=2)
+    
+    # Build allowed topics block from the new Knowledge Profile structure
+    allowed_topics_block = ""
+    if isinstance(math_core_data, dict):
+        # The new structure has a top-level 'topic' field
+        topic = math_core_data.get('topic', '')
+        if topic:
+            allowed_topics_block = (
+                "\n\n## ALLOWED CONCEPTS (from Knowledge Profile)\n"
+                "The following is the topic the student is studying. "
+                "Generate the scenario and question ONLY using these concepts:\n"
+                f"- {topic}\n\n"
+                "Do NOT introduce concepts outside this topic unless they are "
+                "prerequisites mentioned in the profile."
+            )
+        else:
+            # Fallback for old structure if needed (though we aim to move away)
+            math_cores_list = math_core_data.get('math_cores', [])
+            if isinstance(math_cores_list, list) and math_cores_list:
+                topic_lines = []
+                for mc in math_cores_list:
+                    t = mc.get('Topic', mc.get('topic', ''))
+                    if t:
+                        topic_lines.append(f"- {t}")
+                if topic_lines:
+                    allowed_topics_block = (
+                        "\n\n## ALLOWED CONCEPTS (from Math Core)\n"
+                        + "\n".join(topic_lines)
+                    )
     
     # Requirements string with per-question notes
     req_list = []
@@ -456,16 +506,14 @@ def build_writer_prompt(
     # Global Additional Notes
     global_notes = general_config.get('additional_notes', 'None')
 
-    # Prepare Context Strings (New/Old Concept & Files) for Writer as well
-    new_concept = general_config.get('new_concept', 'N/A').strip()
-    old_concept = general_config.get('old_concept', 'N/A').strip()
-    
-    # Get File Info to build context
-    file_info = get_files(questions, general_config)
+    # Get File Info - Writer only gets Additional Note files
+    file_info = get_files(questions, general_config, include_universal=False, include_additional=True)
     files = file_info['files']
     filenames = file_info['filenames']
     
     source_material_parts = []
+    new_concept = general_config.get('new_concept', 'N/A').strip()
+    old_concept = general_config.get('old_concept', 'N/A').strip()
     
     if new_concept and new_concept.lower() not in ['n/a', 'none', '']:
         source_material_parts.append(f"<new_concept>\n        {new_concept}\n      </new_concept>")
@@ -486,9 +534,8 @@ def build_writer_prompt(
     else:
         context_instruction = ""
     
-    # Inject Core Skill Metadata (Negative Constraints)
+    # Core Skill Metadata injection
     core_skill_instruction_text = ""
-    # Inject Core Skill Output requirements if enabled
     if general_config.get('core_skill_enabled', False):
         core_skill_instruction_text = """
         "core_skill_metadata": {
@@ -520,7 +567,7 @@ def build_writer_prompt(
         '{{Grade}}': str(general_config.get('grade', '10')),
         '{{Subject}}': general_config.get('subject', 'Math'),
         '{{Question_Requirements}}': context_instruction + "\n" + req_text,
-        '{{Additional_Notes}}': global_notes, # Injected global notes
+        '{{Additional_Notes}}': global_notes,
         '{{MATH_CORE_DATA}}': math_core_json
     }
     
@@ -534,12 +581,14 @@ def build_writer_prompt(
         
     for k, v in replacements.items():
         prompt = prompt.replace(k, v)
+
+    # Add allowed topics from Math Core to the user prompt
+    prompt += allowed_topics_block
         
     # Prepend Regeneration instructions if this is a regeneration call
     if regeneration_reason and previous_question_markdown:
         logger.info("Injecting REGENERATION feedback block to the top of the Writer prompt")
         
-        # Replace the entire <output_format> ... </output_format> block with pure Markdown rules
         import re
         markdown_output_rules = """
   ## OUTPUT FORMAT (STRICT)
@@ -590,10 +639,7 @@ def build_writer_prompt(
     • Do NOT use \\frac, \\sqrt, \\times, \\sin, \\cos, or any backslash commands.
     • Do NOT use LaTeX environments or math notation.
         """
-        # Using lambda prevents re.sub from interpreting backslashes as regex escape sequences
         prompt = re.sub(r'<output_format>.*?</output_format>', lambda m: markdown_output_rules, prompt, flags=re.DOTALL)
-        
-        # Strip trailing XML tag the prompt might have had which triggers structured generation
         prompt = prompt.replace('</writer_generation>', '')
 
         regeneration_block = f"""
@@ -613,7 +659,7 @@ This is for regenerating.
 2. Whatever the user says in the instruction, change the question according to that.
 3. DO NOT change the format or anything else. ONLY change what the user explicitly says.
 4. The rules in this prompt below (like Scenario Rules, Balance Rules) are just for checking; apply them to change the question ONLY if the user explicitly asked to change anything from them (e.g. if the user says "add a scenario", then use the Scenario Rules).
-5. You need to output everything not only what you hace changed(for eg : if you change any name is scenario as user says, not only ouptu scenario and solution, you need to outptu the whole thing)
+5. You need to output everything not only what you have changed.
 5. Return the full question in plain, human-readable Markdown text as specified in the OUTPUT FORMAT.
 
 # ===================================================================
@@ -621,7 +667,241 @@ This is for regenerating.
 # ===================================================================
 """
         prompt = regeneration_block + prompt
+
+    # -----------------------------------------------------------------------
+    # Split into system_prompt + user_prompt for OpenAI Responses API.
+    # The system prompt carries the role/expertise identity.
+    # The user prompt carries the actual task + data.
+    # For Gemini callers, 'prompt' (the combined version) is also returned.
+    # -----------------------------------------------------------------------
+    system_prompt = (
+        f"You are an expert {general_config.get('subject', 'Mathematics')} question designer "
+        f"for Grade {general_config.get('grade', '')} students. "
+        "You create original, high-quality exam questions with realistic scenarios set in Indian "
+        "everyday life. Your output must be a valid JSON object matching the required output_format "
+        "exactly. Do not add any text outside the JSON."
+    )
+    user_prompt = prompt
+
+    return {
+        'system_prompt': system_prompt,
+        'user_prompt':   user_prompt,
+        'prompt':        user_prompt,   # backward-compat for Gemini callers
+        'files':         files or [],
+        'file_metadata': {'stage': 'writer'}
+    }
+
+def build_regeneration_prompt(
+    previous_question_markdown: str,
+    regeneration_reason: str,
+    general_config: Dict[str, Any],
+    files: List = None
+) -> Dict[str, Any]:
+    """Build prompt for Regeneration of a single question."""
+    logger.info("Building Regeneration prompt")
+    
+    template = PIPELINE_PROMPTS.get('regeneration_prompt', '')
+    if not template:
+        logger.warning("regeneration_prompt not found in PIPELINE_PROMPTS")
         
-    return {'prompt': prompt, 'files': files or [], 'file_metadata': {'stage': 'writer'}}
+    global_notes = general_config.get('additional_notes', 'None')
+    
+    replacements = {
+        '{{PREVIOUS_QUESTION}}': previous_question_markdown or "",
+        '{{REGENERATION_REASON}}': regeneration_reason or "",
+        '{{ADDITIONAL_NOTES}}': global_notes
+    }
+    
+    prompt = template
+    for k, v in replacements.items():
+        prompt = prompt.replace(k, str(v))
+
+    system_prompt = (
+        f"You are an expert Question Designer & Repair Agent for Grade {general_config.get('grade', '')} {general_config.get('subject', 'Math')}. "
+        "Your task is to modify a previously generated question exactly as requested by the user, while preserving the markdown format exactly."
+    )
+    
+    return {
+        'system_prompt': system_prompt,
+        'user_prompt': prompt,
+        'prompt': prompt,
+        'files': files or [],
+        'file_metadata': {'stage': 'regeneration'}
+    }
+
+def build_dok_upgrader_prompt(
+    writer_data: Dict[str, Any],
+    questions: List[Dict[str, Any]],
+    general_config: Dict[str, Any],
+    files: List = None,
+    original_indices: List[int] = None
+) -> Dict[str, Any]:
+    """Build prompt for Stage 2.5: DOK 3 Upgrader."""
+    logger.info(f"Building DOK 3 Upgrader prompt for {len(questions)} questions")
+    
+    template = PIPELINE_PROMPTS.get('dok_upgrader')
+    
+    writer_json = json.dumps(writer_data, indent=2)
+    
+    # Batch info
+    batch_type = _get_batch_type(questions)
+    req_list = []
+    for i, q in enumerate(questions):
+        # Use provided original index (0-based -> 1-based) or fallback to loop index
+        display_idx = (original_indices[i] + 1) if (original_indices and i < len(original_indices)) else (i + 1)
+        line = _format_question_requirement(q, display_idx, batch_type)
+        req_list.append(line)
+    req_text = "\n".join(req_list)
+    
+    topics = list(set([q.get('topic', '') for q in questions if q.get('topic')]))
+    topic_text = ', '.join(topics) if topics else 'General Topic'
+    
+    global_notes = general_config.get('additional_notes', 'None')
+    
+    # Get files - Upgrader gets both universal and additional
+    file_info = get_files(questions, general_config, include_universal=True, include_additional=True)
+    upgrader_files = file_info['files']
+
+    replacements = {
+        '{{Grade}}': str(general_config.get('grade', '10')),
+        '{{Topic}}': topic_text,
+        '{{Question_Config}}': req_text,
+        '{{Additional_Notes}}': global_notes,
+        '{{WRITER_OUTPUT}}': writer_json
+    }
+    
+    prompt = template
+    for k, v in replacements.items():
+        prompt = prompt.replace(k, v)
+
+    # Separate into system and user prompts for consistency with Writer
+    system_prompt = (
+        f"You are an expert Depth-of-Knowledge (DOK) Auditor for Grade {general_config.get('grade', '')} {general_config.get('subject', 'Math')}. "
+        "Your task is to refine and upgrade questions to meet the strict requirements of DOK 3 rigor as specified in the rules provided. "
+        "Return a valid JSON object matching the Writer's structure. Do not add any text outside the JSON."
+    )
+    user_prompt = prompt
+
+    return {
+        'system_prompt': system_prompt,
+        'user_prompt':   user_prompt,
+        'prompt':        user_prompt,   # backward-compat
+        'files':         upgrader_files or [], 
+        'file_metadata': {'stage': 'dok_upgrader'}
+    }
 
 
+def build_solution_prompt(
+    writer_data: Dict[str, Any],
+    math_core_data: Dict[str, Any],
+    questions: List[Dict[str, Any]],
+    general_config: Dict[str, Any],
+    files: List = None
+) -> Dict[str, Any]:
+    """
+    Build prompt for Stage 3: Solution Generation.
+    
+    Takes the Scenario + Question from GPT-4.1 (writer_data) and generates:
+    - Step-by-step solution
+    - Key idea explanation
+    - Answer key
+    
+    Returns a dict with 'prompt' and 'files'.
+    """
+    batch_type = _get_batch_type(questions)
+    
+    logger.info(f"Building Solution prompt for {len(questions)} questions ({batch_type})")
+    
+    writer_json = json.dumps(writer_data, indent=2)
+    math_core_json = json.dumps(math_core_data, indent=2)
+    
+    # Question requirements summary
+    req_list = []
+    for i, q in enumerate(questions, 1):
+        line = _format_question_requirement(q, i, batch_type)
+        req_list.append(line)
+    req_text = "\n".join(req_list)
+    
+    global_notes = general_config.get('additional_notes', 'None')
+    
+    # Get files for context - Solution gets both
+    file_info = get_files(questions, general_config, include_universal=True, include_additional=True)
+    sol_files = file_info['files']
+
+    prompt = f"""<solution_generation>
+  <context>
+    <grade>{general_config.get('grade', '')}</grade>
+    <subject>{general_config.get('subject', 'Mathematics')}</subject>
+    <additional_notes>{global_notes}</additional_notes>
+  </context>
+
+  <math_core_reference>
+    The following is the Math Core (abstract structure) designed by the Architect:
+    {math_core_json}
+  </math_core_reference>
+
+  <writer_output>
+    The following is the Scenario + Questions generated by the Writer:
+    {writer_json}
+  </writer_output>
+
+  <question_requirements>
+    {req_text}
+  </question_requirements>
+
+  <task>
+    You are a **Solution Expert and Teacher**. Based on the Writer's output above:
+
+    For EACH question in writer_output, generate:
+
+    1. **solution** — Complete step-by-step working with marks at each step.
+       - Show all calculation steps clearly.
+       - Assign marks to each step (value-point marking).
+       - Present the final answer clearly with units.
+
+    2. **distractor_analysis** — For MCQ questions, provide a Markdown table explaining incorrect options.
+       - Table must have columns: "Option" and "Misconception".
+       - Explain why each incorrect option is wrong and what the likely misconception was.
+       - Keep it concise (max 4 lines per rationale).
+
+    3. **key_idea** — A clear, reusable concept explanation:
+       - Explain WHAT kind of problem this is.
+       - Explain the CORE IDEA from scratch (assume zero prior knowledge).
+       - Explain WHY the method works.
+       - Give a general step-by-step method (Step 1, Step 2, ...).
+       - Mention 2+ common student mistakes and how to avoid them.
+       - Write as continuous teaching content, NOT as Q&A.
+       - Minimum 6–8 full sentences.
+
+    4. **answer_key** — Just the final correct answer(s), semicolon-separated if multiple.
+
+    RULES:
+    - Match question IDs exactly from writer_output.
+    - For sub-questions, generate solution/key_idea/answer_key per sub-question.
+    - Do NOT repeat or paraphrase the question text.
+    - Do NOT add any new questions.
+    - Follow the grade level and subject.
+  </task>
+
+  <output_format>
+    Return valid JSON:
+    {{
+      "questions": [
+        {{
+          "question_id": "Q1",
+          "answer_key": "A",
+          "solution": "...",
+          "distractor_analysis": "| Option | Misconception | ...",
+          "key_idea": "..."
+        }}
+      ]
+    }}
+    If the question has subparts, include them within the question object if appropriate, or follow the same structure for each part.
+  </output_format>
+</solution_generation>"""
+
+    return {
+        'prompt': prompt,
+        'files': sol_files or [],
+        'file_metadata': {'stage': 'solution'}
+    }

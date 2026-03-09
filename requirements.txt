@@ -5,3 +5,4 @@ pyyaml>=6.0
 st-img-pastebutton
 google-api-python-client>=2.0.0
 sarvamai>=0.1.0
+openai>=1.0.0

@@ -1774,6 +1774,11 @@ with tab1:
                     st.error(f" Please specify topics for: {', '.join(missing_topics)}")
                 else:
                     # Prepare general config
+                    try:
+                        openai_api_key = st.secrets["OPENAI_API_KEY"]
+                    except Exception:
+                        openai_api_key = os.getenv("OPENAI_API_KEY", "")
+
                     config = {
                         'curriculum': curriculum,
                         'grade': grade,
@@ -1783,6 +1788,7 @@ with tab1:
                         'new_concept': new_concept,
                         'additional_notes': additional_notes,
                         'api_key': gemini_api_key,
+                        'openai_api_key': openai_api_key,
                         'universal_pdf': st.session_state.get('universal_pdf'),  # Pass universal PDF
                         'core_skill_enabled': st.session_state.get('core_skill_enabled', False)  # Core skill extraction
                     }
@@ -1827,6 +1833,13 @@ with tab1:
                                 keys_to_remove = [key for key in st.session_state.keys() if key.startswith('duplicate_count_results_')]
                                 for key in keys_to_remove:
                                     del st.session_state[key]
+                                    
+                                # Clear all regeneration-related session state keys
+                                keys_to_remove = [key for key in st.session_state.keys() if key.startswith('regenerated_') or key.startswith('regen_reason_')]
+                                for key in keys_to_remove:
+                                    del st.session_state[key]
+                                if 'regen_selection' in st.session_state:
+                                    st.session_state.regen_selection = set()
                                 
                                 # Store final results
                                 st.session_state.generated_output = final_results
@@ -2084,15 +2097,20 @@ with tab2:
                                                         logger.warning(f"-> Found matching question index: {idx}")
                                                         q_key = f"question{idx}"
                                                         question_code = f"{b_key}_q{idx}"
-                                                        # Use regenerated version if available, otherwise use original JSON
+                                                        # Use regenerated version if available, otherwise use validation output, fallback to original writer JSON
                                                         regen_store_key = f"regenerated_{b_key}_{q_key}"
                                                         regen_data = st.session_state.get(regen_store_key)
                                                         if regen_data and isinstance(regen_data, dict) and 'markdown' in regen_data:
                                                             q_content_str = str(regen_data['markdown'])
                                                             logger.info(f"Using previously regenerated markdown for {b_key}_{q_key}")
                                                         else:
-                                                            import json
-                                                            q_content_str = json.dumps(q_item, indent=2)
+                                                            val_content = obj.get('validation_output', {}).get(q_key)
+                                                            if isinstance(val_content, str) and val_content.strip():
+                                                                q_content_str = val_content
+                                                                logger.info(f"Using validated markdown for {b_key}_{q_key}")
+                                                            else:
+                                                                import json
+                                                                q_content_str = json.dumps(q_item, indent=2)
                                                         
                                                         # Try to align the Math Core with the Question Index
                                                         mc_data = {}
@@ -2265,13 +2283,17 @@ with tab2:
                                 q_num = str(idx)
                                 question_code = f"{batch_key}_q{q_num}"
                                 
-                                # Use regenerated version if available, otherwise use original
+                                # Use regenerated version if available, otherwise use validation output, fallback to original writer JSON
                                 regen_store_key = f"regenerated_{batch_key}_{q_key}"
                                 regen_data = st.session_state.get(regen_store_key)
                                 if regen_data and isinstance(regen_data, dict) and 'markdown' in regen_data:
                                     q_content_str = str(regen_data['markdown'])
                                 else:
-                                    q_content_str = json.dumps(q_item, indent=2)
+                                    val_content = obj.get('validation_output', {}).get(q_key)
+                                    if isinstance(val_content, str) and val_content.strip():
+                                        q_content_str = val_content
+                                    else:
+                                        q_content_str = json.dumps(q_item, indent=2)
                                 
                                 selected_questions[f"{batch_key}_{q_key}"] = {
                                     'question_key': q_key,
@@ -2371,10 +2393,13 @@ with tab2:
                                     if config_path.exists():
                                         with open(config_path, 'r', encoding='utf-8') as f:
                                             config = yaml.safe_load(f)
-                                            # Pull duplication model from config
-                                            model_to_use = config.get('duplication', {}).get('model', model_to_use)
+                                            # Pull duplication model and thinking level from config
+                                            dup_config = config.get('duplication', {})
+                                            model_to_use = dup_config.get('model', model_to_use)
+                                            thinking_level = dup_config.get('thinking_level', 'high')
                                 except Exception as e:
                                     logger.warning(f"Could not load duplication model from config, using fallback: {e}")
+                                    thinking_level = 'high'
 
                                 result = await duplicate_questions_async(
                                     original_question_markdown=data['markdown_content'],
@@ -2383,7 +2408,8 @@ with tab2:
                                     api_key=gemini_api_key,
                                     additional_notes=data.get('additional_notes', ""),
                                     pdf_file=pdf_file,
-                                    model=model_to_use
+                                    model=model_to_use,
+                                    thinking_level=thinking_level
                                 )
                                 return key, result
                             
